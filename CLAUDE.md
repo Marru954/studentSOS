@@ -4,13 +4,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Workspace layout
 
-This directory is **not a git repo**; it holds two independent projects plus design mockups:
+Git repo at this root; it holds the product plus design mockups:
 
 - **`studentos/`** — the main product: "University Student OS", a Next.js App Router app. Almost all work happens here.
-- **`uniportal/`** — a *separate* scaffold (Express + React) proving the full SAML 2.0 SSO Service Provider flow against Tor Vergata's Delphi/IDEM-GARR. Its SAML logic was later adapted into `studentos` (see below); keep it in sync conceptually but it has its own deps and runs on its own.
 - **`*.html`** (`student-os-clean-v2.html`, etc.) — self-contained React+Tailwind-via-CDN design mockups, openable directly in a browser. `student-os-clean-v2.html` is the approved visual reference; the user strongly prefers a **clean, light, minimal (Notion-style)** aesthetic over dark/cyber/glass.
 
-Run all commands **inside the relevant project directory**, not from this root.
+Run all commands **inside `studentos/`**, not from this root.
+
+> History note: a `uniportal/` scaffold (Express + React) once proved the full SAML 2.0 SP flow against Tor Vergata's Delphi/IDEM-GARR. Its SAML logic was adapted into `studentos` (`src/lib/saml/`, `src/app/api/saml/*`) and the scaffold was then removed — StudentOS is the only project now.
 
 ## ⚠️ Next.js version caveat (read first)
 
@@ -29,17 +30,7 @@ npm test               # runs every tests/*.test.ts file in sequence
 ./node_modules/.bin/tsx scripts/audit-render.ts  # SSR-render components to static HTML for markup/a11y audits (no browser available)
 ```
 
-Tests use `node:test` + `tsx` + `fake-indexeddb` (no Jest/Vitest). There is **no browser in this environment**: verify UI accessibility/markup via `scripts/audit-render.ts` and verify color contrast by computing WCAG ratios from the compiled CSS in `.next/static`.
-
-## Commands (uniportal)
-
-```bash
-cd uniportal && docker compose up -d             # PostgreSQL (sessions + Prisma data)
-cd uniportal/server && npm install && npm run certs && npm run prisma:generate && npm run prisma:migrate && npm run dev
-cd uniportal/client && npm install && npm run dev # Vite, proxies /api & /saml to the server
-```
-
-See `uniportal/README.md` for the SAML endpoint table and IdP registration steps.
+Tests use `node:test` + `tsx` + `fake-indexeddb` (no Jest/Vitest). There is **no browser in this environment**: verify UI accessibility/markup via `scripts/audit-render.ts` and verify color contrast by computing WCAG ratios from the compiled CSS in `.next/static`. The Delphi PDF import has two extra helpers that run pdfjs headless in Node: `scripts/dump-pdf-text.ts <file.pdf>` (dump extracted text to a fixture) and `scripts/verify-delphi-pdf.ts <file.pdf>` (end-to-end parse check).
 
 ## StudentOS architecture (the big picture)
 
@@ -55,6 +46,6 @@ See `uniportal/README.md` for the SAML endpoint table and IdP registration steps
 
 **Design system is token-driven.** Colors/radii/fonts are CSS variables in `src/app/globals.css` `@theme`. The token *names* (`night-*`, `ink`, `line`, `signal`, …) are legacy from earlier dark themes; the current values are a **light, minimal (Notion) palette**. Reskins are done by editing tokens + a few primitives (`src/components/primitives/`), not by sweeping every component. Inter is the only font (`--font-mono` is remapped to Inter + tabular-nums — there is no real monospace face). Keep contrast AA-compliant on white; UI copy is **Italian-first**.
 
-**SAML/SSO + career sync** (`src/app/api/saml/*`, `src/lib/saml/`, `src/lib/esse3/`): adapted from `uniportal` to fit the no-DB app — `@node-saml/node-saml` is used directly in Route Handlers (it is in `serverExternalPackages` in `next.config.ts`), and the session is an **HMAC-signed cookie** (`src/lib/saml/session.ts`), not a server session. `/api/saml/synced` returns the student's career as `LibrettoEntry[]` — real data via the Esse3 e3rest adapter (`src/lib/esse3/client.ts`, gated on `ESSE3_*` env, needs an integration account) or 12 mock exams in dev. Synced libretto rows are tagged `source: "delphi"` (the "synced from ateneo" bucket) vs `"manual"`; `replaceDelphiLibretto` swaps only the synced bucket atomically, leaving manual entries untouched. **Currently the SSO UI is intentionally disabled ("prossimamente") in `DelphiConnect`**; the backend (login/acs/metadata/logout + full Single Logout, mock + Esse3) stays wired for future activation. Real SSO needs env: `SAML_IDP_CERT`, `SAML_SP_PRIVATE_KEY`/`SAML_SP_CERT`, the `SAML_*_URL`s, `SAML_SESSION_SECRET`.
+**SAML/SSO + career sync** (`src/app/api/saml/*`, `src/lib/saml/`, `src/lib/esse3/`): built to fit the no-DB app — `@node-saml/node-saml` is used directly in Route Handlers (it is in `serverExternalPackages` in `next.config.ts`), and the session is an **HMAC-signed cookie** (`src/lib/saml/session.ts`), not a server session. `/api/saml/synced` returns the student's career as `LibrettoEntry[]` — real data via the Esse3 e3rest adapter (`src/lib/esse3/client.ts`, gated on `ESSE3_*` env, needs an integration account) or 12 mock exams in dev. Synced libretto rows are tagged `source: "delphi"` (the "synced from ateneo" bucket) vs `"manual"`; `replaceDelphiLibretto` swaps only the synced bucket atomically, leaving manual entries untouched. **Currently the SSO UI is intentionally disabled ("prossimamente") in `DelphiConnect`**; the backend (login/acs/metadata/logout + full Single Logout, mock + Esse3) stays wired for future activation. Real SSO needs env: `SAML_IDP_CERT`, `SAML_SP_PRIVATE_KEY`/`SAML_SP_CERT`, the `SAML_*_URL`s, `SAML_SESSION_SECRET`.
 
 **Routes:** `/` (predictive bento dashboard), `/orario` (CSS-Grid week view), `/appelli` (month calendar + exam cards), `/libretto` (manual entry + CSV import + career instruments), `/note` (Markdown+KaTeX+code editor with full-text search), `/focus` (pomodoro + kanban), `/design` (component gallery). The dashboard's instruments (media/CFU/projection) read the libretto store reactively and update in real time.
