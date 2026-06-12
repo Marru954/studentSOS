@@ -1,0 +1,448 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>STUDENT//OS — Universal Student Operating System</title>
+<meta name="description" content="Student OS — un sistema operativo universale per la carriera universitaria. Dark cyber bento interface." />
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: {
+          display: ['"Space Grotesk"', "system-ui", "sans-serif"],
+          mono: ['"Fira Code"', "ui-monospace", "monospace"],
+        },
+      },
+    },
+  };
+</script>
+
+<style>
+  html { scroll-behavior: smooth; }
+  body { background: #000; }
+  ::selection { background: #00E5FF; color: #000; }
+
+  .t-cyan { color: #00E5FF; }
+  .t-purple { color: #9D00FF; }
+  .neon-cyan { color: #00E5FF; text-shadow: 0 0 14px rgba(0,229,255,.55); }
+  .neon-purple { color: #9D00FF; text-shadow: 0 0 16px rgba(157,0,255,.65); }
+
+  /* Bento tile + hover glow */
+  .tile { transition: border-color .25s ease, box-shadow .25s ease, transform .25s ease; }
+  .tile:hover { transform: translateY(-3px); }
+  .glow-cyan:hover { border-color: #00E5FF;
+    box-shadow: 0 0 0 1px #00E5FF, 0 0 28px rgba(0,229,255,.30), inset 0 0 30px rgba(0,229,255,.05); }
+  .glow-purple:hover { border-color: #9D00FF;
+    box-shadow: 0 0 0 1px #9D00FF, 0 0 28px rgba(157,0,255,.32), inset 0 0 30px rgba(157,0,255,.06); }
+
+  /* Corner brackets */
+  .bracket::before, .bracket::after {
+    content: ""; position: absolute; width: 12px; height: 12px; opacity: .5;
+    border-color: currentColor; }
+  .bracket::before { top: 8px; left: 8px; border-top: 1px solid; border-left: 1px solid; }
+  .bracket::after { bottom: 8px; right: 8px; border-bottom: 1px solid; border-right: 1px solid; }
+
+  .glitch:hover { text-shadow: 2px 0 #00E5FF, -2px 0 #9D00FF; }
+
+  @keyframes blink { 50% { opacity: 0; } }
+  .cursor { animation: blink 1.05s steps(1) infinite; }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .3; } }
+  .pulse { animation: pulse 1.8s ease-in-out infinite; }
+  @keyframes scan { 0% { transform: translateY(-100%); } 100% { transform: translateY(900%); } }
+  .scan { animation: scan 6s linear infinite; }
+  @keyframes dash { to { stroke-dashoffset: 0; } }
+
+  *:focus-visible { outline: 2px solid #00E5FF; outline-offset: 3px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .cursor, .pulse, .scan { animation: none !important; }
+    .tile:hover { transform: none; }
+  }
+</style>
+</head>
+
+<body class="font-mono text-white">
+<div id="root"></div>
+
+<script type="text/babel" data-presets="react">
+const { useState, useEffect, useRef } = React;
+
+/* ───────── Icone inline ───────── */
+const Svg = ({ children, className = "w-4 h-4", sw = 1.6, ...p }) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={sw}
+    strokeLinecap="round" strokeLinejoin="round" className={className} aria-hidden="true" {...p}>{children}</svg>
+);
+const ITerminal = (p) => <Svg {...p}><path d="m4 17 6-6-6-6"/><path d="M12 19h8"/></Svg>;
+const IClock = (p) => <Svg {...p}><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></Svg>;
+const ICal = (p) => <Svg {...p}><rect x="3" y="4" width="18" height="18" rx="1.5"/><path d="M16 2v4M8 2v4M3 10h18"/></Svg>;
+const ITarget = (p) => <Svg {...p}><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/></Svg>;
+const IBolt = (p) => <Svg {...p}><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></Svg>;
+const ISpark = (p) => <Svg {...p}><path d="M12 3l1.8 5L19 9l-5.2 1L12 15l-1.8-5L5 9l5.2-1z"/></Svg>;
+const ISync = (p) => <Svg {...p}><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5M3 21v-5h5"/></Svg>;
+const IArrowUR = (p) => <Svg {...p}><path d="M7 17 17 7"/><path d="M8 7h9v9"/></Svg>;
+const ILayers = (p) => <Svg {...p}><path d="m12 2 9 5-9 5-9-5z"/><path d="m3 12 9 5 9-5"/><path d="m3 17 9 5 9-5"/></Svg>;
+const IPlus = (p) => <Svg {...p}><path d="M12 5v14M5 12h14"/></Svg>;
+const ICap = (p) => <Svg {...p}><path d="M22 9 12 5 2 9l10 4 10-4z"/><path d="M6 11v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"/></Svg>;
+
+/* ───────── Helpers ───────── */
+const Label = ({ children, accent = "cyan" }) => (
+  <div className="flex items-center gap-2 text-[0.6rem] uppercase tracking-[0.25em] text-white/45">
+    <span className={"pulse h-1.5 w-1.5 rounded-full " + (accent === "cyan" ? "bg-[#00E5FF]" : "bg-[#9D00FF]")} />
+    {children}
+  </div>
+);
+
+function Tile({ accent = "cyan", className = "", children }) {
+  const tcolor = accent === "cyan" ? "text-[#00E5FF]" : "text-[#9D00FF]";
+  return (
+    <section className={`tile bracket glow-${accent} ${tcolor} relative flex flex-col overflow-hidden border border-white/12 bg-[#050505] p-5 ${className}`}>
+      {children}
+    </section>
+  );
+}
+
+function useCountUp(target, dur = 1500, decimals = 0) {
+  const [v, setV] = useState(0);
+  useEffect(() => {
+    let raf; const t0 = performance.now();
+    const tick = (now) => {
+      const t = Math.min(1, (now - t0) / dur);
+      setV(target * (1 - Math.pow(1 - t, 3)));
+      if (t < 1) raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [target, dur]);
+  return decimals ? v.toFixed(decimals) : Math.round(v);
+}
+
+/* ───────── Top bar ───────── */
+function TopBar() {
+  return (
+    <header className="sticky top-0 z-50 border-b border-white/10 bg-black/80 backdrop-blur-md">
+      <nav aria-label="Principale" className="mx-auto flex max-w-7xl items-center justify-between px-5 py-3.5">
+        <a href="#top" className="flex items-center gap-2 font-display text-lg font-bold tracking-tight">
+          <span className="text-white">STUDENT</span><span className="neon-cyan">//</span><span className="neon-purple">OS</span>
+        </a>
+        <div className="hidden items-center gap-7 text-[0.7rem] uppercase tracking-[0.2em] text-white/55 md:flex">
+          <a href="#grid" className="transition hover:text-[#00E5FF]">Moduli</a>
+          <a href="#grid" className="transition hover:text-[#00E5FF]">Atenei</a>
+          <a href="#grid" className="transition hover:text-[#00E5FF]">Docs</a>
+        </div>
+        <a href="#cta" className="group flex items-center gap-2 border border-[#00E5FF]/60 bg-[#00E5FF]/10 px-4 py-2 text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-[#00E5FF] transition hover:bg-[#00E5FF] hover:text-black hover:shadow-[0_0_20px_rgba(0,229,255,.5)]">
+          Launch <IArrowUR className="h-3.5 w-3.5" />
+        </a>
+      </nav>
+    </header>
+  );
+}
+
+/* ───────── Tiles content ───────── */
+function HeroTile() {
+  return (
+    <Tile accent="cyan" className="sm:col-span-2 lg:col-span-2 lg:row-span-2 justify-between min-h-[320px]">
+      <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 h-12 bg-gradient-to-b from-[#00E5FF]/10 to-transparent">
+        <div className="scan h-px w-full bg-[#00E5FF]/40" />
+      </div>
+      <div className="relative">
+        <Label accent="cyan">// universal student os · v2.0</Label>
+        <h1 className="glitch mt-5 font-display text-6xl font-bold leading-[0.92] tracking-tight text-white sm:text-7xl lg:text-[5.4rem]">
+          STUDENT<br /><span className="neon-cyan">OS</span><span className="neon-purple">_</span>
+        </h1>
+        <p className="mt-5 max-w-md text-sm leading-relaxed text-white/55">
+          Un sistema operativo per la carriera universitaria. Orari, appelli, libretto,
+          note e focus. <span className="t-cyan">Qualsiasi ateneo.</span> Offline-first.
+        </p>
+      </div>
+      <div className="relative mt-6 flex flex-wrap items-center gap-3">
+        <a href="#cta" className="flex items-center gap-2 bg-[#00E5FF] px-5 py-2.5 text-xs font-bold uppercase tracking-[0.2em] text-black transition hover:shadow-[0_0_24px_rgba(0,229,255,.55)]">
+          <IBolt className="h-4 w-4" /> Launch OS
+        </a>
+        <a href="#grid" className="flex items-center gap-2 border border-white/20 px-5 py-2.5 text-xs font-semibold uppercase tracking-[0.2em] text-white/80 transition hover:border-[#9D00FF] hover:text-[#9D00FF]">
+          Esplora i moduli
+        </a>
+        <span className="ml-auto text-[0.65rem] uppercase tracking-[0.2em] text-white/35">12 moduli · 0 login</span>
+      </div>
+    </Tile>
+  );
+}
+
+function ClockTile() {
+  const [now, setNow] = useState(new Date());
+  useEffect(() => {
+    const id = setInterval(() => setNow(new Date()), 1000);
+    return () => clearInterval(id);
+  }, []);
+  const pad = (n) => String(n).padStart(2, "0");
+  const date = now.toLocaleDateString("it-IT", { weekday: "short", day: "2-digit", month: "short" });
+  return (
+    <Tile accent="purple" className="justify-between">
+      <Label accent="purple">system time</Label>
+      <div>
+        <p className="font-mono text-3xl font-semibold tabular-nums text-white">
+          {pad(now.getHours())}<span className="neon-purple">:</span>{pad(now.getMinutes())}<span className="text-white/40">:{pad(now.getSeconds())}</span>
+        </p>
+        <p className="mt-1 text-[0.7rem] uppercase tracking-[0.2em] text-white/45">{date} · CET</p>
+      </div>
+    </Tile>
+  );
+}
+
+function StatusTile() {
+  const lines = [["sync", "ok"], ["cache", "warm"], ["net", "online"]];
+  return (
+    <Tile accent="cyan" className="justify-between">
+      <Label accent="cyan">build · 2.0.30</Label>
+      <ul className="space-y-1.5 text-xs">
+        {lines.map(([k, v]) => (
+          <li key={k} className="flex items-center justify-between">
+            <span className="uppercase tracking-[0.18em] text-white/45">{k}</span>
+            <span className="t-cyan">{v}</span>
+          </li>
+        ))}
+      </ul>
+    </Tile>
+  );
+}
+
+function MediaTile() {
+  const media = useCountUp(28.4, 1600, 1);
+  const cfuPct = useCountUp(73, 1600);
+  const r = 30, c = 2 * Math.PI * r;
+  const frac = 28.4 / 30;
+  return (
+    <Tile accent="purple" className="sm:col-span-2 lg:col-span-2">
+      <Label accent="purple">carriera · libretto</Label>
+      <div className="mt-3 flex items-center gap-6">
+        <div className="relative h-[88px] w-[88px] shrink-0">
+          <svg viewBox="0 0 80 80" className="h-full w-full -rotate-90">
+            <circle cx="40" cy="40" r={r} fill="none" stroke="#ffffff14" strokeWidth="6" />
+            <circle cx="40" cy="40" r={r} fill="none" stroke="#9D00FF" strokeWidth="6" strokeLinecap="round"
+              strokeDasharray={c} strokeDashoffset={c * (1 - frac)}
+              style={{ filter: "drop-shadow(0 0 6px rgba(157,0,255,.7))" }} />
+          </svg>
+          <div className="absolute inset-0 flex flex-col items-center justify-center">
+            <span className="font-display text-2xl font-bold text-white tabular-nums">{media}</span>
+            <span className="text-[0.55rem] uppercase tracking-[0.2em] text-white/40">media</span>
+          </div>
+        </div>
+        <div className="flex-1">
+          <div className="flex items-end justify-between">
+            <span className="text-[0.65rem] uppercase tracking-[0.2em] text-white/45">CFU acquisiti</span>
+            <span className="font-mono text-sm t-cyan tabular-nums">132<span className="text-white/35">/180</span></span>
+          </div>
+          <div className="mt-2 h-2 w-full overflow-hidden bg-white/10">
+            <div className="h-full bg-gradient-to-r from-[#00E5FF] to-[#9D00FF] transition-[width] duration-1000"
+              style={{ width: cfuPct + "%", boxShadow: "0 0 16px rgba(0,229,255,.5)" }} />
+          </div>
+          <p className="mt-3 font-display text-xl font-bold text-white">
+            110<span className="t-purple">L</span> <span className="text-xs font-normal text-white/40">base di laurea proiettata</span>
+          </p>
+        </div>
+      </div>
+    </Tile>
+  );
+}
+
+function CountdownTile() {
+  return (
+    <Tile accent="cyan" className="justify-between">
+      <Label accent="cyan">prossimo appello</Label>
+      <div>
+        <p className="font-display text-6xl font-bold leading-none neon-cyan tabular-nums">03</p>
+        <p className="mt-1 text-[0.7rem] uppercase tracking-[0.18em] text-white/45">giorni · Reti</p>
+      </div>
+      <p className="text-[0.65rem] text-white/35">15.06 · 09:00 · Aula B2</p>
+    </Tile>
+  );
+}
+
+function FocusTile() {
+  const r = 26, c = 2 * Math.PI * r, frac = 0.62;
+  return (
+    <Tile accent="purple" className="items-center justify-center text-center">
+      <Label accent="purple">focus · pomodoro</Label>
+      <div className="relative mt-2 h-[92px] w-[92px]">
+        <svg viewBox="0 0 72 72" className="h-full w-full -rotate-90">
+          <circle cx="36" cy="36" r={r} fill="none" stroke="#ffffff12" strokeWidth="5" />
+          <circle cx="36" cy="36" r={r} fill="none" stroke="#00E5FF" strokeWidth="5" strokeLinecap="round"
+            strokeDasharray={c} strokeDashoffset={c * (1 - frac)}
+            style={{ filter: "drop-shadow(0 0 6px rgba(0,229,255,.7))" }} />
+        </svg>
+        <div className="absolute inset-0 flex items-center justify-center">
+          <span className="font-mono text-xl font-semibold text-white tabular-nums">15:24</span>
+        </div>
+      </div>
+    </Tile>
+  );
+}
+
+function TimetableTile() {
+  const rows = [
+    ["08:00", "Analisi II", "A1", false],
+    ["10:00", "Reti", "B2", true],
+    ["14:00", "Sistemi Op.", "Lab 3", false],
+    ["16:00", "Algoritmi", "C4", false],
+  ];
+  return (
+    <Tile accent="cyan" className="sm:col-span-2 lg:col-span-2 lg:row-span-2">
+      <div className="flex items-center justify-between">
+        <Label accent="cyan">oggi · orario unificato</Label>
+        <span className="text-[0.6rem] uppercase tracking-[0.2em] text-white/35">anni 1·2·3</span>
+      </div>
+      <ul className="mt-4 flex-1 divide-y divide-white/8">
+        {rows.map(([time, name, room, live]) => (
+          <li key={name} className="flex items-center gap-4 py-3">
+            <span className="font-mono text-sm tabular-nums text-white/70 w-12">{time}</span>
+            <span className={"h-8 w-px " + (live ? "bg-[#00E5FF] shadow-[0_0_10px_#00E5FF]" : "bg-white/15")} />
+            <span className="flex-1">
+              <span className="block text-sm font-medium text-white">{name}</span>
+              <span className="block text-[0.65rem] uppercase tracking-[0.15em] text-white/40">{room}</span>
+            </span>
+            {live && (
+              <span className="flex items-center gap-1.5 border border-[#00E5FF]/50 px-2 py-0.5 text-[0.55rem] uppercase tracking-[0.2em] t-cyan">
+                <span className="pulse h-1.5 w-1.5 rounded-full bg-[#00E5FF]" /> live
+              </span>
+            )}
+          </li>
+        ))}
+      </ul>
+    </Tile>
+  );
+}
+
+function AiTile() {
+  return (
+    <Tile accent="purple" className="sm:col-span-2 lg:col-span-2 justify-between">
+      <Label accent="purple">ai // assistant</Label>
+      <div className="mt-3 border border-white/10 bg-black/60 p-3 font-mono text-sm">
+        <p className="text-white/45">&gt; <span className="text-white">quando devo iniziare a studiare Reti?</span></p>
+        <p className="mt-1.5 t-purple">&gt; consiglio: 6h/giorno da oggi. Probabilità 28+: <span className="text-white">82%</span><span className="cursor t-cyan">▋</span></p>
+      </div>
+      <div className="mt-3 flex flex-wrap gap-2">
+        {["Pianifica sessione", "Riassumi appunti", "Genera quiz"].map((t) => (
+          <span key={t} className="flex items-center gap-1 border border-white/15 px-2.5 py-1 text-[0.65rem] text-white/60 transition hover:border-[#9D00FF] hover:text-[#9D00FF]">
+            <ISpark className="h-3 w-3" /> {t}
+          </span>
+        ))}
+      </div>
+    </Tile>
+  );
+}
+
+function UniversalTile() {
+  const tags = ["Esse3", "iCal / ICS", "EasyAcademy", "Delphi", "WordPress", "Scraper"];
+  return (
+    <Tile accent="cyan" className="sm:col-span-2 lg:col-span-2 justify-between">
+      <Label accent="cyan">adapter engine · funziona ovunque</Label>
+      <div className="mt-3 flex flex-wrap gap-2">
+        {tags.map((t) => (
+          <span key={t} className="flex items-center gap-1.5 border border-white/15 px-3 py-1.5 text-xs text-white/70 transition hover:border-[#00E5FF] hover:text-[#00E5FF]">
+            <ILayers className="h-3.5 w-3.5" /> {t}
+          </span>
+        ))}
+      </div>
+      <p className="mt-4 font-display text-2xl font-bold text-white">
+        1 OS · <span className="neon-cyan">∞</span> atenei
+      </p>
+    </Tile>
+  );
+}
+
+function SparkTile() {
+  const pts = [18, 14, 22, 16, 28, 24, 34, 30, 40];
+  const w = 120, h = 44, max = 40;
+  const d = pts.map((p, i) => `${(i / (pts.length - 1)) * w},${h - (p / max) * h}`);
+  const hrs = useCountUp(42, 1500);
+  return (
+    <Tile accent="purple" className="justify-between">
+      <Label accent="purple">ore studio · 7gg</Label>
+      <div>
+        <p className="font-display text-3xl font-bold text-white tabular-nums">{hrs}<span className="text-base font-normal text-white/40">h</span></p>
+        <svg viewBox={`0 0 ${w} ${h}`} className="mt-1 h-10 w-full" aria-hidden="true">
+          <polyline points={d.join(" ")} fill="none" stroke="#9D00FF" strokeWidth="2"
+            style={{ filter: "drop-shadow(0 0 5px rgba(157,0,255,.7))" }} />
+          <circle cx={w} cy={h - (pts[pts.length - 1] / max) * h} r="3" fill="#00E5FF" />
+        </svg>
+      </div>
+    </Tile>
+  );
+}
+
+function CtaTile() {
+  return (
+    <a href="#top" id="cta"
+      className="tile bracket glow-cyan group relative flex flex-col justify-between overflow-hidden border border-[#00E5FF]/40 bg-gradient-to-br from-[#00E5FF]/12 to-[#9D00FF]/12 p-5 text-[#00E5FF]">
+      <Label accent="cyan">get access</Label>
+      <div>
+        <p className="font-display text-2xl font-bold leading-tight text-white">Avvia il<br />tuo OS</p>
+        <span className="mt-3 inline-flex items-center gap-2 text-sm font-semibold t-cyan">
+          Inizia ora <IArrowUR className="h-4 w-4 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
+        </span>
+      </div>
+    </a>
+  );
+}
+
+/* ───────── App ───────── */
+function App() {
+  return (
+    <div id="top" className="relative min-h-screen bg-black">
+      {/* griglia cyber + glow di sfondo */}
+      <div aria-hidden="true" className="pointer-events-none fixed inset-0 -z-10">
+        <div className="absolute inset-0 opacity-[0.18]"
+          style={{ backgroundImage: "linear-gradient(rgba(255,255,255,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.06) 1px,transparent 1px)", backgroundSize: "46px 46px", maskImage: "radial-gradient(ellipse at 50% 0%, #000 40%, transparent 85%)" }} />
+        <div className="absolute -left-40 top-0 h-[30rem] w-[30rem] rounded-full bg-[#00E5FF]/10 blur-[140px]" />
+        <div className="absolute -right-40 top-40 h-[30rem] w-[30rem] rounded-full bg-[#9D00FF]/12 blur-[150px]" />
+      </div>
+
+      <TopBar />
+
+      <main className="mx-auto max-w-7xl px-5 py-10">
+        <div className="mb-8 flex items-end justify-between">
+          <p className="text-[0.7rem] uppercase tracking-[0.3em] text-white/40">// dashboard</p>
+          <p className="text-[0.7rem] uppercase tracking-[0.2em] text-white/30">bento · 11 moduli attivi</p>
+        </div>
+
+        <section id="grid" aria-label="Moduli dello Student OS"
+          className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4 lg:auto-rows-[190px]">
+          <HeroTile />
+          <ClockTile />
+          <StatusTile />
+          <MediaTile />
+          <CountdownTile />
+          <FocusTile />
+          <TimetableTile />
+          <AiTile />
+          <UniversalTile />
+          <SparkTile />
+          <CtaTile />
+        </section>
+      </main>
+
+      <footer className="border-t border-white/10">
+        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 px-5 py-6 text-[0.65rem] uppercase tracking-[0.22em] text-white/35 sm:flex-row">
+          <p>STUDENT//OS · built for every university</p>
+          <p className="flex items-center gap-2"><span className="pulse h-1.5 w-1.5 rounded-full bg-[#00E5FF]" /> system operational · 2030</p>
+        </div>
+      </footer>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+</script>
+</body>
+</html>

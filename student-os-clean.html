@@ -1,0 +1,409 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Student OS — Universal Student Operating System</title>
+<meta name="description" content="Student OS — un sistema operativo universale per la carriera universitaria. Interfaccia chiara e minimale." />
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: { sans: ['Inter', "system-ui", "sans-serif"] },
+        colors: { accent: "#4F46E5", canvas: "#F9FAFB" },
+      },
+    },
+  };
+</script>
+
+<style>
+  html { scroll-behavior: smooth; }
+  body { background: #F9FAFB; }
+  ::selection { background: #4F46E5; color: #fff; }
+
+  .tnum { font-variant-numeric: tabular-nums; }
+
+  /* Card minimale: bianca, bordo impercettibile, ombra morbidissima */
+  .card {
+    background: #fff;
+    border: 1px solid #ECEEF1;
+    box-shadow: 0 1px 2px rgba(16,24,40,.04), 0 1px 2px rgba(16,24,40,.03);
+    transition: box-shadow .2s ease, border-color .2s ease, transform .2s ease;
+  }
+  .card:hover {
+    border-color: #E2E5EA;
+    box-shadow: 0 8px 24px -8px rgba(16,24,40,.10), 0 2px 6px -2px rgba(16,24,40,.05);
+    transform: translateY(-2px);
+  }
+
+  *:focus-visible { outline: 2px solid #4F46E5; outline-offset: 2px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .card:hover { transform: none; }
+  }
+</style>
+</head>
+
+<body class="font-sans text-gray-900 antialiased">
+<div id="root"></div>
+
+<script type="text/babel" data-presets="react">
+const { useState, useEffect } = React;
+
+/* ───────── Icone inline (line, sottili) ───────── */
+const Svg = ({ children, className = "w-4 h-4", sw = 1.7, ...p }) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={sw}
+    strokeLinecap="round" strokeLinejoin="round" className={className} aria-hidden="true" {...p}>{children}</svg>
+);
+const ICap = (p) => <Svg {...p}><path d="M22 9 12 5 2 9l10 4 10-4z"/><path d="M6 11v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"/></Svg>;
+const IArrowUR = (p) => <Svg {...p}><path d="M7 17 17 7"/><path d="M8 7h9v9"/></Svg>;
+const IArrow = (p) => <Svg {...p}><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></Svg>;
+const ISpark = (p) => <Svg {...p}><path d="M12 3l1.8 5L19 9l-5.2 1L12 15l-1.8-5L5 9l5.2-1z"/></Svg>;
+const ILayers = (p) => <Svg {...p}><path d="m12 2 9 5-9 5-9-5z"/><path d="m3 12 9 5 9-5"/><path d="m3 17 9 5 9-5"/></Svg>;
+const ISend = (p) => <Svg {...p}><path d="m22 2-7 20-4-9-9-4z"/><path d="M22 2 11 13"/></Svg>;
+
+/* ───────── Helpers ───────── */
+const Label = ({ children }) => (
+  <p className="text-[0.7rem] font-semibold uppercase tracking-wider text-gray-400">{children}</p>
+);
+
+function Tile({ className = "", children }) {
+  return (
+    <section className={`card flex flex-col overflow-hidden rounded-xl p-5 ${className}`}>{children}</section>
+  );
+}
+
+function useCountUp(target, dur = 1300, decimals = 0) {
+  const [v, setV] = useState(0);
+  useEffect(() => {
+    let raf; const t0 = performance.now();
+    const tick = (now) => {
+      const t = Math.min(1, (now - t0) / dur);
+      setV(target * (1 - Math.pow(1 - t, 3)));
+      if (t < 1) raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [target, dur]);
+  return decimals ? v.toFixed(decimals) : Math.round(v);
+}
+
+/* ───────── Top bar ───────── */
+function TopBar() {
+  return (
+    <header className="sticky top-0 z-50 border-b border-gray-200 bg-canvas/85 backdrop-blur-md">
+      <nav aria-label="Principale" className="mx-auto flex max-w-7xl items-center justify-between px-5 py-3">
+        <a href="#top" className="flex items-center gap-2.5">
+          <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-gray-900 text-white">
+            <ICap className="h-4 w-4" />
+          </span>
+          <span className="text-[0.95rem] font-semibold tracking-tight text-gray-900">Student OS</span>
+        </a>
+        <div className="hidden items-center gap-7 text-sm text-gray-500 md:flex">
+          <a href="#grid" className="transition hover:text-gray-900">Moduli</a>
+          <a href="#grid" className="transition hover:text-gray-900">Atenei</a>
+          <a href="#grid" className="transition hover:text-gray-900">Docs</a>
+        </div>
+        <a href="#cta" className="flex items-center gap-1.5 rounded-lg bg-gray-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-gray-800">
+          Apri l'app <IArrowUR className="h-4 w-4" />
+        </a>
+      </nav>
+    </header>
+  );
+}
+
+/* ───────── Tiles ───────── */
+function HeroTile() {
+  return (
+    <Tile className="sm:col-span-2 lg:col-span-2 lg:row-span-2 justify-between min-h-[300px]">
+      <div>
+        <Label>Universal Student OS · v2.0</Label>
+        <h1 className="mt-4 text-5xl font-bold leading-[1.02] tracking-tight text-gray-900 sm:text-6xl">
+          Student OS
+        </h1>
+        <p className="mt-4 max-w-md text-[0.95rem] leading-relaxed text-gray-500">
+          Un posto solo per orari, appelli, libretto, note e focus.
+          Funziona con qualsiasi ateneo ed è sempre offline-first.
+        </p>
+      </div>
+      <div className="mt-6 flex flex-wrap items-center gap-3">
+        <a href="#cta" className="flex items-center gap-2 rounded-lg bg-gray-900 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-gray-800">
+          Apri l'app <IArrow className="h-4 w-4" />
+        </a>
+        <a href="#grid" className="rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50">
+          Esplora i moduli
+        </a>
+        <span className="ml-auto text-xs text-gray-400">12 moduli · nessun login</span>
+      </div>
+    </Tile>
+  );
+}
+
+function ClockTile() {
+  const [now, setNow] = useState(new Date());
+  useEffect(() => {
+    const id = setInterval(() => setNow(new Date()), 1000);
+    return () => clearInterval(id);
+  }, []);
+  const pad = (n) => String(n).padStart(2, "0");
+  const date = now.toLocaleDateString("it-IT", { weekday: "long", day: "2-digit", month: "long" });
+  return (
+    <Tile className="justify-between">
+      <Label>Ora locale</Label>
+      <div>
+        <p className="text-3xl font-semibold tracking-tight text-gray-900 tnum">
+          {pad(now.getHours())}:{pad(now.getMinutes())}<span className="text-gray-300">:{pad(now.getSeconds())}</span>
+        </p>
+        <p className="mt-1 text-sm capitalize text-gray-400">{date}</p>
+      </div>
+    </Tile>
+  );
+}
+
+function StatusTile() {
+  const lines = [["Sincronizzazione", "Attiva"], ["Cache", "Pronta"], ["Connessione", "Online"]];
+  return (
+    <Tile className="justify-between">
+      <Label>Sistema · 2.0.30</Label>
+      <ul className="space-y-2 text-sm">
+        {lines.map(([k, v]) => (
+          <li key={k} className="flex items-center justify-between">
+            <span className="text-gray-500">{k}</span>
+            <span className="flex items-center gap-1.5 font-medium text-gray-700">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />{v}
+            </span>
+          </li>
+        ))}
+      </ul>
+    </Tile>
+  );
+}
+
+function MediaTile() {
+  const media = useCountUp(28.4, 1300, 1);
+  const cfuPct = useCountUp(73, 1300);
+  const r = 30, c = 2 * Math.PI * r, frac = 28.4 / 30;
+  return (
+    <Tile className="sm:col-span-2 lg:col-span-2">
+      <Label>Carriera · libretto</Label>
+      <div className="mt-3 flex items-center gap-6">
+        <div className="relative h-[88px] w-[88px] shrink-0">
+          <svg viewBox="0 0 80 80" className="h-full w-full -rotate-90">
+            <circle cx="40" cy="40" r={r} fill="none" stroke="#F1F2F4" strokeWidth="7" />
+            <circle cx="40" cy="40" r={r} fill="none" stroke="#4F46E5" strokeWidth="7" strokeLinecap="round"
+              strokeDasharray={c} strokeDashoffset={c * (1 - frac)} />
+          </svg>
+          <div className="absolute inset-0 flex flex-col items-center justify-center">
+            <span className="text-2xl font-bold text-gray-900 tnum">{media}</span>
+            <span className="text-[0.6rem] uppercase tracking-wide text-gray-400">media</span>
+          </div>
+        </div>
+        <div className="flex-1">
+          <div className="flex items-end justify-between">
+            <span className="text-sm text-gray-500">CFU acquisiti</span>
+            <span className="text-sm font-semibold text-gray-900 tnum">132<span className="text-gray-400">/180</span></span>
+          </div>
+          <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-gray-100">
+            <div className="h-full rounded-full bg-accent transition-[width] duration-1000" style={{ width: cfuPct + "%" }} />
+          </div>
+          <p className="mt-3 text-lg font-semibold text-gray-900">
+            110<span className="text-accent">L</span> <span className="text-sm font-normal text-gray-400">base di laurea proiettata</span>
+          </p>
+        </div>
+      </div>
+    </Tile>
+  );
+}
+
+function CountdownTile() {
+  return (
+    <Tile className="justify-between">
+      <Label>Prossimo appello</Label>
+      <div>
+        <p className="text-6xl font-bold leading-none text-gray-900 tnum">03</p>
+        <p className="mt-1.5 text-sm text-gray-500">giorni · Reti</p>
+      </div>
+      <p className="text-xs text-gray-400">15.06 · 09:00 · Aula B2</p>
+    </Tile>
+  );
+}
+
+function FocusTile() {
+  const r = 26, c = 2 * Math.PI * r, frac = 0.62;
+  return (
+    <Tile className="items-center justify-center text-center">
+      <Label>Focus · pomodoro</Label>
+      <div className="relative mt-2 h-[92px] w-[92px]">
+        <svg viewBox="0 0 72 72" className="h-full w-full -rotate-90">
+          <circle cx="36" cy="36" r={r} fill="none" stroke="#F1F2F4" strokeWidth="6" />
+          <circle cx="36" cy="36" r={r} fill="none" stroke="#4F46E5" strokeWidth="6" strokeLinecap="round"
+            strokeDasharray={c} strokeDashoffset={c * (1 - frac)} />
+        </svg>
+        <div className="absolute inset-0 flex items-center justify-center">
+          <span className="text-xl font-semibold text-gray-900 tnum">15:24</span>
+        </div>
+      </div>
+    </Tile>
+  );
+}
+
+function TimetableTile() {
+  const rows = [
+    ["08:00", "Analisi II", "Aula A1", false],
+    ["10:00", "Reti", "Aula B2", true],
+    ["14:00", "Sistemi Operativi", "Lab 3", false],
+    ["16:00", "Algoritmi", "Aula C4", false],
+  ];
+  return (
+    <Tile className="sm:col-span-2 lg:col-span-2 lg:row-span-2">
+      <div className="flex items-center justify-between">
+        <Label>Oggi · orario unificato</Label>
+        <span className="text-xs text-gray-400">anni 1·2·3</span>
+      </div>
+      <ul className="mt-3 flex-1 divide-y divide-gray-100">
+        {rows.map(([time, name, room, live]) => (
+          <li key={name} className="flex items-center gap-4 py-3">
+            <span className="w-12 text-sm text-gray-400 tnum">{time}</span>
+            <span className={"h-9 w-1 rounded-full " + (live ? "bg-accent" : "bg-gray-100")} />
+            <span className="flex-1">
+              <span className="block text-sm font-medium text-gray-900">{name}</span>
+              <span className="block text-xs text-gray-400">{room}</span>
+            </span>
+            {live && (
+              <span className="rounded-md bg-accent/10 px-2 py-0.5 text-xs font-medium text-accent">in corso</span>
+            )}
+          </li>
+        ))}
+      </ul>
+    </Tile>
+  );
+}
+
+function AiTile() {
+  return (
+    <Tile className="sm:col-span-2 lg:col-span-2 justify-between">
+      <Label>Assistente AI</Label>
+      <div className="mt-3 space-y-2.5">
+        <p className="text-sm text-gray-500">Quando dovrei iniziare a studiare Reti?</p>
+        <p className="text-sm leading-relaxed text-gray-800">
+          Ti consiglio circa <span className="font-semibold text-gray-900">6 ore al giorno</span> da oggi:
+          la probabilità di superare con 28+ sale all'<span className="font-semibold text-accent">82%</span>.
+        </p>
+      </div>
+      <div className="mt-4 flex items-center gap-2">
+        <div className="flex flex-1 items-center gap-2 rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-400">
+          Chiedi all'assistente…
+        </div>
+        <button type="button" aria-label="Invia" className="flex h-9 w-9 items-center justify-center rounded-lg bg-gray-900 text-white transition hover:bg-gray-800">
+          <ISend className="h-4 w-4" />
+        </button>
+      </div>
+    </Tile>
+  );
+}
+
+function UniversalTile() {
+  const tags = ["Esse3", "iCal / ICS", "EasyAcademy", "Delphi", "WordPress", "Scraper"];
+  return (
+    <Tile className="sm:col-span-2 lg:col-span-2 justify-between">
+      <Label>Adapter engine · funziona ovunque</Label>
+      <div className="mt-3 flex flex-wrap gap-2">
+        {tags.map((t) => (
+          <span key={t} className="flex items-center gap-1.5 rounded-md border border-gray-200 bg-gray-50 px-2.5 py-1.5 text-xs font-medium text-gray-600">
+            <ILayers className="h-3.5 w-3.5 text-gray-400" /> {t}
+          </span>
+        ))}
+      </div>
+      <p className="mt-4 text-xl font-semibold text-gray-900">1 OS · ∞ atenei</p>
+    </Tile>
+  );
+}
+
+function SparkTile() {
+  const pts = [18, 14, 22, 16, 28, 24, 34, 30, 40];
+  const w = 120, h = 44, max = 40;
+  const d = pts.map((p, i) => `${(i / (pts.length - 1)) * w},${h - (p / max) * h}`);
+  const hrs = useCountUp(42, 1300);
+  return (
+    <Tile className="justify-between">
+      <Label>Ore di studio · 7 giorni</Label>
+      <div>
+        <p className="text-3xl font-bold text-gray-900 tnum">{hrs}<span className="text-base font-medium text-gray-400">h</span></p>
+        <svg viewBox={`0 0 ${w} ${h}`} className="mt-1 h-10 w-full" aria-hidden="true">
+          <polyline points={d.join(" ")} fill="none" stroke="#4F46E5" strokeWidth="2" />
+          <circle cx={w} cy={h - (pts[pts.length - 1] / max) * h} r="3" fill="#4F46E5" />
+        </svg>
+      </div>
+    </Tile>
+  );
+}
+
+function CtaTile() {
+  return (
+    <a href="#top" id="cta" className="card flex flex-col justify-between rounded-xl p-5">
+      <Label>Inizia</Label>
+      <div>
+        <p className="text-xl font-bold leading-tight text-gray-900">Avvia il<br />tuo OS</p>
+        <span className="mt-3 inline-flex items-center gap-1.5 rounded-lg bg-gray-900 px-3.5 py-2 text-sm font-medium text-white">
+          Inizia ora <IArrowUR className="h-4 w-4" />
+        </span>
+      </div>
+    </a>
+  );
+}
+
+/* ───────── App ───────── */
+function App() {
+  return (
+    <div id="top" className="min-h-screen bg-canvas">
+      <TopBar />
+      <main className="mx-auto max-w-7xl px-5 py-10">
+        <div className="mb-7 flex items-end justify-between">
+          <div>
+            <h2 className="text-xl font-semibold tracking-tight text-gray-900">Dashboard</h2>
+            <p className="mt-0.5 text-sm text-gray-400">Tutto sotto controllo, in un colpo d'occhio.</p>
+          </div>
+          <p className="hidden text-sm text-gray-400 sm:block">11 moduli attivi</p>
+        </div>
+
+        <section id="grid" aria-label="Moduli dello Student OS"
+          className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:auto-rows-[190px]">
+          <HeroTile />
+          <ClockTile />
+          <StatusTile />
+          <MediaTile />
+          <CountdownTile />
+          <FocusTile />
+          <TimetableTile />
+          <AiTile />
+          <UniversalTile />
+          <SparkTile />
+          <CtaTile />
+        </section>
+      </main>
+
+      <footer className="border-t border-gray-200">
+        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-2 px-5 py-6 text-sm text-gray-400 sm:flex-row">
+          <p>Student OS · pensato per ogni università</p>
+          <p className="flex items-center gap-2"><span className="h-1.5 w-1.5 rounded-full bg-emerald-500" /> Sistema operativo</p>
+        </div>
+      </footer>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+</script>
+</body>
+</html>

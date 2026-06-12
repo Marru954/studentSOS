@@ -1,0 +1,115 @@
+6/12/26, 11:45 PM	Portale Università degli Studi di Roma “Tor Vergata” - Gli Studenti
+LOGOUT
+Versione: 18_9
+Studente: NOME COGNOME
+Matricola: 0000000
+Corso di Laurea: INFORMATICA
+(*)
+N.	Riconosciuto	CreditiVoto	VERB.
+N. Esame	SSD	AA	Data	CreditiVoto	Note	Tipo	AA Orig.	Data Orig.
+verbale Da	Orig. Orig.	ORIG.
+Attività
+8067803
+PROGRAMMAZIONE	SMFN-
+1	INF/01 2024/202520/01/20259.0	RESPINTO
+DEI CALCOLATORI	0044337
+CON LABORATORIO
+8066820 LOGICA E	SMFN-
+2	INF/01 2024/202504/02/20256.0	RITIRATO
+RETI LOGICHE	0044544
+8067803
+PROGRAMMAZIONE	SMFN-
+3	INF/01 2024/202518/02/20259.0	RESPINTO
+DEI CALCOLATORI	0045005
+CON LABORATORIO
+8066820 LOGICA E	SMFN-
+4	INF/01 2024/202520/02/20256.0	24/30
+RETI LOGICHE	0044828
+8065619
+SMFN-
+5 MATEMATICA	MAT/022024/202525/02/20259.0	22/30
+0045221
+DISCRETA
+8067569 LINGUA
+L-	SMFN-
+6 INGLESE (LIVELLO	2024/202509/06/20253.0	IDONEO
+LIN/12	0045465
+B2)
+8066492
+ARCHITETTURA DEI ING-	SMFN-
+7	2024/202516/06/20256.0	RESPINTO
+SISTEMI DI	INF/05	0045550
+ELABORAZIONE
+8067803
+PROGRAMMAZIONE	SMFN-
+8	INF/01 2024/202523/06/20259.0	RITIRATO
+DEI CALCOLATORI	0045789
+CON LABORATORIO
+8067803
+PROGRAMMAZIONE	SMFN-
+9	INF/01 2024/202515/07/20259.0	RESPINTO
+DEI CALCOLATORI	0046139
+CON LABORATORIO
+8066492
+ARCHITETTURA DEI ING-	SMFN-
+10	2024/202517/07/20256.0	21/30
+SISTEMI DI	INF/05	0046040
+ELABORAZIONE
+8066481 ALTRE	ALTRE
+ATTIVITA'	ATTIVITA'
+11	---	---	23/07/20251.0	IDONEO	---	2024/20251	IDONEO23/07/2025
+FORMATIVE DI TIPO	FORMATIVE
+D	DI TIPO D
+8067803
+PROGRAMMAZIONE	SMFN-
+12	INF/01 2024/202509/09/20259.0	RESPINTO
+DEI CALCOLATORI	0046495
+CON LABORATORIO
+8064009
+SMFN-
+13GEOMETRIA ED	MAT/032024/202526/09/20256.0	RESPINTO
+0046734
+ALGEBRA
+8067803
+PROGRAMMAZIONE	SMFN-
+14	INF/01 2024/202527/09/20259.0	18/30
+DEI CALCOLATORI	0046769
+CON LABORATORIO
+8063957 ANALISI	SMFN-
+15	MAT/052025/202621/01/20269.0	RESPINTO
+MATEMATICA	0047687
+8065454 (AAS) TIPO
+16	---	2024/202528/01/20262.0	IDONEO	---
+D
+8063957 ANALISI	SMFN-
+17	MAT/052025/202616/02/20269.0	19/30
+MATEMATICA	0047698
+https://delphi.uniroma2.it/totem/jsp/Iscrizioni/esamiVerbalizzati.jsp	1/2
+6/12/26, 11:45 PM	Portale Università degli Studi di Roma “Tor Vergata” - Gli Studenti
+8065624 RICERCA	SMFN-
+18	MAT/092025/202619/05/20266.0	23/30
+OPERATIVA	0048400
+RENDIMENTO
+Esami validi: 6
+CFU Esami validi: 45.0
+Idoneità: 3
+CFU Idoneità: 6.0
+Media aritmetica: 21.17
+Media ponderata: 20.87
+Sono visibili soltanto gli esami i cui verbali sono stati consegnati in Segreteria Studenti ed inseriti nel sistema.
+Non sono ancora visibili, a volte, gli esami di cui si è chiesto il riconoscimento e/o la convalida al Consiglio del Corso di Studi.
+(*) Tipo Attività
+Ogni materia/insegnamento ha una caratteristica legata alla sua funzione formativa. Tale caratteristica (tipo attività formativa) è evidenziata associando a ogni
+materia le lettere A,B,C,D,E,F.
+Ci sono sei tipologie di attività formative:
+1. A: indica le attività di base, sono le materie/insegnamenti i cui contenuti sono fondamentali per affrontare quello specifico corso di studi;
+2. B: indica le attività caratterizzanti sono le materie/insegnamenti i cui contenuti riguardano in maniera molto specifica - "caratterizzante", appunto - il corso di
+studi;
+3. C: indica le attività affini o integrative sono le materie/insegnamenti i cui contenuti approfondiscono e allargano ulteriormente i saperi trasmessi nel corso di
+studi;
+4. D: indica le attività a scelta libera dello studente, sono le materie/insegnamenti attivi in tutti i Corsi di studio dell'Ateneo e che possono essere scelti per
+integrare il percorso;
+5. E: indica le attività di preparazione della prova finale e conoscenza lingua straniera;
+6. F: indica le attività pratiche.
+Indietro
+https://delphi.uniroma2.it/totem/jsp/Iscrizioni/esamiVerbalizzati.jsp	2/2

@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Calm Productivity mark: midnight ground, indigo→violet bento cell. -->
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#6366f1"/>
+      <stop offset="1" stop-color="#8b5cf6"/>
+    </linearGradient>
+  </defs>
+  <rect width="32" height="32" rx="8" fill="#11142e"/>
+  <rect x="5" y="5" width="13" height="9" rx="3" fill="url(#g)"/>
+  <rect x="20" y="5" width="7" height="9" rx="3" fill="#262a55"/>
+  <rect x="5" y="16" width="7" height="11" rx="3" fill="#262a55"/>
+  <rect x="14" y="16" width="13" height="11" rx="3" fill="#262a55"/>
+</svg>

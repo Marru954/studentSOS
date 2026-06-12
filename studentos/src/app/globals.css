@@ -1,0 +1,218 @@
+@import "tailwindcss";
+
+/* ── "Clean" design tokens ─────────────────────────────────────────────────
+   Light, minimal, Notion-flavoured. Flat near-white ground, white cards with
+   imperceptible borders and very soft shadows, a single restrained slate-blue
+   accent. Inter everywhere (data uses tabular-nums, not a monospace face). */
+@theme {
+  /* surfaces — kept under the legacy `night-*` names so every existing class
+     re-skins in place. In the light theme the scale reads: 950 = light grey
+     wells, 900 = app ground, 800 = white cards, 700 = hover grey. */
+  --color-night-950: #f1f2f4; /* wells, code blocks, inset chips */
+  --color-night-900: #f9fafb; /* app ground */
+  --color-night-800: #ffffff; /* cards */
+  --color-night-700: #f3f4f6; /* hover surfaces */
+  --color-line: #eceef1; /* hairline borders (now solid) */
+  --color-line-strong: #dde0e5;
+
+  /* ink */
+  --color-ink: #111827;
+  --color-ink-mute: #6b7280; /* secondary text — 4.9:1 on white */
+  --color-ink-faint: #9ca3af; /* large or non-essential text only */
+
+  /* accent — calm slate-blue, used sparingly */
+  --color-signal: #5a6b9e;
+  --color-signal-dim: rgba(90, 107, 158, 0.12);
+
+  /* status — tuned for AA as text on white */
+  --color-warn: #b45309;
+  --color-warn-dim: rgba(180, 83, 9, 0.12);
+  --color-danger: #c81e1e;
+  --color-danger-dim: rgba(200, 30, 30, 0.1);
+  --color-ok: #15803d;
+  --color-ok-dim: rgba(21, 128, 61, 0.12);
+
+  --font-sans: var(--font-inter), system-ui, sans-serif;
+  /* no monospace face — data stays Inter with tabular figures */
+  --font-mono: var(--font-inter), system-ui, sans-serif;
+
+  /* small section/field label */
+  --text-label: 0.72rem;
+  --text-label--line-height: 1.1rem;
+  --text-label--letter-spacing: 0.01em;
+
+  /* squarer, Notion-like radii */
+  --radius-xs: 0.375rem;
+  --radius-sm: 0.5rem;
+  --radius-md: 0.625rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 0.875rem;
+}
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  body {
+    background: var(--color-night-900);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+  }
+
+  /* every number in the OS lines up in columns */
+  .font-mono {
+    font-variant-numeric: tabular-nums;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    text-wrap: balance;
+  }
+
+  p,
+  li,
+  dd {
+    text-wrap: pretty;
+  }
+
+  ::selection {
+    background: var(--color-signal);
+    color: #fff;
+  }
+
+  /* one focus treatment, everywhere, always visible */
+  :focus-visible {
+    outline: 2px solid var(--color-signal);
+    outline-offset: 2px;
+    border-radius: var(--radius-xs);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer components {
+  /* card surface — now a plain white panel (kept named `.glass` so existing
+     markup re-skins without edits) */
+  .glass {
+    background: var(--color-night-800);
+  }
+
+  /* primary action — solid dark (Notion-style), not a gradient */
+  .bg-primary-gradient {
+    background: var(--color-ink);
+  }
+
+  /* very soft, flat card shadow + optional hover lift */
+  .shadow-soft {
+    box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04), 0 1px 2px rgba(16, 24, 40, 0.03);
+  }
+  .shadow-soft-hover {
+    transition: box-shadow 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
+  }
+  .shadow-soft-hover:hover {
+    box-shadow: 0 8px 24px -10px rgba(16, 24, 40, 0.12);
+    transform: translateY(-2px);
+  }
+
+  /* ── note prose: rendered Markdown inside the knowledge base ───────────── */
+  .note-prose {
+    font-size: 0.9375rem;
+    line-height: 1.65;
+    color: var(--color-ink);
+  }
+  .note-prose > * + * {
+    margin-top: 0.75em;
+  }
+  .note-prose h2,
+  .note-prose h3,
+  .note-prose h4,
+  .note-prose h5 {
+    margin-top: 1.4em;
+    font-weight: 600;
+    line-height: 1.25;
+  }
+  .note-prose h2 { font-size: 1.25rem; }
+  .note-prose h3 { font-size: 1.125rem; }
+  .note-prose h4 { font-size: 1rem; }
+  .note-prose a {
+    color: var(--color-signal);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .note-prose ul { list-style: disc; padding-inline-start: 1.4em; }
+  .note-prose ol { list-style: decimal; padding-inline-start: 1.4em; }
+  .note-prose li + li { margin-top: 0.25em; }
+  .note-prose blockquote {
+    border-inline-start: 2px solid var(--color-line-strong);
+    padding-inline-start: 0.85em;
+    color: var(--color-ink-mute);
+  }
+  .note-prose code {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    background: var(--color-night-950);
+    border-radius: var(--radius-xs);
+    padding: 0.1em 0.35em;
+  }
+  .note-prose pre {
+    background: var(--color-night-950);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-sm);
+    padding: 0.75rem;
+    overflow-x: auto;
+  }
+  .note-prose pre code {
+    background: none;
+    padding: 0;
+    font-size: 0.8125rem;
+    line-height: 1.55;
+  }
+  .note-prose table { width: 100%; font-size: 0.875rem; }
+  .note-prose th,
+  .note-prose td {
+    border: 1px solid var(--color-line);
+    padding: 0.35rem 0.6rem;
+    text-align: left;
+  }
+  .note-prose hr { border-color: var(--color-line); }
+  .note-prose .katex-display {
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-block: 0.25rem;
+  }
+
+  /* highlight.js theme — tuned for the light code wells */
+  .hljs-comment,
+  .hljs-quote { color: var(--color-ink-mute); font-style: italic; }
+  .hljs-keyword,
+  .hljs-selector-tag,
+  .hljs-built_in,
+  .hljs-tag { color: var(--color-signal); }
+  .hljs-string,
+  .hljs-addition,
+  .hljs-regexp { color: var(--color-ok); }
+  .hljs-number,
+  .hljs-literal,
+  .hljs-attr,
+  .hljs-attribute,
+  .hljs-meta,
+  .hljs-symbol { color: var(--color-warn); }
+  .hljs-title,
+  .hljs-name,
+  .hljs-section { color: var(--color-ink); font-weight: 500; }
+  .hljs-deletion { color: var(--color-danger); }
+  .hljs-emphasis { font-style: italic; }
+  .hljs-strong { font-weight: 600; }
+}

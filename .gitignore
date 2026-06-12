@@ -1,0 +1,39 @@
+# Monorepo workspace: studentos/ (Next.js) + uniportal/ (Express+Vite) + HTML mockups.
+# Patterns without a leading slash match at any depth, so they cover both projects.
+
+# dependencies
+node_modules/
+.pnp
+.pnp.*
+
+# builds / generated output
+.next/
+out/
+dist/
+build/
+*.tsbuildinfo
+
+# testing
+coverage/
+
+# environment & secrets (keep the example, drop real values and keys)
+.env
+.env.*
+!.env.example
+*.pem
+
+# logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# os / editor
+.DS_Store
+
+# deploy
+.vercel
+
+# local agent/session config
+.claude/
