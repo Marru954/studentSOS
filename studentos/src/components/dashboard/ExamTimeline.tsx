@@ -151,66 +151,60 @@ export function ExamTimeline({
             </ul>
           )}
 
-          <div
-            className={
-              expanded ? "max-h-[420px] overflow-y-auto" : undefined
-            }
-          >
-            <ul className="flex flex-col divide-y divide-line">
-              {visible.map((g) => {
-                const days = daysFromToday(g.nearest.date, now);
-                const bookingDays = g.nearest.booking?.closesAt
-                  ? daysFromToday(g.nearest.booking.closesAt, now)
-                  : undefined;
-                const datesOpen = openDates.has(g.course);
-                return (
-                  <li key={g.course} className="flex items-start gap-3 py-3">
-                    <Badge
-                      tone={TONE[tierOf(days)]}
-                      className="mt-0.5 w-24 shrink-0 justify-center"
-                    >
-                      {relLabel(days)}
-                    </Badge>
-                    <div className="min-w-0 flex-1">
-                      <p className="text-sm font-medium text-ink">{g.course}</p>
-                      <p className="text-xs text-ink-mute">{metaLine(g.nearest)}</p>
-                      {bookingDays !== undefined &&
-                        bookingDays >= 0 &&
-                        bookingDays <= 14 && (
-                          <p className="mt-1 text-xs text-warn">
-                            Iscrizione entro il{" "}
-                            {fmtPlainDayMonth(g.nearest.booking!.closesAt!)}
-                          </p>
-                        )}
-                      {g.extra.length > 0 && (
-                        <>
-                          <button
-                            type="button"
-                            onClick={() => toggleDates(g.course)}
-                            className="mt-1 text-xs font-medium text-signal hover:underline"
-                          >
-                            {datesOpen
-                              ? "Nascondi date"
-                              : `+${g.extra.length} altre date`}
-                          </button>
-                          {datesOpen && (
-                            <ul className="mt-1 flex flex-col gap-0.5 border-l border-line pl-3">
-                              {g.extra.map((x) => (
-                                <li key={x.id} className="text-xs text-ink-mute">
-                                  {relLabel(daysFromToday(x.date, now))} ·{" "}
-                                  {metaLine(x)}
-                                </li>
-                              ))}
-                            </ul>
-                          )}
-                        </>
+          <ul className="flex flex-col divide-y divide-line">
+            {visible.map((g) => {
+              const days = daysFromToday(g.nearest.date, now);
+              const bookingDays = g.nearest.booking?.closesAt
+                ? daysFromToday(g.nearest.booking.closesAt, now)
+                : undefined;
+              const datesOpen = openDates.has(g.course);
+              return (
+                <li key={g.course} className="flex items-start gap-3 py-3">
+                  <Badge
+                    tone={TONE[tierOf(days)]}
+                    className="mt-0.5 w-24 shrink-0 justify-center"
+                  >
+                    {relLabel(days)}
+                  </Badge>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-medium text-ink">{g.course}</p>
+                    <p className="text-xs text-ink-mute">{metaLine(g.nearest)}</p>
+                    {bookingDays !== undefined &&
+                      bookingDays >= 0 &&
+                      bookingDays <= 14 && (
+                        <p className="mt-1 text-xs text-warn">
+                          Iscrizione entro il{" "}
+                          {fmtPlainDayMonth(g.nearest.booking!.closesAt!)}
+                        </p>
                       )}
-                    </div>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
+                    {g.extra.length > 0 && (
+                      <>
+                        <button
+                          type="button"
+                          onClick={() => toggleDates(g.course)}
+                          className="mt-1 text-xs font-medium text-signal hover:underline"
+                        >
+                          {datesOpen
+                            ? "Nascondi date"
+                            : `+${g.extra.length} altre date`}
+                        </button>
+                        {datesOpen && (
+                          <ul className="mt-1 flex flex-col gap-0.5 border-l border-line pl-3">
+                            {g.extra.map((x) => (
+                              <li key={x.id} className="text-xs text-ink-mute">
+                                {relLabel(daysFromToday(x.date, now))} ·{" "}
+                                {metaLine(x)}
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                      </>
+                    )}
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
 
           {groups.length > COMPACT && (
             <button
