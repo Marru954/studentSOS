@@ -3,7 +3,7 @@ import { cn } from "@/lib/cn";
 interface StatProps {
   label: string;
   /** Pre-formatted value — formatting decisions stay with the caller. */
-  value: string;
+  value: React.ReactNode;
   unit?: string;
   /** Secondary reading under the value (e.g. "su 180 CFU"). */
   hint?: React.ReactNode;

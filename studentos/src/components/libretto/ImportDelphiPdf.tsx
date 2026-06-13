@@ -177,7 +177,23 @@ export function ImportDelphiPdf() {
         </p>
       )}
       {done && (
-        <p role="status" className="text-xs font-medium text-ok">
+        <p role="status" className="flex items-center gap-1.5 text-xs font-medium text-ok">
+          <svg
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+            className="check-pop size-4 shrink-0"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={2.5}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path
+              className="check-draw"
+              style={{ ["--check-len" as string]: "22px" }}
+              d="M5 13l4 4L19 7"
+            />
+          </svg>
           {done}
         </p>
       )}
@@ -211,12 +227,12 @@ export function ImportDelphiPdf() {
             </div>
           </div>
 
-          <ul className="max-h-72 divide-y divide-line overflow-y-auto">
+          <ul className="stagger-children max-h-72 divide-y divide-line overflow-y-auto">
             {result.entries.map((en) => {
               const checked = selected.has(en.id);
               return (
                 <li key={en.id}>
-                  <label className="flex cursor-pointer items-center gap-3 px-3 py-2 hover:bg-night-900">
+                  <label className="flex cursor-pointer items-center gap-3 px-3 py-2 transition-colors hover:bg-night-900">
                     <input
                       type="checkbox"
                       checked={checked}

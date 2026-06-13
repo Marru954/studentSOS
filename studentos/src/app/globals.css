@@ -5,59 +5,116 @@
    imperceptible borders and very soft shadows, a single restrained slate-blue
    accent. Inter everywhere (data uses tabular-nums, not a monospace face). */
 @theme {
-  /* surfaces — kept under the legacy `night-*` names so every existing class
-     re-skins in place. In the light theme the scale reads: 950 = light grey
-     wells, 900 = app ground, 800 = white cards, 700 = hover grey. */
-  --color-night-950: #f1f2f4; /* wells, code blocks, inset chips */
-  --color-night-900: #f9fafb; /* app ground */
-  --color-night-800: #ffffff; /* cards */
-  --color-night-700: #f3f4f6; /* hover surfaces */
-  --color-line: #eceef1; /* hairline borders (now solid) */
-  --color-line-strong: #dde0e5;
+  /* surfaces — legacy `night-*` names remap onto the immersive palette below,
+     so every existing utility re-skins in place and follows [data-theme]. */
+  --color-night-950: var(--bg-2); /* wells, code blocks, inset chips */
+  --color-night-900: var(--bg); /* app ground */
+  --color-night-800: var(--surface); /* cards / inputs */
+  --color-night-700: var(--hover); /* hover surfaces */
+  --color-line: var(--hairline);
+  --color-line-strong: var(--hairline-strong);
 
   /* ink */
-  --color-ink: #111827;
-  --color-ink-mute: #6b7280; /* secondary text — 4.9:1 on white */
-  --color-ink-faint: #9ca3af; /* large or non-essential text only */
+  --color-ink: var(--ink);
+  --color-ink-mute: var(--ink-mute);
+  --color-ink-faint: var(--ink-faint);
 
-  /* accent — calm slate-blue, used sparingly */
-  --color-signal: #5a6b9e;
-  --color-signal-dim: rgba(90, 107, 158, 0.12);
+  /* accent — indigo→violet signal */
+  --color-signal: var(--signal);
+  --color-signal-dim: var(--signal-dim);
 
-  /* status — tuned for AA as text on white */
-  --color-warn: #b45309;
-  --color-warn-dim: rgba(180, 83, 9, 0.12);
-  --color-danger: #c81e1e;
-  --color-danger-dim: rgba(200, 30, 30, 0.1);
-  --color-ok: #15803d;
-  --color-ok-dim: rgba(21, 128, 61, 0.12);
+  /* status */
+  --color-warn: var(--warn);
+  --color-warn-dim: color-mix(in oklch, var(--warn) 16%, transparent);
+  --color-danger: var(--danger);
+  --color-danger-dim: color-mix(in oklch, var(--danger) 16%, transparent);
+  --color-ok: var(--ok);
+  --color-ok-dim: color-mix(in oklch, var(--ok) 16%, transparent);
 
   --font-sans: var(--font-inter), system-ui, sans-serif;
   /* no monospace face — data stays Inter with tabular figures */
   --font-mono: var(--font-inter), system-ui, sans-serif;
+  /* display face for headings */
+  --font-display: var(--font-bricolage), var(--font-inter), system-ui, sans-serif;
 
   /* small section/field label */
   --text-label: 0.72rem;
   --text-label--line-height: 1.1rem;
   --text-label--letter-spacing: 0.01em;
 
-  /* squarer, Notion-like radii */
-  --radius-xs: 0.375rem;
-  --radius-sm: 0.5rem;
-  --radius-md: 0.625rem;
-  --radius-lg: 0.75rem;
-  --radius-xl: 0.875rem;
+  /* immersive radii — softer, larger */
+  --radius-xs: 0.5rem;
+  --radius-sm: 0.625rem;
+  --radius-md: 1rem;
+  --radius-lg: 1.5rem;
+  --radius-xl: 2rem;
+}
+
+/* ── Immersive theme variables — dark by default, light alternate ──────────── */
+:root,
+[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #0c0b14;
+  --bg-2: #110f1d;
+  --ink: #f3f2fb;
+  --ink-mute: #a9a7c4;
+  --ink-faint: #6f6d8c;
+  --surface: rgba(255, 255, 255, 0.07);
+  --hover: rgba(255, 255, 255, 0.12);
+  --hairline: rgba(255, 255, 255, 0.09);
+  --hairline-strong: rgba(255, 255, 255, 0.16);
+  --signal: #6d6bff;
+  --signal-2: #a78bfa;
+  --signal-3: #38bdf8;
+  --signal-dim: rgba(109, 107, 255, 0.18);
+  --glow-1: rgba(109, 107, 255, 0.55);
+  --glow-2: rgba(167, 139, 250, 0.45);
+  --glow-3: rgba(56, 189, 248, 0.32);
+  --shadow: 0 2px 6px rgba(0, 0, 0, 0.4), 0 18px 50px -16px rgba(0, 0, 0, 0.7);
+  --ok: #4ade80;
+  --warn: #fbbf24;
+  --danger: #fb7185;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+[data-theme="light"] {
+  color-scheme: light;
+  --bg: #f4f3fb;
+  --bg-2: #eceaf9;
+  --ink: #15131f;
+  --ink-mute: #5c596f;
+  --ink-faint: #9794ac;
+  --surface: rgba(255, 255, 255, 0.9);
+  --hover: rgba(20, 16, 45, 0.05);
+  --hairline: rgba(20, 16, 45, 0.08);
+  --hairline-strong: rgba(20, 16, 45, 0.14);
+  --signal: #6d6bff;
+  --signal-2: #a78bfa;
+  --signal-3: #38bdf8;
+  --signal-dim: rgba(109, 107, 255, 0.12);
+  --glow-1: rgba(109, 107, 255, 0.3);
+  --glow-2: rgba(167, 139, 250, 0.28);
+  --glow-3: rgba(56, 189, 248, 0.22);
+  --shadow: 0 2px 8px rgba(60, 50, 120, 0.06), 0 20px 50px -20px rgba(60, 50, 120, 0.22);
+  --ok: #16a34a;
+  --warn: #d97706;
+  --danger: #e11d48;
 }
 
 @layer base {
   :root {
-    color-scheme: light;
+    /* color-scheme is set per [data-theme] in the immersive blocks above */
   }
 
   body {
-    background: var(--color-night-900);
-    color: var(--color-ink);
+    background: var(--bg);
+    color: var(--ink);
     font-family: var(--font-sans);
+    line-height: 1.6; /* roomier default reading rhythm */
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+    transition:
+      background-color 0.5s var(--ease),
+      color 0.4s var(--ease);
   }
 
   /* every number in the OS lines up in columns */
@@ -69,7 +126,11 @@
   h2,
   h3,
   h4 {
+    font-family: var(--font-display);
+    font-weight: 700;
     text-wrap: balance;
+    letter-spacing: -0.02em; /* tighter, more deliberate display headings */
+    line-height: 1.14;
   }
 
   p,
@@ -106,24 +167,116 @@
   /* card surface — now a plain white panel (kept named `.glass` so existing
      markup re-skins without edits) */
   .glass {
-    background: var(--color-night-800);
+    background: var(--surface);
+    backdrop-filter: blur(20px) saturate(1.4);
+    -webkit-backdrop-filter: blur(20px) saturate(1.4);
+    border: 1px solid var(--hairline);
+  }
+  .glass-2 {
+    background: var(--hover);
   }
 
-  /* primary action — solid dark (Notion-style), not a gradient */
+  /* hover lift for interactive surfaces */
+  .lift {
+    transition:
+      transform 0.4s var(--ease),
+      box-shadow 0.4s var(--ease),
+      border-color 0.4s var(--ease);
+  }
+  .lift:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow);
+    border-color: var(--hairline-strong);
+  }
+
+  /* gradient text + fills */
+  .grad-text {
+    background: linear-gradient(
+      115deg,
+      var(--signal) 0%,
+      var(--signal-2) 45%,
+      var(--signal-3) 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+
+  /* primary action — indigo→violet gradient */
   .bg-primary-gradient {
-    background: var(--color-ink);
+    background: linear-gradient(125deg, var(--signal) 0%, var(--signal-2) 100%);
   }
 
-  /* very soft, flat card shadow + optional hover lift */
+  /* multi-layer soft shadow for depth + optional hover lift */
   .shadow-soft {
-    box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04), 0 1px 2px rgba(16, 24, 40, 0.03);
+    box-shadow: var(--shadow);
   }
   .shadow-soft-hover {
     transition: box-shadow 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
   }
   .shadow-soft-hover:hover {
-    box-shadow: 0 8px 24px -10px rgba(16, 24, 40, 0.12);
+    box-shadow: var(--shadow);
     transform: translateY(-2px);
+    border-color: var(--hairline-strong);
+  }
+
+  /* coloured glow under primary buttons */
+  .shadow-accent {
+    box-shadow: 0 8px 26px -8px var(--glow-1);
+    transition: box-shadow 0.2s ease, filter 0.15s ease;
+  }
+  .shadow-accent:hover {
+    box-shadow: 0 14px 36px -8px var(--glow-1);
+  }
+
+  /* animated text-link underline (wipes in from the left on hover) */
+  .link-underline {
+    background-image: linear-gradient(currentColor, currentColor);
+    background-size: 0% 1px;
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    transition: background-size 0.25s ease;
+  }
+  .link-underline:hover,
+  .link-underline:focus-visible {
+    background-size: 100% 1px;
+  }
+
+  /* landing atmosphere — subtle tints instead of flat grey */
+  .section-tint {
+    background: linear-gradient(
+      180deg,
+      transparent 0%,
+      color-mix(in oklch, var(--signal) 7%, transparent) 100%
+    );
+  }
+  .hero-glow {
+    background: radial-gradient(
+      55% 55% at 50% 0%,
+      var(--glow-1) 0%,
+      var(--glow-2) 40%,
+      transparent 72%
+    );
+    opacity: 0.6;
+  }
+  .divider-gradient {
+    height: 1px;
+    border: 0;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      var(--hairline-strong),
+      transparent
+    );
+  }
+
+  /* scatter points grow a touch on hover for the tooltip target */
+  .scatter-dot {
+    transition: r 0.12s ease;
+  }
+  .scatter-dot:hover {
+    r: 5.5;
   }
 
   /* ── note prose: rendered Markdown inside the knowledge base ───────────── */
@@ -230,4 +383,177 @@
 @media (prefers-reduced-motion: no-preference) {
   .overlay-in { animation: overlay-in 0.15s ease-out; }
   .dialog-in { animation: dialog-in 0.2s cubic-bezier(0.22, 1, 0.36, 1); }
+}
+
+/* ── Motion system ─────────────────────────────────────────────────────────
+   Subtle, fast entrances + interactions. The global prefers-reduced-motion
+   reset above neutralises every animation/transition, so these are safe. */
+
+@keyframes enter-up {
+  from { opacity: 0; transform: translateY(20px); }
+}
+@keyframes enter-left {
+  from { opacity: 0; transform: translateX(-18px); }
+}
+@keyframes dot-in {
+  from { opacity: 0; transform: scale(0); }
+}
+@keyframes draw-line {
+  from { stroke-dashoffset: 1; }
+}
+@keyframes ring-fill {
+  from { stroke-dashoffset: var(--ring-circ); }
+}
+@keyframes check-draw {
+  from { stroke-dashoffset: var(--check-len); }
+}
+@keyframes pop-in {
+  0% { opacity: 0; transform: scale(0.6); }
+  60% { transform: scale(1.08); }
+  100% { opacity: 1; transform: scale(1); }
+}
+@keyframes pulse-soft {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.06); }
+}
+
+/* page + element entrances */
+.anim-page { animation: enter-up 0.3s ease-out both; }
+.enter-up { animation: enter-up 0.3s ease-out both; }
+.enter-left { animation: enter-left 0.3s ease-out both; }
+
+/* badge attention pulse (≤2 days) */
+.pulse-soft { animation: pulse-soft 1.8s ease-in-out infinite; }
+
+/* scatter: dots pop in sequence, trend line draws left→right */
+.scatter-dot-in {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: dot-in 0.32s ease-out both;
+}
+.trend-draw {
+  stroke-dasharray: 1;
+  animation: draw-line 0.7s ease-out 0.05s both;
+}
+
+/* CFU ring fills from empty to its resting offset */
+.ring-progress { animation: ring-fill 0.95s cubic-bezier(0.22, 1, 0.36, 1) both; }
+
+/* animated success checkmark */
+.check-pop { animation: pop-in 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+.check-draw {
+  stroke-dasharray: var(--check-len);
+  animation: check-draw 0.35s ease-out 0.1s both;
+}
+
+/* button press: compress on click, elastic return */
+.btn-press { transition: transform 0.16s cubic-bezier(0.34, 1.56, 0.64, 1); }
+.btn-press:active { transform: scale(0.97); }
+
+/* navbar link underline grows left→right on hover (not on the active pill) */
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0.75rem;
+  right: 0.75rem;
+  bottom: 0.25rem;
+  height: 2px;
+  border-radius: 2px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.22s ease;
+}
+.nav-link:hover::after { transform: scaleX(1); }
+.nav-link[aria-current="page"]::after { display: none; }
+
+/* Sequenced child entrances (cards, list rows). Up to 12 children stagger;
+   beyond that they share the last delay. */
+.stagger-children > * { animation: enter-up 0.32s ease-out both; }
+.stagger-left > * { animation: enter-left 0.32s ease-out both; }
+.stagger-children > *:nth-child(1),
+.stagger-left > *:nth-child(1) { animation-delay: 0.04s; }
+.stagger-children > *:nth-child(2),
+.stagger-left > *:nth-child(2) { animation-delay: 0.10s; }
+.stagger-children > *:nth-child(3),
+.stagger-left > *:nth-child(3) { animation-delay: 0.16s; }
+.stagger-children > *:nth-child(4),
+.stagger-left > *:nth-child(4) { animation-delay: 0.22s; }
+.stagger-children > *:nth-child(5),
+.stagger-left > *:nth-child(5) { animation-delay: 0.28s; }
+.stagger-children > *:nth-child(6),
+.stagger-left > *:nth-child(6) { animation-delay: 0.34s; }
+.stagger-children > *:nth-child(7) { animation-delay: 0.40s; }
+.stagger-children > *:nth-child(8) { animation-delay: 0.46s; }
+.stagger-children > *:nth-child(9) { animation-delay: 0.52s; }
+.stagger-children > *:nth-child(10) { animation-delay: 0.58s; }
+.stagger-children > *:nth-child(11) { animation-delay: 0.64s; }
+.stagger-children > *:nth-child(n+12) { animation-delay: 0.70s; }
+
+/* form toggles: gentle press feedback (native controls can't transition the
+   tick itself, so animate the box) */
+input[type="checkbox"],
+input[type="radio"] {
+  transition: transform 0.12s ease, box-shadow 0.15s ease;
+}
+input[type="checkbox"]:active,
+input[type="radio"]:active {
+  transform: scale(0.88);
+}
+
+/* ── Immersive atmosphere: drifting aurora behind the glass ────────────────── */
+.atmosphere {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+.aurora {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  opacity: 0.9;
+  will-change: transform;
+}
+.aurora.a1 {
+  width: 60vw; height: 60vw; left: -10vw; top: -20vw;
+  background: radial-gradient(circle at center, var(--glow-1), transparent 65%);
+  animation: drift-1 22s ease-in-out infinite;
+}
+.aurora.a2 {
+  width: 55vw; height: 55vw; right: -12vw; top: -8vw;
+  background: radial-gradient(circle at center, var(--glow-2), transparent 65%);
+  animation: drift-2 26s ease-in-out infinite;
+}
+.aurora.a3 {
+  width: 50vw; height: 50vw; left: 25vw; top: 30vh;
+  background: radial-gradient(circle at center, var(--glow-3), transparent 65%);
+  animation: drift-3 30s ease-in-out infinite;
+}
+@keyframes drift-1 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(8vw,6vh) scale(1.15); } }
+@keyframes drift-2 { 0%,100% { transform: translate(0,0) scale(1.1); } 50% { transform: translate(-6vw,8vh) scale(0.95); } }
+@keyframes drift-3 { 0%,100% { transform: translate(0,0) scale(0.9); } 50% { transform: translate(-8vw,-6vh) scale(1.2); } }
+
+/* ── Scroll reveal — visible by default; hidden only once JS arms `.anim-ready`,
+   so no-JS / reduced-motion / print always show content. ── */
+.reveal {
+  transition: opacity 0.8s var(--ease), transform 0.8s var(--ease);
+  transition-delay: var(--d, 0s);
+  will-change: opacity, transform;
+}
+.anim-ready .reveal:not(.in) {
+  opacity: 0;
+  transform: translateY(28px);
+}
+
+/* immersive chip / badge tints */
+.chip-signal { color: var(--signal-2); border-color: color-mix(in oklch, var(--signal) 40%, transparent); background: color-mix(in oklch, var(--signal) 14%, transparent); }
+.chip-ok { color: var(--ok); border-color: color-mix(in oklch, var(--ok) 38%, transparent); background: color-mix(in oklch, var(--ok) 13%, transparent); }
+.chip-warn { color: var(--warn); border-color: color-mix(in oklch, var(--warn) 38%, transparent); background: color-mix(in oklch, var(--warn) 13%, transparent); }
+.chip-danger { color: var(--danger); border-color: color-mix(in oklch, var(--danger) 40%, transparent); background: color-mix(in oklch, var(--danger) 14%, transparent); }
+
+@media (prefers-reduced-motion: reduce) {
+  .aurora { animation: none !important; }
+  .reveal { opacity: 1 !important; transform: none !important; transition: none; }
 }

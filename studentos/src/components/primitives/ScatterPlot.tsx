@@ -5,22 +5,22 @@ interface ScatterPlotProps {
   points: GradePoint[];
   /** Accessible description — the chart is invisible to screen readers otherwise. */
   label: string;
-  height?: number;
   className?: string;
 }
 
-const VIEW_W = 280;
-const PAD_L = 22; // room for the Y labels (18 / 24 / 30)
-const PAD_R = 6;
-const PAD_T = 8;
-const PAD_B = 4;
+// Wide, short viewBox → the chart scales to the panel width keeping circular
+// dots (preserveAspectRatio meet, height derived from the viewBox ratio).
+const VIEW_W = 480;
+const VIEW_H = 132;
+const PAD_L = 24; // room for the Y labels (18 / 24 / 30)
+const PAD_R = 10;
+const PAD_T = 12;
+const PAD_B = 10;
 
-// Italian grade scale — a fixed Y domain reads truer than auto-scaling.
+// Italian grade scale — a fixed 18→30 Y domain reads truer than auto-scaling.
 const Y_MIN = 18;
 const Y_MAX = 30;
 const Y_TICKS = [18, 24, 30];
-
-const MS_PER_DAY = 86_400_000;
 
 function isoToUtc(date: string): number {
   return Date.UTC(
@@ -30,42 +30,47 @@ function isoToUtc(date: string): number {
   );
 }
 
-/** Grades over time: X = exam date, Y = voto (18–30). Lode marks are ringed.
- *  Minimal axes — two gridlines and three Y labels, no chartjunk. */
-export function ScatterPlot({
-  points,
-  label,
-  height = 132,
-  className,
-}: ScatterPlotProps) {
+function fmtDate(date: string): string {
+  return `${date.slice(8, 10)}/${date.slice(5, 7)}/${date.slice(0, 4)}`;
+}
+
+function clamp(v: number, lo: number, hi: number): number {
+  return Math.min(hi, Math.max(lo, v));
+}
+
+/** Grades over time: X = exam date, Y = voto (18–30). A faint trend line joins
+ *  the marks chronologically; lode marks are ringed; each dot carries a native
+ *  tooltip (course, grade, date). Minimal axes, no chartjunk. */
+export function ScatterPlot({ points, label, className }: ScatterPlotProps) {
   if (points.length === 0) return null;
 
   const plotW = VIEW_W - PAD_L - PAD_R;
-  const plotH = height - PAD_T - PAD_B;
+  const plotH = VIEW_H - PAD_T - PAD_B;
 
   const times = points.map((p) => isoToUtc(p.date));
   const tMin = Math.min(...times);
   const tMax = Math.max(...times);
-  const tSpan = tMax - tMin || 1; // all on one day → stack at the left edge
+  const tSpan = tMax - tMin || 1; // all on one day → stack at the centre
 
   const x = (t: number) =>
     points.length === 1 ? PAD_L + plotW / 2 : PAD_L + ((t - tMin) / tSpan) * plotW;
   const y = (v: number) =>
     PAD_T + (1 - (clamp(v, Y_MIN, Y_MAX) - Y_MIN) / (Y_MAX - Y_MIN)) * plotH;
 
-  const spanDays = Math.round(tSpan / MS_PER_DAY);
+  const trend = points
+    .map((p, i) => `${x(times[i]).toFixed(1)},${y(p.value).toFixed(1)}`)
+    .join(" ");
 
   return (
     <svg
       role="img"
       aria-label={label}
       width="100%"
-      height={height}
-      viewBox={`0 0 ${VIEW_W} ${height}`}
-      preserveAspectRatio="none"
-      className={cn("overflow-visible", className)}
+      viewBox={`0 0 ${VIEW_W} ${VIEW_H}`}
+      preserveAspectRatio="xMidYMid meet"
+      className={cn("block h-auto w-full overflow-visible", className)}
     >
-      {/* Gridlines + Y labels */}
+      {/* Gridlines + Y labels — nearly invisible hairlines */}
       {Y_TICKS.map((t) => (
         <g key={t}>
           <line
@@ -73,57 +78,72 @@ export function ScatterPlot({
             x2={VIEW_W - PAD_R}
             y1={y(t)}
             y2={y(t)}
-            className="stroke-line"
+            className="stroke-line-strong"
             strokeWidth={1}
-            strokeDasharray={t === Y_MIN ? undefined : "2 3"}
+            strokeDasharray="2 5"
+            strokeOpacity={0.5}
+            vectorEffect="non-scaling-stroke"
           />
           <text
             x={0}
             y={y(t)}
             dy="0.32em"
-            className="fill-ink-mute font-mono text-[9px]"
+            className="fill-ink-faint text-[9px]"
           >
             {t}
           </text>
         </g>
       ))}
 
-      {/* Points */}
-      {points.map((p, i) => (
-        <g key={`${p.date}-${i}`}>
-          {p.laude && (
+      {/* Trend line through the grades in chronological order, drawn L→R */}
+      {points.length >= 2 && (
+        <polyline
+          points={trend}
+          pathLength={1}
+          fill="none"
+          className="trend-draw stroke-signal"
+          strokeWidth={1.5}
+          strokeLinejoin="round"
+          strokeLinecap="round"
+          strokeOpacity={0.45}
+          vectorEffect="non-scaling-stroke"
+        />
+      )}
+
+      {/* Points — pop in one by one after the line is drawn */}
+      {points.map((p, i) => {
+        const delay = `${0.25 + i * 0.08}s`;
+        return (
+          <g key={`${p.date}-${i}`}>
+            {p.laude && (
+              <circle
+                cx={x(times[i])}
+                cy={y(p.value)}
+                r={6.5}
+                fill="none"
+                className="scatter-dot-in stroke-ok"
+                style={{ animationDelay: delay }}
+                strokeWidth={1.5}
+                vectorEffect="non-scaling-stroke"
+              />
+            )}
             <circle
               cx={x(times[i])}
               cy={y(p.value)}
-              r={4.5}
-              fill="none"
-              className="stroke-ok"
-              strokeWidth={1.25}
-            />
-          )}
-          <circle
-            cx={x(times[i])}
-            cy={y(p.value)}
-            r={2.6}
-            className={p.laude ? "fill-ok" : "fill-signal"}
-          />
-        </g>
-      ))}
-
-      {spanDays > 0 && (
-        <text
-          x={VIEW_W - PAD_R}
-          y={height - 0.5}
-          textAnchor="end"
-          className="fill-ink-mute text-[9px]"
-        >
-          {points.length} esami · ~{Math.max(1, Math.round(spanDays / 30))} mesi
-        </text>
-      )}
+              r={4}
+              style={{ animationDelay: delay }}
+              className={cn(
+                "scatter-dot scatter-dot-in",
+                p.laude ? "fill-ok" : "fill-signal",
+              )}
+            >
+              <title>
+                {`${p.courseName} — ${p.value}${p.laude ? " e lode" : ""}/30 — ${fmtDate(p.date)}`}
+              </title>
+            </circle>
+          </g>
+        );
+      })}
     </svg>
   );
-}
-
-function clamp(v: number, lo: number, hi: number): number {
-  return Math.min(hi, Math.max(lo, v));
 }

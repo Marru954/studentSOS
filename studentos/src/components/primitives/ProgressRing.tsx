@@ -57,8 +57,10 @@ export function ProgressRing({
           stroke="currentColor"
           strokeWidth={strokeWidth}
           strokeLinecap="round"
-          strokeDasharray={`${circumference * clamped} ${circumference}`}
-          className={TONE[tone]}
+          strokeDasharray={circumference}
+          strokeDashoffset={circumference * (1 - clamped)}
+          style={{ ["--ring-circ" as string]: `${circumference}px` }}
+          className={cn(TONE[tone], "ring-progress")}
         />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center font-mono">

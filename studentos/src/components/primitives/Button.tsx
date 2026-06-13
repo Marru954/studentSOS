@@ -13,7 +13,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 const VARIANT: Record<ButtonVariant, string> = {
   primary: cn(
     "bg-primary-gradient text-white font-semibold",
-    "shadow-soft hover:opacity-90 active:opacity-95",
+    "shadow-accent hover:opacity-95 active:opacity-100",
   ),
   ghost: cn(
     "border border-line bg-night-800 text-ink",
@@ -46,7 +46,7 @@ export function Button({
       disabled={disabled || loading}
       aria-busy={loading || undefined}
       className={cn(
-        "inline-flex select-none items-center justify-center rounded-full",
+        "btn-press inline-flex select-none items-center justify-center rounded-xl",
         "transition-[filter,background-color,border-color,opacity] duration-150",
         "disabled:pointer-events-none disabled:opacity-45",
         VARIANT[variant],

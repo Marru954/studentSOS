@@ -1,6 +1,7 @@
 import { Gauge, Target, TrendingUp } from "lucide-react";
 import { Badge } from "@/components/primitives/Badge";
 import { Field, inputClass } from "@/components/primitives/Field";
+import { CountUp } from "@/components/primitives/CountUp";
 import { Panel } from "@/components/primitives/Panel";
 import { ProgressRing } from "@/components/primitives/ProgressRing";
 import { ScatterPlot } from "@/components/primitives/ScatterPlot";
@@ -15,7 +16,7 @@ import {
 } from "@/lib/domain/libretto";
 import { estimateGraduation, requiredAverage } from "@/lib/domain/projection";
 import type { LibrettoEntry } from "@/lib/domain/types";
-import { fmtMonthYear, fmtNum } from "@/lib/format";
+import { daysBetweenIso, fmtMonthYear, fmtNum } from "@/lib/format";
 
 /** Weighted average instrument with the grades-over-time scatter and base di
  *  laurea projection. */
@@ -42,7 +43,7 @@ export function MediaPanel({
         <div className="flex flex-col gap-4">
           <Stat
             label="media"
-            value={fmtNum(average, 2)}
+            value={<CountUp value={average} decimals={2} />}
             unit="/30"
             hint={
               <>
@@ -62,20 +63,34 @@ export function MediaPanel({
             }
           />
           {points.length >= 2 && (
-            <div className="flex flex-col gap-1.5">
+            <div className="flex flex-col gap-2">
               <ScatterPlot
                 points={points}
                 label={`Andamento dei voti nel tempo su ${points.length} esami registrati`}
               />
-              <p className="flex items-center gap-3 text-xs text-ink-mute">
-                <span className="flex items-center gap-1.5">
-                  <span className="size-2 rounded-full bg-signal" /> voto
+              {/* Caption below the canvas — never overlapping the dots. */}
+              <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 text-xs text-ink-mute">
+                <span className="flex items-center gap-3">
+                  <span className="flex items-center gap-1.5">
+                    <span className="size-2 rounded-full bg-signal" /> voto
+                  </span>
+                  <span className="flex items-center gap-1.5">
+                    <span className="size-2 rounded-full border border-ok" /> con
+                    lode
+                  </span>
                 </span>
-                <span className="flex items-center gap-1.5">
-                  <span className="size-2 rounded-full border border-ok" /> con
-                  lode
+                <span>
+                  {points.length} esami · ~
+                  {Math.max(
+                    1,
+                    Math.round(
+                      daysBetweenIso(points[0].date, points[points.length - 1].date) /
+                        30.44,
+                    ),
+                  )}{" "}
+                  mesi
                 </span>
-              </p>
+              </div>
             </div>
           )}
         </div>
@@ -113,12 +128,14 @@ export function CfuPanel({
             size={88}
             tone="signal"
           >
-            <span className="text-lg font-medium text-ink">{earned}</span>
+            <span className="text-lg font-medium text-ink">
+              <CountUp value={earned} />
+            </span>
             <span className="text-label text-ink-mute">CFU</span>
           </ProgressRing>
           <div className="font-mono">
             <p className="text-sm text-ink">
-              {fmtNum(Math.min(1, ratio) * 100, 0)}%
+              <CountUp value={Math.min(1, ratio) * 100} />%
             </p>
             <p className="text-xs text-ink-mute">su {totalCfu} CFU previsti</p>
           </div>

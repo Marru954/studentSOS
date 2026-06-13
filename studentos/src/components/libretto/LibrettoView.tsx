@@ -65,7 +65,7 @@ export function LibrettoView() {
           <PanelSkeleton className="lg:col-span-5" />
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-3 lg:grid-cols-12">
+        <div className="stagger-children grid grid-cols-1 gap-3 lg:grid-cols-12">
           <GoalPanel
             entries={libretto.items}
             totalCfu={settings.degreePlan.totalCfu}

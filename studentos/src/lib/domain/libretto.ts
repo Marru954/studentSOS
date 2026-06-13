@@ -48,6 +48,7 @@ export function graduationBase(average: number): number {
 
 /** One numeric grade plotted in time — fuel for the andamento scatter chart. */
 export interface GradePoint {
+  courseName: string;
   date: IsoDate;
   /** 18–30, lode counted as 30. */
   value: number;
@@ -61,7 +62,12 @@ export function gradePoints(entries: LibrettoEntry[]): GradePoint[] {
     .filter((e) => e.grade.kind === "numeric")
     .map((e) => {
       const g = e.grade as Extract<Grade, { kind: "numeric" }>;
-      return { date: e.date, value: g.value, laude: g.laude };
+      return {
+        courseName: e.courseName,
+        date: e.date,
+        value: g.value,
+        laude: g.laude,
+      };
     })
     .sort((a, b) => a.date.localeCompare(b.date));
 }

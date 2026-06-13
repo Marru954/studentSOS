@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { Fragment } from "react";
+import { CountUp } from "@/components/primitives/CountUp";
 import { Wordmark } from "@/components/Wordmark";
 import styles from "./Landing.module.css";
 
@@ -56,19 +57,22 @@ const STEPS = [
 const STATS = [
   {
     icon: GraduationCap,
-    value: "180",
+    value: 180,
+    suffix: "",
     unit: "CFU",
     desc: "il percorso completo di Informatica a Tor Vergata",
   },
   {
     icon: FileText,
-    value: "30",
+    value: 30,
+    suffix: "",
     unit: "esami",
     desc: "da superare per laurearsi, tracciati uno per uno",
   },
   {
     icon: Lock,
-    value: "100%",
+    value: 100,
+    suffix: "%",
     unit: "offline",
     desc: "nessun dato caricato su server — tutto sul tuo dispositivo",
   },
@@ -109,7 +113,11 @@ export function Landing() {
     <>
       <main id="contenuto" className="flex-1">
         {/* Hero — animated "SOS" → "Student🛟S" title */}
-        <section className="mx-auto w-full max-w-6xl px-4 py-20 text-center sm:px-6 sm:py-28">
+        <section className="relative isolate mx-auto w-full max-w-6xl px-4 py-20 text-center sm:px-6 sm:py-28">
+          <div
+            aria-hidden="true"
+            className="hero-glow pointer-events-none absolute inset-x-0 top-0 -z-10 h-[460px]"
+          />
           <h1
             aria-label="StudentOS"
             className="text-5xl font-bold tracking-tight text-ink sm:text-6xl"
@@ -132,7 +140,7 @@ export function Landing() {
           <div className={`mt-8 flex justify-center ${styles.cta}`}>
             <Link
               href="/cruscotto"
-              className="inline-flex items-center gap-2 rounded-full bg-primary-gradient px-6 py-3 text-sm font-semibold text-white shadow-soft transition-opacity hover:opacity-90"
+              className="inline-flex items-center gap-2 rounded-xl bg-primary-gradient px-6 py-3 text-sm font-semibold text-white shadow-accent transition-opacity hover:opacity-95"
             >
               Inizia ora
               <ArrowRight aria-hidden="true" className="size-4" />
@@ -141,13 +149,13 @@ export function Landing() {
         </section>
 
         {/* Feature cards — each links to its section */}
-        <section className="mx-auto w-full max-w-6xl px-4 pb-20 sm:px-6">
-          <ul className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <section className="reveal mx-auto w-full max-w-6xl px-4 pb-20 sm:px-6">
+          <ul className="stagger-children grid grid-cols-1 gap-4 sm:grid-cols-3">
             {FEATURES.map(({ icon: Icon, href, title, desc }) => (
               <li key={title}>
                 <Link
                   href={href}
-                  className="group relative flex h-full flex-col gap-3 rounded-md border border-line bg-night-800 p-6 shadow-soft transition-[box-shadow,border-color] shadow-soft-hover hover:border-line-strong"
+                  className="lift group relative flex h-full flex-col gap-3 rounded-md glass p-6 shadow-soft"
                 >
                   <span className="inline-flex size-10 items-center justify-center rounded-full bg-signal-dim text-signal">
                     <Icon aria-hidden="true" className="size-5" />
@@ -165,11 +173,11 @@ export function Landing() {
         </section>
 
         {/* Come funziona — three numbered steps, joined by arrows */}
-        <section className="mx-auto w-full max-w-6xl px-4 py-16 sm:px-6">
+        <section className="reveal mx-auto w-full max-w-6xl px-4 py-16 sm:px-6">
           <h2 className="text-center text-2xl font-semibold text-ink">
             Come funziona
           </h2>
-          <ol className="mt-10 flex flex-col items-stretch gap-6 sm:flex-row sm:items-start sm:gap-2">
+          <ol className="stagger-left mt-10 flex flex-col items-stretch gap-6 sm:flex-row sm:items-start sm:gap-2">
             {STEPS.map((s, i) => (
               <Fragment key={s.n}>
                 <li className="flex flex-1 flex-col items-center text-center">
@@ -192,19 +200,25 @@ export function Landing() {
           </ol>
         </section>
 
-        {/* Stats band — white cards on the grey strip */}
-        <section className="border-y border-line bg-night-950">
+        {/* Stats band — white cards on a softly tinted strip */}
+        <hr className="divider-gradient" />
+        <section className="reveal section-tint">
           <div className="mx-auto grid w-full max-w-6xl grid-cols-1 gap-4 px-4 py-14 sm:grid-cols-3 sm:px-6">
-            {STATS.map(({ icon: Icon, value, unit, desc }) => (
+            {STATS.map(({ icon: Icon, value, suffix, unit, desc }) => (
               <div
                 key={unit}
-                className="flex flex-col items-center rounded-md border border-line bg-night-800 p-6 text-center shadow-soft"
+                className="lift flex flex-col items-center rounded-md glass p-6 text-center shadow-soft"
               >
                 <span className="inline-flex size-11 items-center justify-center rounded-full bg-signal-dim text-signal">
                   <Icon aria-hidden="true" className="size-5" />
                 </span>
-                <p className="mt-4 font-bold leading-none text-ink">
-                  <span className="text-4xl sm:text-5xl">{value}</span>{" "}
+                <p className="mt-4 font-bold leading-none">
+                  <CountUp
+                    value={value}
+                    inView
+                    suffix={suffix}
+                    className="text-4xl text-signal sm:text-5xl"
+                  />{" "}
                   <span className="text-xl text-ink-mute sm:text-2xl">{unit}</span>
                 </p>
                 <p className="mt-2 text-sm text-ink-mute">{desc}</p>
@@ -212,13 +226,14 @@ export function Landing() {
             ))}
           </div>
         </section>
+        <hr className="divider-gradient" />
 
         {/* Tutto in un posto — full feature list */}
-        <section className="mx-auto w-full max-w-6xl px-4 py-16 sm:px-6">
+        <section className="reveal mx-auto w-full max-w-6xl px-4 py-16 sm:px-6">
           <h2 className="text-center text-2xl font-semibold text-ink">
             Tutto in un posto
           </h2>
-          <ul className="mx-auto mt-10 grid max-w-3xl grid-cols-1 gap-4 sm:grid-cols-2">
+          <ul className="stagger-children mx-auto mt-10 grid max-w-3xl grid-cols-1 gap-4 sm:grid-cols-2">
             {ALL_FEATURES.map(({ icon: Icon, title, desc }) => (
               <li key={title} className="flex items-start gap-3">
                 <span className="inline-flex size-9 shrink-0 items-center justify-center rounded-full bg-signal-dim text-signal">

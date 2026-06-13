@@ -10,8 +10,10 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { Wordmark } from "@/components/Wordmark";
 import { cn } from "@/lib/cn";
+import { useScrolled } from "@/lib/hooks/useScrolled";
 
 const LINKS = [
   { href: "/cruscotto", label: "Cruscotto", icon: LayoutDashboard },
@@ -22,16 +24,24 @@ const LINKS = [
   { href: "/focus", label: "Focus", icon: Timer },
 ];
 
-/** Floating glass top bar. The active page is marked by the filled pill
- *  AND aria-current — never by color alone. */
+/** Floating top bar. Frosts with a translucent backdrop-blur once the page is
+ *  scrolled. The active page is marked by the filled accent pill AND
+ *  aria-current — never by colour alone. */
 export function AppNav() {
   const pathname = usePathname();
+  const scrolled = useScrolled();
 
   return (
     <header className="sticky top-0 z-40 px-4 pt-4 sm:px-6">
       <nav
         aria-label="Principale"
-        className="glass mx-auto flex w-full max-w-6xl items-center gap-1 overflow-x-auto rounded-full border border-line px-3 py-2 shadow-soft"
+        className={cn(
+          "mx-auto flex w-full max-w-6xl items-center gap-1 overflow-x-auto rounded-full border border-line px-3 py-2",
+          "transition-[background-color,box-shadow,backdrop-filter] duration-200",
+          scrolled
+            ? "bg-night-800/70 shadow-soft backdrop-blur-lg"
+            : "glass shadow-soft",
+        )}
       >
         <Link
           href="/"
@@ -47,9 +57,9 @@ export function AppNav() {
               href={href}
               aria-current={active ? "page" : undefined}
               className={cn(
-                "flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-colors",
+                "nav-link relative flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-colors",
                 active
-                  ? "bg-primary-gradient text-white"
+                  ? "bg-primary-gradient text-white shadow-accent"
                   : "text-ink-mute hover:bg-night-700 hover:text-ink",
               )}
             >
@@ -58,6 +68,9 @@ export function AppNav() {
             </Link>
           );
         })}
+        <div className="ml-auto pl-1">
+          <ThemeToggle />
+        </div>
       </nav>
     </header>
   );

@@ -150,7 +150,7 @@ export function ExamTimeline({
             </ul>
           )}
 
-          <ul className="flex max-h-[360px] flex-col divide-y divide-line overflow-y-auto">
+          <ul className="stagger-children flex max-h-[360px] flex-col divide-y divide-line overflow-y-auto">
             {groups.map((g) => {
               const days = daysFromToday(g.nearest.date, now);
               const bookingDays = g.nearest.booking?.closesAt
@@ -161,7 +161,7 @@ export function ExamTimeline({
                 <li key={g.course} className="flex items-start gap-3 py-3 first:pt-0">
                   <Badge
                     tone={TONE[tierOf(days)]}
-                    className="mt-0.5 w-24 shrink-0 justify-center"
+                    className={`mt-0.5 w-24 shrink-0 justify-center${days <= 2 ? " pulse-soft" : ""}`}
                   >
                     {relLabel(days)}
                   </Badge>

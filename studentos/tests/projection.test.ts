@@ -79,8 +79,8 @@ test("gradePoints returns numeric grades chronologically, idoneità excluded", (
     { ...dated(3, 0, "2025-09-01"), grade: { kind: "pass" } },
   ];
   assert.deepEqual(gradePoints(entries), [
-    { date: "2025-02-10", value: 24, laude: false },
-    { date: "2025-06-20", value: 28, laude: false },
+    { courseName: "X", date: "2025-02-10", value: 24, laude: false },
+    { courseName: "X", date: "2025-06-20", value: 28, laude: false },
   ]);
 });
 

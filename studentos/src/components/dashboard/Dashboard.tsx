@@ -103,7 +103,7 @@ export function Dashboard() {
           <PanelSkeleton className="lg:col-span-4" />
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-12">
+        <div className="stagger-children grid grid-cols-1 gap-4 lg:grid-cols-12">
           {/* One-line recap of what matters now. */}
           <SummaryBar
             nextExamDays={summary.nextExamDays}

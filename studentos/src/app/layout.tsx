@@ -1,12 +1,18 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Bricolage_Grotesque, Inter } from "next/font/google";
 import { AppNav } from "@/components/AppNav";
 import { OnboardingDialog } from "@/components/onboarding/OnboardingDialog";
+import { RevealManager } from "@/components/RevealManager";
 import { StoreProvider } from "@/components/StoreProvider";
 import "./globals.css";
 
 const inter = Inter({
   variable: "--font-inter",
+  subsets: ["latin"],
+});
+
+const bricolage = Bricolage_Grotesque({
+  variable: "--font-bricolage",
   subsets: ["latin"],
 });
 
@@ -16,6 +22,9 @@ export const metadata: Metadata = {
     "Sistema operativo per la vita universitaria: orari, appelli, libretto, note e focus in un unico strumento.",
 };
 
+// Apply the saved theme before first paint to avoid a flash. Dark is default.
+const THEME_INIT = `(function(){try{var t=localStorage.getItem('studentos-theme');document.documentElement.dataset.theme=(t==='light'||t==='dark')?t:'dark';}catch(e){document.documentElement.dataset.theme='dark';}})();`;
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -24,9 +33,20 @@ export default function RootLayout({
   return (
     <html
       lang="it"
-      className={`${inter.variable} h-full antialiased`}
+      data-theme="dark"
+      suppressHydrationWarning
+      className={`${inter.variable} ${bricolage.variable} h-full antialiased`}
     >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_INIT }} />
+      </head>
       <body className="min-h-full flex flex-col">
+        {/* drifting aurora behind the glass UI */}
+        <div className="atmosphere" aria-hidden="true">
+          <div className="aurora a1" />
+          <div className="aurora a2" />
+          <div className="aurora a3" />
+        </div>
         <a
           href="#contenuto"
           className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-sm focus:bg-signal focus:px-3 focus:py-2 focus:text-label focus:font-semibold focus:text-white"
@@ -38,6 +58,7 @@ export default function RootLayout({
           {children}
           <OnboardingDialog />
         </StoreProvider>
+        <RevealManager />
       </body>
     </html>
   );

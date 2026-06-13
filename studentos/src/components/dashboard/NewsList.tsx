@@ -36,7 +36,7 @@ export function NewsList({
                   href={n.url}
                   target="_blank"
                   rel="noreferrer"
-                  className="text-sm text-ink underline-offset-2 transition-colors hover:text-signal hover:underline"
+                  className="link-underline text-sm text-ink transition-colors hover:text-signal"
                 >
                   {n.title}
                   <span className="sr-only"> (si apre in una nuova scheda)</span>
