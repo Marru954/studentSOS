@@ -5,12 +5,11 @@ import { createElement as h } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { CfuPanel, MediaPanel } from "@/components/dashboard/CareerPanels";
 import { ChangeNotices } from "@/components/dashboard/ChangeNotices";
+import { ExamTimeline } from "@/components/dashboard/ExamTimeline";
 import { NewsList } from "@/components/dashboard/NewsList";
-import { ExamMiniCalendar } from "@/components/dashboard/ExamMiniCalendar";
-import { NextExam } from "@/components/dashboard/NextExam";
+import { SummaryBar } from "@/components/dashboard/SummaryBar";
 import { SyncStatus } from "@/components/dashboard/SyncStatus";
 import { TodayTimeline } from "@/components/dashboard/TodayTimeline";
-import { UrgencyList } from "@/components/dashboard/UrgencyList";
 import { ExamCards } from "@/components/exams/ExamCards";
 import { MonthCalendar } from "@/components/exams/MonthCalendar";
 import { DelphiConnect } from "@/components/libretto/DelphiConnect";
@@ -24,7 +23,6 @@ import { NoteList } from "@/components/notes/NoteList";
 import { NotePreview } from "@/components/notes/NotePreview";
 import { SourceStatusTable } from "@/components/SourceStatus";
 import { WeekGrid } from "@/components/timetable/WeekGrid";
-import { computeUrgencies } from "@/lib/domain/urgency";
 import type { ClassEvent, ExamCall, LibrettoEntry } from "@/lib/domain/types";
 
 const NOW = new Date("2026-06-12T10:00:00.000Z");
@@ -89,13 +87,14 @@ const libretto: LibrettoEntry[] = [
   { id: "l3", courseName: "INGLESE", cfu: 3, grade: { kind: "pass" }, date: "2025-09-05" },
 ];
 
-const urgencies = computeUrgencies(events, exams, NOW, { timeZone: "UTC" });
-
 const sections: [string, React.ReactElement][] = [
-  ["UrgencyList", h(UrgencyList, { urgencies, now: NOW })],
-  ["NextExam", h(NextExam, { exam: exams[0], days: 3 })],
-  ["ExamMiniCalendar", h(ExamMiniCalendar, { exams, now: NOW })],
+  [
+    "SummaryBar",
+    h(SummaryBar, { nextExamDays: 2, examsThisWeek: 3, average: 20.87 }),
+  ],
+  ["ExamTimeline", h(ExamTimeline, { exams, now: NOW })],
   ["TodayTimeline", h(TodayTimeline, { events })],
+  ["TodayTimeline (vuoto)", h(TodayTimeline, { events: [] })],
   ["MediaPanel", h(MediaPanel, { entries: libretto, targetAverage: 28 })],
   ["CfuPanel", h(CfuPanel, { entries: libretto, totalCfu: 180 })],
   ["NewsList", h(NewsList, { items: [{ id: "n1", title: "Calendario sessione estiva", url: "https://informatica.uniroma2.it/x", publishedAt: "2026-06-10T08:00:00.000Z", excerpt: "Pubblicato il calendario.", sourceId: "avvisi-dipartimento" }] })],

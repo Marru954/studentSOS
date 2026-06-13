@@ -19,13 +19,24 @@ export function TodayTimeline({
   events: ClassEvent[];
   className?: string;
 }) {
+  // Niente lezioni oggi → una riga sottile, non un riquadro grande vuoto.
+  if (events.length === 0) {
+    return (
+      <div
+        className={cn(
+          "flex items-center gap-2 rounded-md border border-line bg-night-950 px-4 py-2 text-sm text-ink-mute",
+          className,
+        )}
+      >
+        <Clock aria-hidden="true" className="size-4 shrink-0 text-signal" />
+        Nessuna lezione oggi
+      </div>
+    );
+  }
+
   return (
     <Panel title="Oggi" icon={<Clock />} className={className}>
-      {events.length === 0 ? (
-        <p className="text-sm text-ink-mute">
-          Nessuna lezione in calendario per oggi.
-        </p>
-      ) : (
+      {
         <ol className="flex flex-col divide-y divide-line">
           {events.map((e) => {
             const cancelled = e.change?.field === "cancelled";
@@ -64,7 +75,7 @@ export function TodayTimeline({
             );
           })}
         </ol>
-      )}
+      }
     </Panel>
   );
 }

@@ -9,7 +9,7 @@
 import { Settings2 } from "lucide-react";
 import { useMemo } from "react";
 import { Button } from "@/components/primitives/Button";
-import { computeUrgencies } from "@/lib/domain/urgency";
+import { weightedAverage } from "@/lib/domain/libretto";
 import { daysFromToday, fmtLongDay, localDayOf, localToday } from "@/lib/format";
 import { useNowMinute } from "@/lib/hooks/useNowMinute";
 import { useLibretto } from "@/lib/state/manual";
@@ -18,12 +18,11 @@ import { useSynced } from "@/lib/state/synced";
 import { useUi } from "@/lib/state/ui";
 import { CfuPanel, MediaPanel } from "./CareerPanels";
 import { ChangeNotices } from "./ChangeNotices";
-import { ExamMiniCalendar } from "./ExamMiniCalendar";
+import { ExamTimeline } from "./ExamTimeline";
 import { NewsList } from "./NewsList";
-import { NextExam } from "./NextExam";
+import { SummaryBar } from "./SummaryBar";
 import { SyncStatus } from "./SyncStatus";
 import { TodayTimeline } from "./TodayTimeline";
-import { UrgencyList } from "./UrgencyList";
 
 export function Dashboard() {
   const synced = useSynced();
@@ -33,12 +32,6 @@ export function Dashboard() {
 
   const ready =
     now !== null && synced.hydrated && settings.hydrated && libretto.hydrated;
-
-  const urgencies = useMemo(
-    () =>
-      ready ? computeUrgencies(synced.classEvents, synced.examCalls, now) : [],
-    [ready, synced.classEvents, synced.examCalls, now],
-  );
 
   // the merged all-years feed narrows to the pinned courses when set
   const todayEvents = useMemo(() => {
@@ -50,11 +43,24 @@ export function Dashboard() {
       .filter((e) => pinned.length === 0 || pinned.includes(e.courseName));
   }, [ready, synced.classEvents, settings.pinnedCourses, now]);
 
-  // examCalls arrive date-sorted from the repo: first future date wins
-  const nextExam = useMemo(() => {
-    if (!ready) return undefined;
-    return synced.examCalls.find((e) => daysFromToday(e.date, now) >= 0);
+  // summary-bar figures: next exam, exams within 7 days, weighted average
+  const summary = useMemo(() => {
+    if (!ready)
+      return { nextExamDays: null as number | null, examsThisWeek: 0 };
+    const upcoming = synced.examCalls
+      .map((e) => daysFromToday(e.date, now))
+      .filter((d) => d >= 0)
+      .sort((a, b) => a - b);
+    return {
+      nextExamDays: upcoming.length ? upcoming[0] : null,
+      examsThisWeek: upcoming.filter((d) => d <= 7).length,
+    };
   }, [ready, synced.examCalls, now]);
+
+  const average = useMemo(
+    () => (ready ? weightedAverage(libretto.items) : undefined),
+    [ready, libretto.items],
+  );
 
   return (
     <div className="flex flex-col gap-5">
@@ -88,6 +94,17 @@ export function Dashboard() {
         </p>
       ) : (
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-12">
+          {/* One-line recap of what matters now. */}
+          <SummaryBar
+            nextExamDays={summary.nextExamDays}
+            examsThisWeek={summary.examsThisWeek}
+            average={average}
+            className="lg:col-span-12"
+          />
+
+          {/* Today's lessons: a card when there are any, a thin row when not. */}
+          <TodayTimeline events={todayEvents} className="lg:col-span-12" />
+
           {/* Header stats: the two career instruments, front and centre. */}
           <MediaPanel
             entries={libretto.items}
@@ -100,27 +117,21 @@ export function Dashboard() {
             className="lg:col-span-5"
           />
 
-          {/* Left: the urgency radar. Right: countdown + upcoming exams. */}
-          <UrgencyList
-            urgencies={urgencies}
+          {/* Unified, colour-tiered exam timeline (urgenze + appelli merged). */}
+          <ExamTimeline
+            exams={synced.examCalls}
             now={now}
             className="lg:col-span-8"
           />
-          <div className="flex flex-col gap-4 lg:col-span-4">
-            <NextExam
-              exam={nextExam}
-              days={nextExam ? daysFromToday(nextExam.date, now) : 0}
-            />
-            <ExamMiniCalendar exams={synced.examCalls} now={now} />
-          </div>
+          <NewsList items={synced.news} className="lg:col-span-4" />
 
-          <TodayTimeline events={todayEvents} className="lg:col-span-7" />
-          <NewsList items={synced.news} className="lg:col-span-5" />
-          <ChangeNotices
-            notices={synced.notices}
-            onDismiss={(ids) => void synced.dismissNotices(ids)}
-            className="lg:col-span-12"
-          />
+          {synced.notices.length > 0 && (
+            <ChangeNotices
+              notices={synced.notices}
+              onDismiss={(ids) => void synced.dismissNotices(ids)}
+              className="lg:col-span-12"
+            />
+          )}
         </div>
       )}
     </div>
