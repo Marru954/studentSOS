@@ -1,10 +1,12 @@
 "use client";
 
 /** /orario: week navigation state + store wiring around the pure WeekGrid. */
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/primitives/Button";
 import { Panel } from "@/components/primitives/Panel";
+import { PanelSkeleton } from "@/components/primitives/Skeleton";
 import { SourceStatus } from "@/components/SourceStatus";
 import { extractCourseNames } from "@/lib/domain/notes";
 import { addDays, localDayOf, localToday, mondayOf } from "@/lib/format";
@@ -71,7 +73,7 @@ export function WeekView() {
             aria-label="Settimana precedente"
             onClick={() => setWeekOffset((w) => w - 1)}
           >
-            ←
+            <ChevronLeft aria-hidden="true" className="size-4" />
           </Button>
           <Button
             size="sm"
@@ -85,15 +87,16 @@ export function WeekView() {
             aria-label="Settimana successiva"
             onClick={() => setWeekOffset((w) => w + 1)}
           >
-            →
+            <ChevronRight aria-hidden="true" className="size-4" />
           </Button>
         </div>
       </header>
 
       {!ready ? (
-        <p role="status" className="text-label font-medium text-ink-mute">
-          Caricamento dei dati locali…
-        </p>
+        <div role="status" aria-busy="true" className="flex flex-col gap-3">
+          <span className="sr-only">Caricamento dei dati locali…</span>
+          <PanelSkeleton className="h-64" />
+        </div>
       ) : !hasSources ? (
         <Panel>
           <p className="text-sm text-ink-mute">

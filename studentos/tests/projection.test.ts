@@ -1,6 +1,11 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { requiredAverage, simulateAverage } from "@/lib/domain/projection";
+import { cfuPerMonth, gradePoints } from "@/lib/domain/libretto";
+import {
+  estimateGraduation,
+  requiredAverage,
+  simulateAverage,
+} from "@/lib/domain/projection";
 import type { LibrettoEntry } from "@/lib/domain/types";
 
 function entry(cfu: number, value: number): LibrettoEntry {
@@ -11,6 +16,10 @@ function entry(cfu: number, value: number): LibrettoEntry {
     grade: { kind: "numeric", value, laude: false },
     date: "2025-06-20",
   };
+}
+
+function dated(cfu: number, value: number, date: string): LibrettoEntry {
+  return { ...entry(cfu, value), id: `${cfu}-${value}-${date}`, date };
 }
 
 // ── simulateAverage ─────────────────────────────────────────────────────────
@@ -59,4 +68,62 @@ test("plan complete: met if the average holds, no-remaining otherwise", () => {
     kind: "no-remaining",
   });
   assert.deepEqual(requiredAverage([], 0, 27), { kind: "no-remaining" });
+});
+
+// ── gradePoints ─────────────────────────────────────────────────────────────
+
+test("gradePoints returns numeric grades chronologically, idoneità excluded", () => {
+  const entries: LibrettoEntry[] = [
+    dated(6, 28, "2025-06-20"),
+    dated(9, 24, "2025-02-10"),
+    { ...dated(3, 0, "2025-09-01"), grade: { kind: "pass" } },
+  ];
+  assert.deepEqual(gradePoints(entries), [
+    { date: "2025-02-10", value: 24, laude: false },
+    { date: "2025-06-20", value: 28, laude: false },
+  ]);
+});
+
+// ── cfuPerMonth ─────────────────────────────────────────────────────────────
+
+test("cfuPerMonth divides earned CFU by the active span", () => {
+  // 30 CFU over ~6 months (Jan→Jul) → ~5 CFU/month
+  const pace = cfuPerMonth([
+    dated(12, 27, "2025-01-15"),
+    dated(18, 25, "2025-07-15"),
+  ]);
+  assert.ok(pace !== undefined && pace > 4.5 && pace < 5.5, `pace=${pace}`);
+});
+
+test("cfuPerMonth floors the span at one month for same-day bursts", () => {
+  // both same day → span floored to 1 month → 18 CFU/month, not infinity
+  assert.equal(cfuPerMonth([dated(9, 30, "2025-06-20"), dated(9, 28, "2025-06-20")]), 18);
+});
+
+test("cfuPerMonth is undefined with no entries", () => {
+  assert.equal(cfuPerMonth([]), undefined);
+});
+
+// ── estimateGraduation ──────────────────────────────────────────────────────
+
+test("estimateGraduation extrapolates the remaining CFU at the current pace", () => {
+  // 30 CFU earned over ~6 months → 5 CFU/month; 150 left → 30 months ahead
+  const now = new Date("2025-07-15T00:00:00.000Z");
+  const eta = estimateGraduation(
+    [dated(12, 27, "2025-01-15"), dated(18, 25, "2025-07-15")],
+    180,
+    now,
+  );
+  assert.ok(eta instanceof Date);
+  // 30 months after Jul 2025 → Jan 2028 (allow ±1 month for rounding)
+  const months = (eta!.getFullYear() - 2025) * 12 + eta!.getMonth() - 6;
+  assert.ok(months >= 29 && months <= 31, `months=${months}`);
+});
+
+test("estimateGraduation is undefined when the plan is already complete", () => {
+  const now = new Date("2025-07-15T00:00:00.000Z");
+  assert.equal(
+    estimateGraduation([dated(180, 28, "2025-01-15")], 180, now),
+    undefined,
+  );
 });

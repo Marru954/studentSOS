@@ -86,7 +86,7 @@ export function OnboardingDialog() {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-sm"
+      className="overlay-in fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-sm"
       onKeyDown={trapTab}
     >
       <div
@@ -94,7 +94,7 @@ export function OnboardingDialog() {
         role="dialog"
         aria-modal="true"
         aria-labelledby="onboarding-titolo"
-        className="glass w-full max-w-lg rounded-lg border border-line p-6 shadow-[0_24px_60px_-20px_rgba(16,24,40,0.35)]"
+        className="dialog-in glass w-full max-w-lg rounded-lg border border-line p-6 shadow-[0_24px_60px_-20px_rgba(16,24,40,0.35)]"
       >
         <div className="flex items-center gap-3">
           <span className="bg-primary-gradient flex size-10 items-center justify-center rounded-full shadow-soft">
@@ -134,7 +134,7 @@ export function OnboardingDialog() {
               {YEARS.map((y) => (
                 <label
                   key={y}
-                  className={`flex cursor-pointer items-center gap-2 rounded-full border px-4 py-2 text-sm ${
+                  className={`flex cursor-pointer items-center gap-2 rounded-full border px-4 py-2 text-sm transition-colors ${
                     year === y
                       ? "border-signal/60 bg-signal-dim text-ink"
                       : "border-line bg-night-950 text-ink-mute hover:bg-night-700"

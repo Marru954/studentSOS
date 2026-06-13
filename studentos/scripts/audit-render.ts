@@ -3,10 +3,11 @@
  *  Run: ./node_modules/.bin/tsx scripts/audit-render.ts */
 import { createElement as h } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import { CfuPanel, MediaPanel } from "@/components/dashboard/CareerPanels";
+import { CfuPanel, GoalPanel, MediaPanel } from "@/components/dashboard/CareerPanels";
 import { ChangeNotices } from "@/components/dashboard/ChangeNotices";
 import { ExamTimeline } from "@/components/dashboard/ExamTimeline";
 import { NewsList } from "@/components/dashboard/NewsList";
+import { QuickActions } from "@/components/dashboard/QuickActions";
 import { SummaryBar } from "@/components/dashboard/SummaryBar";
 import { SyncStatus } from "@/components/dashboard/SyncStatus";
 import { TodayTimeline } from "@/components/dashboard/TodayTimeline";
@@ -92,11 +93,21 @@ const sections: [string, React.ReactElement][] = [
     "SummaryBar",
     h(SummaryBar, { nextExamDays: 2, examsThisWeek: 3, average: 20.87 }),
   ],
+  ["QuickActions", h(QuickActions, {})],
   ["ExamTimeline", h(ExamTimeline, { exams, now: NOW })],
   ["TodayTimeline", h(TodayTimeline, { events })],
   ["TodayTimeline (vuoto)", h(TodayTimeline, { events: [] })],
   ["MediaPanel", h(MediaPanel, { entries: libretto, targetAverage: 28 })],
-  ["CfuPanel", h(CfuPanel, { entries: libretto, totalCfu: 180 })],
+  ["CfuPanel", h(CfuPanel, { entries: libretto, totalCfu: 180, now: NOW })],
+  [
+    "GoalPanel",
+    h(GoalPanel, {
+      entries: libretto,
+      totalCfu: 180,
+      targetAverage: 28,
+      onTargetChange: () => {},
+    }),
+  ],
   ["NewsList", h(NewsList, { items: [{ id: "n1", title: "Calendario sessione estiva", url: "https://informatica.uniroma2.it/x", publishedAt: "2026-06-10T08:00:00.000Z", excerpt: "Pubblicato il calendario.", sourceId: "avvisi-dipartimento" }] })],
   ["ChangeNotices", h(ChangeNotices, { notices: [{ id: "c1", kind: "room-change", courseName: "SISTEMI OPERATIVI", detail: "Aula 12 → Aula T5", entityId: "ev-2", detectedAt: "2026-06-12T09:00:00.000Z", seen: false }], onDismiss: () => {} })],
   ["SyncStatus", h(SyncStatus, { syncing: false, syncMeta: [{ sourceId: "s", capability: "timetable", lastAttemptAt: "2026-06-12T09:00:00.000Z", lastSuccessAt: "2026-06-12T09:00:00.000Z", ok: true, itemCount: 10 }], canSync: true, onSync: () => {} })],

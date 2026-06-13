@@ -30,8 +30,8 @@ export function NoteList({
             onClick={() => onSelect(note.id)}
             aria-current={note.id === selectedId || undefined}
             className={cn(
-              "block w-full px-4 py-2.5 text-left hover:bg-night-700/50",
-              note.id === selectedId && "bg-night-700",
+              "block w-full px-4 py-2.5 text-left transition-colors hover:bg-night-700/50",
+              note.id === selectedId && "bg-signal-dim hover:bg-signal-dim",
             )}
           >
             <span className="flex items-baseline justify-between gap-3">

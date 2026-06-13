@@ -3,8 +3,26 @@
  * lib/domain/libretto (lode = 30, pass/excluded entries skip the average).
  * "Remaining CFU" assumes the rest of the plan is graded — stated in the UI.
  */
-import { gradedTotals } from "./libretto";
+import { cfuPerMonth, earnedCfu, gradedTotals } from "./libretto";
 import type { LibrettoEntry } from "./types";
+
+/** Estimated graduation month: remaining CFU divided by the current pace,
+ *  added to `now`. Undefined when there's no pace yet (empty libretto) or the
+ *  plan is already complete. A coarse extrapolation — labelled as such. */
+export function estimateGraduation(
+  entries: LibrettoEntry[],
+  totalCfu: number,
+  now: Date,
+): Date | undefined {
+  const pace = cfuPerMonth(entries);
+  if (pace === undefined || pace <= 0) return undefined;
+  const remaining = totalCfu - earnedCfu(entries);
+  if (remaining <= 0) return undefined;
+  const monthsLeft = Math.ceil(remaining / pace);
+  const d = new Date(now);
+  d.setMonth(d.getMonth() + monthsLeft);
+  return d;
+}
 
 /** Weighted average after a hypothetical graded exam of `cfu` × `value`. */
 export function simulateAverage(

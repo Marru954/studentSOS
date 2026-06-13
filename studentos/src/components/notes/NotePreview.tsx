@@ -15,8 +15,8 @@ export function NotePreview({ content }: { content: string }) {
   if (!content.trim()) {
     return (
       <p className="text-sm text-ink-mute">
-        L&rsquo;anteprima apparirà qui. Markdown, codice con ```lang e formule
-        con $…$ o $$…$$.
+        L&rsquo;anteprima formattata apparirà qui mentre scrivi. Puoi usare
+        Markdown, blocchi di codice evidenziato e formule matematiche.
       </p>
     );
   }

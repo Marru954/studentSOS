@@ -39,7 +39,7 @@ export function EntryTable({
             <th
               key={h}
               scope="col"
-              className="px-4 py-2 text-label font-medium font-normal text-ink-mute"
+              className="px-4 py-2 text-label font-medium text-ink-mute"
             >
               {h}
             </th>

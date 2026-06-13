@@ -114,11 +114,10 @@ export function ImportDelphiPdf() {
         setResult(parsed);
         setSelected(new Set(parsed.entries.map((en) => en.id)));
       }
-    } catch (err) {
+    } catch {
       setError(
-        err instanceof Error
-          ? `Impossibile leggere il PDF: ${err.message}`
-          : "Impossibile leggere il PDF.",
+        "Impossibile leggere questo PDF. Verifica che sia il file scaricato da " +
+          "Delphi e non un'immagine scansionata, poi riprova.",
       );
     } finally {
       setBusy(false);
@@ -173,12 +172,12 @@ export function ImportDelphiPdf() {
       </p>
 
       {error && (
-        <p role="status" className="text-xs text-danger">
+        <p role="alert" className="text-xs text-danger">
           {error}
         </p>
       )}
       {done && (
-        <p role="status" className="text-xs text-ok">
+        <p role="status" className="text-xs font-medium text-ok">
           {done}
         </p>
       )}

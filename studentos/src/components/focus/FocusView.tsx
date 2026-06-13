@@ -3,6 +3,7 @@
 /** /focus: pomodoro + studio stats + kanban. Sessions and tasks are manual
  *  territory; synced courses and exams only feed selects and countdowns. */
 import { useMemo } from "react";
+import { PanelSkeleton } from "@/components/primitives/Skeleton";
 import { extractCourseNames } from "@/lib/domain/notes";
 import type { FocusSession } from "@/lib/domain/types";
 import { localToday } from "@/lib/format";
@@ -48,9 +49,18 @@ export function FocusView() {
       </header>
 
       {!ready ? (
-        <p role="status" className="text-label font-medium text-ink-mute">
-          Caricamento dei dati locali…
-        </p>
+        <div
+          role="status"
+          aria-busy="true"
+          className="flex flex-col gap-3"
+        >
+          <span className="sr-only">Caricamento dei dati locali…</span>
+          <div className="grid grid-cols-1 gap-3 lg:grid-cols-12">
+            <PanelSkeleton className="lg:col-span-5" />
+            <PanelSkeleton className="lg:col-span-7" />
+          </div>
+          <PanelSkeleton />
+        </div>
       ) : (
         <>
           <div className="grid grid-cols-1 gap-3 lg:grid-cols-12">

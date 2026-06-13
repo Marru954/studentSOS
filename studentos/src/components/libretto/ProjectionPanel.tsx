@@ -8,6 +8,7 @@ import { Target } from "lucide-react";
 import { Badge } from "@/components/primitives/Badge";
 import { Field, inputClass } from "@/components/primitives/Field";
 import { Panel } from "@/components/primitives/Panel";
+import { Term } from "@/components/primitives/Term";
 import { earnedCfu, graduationBase, weightedAverage } from "@/lib/domain/libretto";
 import { requiredAverage, simulateAverage } from "@/lib/domain/projection";
 import type { LibrettoEntry } from "@/lib/domain/types";
@@ -182,7 +183,10 @@ export function ProjectionPanel({
               </span>
             )}
             <span className="ml-3 text-xs text-ink-mute">
-              base di laurea ≈ {fmtNum(graduationBase(simulated), 1)}/110
+              <Term title="Voto di partenza per la laurea: la media degli esami (in trentesimi) convertita in centodecimi, cioè media ÷ 30 × 110.">
+                base di laurea
+              </Term>{" "}
+              ≈ {fmtNum(graduationBase(simulated), 1)}/110
             </span>
           </p>
         </div>

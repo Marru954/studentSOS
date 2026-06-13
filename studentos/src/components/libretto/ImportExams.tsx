@@ -82,8 +82,10 @@ export function ImportExams() {
         qui sopra per avere il formato corretto delle colonne.
       </p>
       {feedback && (
-        <div role="status" className="text-xs">
-          <p className={feedback.ok ? "text-ok" : "text-danger"}>{feedback.text}</p>
+        <div role={feedback.ok ? "status" : "alert"} className="text-xs">
+          <p className={feedback.ok ? "font-medium text-ok" : "text-danger"}>
+            {feedback.text}
+          </p>
           {feedback.errors.length > 0 && (
             <ul className="mt-1 list-inside list-disc text-ink-mute">
               {feedback.errors.map((err) => (

@@ -9,6 +9,7 @@ import { CalendarDays } from "lucide-react";
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { Panel } from "@/components/primitives/Panel";
+import { PanelSkeleton } from "@/components/primitives/Skeleton";
 import { SourceStatus } from "@/components/SourceStatus";
 import {
   type ExamFilter,
@@ -77,9 +78,15 @@ export function ExamList() {
       </header>
 
       {!ready ? (
-        <p role="status" className="text-label font-medium text-ink-mute">
-          Caricamento dei dati locali…
-        </p>
+        <div role="status" aria-busy="true" className="flex flex-col gap-4">
+          <span className="sr-only">Caricamento dei dati locali…</span>
+          <PanelSkeleton />
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
+            <PanelSkeleton />
+            <PanelSkeleton />
+            <PanelSkeleton />
+          </div>
+        </div>
       ) : !hasSources ? (
         <Panel>
           <p className="text-sm text-ink-mute">
@@ -121,13 +128,13 @@ export function ExamList() {
                       onClick={() => setFilter(f.id)}
                       className={
                         active
-                          ? "bg-primary-gradient rounded-full px-3 py-1 text-xs font-semibold text-white shadow-soft"
-                          : "rounded-full bg-night-950 px-3 py-1 text-xs font-medium text-ink-mute hover:bg-night-700 hover:text-ink"
+                          ? "bg-primary-gradient rounded-full px-3 py-1 text-xs font-semibold text-white shadow-soft transition-colors"
+                          : "rounded-full bg-night-950 px-3 py-1 text-xs font-medium text-ink-mute transition-colors hover:bg-night-700 hover:text-ink"
                       }
                     >
                       {f.label}
                       <span
-                        className={`ml-1.5 font-mono ${active ? "text-white/75" : "text-ink-faint"}`}
+                        className={`ml-1.5 font-mono ${active ? "text-white/75" : "text-ink-mute"}`}
                       >
                         {counts[f.id] ?? 0}
                       </span>

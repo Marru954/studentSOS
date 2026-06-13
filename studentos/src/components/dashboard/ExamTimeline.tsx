@@ -76,16 +76,17 @@ function buildClashes(upcoming: ExamCall[]): Clash[] {
   for (const group of bySlot.values()) {
     const courses = [...new Set(group.map((e) => e.courseName))];
     if (courses.length < 2) continue;
-    out.push({ when: metaLine(group[0]), courses });
+    out.push({
+      when: `${fmtPlainDayMonth(group[0].date)} ${group[0].time}`,
+      courses,
+    });
   }
   return out;
 }
 
-const COMPACT = 5;
-
-/** Unified, chronological timeline of upcoming exam calls. Compact by default:
- *  conflicts pinned on top, then the 5 nearest courses; the rest expand into a
- *  fixed-height scroll area so the page never grows without bound. */
+/** Unified, chronological timeline of upcoming exam calls. Conflicts pinned on
+ *  top; the full course list lives in a fixed-height internal scroll area so
+ *  the dashboard fits one screen and never grows down the page. */
 export function ExamTimeline({
   exams,
   now,
@@ -95,7 +96,6 @@ export function ExamTimeline({
   now: Date;
   className?: string;
 }) {
-  const [expanded, setExpanded] = useState(false);
   const [openDates, setOpenDates] = useState<Set<string>>(new Set());
 
   const upcoming = exams
@@ -106,8 +106,6 @@ export function ExamTimeline({
     );
   const groups = buildGroups(upcoming);
   const clashes = buildClashes(upcoming);
-
-  const visible = expanded ? groups : groups.slice(0, COMPACT);
 
   function toggleDates(course: string) {
     setOpenDates((prev) => {
@@ -140,26 +138,27 @@ export function ExamTimeline({
               {clashes.map((c) => (
                 <li
                   key={c.when}
-                  className="flex items-start gap-2 rounded-md border border-danger/35 bg-danger-dim px-3 py-2 text-xs font-medium text-danger"
+                  className="flex items-center gap-2 rounded-md border border-danger/35 bg-danger-dim px-3 py-1.5 text-xs font-medium text-danger"
                 >
-                  <TriangleAlert aria-hidden="true" className="mt-px size-3.5 shrink-0" />
-                  <span>
-                    Conflitto: devi scegliere — {c.when}: «{c.courses.join("», «")}»
+                  <TriangleAlert aria-hidden="true" className="size-3.5 shrink-0" />
+                  <span className="truncate">
+                    <span className="font-mono">{c.when}</span> ·{" "}
+                    {c.courses.join(" vs ")}
                   </span>
                 </li>
               ))}
             </ul>
           )}
 
-          <ul className="flex flex-col divide-y divide-line">
-            {visible.map((g) => {
+          <ul className="flex max-h-[360px] flex-col divide-y divide-line overflow-y-auto">
+            {groups.map((g) => {
               const days = daysFromToday(g.nearest.date, now);
               const bookingDays = g.nearest.booking?.closesAt
                 ? daysFromToday(g.nearest.booking.closesAt, now)
                 : undefined;
               const datesOpen = openDates.has(g.course);
               return (
-                <li key={g.course} className="flex items-start gap-3 py-3">
+                <li key={g.course} className="flex items-start gap-3 py-3 first:pt-0">
                   <Badge
                     tone={TONE[tierOf(days)]}
                     className="mt-0.5 w-24 shrink-0 justify-center"
@@ -205,16 +204,6 @@ export function ExamTimeline({
               );
             })}
           </ul>
-
-          {groups.length > COMPACT && (
-            <button
-              type="button"
-              onClick={() => setExpanded((v) => !v)}
-              className="self-start text-xs font-medium text-signal hover:underline"
-            >
-              {expanded ? "Mostra meno" : `Mostra tutti (${upcoming.length})`}
-            </button>
-          )}
         </div>
       )}
     </Panel>

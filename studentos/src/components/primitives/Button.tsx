@@ -47,7 +47,7 @@ export function Button({
       aria-busy={loading || undefined}
       className={cn(
         "inline-flex select-none items-center justify-center rounded-full",
-        "transition-[filter,background-color,border-color] duration-150",
+        "transition-[filter,background-color,border-color,opacity] duration-150",
         "disabled:pointer-events-none disabled:opacity-45",
         VARIANT[variant],
         SIZE[size],

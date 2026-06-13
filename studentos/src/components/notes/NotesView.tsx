@@ -6,6 +6,7 @@ import { useMemo, useState } from "react";
 import { Button } from "@/components/primitives/Button";
 import { inputClass } from "@/components/primitives/Field";
 import { Panel } from "@/components/primitives/Panel";
+import { PanelSkeleton } from "@/components/primitives/Skeleton";
 import { extractCourseNames, searchNotes } from "@/lib/domain/notes";
 import type { Note } from "@/lib/domain/types";
 import { useNotes } from "@/lib/state/manual";
@@ -66,9 +67,15 @@ export function NotesView() {
       </header>
 
       {!ready ? (
-        <p role="status" className="text-label font-medium text-ink-mute">
-          Caricamento dei dati locali…
-        </p>
+        <div
+          role="status"
+          aria-busy="true"
+          className="grid grid-cols-1 items-start gap-3 lg:grid-cols-12"
+        >
+          <span className="sr-only">Caricamento dei dati locali…</span>
+          <PanelSkeleton className="lg:col-span-4" />
+          <PanelSkeleton className="lg:col-span-8" />
+        </div>
       ) : (
         <div className="grid grid-cols-1 items-start gap-3 lg:grid-cols-12">
           <div className="flex flex-col gap-3 lg:col-span-4">
@@ -108,10 +115,22 @@ export function NotesView() {
               />
             ) : (
               <Panel>
-                <p className="text-sm text-ink-mute">
-                  Seleziona una nota dall&rsquo;elenco o creane una nuova.
-                  Markdown, codice evidenziato e formule LaTeX sono supportati.
-                </p>
+                {notes.items.length === 0 ? (
+                  <div className="flex flex-col items-start gap-3">
+                    <p className="text-sm text-ink-mute">
+                      Non hai ancora appunti. Crea la tua prima nota: supporta
+                      Markdown, codice evidenziato e formule LaTeX.
+                    </p>
+                    <Button variant="primary" onClick={createNote}>
+                      Crea la prima nota
+                    </Button>
+                  </div>
+                ) : (
+                  <p className="text-sm text-ink-mute">
+                    Seleziona una nota dall&rsquo;elenco o creane una nuova.
+                    Markdown, codice evidenziato e formule LaTeX sono supportati.
+                  </p>
+                )}
               </Panel>
             )}
           </div>

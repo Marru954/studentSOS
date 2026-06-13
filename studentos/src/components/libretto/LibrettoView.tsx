@@ -4,9 +4,10 @@
  *  local IndexedDB — sync never reads or writes it. */
 import { useMemo, useState } from "react";
 import { ChevronDown, GraduationCap, Info } from "lucide-react";
-import { CfuPanel, MediaPanel } from "@/components/dashboard/CareerPanels";
+import { CfuPanel, GoalPanel, MediaPanel } from "@/components/dashboard/CareerPanels";
 import { ConfirmButton } from "@/components/primitives/ConfirmButton";
 import { Panel } from "@/components/primitives/Panel";
+import { PanelSkeleton } from "@/components/primitives/Skeleton";
 import { useLibretto } from "@/lib/state/manual";
 import { useSettings } from "@/lib/state/settings";
 import { DelphiConnect } from "./DelphiConnect";
@@ -52,11 +53,31 @@ export function LibrettoView() {
       </header>
 
       {!ready ? (
-        <p role="status" className="text-label font-medium text-ink-mute">
-          Caricamento dei dati locali…
-        </p>
+        <div
+          role="status"
+          aria-busy="true"
+          className="grid grid-cols-1 gap-3 lg:grid-cols-12"
+        >
+          <span className="sr-only">Caricamento dei dati locali…</span>
+          <PanelSkeleton className="lg:col-span-12" />
+          <PanelSkeleton className="lg:col-span-4" />
+          <PanelSkeleton className="lg:col-span-3" />
+          <PanelSkeleton className="lg:col-span-5" />
+        </div>
       ) : (
         <div className="grid grid-cols-1 gap-3 lg:grid-cols-12">
+          <GoalPanel
+            entries={libretto.items}
+            totalCfu={settings.degreePlan.totalCfu}
+            targetAverage={settings.degreePlan.targetAverage}
+            onTargetChange={(value) =>
+              void settings.update({
+                degreePlan: { ...settings.degreePlan, targetAverage: value },
+              })
+            }
+            className="lg:col-span-12"
+          />
+
           <MediaPanel
             entries={libretto.items}
             targetAverage={settings.degreePlan.targetAverage}
@@ -107,7 +128,7 @@ export function LibrettoView() {
                         id="anno-filter"
                         value={yearFilter}
                         onChange={(e) => setYearFilter(e.target.value)}
-                        className="h-8 rounded-sm border border-line bg-night-800 px-2 text-xs text-ink hover:border-line-strong"
+                        className="h-8 rounded-sm border border-line bg-night-800 px-2 text-xs text-ink transition-[border-color] hover:border-line-strong"
                       >
                         <option value="all">Tutti gli anni</option>
                         {years.map((y) => (
@@ -134,7 +155,7 @@ export function LibrettoView() {
           >
             <div className="flex flex-col gap-3 border-b border-line p-3">
               <details className="group rounded-md border border-line bg-night-950">
-                <summary className="flex cursor-pointer list-none items-center gap-2 px-3 py-2 text-sm font-medium text-ink [&::-webkit-details-marker]:hidden">
+                <summary className="flex cursor-pointer list-none items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-ink transition-colors hover:bg-night-900 [&::-webkit-details-marker]:hidden">
                   <Info aria-hidden="true" className="size-4 text-signal" />
                   Come funziona
                   <ChevronDown

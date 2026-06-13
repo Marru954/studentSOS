@@ -42,6 +42,7 @@ export function EntryForm({
   const [teacher, setTeacher] = useState(initial?.teacher ?? "");
   const [exclude, setExclude] = useState(initial?.excludeFromAverage ?? false);
   const [error, setError] = useState<string | null>(null);
+  const [saved, setSaved] = useState(false);
 
   // l'anno selezionato potrebbe non essere fra le opzioni recenti (esami vecchi)
   const yearOptions = YEAR_OPTIONS.includes(academicYear)
@@ -67,6 +68,7 @@ export function EntryForm({
     const problem = validate();
     setError(problem);
     if (problem) return;
+    setSaved(!initial);
     onSave({
       id: initial?.id ?? crypto.randomUUID(),
       courseName: courseName.trim(),
@@ -101,7 +103,10 @@ export function EntryForm({
             id="lib-corso"
             type="text"
             value={courseName}
-            onChange={(e) => setCourseName(e.target.value)}
+            onChange={(e) => {
+              setCourseName(e.target.value);
+              setSaved(false);
+            }}
             placeholder="es. Basi di dati"
             required
             className={inputClass}
@@ -227,6 +232,11 @@ export function EntryForm({
         {error && (
           <p role="alert" className="text-xs text-danger">
             {error}
+          </p>
+        )}
+        {saved && !error && (
+          <p role="status" className="text-xs font-medium text-ok">
+            Esame aggiunto al libretto. Media e CFU aggiornati.
           </p>
         )}
 

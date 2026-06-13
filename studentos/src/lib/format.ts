@@ -37,6 +37,16 @@ export function fmtLongDay(date: Date): string {
   return longDay.format(date);
 }
 
+const monthYear = new Intl.DateTimeFormat("it-IT", {
+  month: "long",
+  year: "numeric",
+});
+
+/** "marzo 2027" from a Date — for coarse projections. */
+export function fmtMonthYear(date: Date): string {
+  return monthYear.format(date);
+}
+
 /** "19/06/2026" from a plain IsoDate — no zone conversion, it's already a day. */
 export function fmtPlainDate(date: IsoDate): string {
   return `${date.slice(8, 10)}/${date.slice(5, 7)}/${date.slice(0, 4)}`;

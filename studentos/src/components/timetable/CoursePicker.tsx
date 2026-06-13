@@ -29,7 +29,7 @@ export function CoursePicker({
 
   return (
     <details className="glass rounded-md border border-line shadow-soft">
-      <summary className="flex cursor-pointer list-none items-center gap-2 px-4 py-3 text-sm font-semibold text-ink [&::-webkit-details-marker]:hidden">
+      <summary className="flex cursor-pointer list-none items-center gap-2 rounded-md px-4 py-3 text-sm font-semibold text-ink transition-colors hover:bg-night-900 [&::-webkit-details-marker]:hidden">
         <ListFilter aria-hidden="true" className="size-4 text-signal" />
         I miei corsi
         <Badge tone={pinned.length > 0 ? "signal" : "neutral"}>
@@ -48,7 +48,7 @@ export function CoursePicker({
           {courses.map((course) => (
             <label
               key={course}
-              className="flex items-center gap-2 rounded-sm px-1 py-0.5 text-sm text-ink hover:bg-night-700"
+              className="flex cursor-pointer items-center gap-2 rounded-sm px-1 py-0.5 text-sm text-ink transition-colors hover:bg-night-700"
             >
               <input
                 type="checkbox"

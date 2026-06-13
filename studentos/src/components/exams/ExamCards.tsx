@@ -45,7 +45,7 @@ function ExamCard({ exam, today }: { exam: ExamCall; today: IsoDate }) {
   const booking = bookingState(exam.booking, today);
 
   return (
-    <article className="glass flex overflow-hidden rounded-md border border-line shadow-soft shadow-soft-hover">
+    <article className="glass flex overflow-hidden rounded-md border border-line shadow-soft">
       <div
         className={cn(
           "flex w-20 shrink-0 flex-col items-center justify-center gap-0.5 py-4",
@@ -98,7 +98,7 @@ function ExamCard({ exam, today }: { exam: ExamCall; today: IsoDate }) {
         </dl>
 
         {exam.teacher && (
-          <p className="mt-1 truncate text-xs text-ink-faint">{exam.teacher}</p>
+          <p className="mt-1 truncate text-xs text-ink-mute">{exam.teacher}</p>
         )}
         {booking.kind === "closing" && (
           <Badge tone={booking.daysLeft <= 1 ? "danger" : "warn"} className="mt-2">

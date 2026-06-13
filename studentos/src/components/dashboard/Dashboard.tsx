@@ -9,6 +9,7 @@
 import { Settings2 } from "lucide-react";
 import { useMemo } from "react";
 import { Button } from "@/components/primitives/Button";
+import { PanelSkeleton } from "@/components/primitives/Skeleton";
 import { weightedAverage } from "@/lib/domain/libretto";
 import { daysFromToday, fmtLongDay, localDayOf, localToday } from "@/lib/format";
 import { useNowMinute } from "@/lib/hooks/useNowMinute";
@@ -20,6 +21,7 @@ import { CfuPanel, MediaPanel } from "./CareerPanels";
 import { ChangeNotices } from "./ChangeNotices";
 import { ExamTimeline } from "./ExamTimeline";
 import { NewsList } from "./NewsList";
+import { QuickActions } from "./QuickActions";
 import { SummaryBar } from "./SummaryBar";
 import { SyncStatus } from "./SyncStatus";
 import { TodayTimeline } from "./TodayTimeline";
@@ -89,9 +91,17 @@ export function Dashboard() {
       </header>
 
       {!ready ? (
-        <p role="status" className="text-label font-medium text-ink-mute">
-          Caricamento dei dati locali…
-        </p>
+        <div
+          role="status"
+          aria-busy="true"
+          className="grid grid-cols-1 gap-4 lg:grid-cols-12"
+        >
+          <span className="sr-only">Caricamento dei dati locali…</span>
+          <PanelSkeleton className="lg:col-span-7" />
+          <PanelSkeleton className="lg:col-span-5" />
+          <PanelSkeleton className="lg:col-span-8" />
+          <PanelSkeleton className="lg:col-span-4" />
+        </div>
       ) : (
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-12">
           {/* One-line recap of what matters now. */}
@@ -102,7 +112,10 @@ export function Dashboard() {
             className="lg:col-span-12"
           />
 
-          {/* Today's lessons: a card when there are any, a thin row when not. */}
+          {/* One-tap shortcuts. */}
+          <QuickActions className="lg:col-span-12" />
+
+          {/* Today's lessons: a card when there are any, nothing when not. */}
           <TodayTimeline events={todayEvents} className="lg:col-span-12" />
 
           {/* Header stats: the two career instruments, front and centre. */}
@@ -114,6 +127,7 @@ export function Dashboard() {
           <CfuPanel
             entries={libretto.items}
             totalCfu={settings.degreePlan.totalCfu}
+            now={now}
             className="lg:col-span-5"
           />
 

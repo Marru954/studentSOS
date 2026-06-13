@@ -52,6 +52,12 @@ export function FocusStats({
         <Stat label="ultimi 7 giorni" value={fmtMinutes(week)} />
         <Stat label="sessioni" value={String(sessions.length)} />
       </div>
+      {sessions.length === 0 && (
+        <p className="border-t border-line px-4 py-3 text-sm text-ink-mute">
+          Nessuna sessione ancora registrata. Avvia un timer Pomodoro qui
+          accanto per iniziare a tracciare lo studio.
+        </p>
+      )}
       {perCourse.length > 0 && (
         <table className="w-full border-t border-line text-sm">
           <thead>
@@ -60,7 +66,7 @@ export function FocusStats({
                 <th
                   key={h}
                   scope="col"
-                  className="px-4 py-2 text-label font-medium font-normal text-ink-mute"
+                  className="px-4 py-2 text-label font-medium text-ink-mute"
                 >
                   {h}
                 </th>

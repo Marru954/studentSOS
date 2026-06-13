@@ -54,14 +54,15 @@ export function PomodoroTimer({
 
   const phaseTotal = phase === "focus" ? FOCUS_MS : BREAK_MS;
 
-  function recordIfWorthIt(elapsedMs: number) {
-    if (phase !== "focus" || !sessionStart.current) return;
-    if (elapsedMs < MIN_RECORD_MS) return;
+  function recordIfWorthIt(elapsedMs: number): boolean {
+    if (phase !== "focus" || !sessionStart.current) return false;
+    if (elapsedMs < MIN_RECORD_MS) return false;
     onRecord({
       courseName: course || undefined,
       startedAt: sessionStart.current,
       minutes: Math.round(elapsedMs / 60_000),
     });
+    return true;
   }
 
   function start() {
@@ -80,12 +81,14 @@ export function PomodoroTimer({
   function stop() {
     const left =
       status === "running" ? deadline.current - Date.now() : remainingMs;
-    recordIfWorthIt(phaseTotal - left);
+    const recorded = recordIfWorthIt(phaseTotal - left);
     sessionStart.current = null;
     setPhase("focus");
     setStatus("idle");
     setRemainingMs(FOCUS_MS);
-    setAnnounce("Timer interrotto.");
+    setAnnounce(
+      recorded ? "Sessione registrata. Timer interrotto." : "Timer interrotto.",
+    );
   }
 
   useEffect(() => {
@@ -109,7 +112,7 @@ export function PomodoroTimer({
         deadline.current = Date.now() + BREAK_MS;
         setPhase("break");
         setRemainingMs(BREAK_MS);
-        setAnnounce("Pomodoro completato: pausa di 5 minuti.");
+        setAnnounce("Sessione registrata. Pomodoro completato: pausa di 5 minuti.");
       } else {
         setPhase("focus");
         setStatus("idle");
@@ -184,7 +187,10 @@ export function PomodoroTimer({
           </div>
         </div>
 
-        <p aria-live="polite" className="sr-only">
+        <p
+          aria-live="polite"
+          className="min-h-4 text-xs font-medium text-signal"
+        >
           {announce}
         </p>
         <p className="text-xs text-ink-mute">

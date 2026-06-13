@@ -3,6 +3,7 @@
  * explicit ←/→ buttons, which makes the board keyboard- and screen-reader-
  * accessible by construction.
  */
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useState } from "react";
 import { Badge } from "@/components/primitives/Badge";
 import { Button } from "@/components/primitives/Button";
@@ -135,7 +136,9 @@ export function TaskBoard({
               flush
             >
               {column.length === 0 ? (
-                <p className="p-3 text-xs text-ink-mute">Vuota.</p>
+                <p className="p-3 text-xs text-ink-mute">
+                  Nessuna attività qui.
+                </p>
               ) : (
                 <ul className="flex flex-col divide-y divide-line">
                   {column.map((task) => (
@@ -163,7 +166,7 @@ export function TaskBoard({
                             aria-label={`Sposta «${task.title}» in ${STATUS_LABEL[STATUS_ORDER[STATUS_ORDER.indexOf(status) - 1]]}`}
                             onClick={() => move(task, -1)}
                           >
-                            ←
+                            <ChevronLeft aria-hidden="true" className="size-4" />
                           </Button>
                         )}
                         {status !== "done" && (
@@ -172,7 +175,7 @@ export function TaskBoard({
                             aria-label={`Sposta «${task.title}» in ${STATUS_LABEL[STATUS_ORDER[STATUS_ORDER.indexOf(status) + 1]]}`}
                             onClick={() => move(task, 1)}
                           >
-                            →
+                            <ChevronRight aria-hidden="true" className="size-4" />
                           </Button>
                         )}
                         <span className="ml-auto">

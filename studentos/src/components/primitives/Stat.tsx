@@ -6,7 +6,7 @@ interface StatProps {
   value: string;
   unit?: string;
   /** Secondary reading under the value (e.g. "su 180 CFU"). */
-  hint?: string;
+  hint?: React.ReactNode;
   delta?: { text: string; tone: "ok" | "danger" | "neutral" };
   className?: string;
 }
