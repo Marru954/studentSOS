@@ -1,5 +1,6 @@
 import { Megaphone } from "lucide-react";
 import { Panel } from "@/components/primitives/Panel";
+import { cn } from "@/lib/cn";
 import type { NewsItem } from "@/lib/domain/types";
 import { fmtDayMonth } from "@/lib/format";
 
@@ -25,13 +26,18 @@ export function NewsList({
   );
 
   return (
-    <Panel title="Avvisi" icon={<Megaphone />} className={className}>
+    <Panel
+      title="Avvisi"
+      icon={<Megaphone />}
+      className={cn("flex flex-col", className)}
+      bodyClassName="flex min-h-0 flex-1 flex-col"
+    >
       {sorted.length === 0 ? (
         <p className="text-sm text-ink-mute">
           Nessun avviso sincronizzato dal corso di laurea.
         </p>
       ) : (
-        <ul className={`flex max-h-[360px] flex-col divide-y divide-line overflow-y-auto ${SOFT_SCROLL}`}>
+        <ul className={`no-scrollbar flex flex-1 flex-col divide-y divide-line overflow-y-auto ${SOFT_SCROLL}`}>
           {sorted.map((n) => (
             <li key={n.id} className="flex gap-3 py-2.5 first:pt-0 last:pb-0">
               <span

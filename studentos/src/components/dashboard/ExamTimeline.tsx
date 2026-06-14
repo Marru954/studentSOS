@@ -164,7 +164,7 @@ export function ExamTimeline({
             </ul>
           )}
 
-          <ul className={`stagger-children flex max-h-[360px] flex-col divide-y divide-line overflow-y-auto ${SOFT_SCROLL}`}>
+          <ul className={`no-scrollbar stagger-children flex max-h-[360px] flex-col divide-y divide-line overflow-y-auto ${SOFT_SCROLL}`}>
             {groups.map((g) => {
               const days = daysFromToday(g.nearest.date, now);
               const tier = tierOf(days);

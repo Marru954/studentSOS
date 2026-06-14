@@ -166,7 +166,24 @@ export function Landing() {
     <>
       <main id="contenuto" className="relative z-[2] flex-1">
         {/* HERO */}
-        <section className="wrap py-12 text-center sm:py-16">
+        <section className="wrap relative overflow-hidden py-12 text-center sm:py-16">
+          {/* floating stat bubbles — riempiono i lati vuoti su schermi larghi */}
+          <div
+            className="glass float-slow reveal absolute left-4 top-1/3 hidden flex-col items-center gap-1 rounded-2xl px-5 py-4 text-center shadow-soft lg:flex xl:left-12"
+            style={{ ["--d" as string]: "0.4s" }}
+            aria-hidden="true"
+          >
+            <span className="grad-text font-display text-3xl font-bold">🔥 12g</span>
+            <span className="eyebrow text-ink-mute">streak studio</span>
+          </div>
+          <div
+            className="glass float reveal absolute right-4 top-1/4 hidden flex-col items-center gap-1 rounded-2xl px-5 py-4 text-center shadow-soft lg:flex xl:right-12"
+            style={{ ["--d" as string]: "0.6s" }}
+            aria-hidden="true"
+          >
+            <span className="grad-text font-display text-3xl font-bold">27,4</span>
+            <span className="eyebrow text-ink-mute">media ponderata</span>
+          </div>
           <div className="reveal in mb-6 inline-flex">
             <span className="chip chip-signal">
               <LifeBuoy className="size-[0.85rem]" aria-hidden="true" />

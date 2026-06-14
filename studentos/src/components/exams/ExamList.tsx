@@ -17,9 +17,9 @@ import {
 } from "lucide-react";
 import { useMemo, useState } from "react";
 import Link from "next/link";
+import { CountUp } from "@/components/primitives/CountUp";
 import { Panel } from "@/components/primitives/Panel";
 import { PanelSkeleton } from "@/components/primitives/Skeleton";
-import { SourceStatus } from "@/components/SourceStatus";
 import { bookingState } from "@/lib/domain/booking";
 import {
   type ExamFilter,
@@ -275,10 +275,38 @@ export function ExamList() {
               </div>
             )}
           </section>
+
+          <div className="glass reveal rounded-xl p-5">
+            <p className="eyebrow mb-3 text-ink-mute">Riepilogo sessione</p>
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+              <div className="text-center">
+                <div className="font-display text-2xl font-bold text-ink">
+                  <CountUp value={counts.urgenti ?? 0} />
+                </div>
+                <div className="eyebrow text-danger">Urgenti</div>
+              </div>
+              <div className="text-center">
+                <div className="font-display text-2xl font-bold text-ink">
+                  <CountUp value={counts.futuri ?? 0} />
+                </div>
+                <div className="eyebrow text-ink-mute">Futuri</div>
+              </div>
+              <div className="text-center">
+                <div className="font-display text-2xl font-bold text-ink">
+                  <CountUp value={examCalls.length} />
+                </div>
+                <div className="eyebrow text-ink-mute">Totali</div>
+              </div>
+              <div className="text-center">
+                <div className="font-display text-2xl font-bold text-ink">
+                  <CountUp value={counts.passati ?? 0} />
+                </div>
+                <div className="eyebrow text-ink-mute">Superati</div>
+              </div>
+            </div>
+          </div>
         </>
       )}
-
-      <SourceStatus />
     </div>
   );
 }

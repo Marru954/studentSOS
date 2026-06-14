@@ -188,7 +188,7 @@ export function Dashboard() {
             now={now}
             className="lg:col-span-8"
           />
-          <NewsList items={synced.news} className="lg:col-span-4" />
+          <NewsList items={synced.news} className="h-full lg:col-span-4" />
 
           {synced.notices.length > 0 && (
             <ChangeNotices

@@ -598,6 +598,12 @@ input[type="radio"]:active {
 /* slow float for the hero device card */
 .float { animation: float 7s ease-in-out infinite; }
 @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+/* even slower drift, offset phase — for the side stat bubbles */
+.float-slow { animation: float 11s ease-in-out infinite; animation-delay: -3s; }
+
+/* hide a scrollbar while keeping the element scrollable */
+.no-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
 
 /* slow buoy spin (hero wordmark) */
 .buoy-spin { animation: buoy-spin 28s linear infinite; transform-origin: center; }
@@ -632,7 +638,7 @@ input[type="radio"]:active {
 
 @media (prefers-reduced-motion: reduce) {
   .aurora { animation: none !important; }
-  .float, .buoy-spin { animation: none !important; }
+  .float, .float-slow, .buoy-spin { animation: none !important; }
   .anim-ready .word .mid { animation: none !important; }
   .reveal { opacity: 1 !important; transform: none !important; transition: none; }
 }

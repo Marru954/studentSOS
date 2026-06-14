@@ -23,6 +23,7 @@ import { DelphiConnect } from "./DelphiConnect";
 import { EntryForm } from "./EntryForm";
 import { EntryTable } from "./EntryTable";
 import { GradeSimulator } from "./GradeSimulator";
+import { TrophyGrid } from "./TrophyGrid";
 import { ImportDelphiPdf } from "./ImportDelphiPdf";
 import { ImportExams } from "./ImportExams";
 import { ProjectionPanel } from "./ProjectionPanel";
@@ -281,16 +282,30 @@ export function LibrettoView() {
                 Nessun esame per l&rsquo;anno selezionato.
               </p>
             ) : (
-              <div className="overflow-x-auto">
-                <EntryTable
-                  entries={visible}
-                  onEdit={setEditingId}
-                  onRemove={(id) => {
-                    if (editingId === id) setEditingId(null);
-                    void libretto.remove(id);
-                  }}
-                />
-              </div>
+              <>
+                {/* schermo: muro di trofei */}
+                <div className="no-print p-3">
+                  <TrophyGrid
+                    entries={visible}
+                    onEdit={setEditingId}
+                    onRemove={(id) => {
+                      if (editingId === id) setEditingId(null);
+                      void libretto.remove(id);
+                    }}
+                  />
+                </div>
+                {/* stampa: la tabella ordinata */}
+                <div className="print-only overflow-x-auto">
+                  <EntryTable
+                    entries={visible}
+                    onEdit={setEditingId}
+                    onRemove={(id) => {
+                      if (editingId === id) setEditingId(null);
+                      void libretto.remove(id);
+                    }}
+                  />
+                </div>
+              </>
             )}
           </Panel>
         </div>

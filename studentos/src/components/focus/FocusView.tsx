@@ -10,6 +10,8 @@ import { localToday } from "@/lib/format";
 import { useNowMinute } from "@/lib/hooks/useNowMinute";
 import { useFocusSessions, useLibretto, useTasks } from "@/lib/state/manual";
 import { useSynced } from "@/lib/state/synced";
+import { AmbientSounds } from "./AmbientSounds";
+import { BackgroundPicker } from "./BackgroundPicker";
 import { FocusStats } from "./FocusStats";
 import { PomodoroTimer } from "./PomodoroTimer";
 import { TaskBoard } from "./TaskBoard";
@@ -63,6 +65,10 @@ export function FocusView() {
         </div>
       ) : (
         <>
+          <div className="glass reveal flex flex-wrap items-start gap-6 rounded-xl p-4">
+            <AmbientSounds />
+            <BackgroundPicker />
+          </div>
           <div className="grid grid-cols-1 gap-5 lg:grid-cols-12">
             <PomodoroTimer
               courses={courses}

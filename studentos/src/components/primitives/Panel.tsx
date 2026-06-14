@@ -11,6 +11,8 @@ interface PanelProps {
   /** Remove body padding (full-bleed tables, grids). */
   flush?: boolean;
   className?: string;
+  /** Extra classes on the body wrapper (e.g. `flex-1` for full-height fill). */
+  bodyClassName?: string;
   children: React.ReactNode;
 }
 
@@ -23,6 +25,7 @@ export function Panel({
   headingLevel = 2,
   flush = false,
   className,
+  bodyClassName,
   children,
 }: PanelProps) {
   const Heading = `h${headingLevel}` as const;
@@ -47,7 +50,13 @@ export function Panel({
           {actions && <div className="flex items-center gap-2">{actions}</div>}
         </header>
       )}
-      <div className={flush ? undefined : cn("px-5 pb-5", !titled && "pt-5")}>
+      <div
+        className={cn(
+          !flush && "px-5 pb-5",
+          !flush && !titled && "pt-5",
+          bodyClassName,
+        )}
+      >
         {children}
       </div>
     </section>

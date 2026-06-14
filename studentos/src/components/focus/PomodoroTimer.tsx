@@ -12,8 +12,12 @@ import { cn } from "@/lib/cn";
 import type { ExamCall, FocusSession } from "@/lib/domain/types";
 import { daysFromToday, fmtPlainDayMonth } from "@/lib/format";
 
-const FOCUS_MS = 25 * 60_000;
-const BREAK_MS = 5 * 60_000;
+/** Selectable focus/break durations (minutes). */
+const PRESETS = [
+  { focus: 25, break: 5, label: "25/5" },
+  { focus: 45, break: 10, label: "45/10" },
+  { focus: 60, break: 15, label: "60/15" },
+];
 /** Interruptions shorter than this aren't worth recording. */
 const MIN_RECORD_MS = 5 * 60_000;
 
@@ -42,6 +46,10 @@ export function PomodoroTimer({
   onRecord: (session: Omit<FocusSession, "id">) => void;
   className?: string;
 }) {
+  const [preset, setPreset] = useState(0);
+  const FOCUS_MS = PRESETS[preset].focus * 60_000;
+  const BREAK_MS = PRESETS[preset].break * 60_000;
+
   const [phase, setPhase] = useState<Phase>("focus");
   const [status, setStatus] = useState<Status>("idle");
   const [remainingMs, setRemainingMs] = useState(FOCUS_MS);
@@ -122,7 +130,7 @@ export function PomodoroTimer({
     return () => clearInterval(id);
     // course/onRecord are read at completion time; restarting the interval
     // on their change is correct and cheap
-  }, [status, phase, course, onRecord]);
+  }, [status, phase, course, onRecord, FOCUS_MS, BREAK_MS]);
 
   const nextExam = course
     ? examCalls.find(
@@ -177,6 +185,26 @@ export function PomodoroTimer({
           </p>
         )}
       </div>
+
+      {/* preset durata — solo da fermo */}
+      {status === "idle" && (
+        <div className="relative flex items-center gap-2">
+          {PRESETS.map((p, i) => (
+            <button
+              key={p.label}
+              type="button"
+              aria-pressed={preset === i}
+              onClick={() => {
+                setPreset(i);
+                setRemainingMs(p.focus * 60_000);
+              }}
+              className={preset === i ? "chip chip-signal" : "chip"}
+            >
+              {p.label}
+            </button>
+          ))}
+        </div>
+      )}
 
       {/* big timer ring — indigo→violet gradient, Bricolage mm:ss readout */}
       <div className="relative w-[320px] max-w-[78vw]">
@@ -235,8 +263,9 @@ export function PomodoroTimer({
         {announce}
       </p>
       <p className="muted relative text-center text-xs">
-        25 minuti di focus, 5 di pausa. Le sessioni da almeno 5 minuti vengono
-        registrate{course ? ` su «${course}»` : ""}.
+        {PRESETS[preset].focus} minuti di focus, {PRESETS[preset].break} di
+        pausa. Le sessioni da almeno 5 minuti vengono registrate
+        {course ? ` su «${course}»` : ""}.
       </p>
     </section>
   );

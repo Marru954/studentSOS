@@ -107,24 +107,39 @@ export function WeekView() {
   const settingsHydrated = useSettings((s) => s.hydrated);
   const hasSources = useSettings((s) => s.enabledSourceIds.length > 0);
   const pinnedCourses = useSettings((s) => s.pinnedCourses);
+  const yearOfStudy = useSettings((s) => s.yearOfStudy);
   const updateSettings = useSettings((s) => s.update);
   const now = useNowMinute();
   const [weekOffset, setWeekOffset] = useState(0);
+  // "auto" = mostra l'anno impostato nelle settings finché l'utente non sceglie.
+  const [yearFilter, setYearFilter] = useState<number | "all" | "auto">("auto");
 
   const ready = now !== null && hydrated && settingsHydrated;
   const weekStart = ready ? addDays(mondayOf(now), weekOffset * 7) : null;
 
-  // every course in the merged all-years feed, for the picker
+  // l'anno effettivamente mostrato: la scelta dell'utente, o l'anno di corso
+  const effectiveYear: number | "all" =
+    yearFilter === "auto" ? (yearOfStudy ?? "all") : yearFilter;
+
+  // gli eventi del solo anno selezionato (il sourceId include "anno-N")
+  const yearFilteredEvents = useMemo(() => {
+    if (effectiveYear === "all") return classEvents;
+    return classEvents.filter((e) =>
+      e.sourceId.includes(`anno-${effectiveYear}`),
+    );
+  }, [classEvents, effectiveYear]);
+
+  // every course in the selected year's feed, for the picker
   const allCourses = useMemo(
-    () => extractCourseNames(classEvents, []),
-    [classEvents],
+    () => extractCourseNames(yearFilteredEvents, []),
+    [yearFilteredEvents],
   );
 
   const weekEvents = useMemo(() => {
     if (!weekStart) return [];
     const from = localToday(weekStart);
     const to = localToday(addDays(weekStart, 5));
-    return classEvents
+    return yearFilteredEvents
       .filter((e) => {
         const day = localDayOf(e.start);
         return day >= from && day <= to;
@@ -133,14 +148,14 @@ export function WeekView() {
         (e) =>
           pinnedCourses.length === 0 || pinnedCourses.includes(e.courseName),
       );
-  }, [classEvents, weekStart, pinnedCourses]);
+  }, [yearFilteredEvents, weekStart, pinnedCourses]);
 
   // soonest lesson still ahead (or in progress), from the same feed as the grid
   const nextLesson = useMemo<ClassEvent | null>(() => {
     if (!ready || !now) return null;
     const ms = now.getTime();
     return (
-      classEvents
+      yearFilteredEvents
         .filter((e) => new Date(e.end).getTime() > ms)
         .filter(
           (e) =>
@@ -148,7 +163,7 @@ export function WeekView() {
         )
         .sort((a, b) => a.start.localeCompare(b.start))[0] ?? null
     );
-  }, [ready, classEvents, pinnedCourses, now]);
+  }, [ready, yearFilteredEvents, pinnedCourses, now]);
 
   return (
     <div className="flex flex-col gap-5">
@@ -204,6 +219,24 @@ export function WeekView() {
         </div>
       ) : (
         <>
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="eyebrow text-ink-mute">Anno:</span>
+            {(["all", 1, 2, 3] as const).map((y) => (
+              <button
+                key={y}
+                type="button"
+                onClick={() => setYearFilter(y)}
+                aria-pressed={effectiveYear === y}
+                className={
+                  effectiveYear === y
+                    ? "grad-fill rounded-full px-3 py-1 text-xs font-semibold text-white shadow-soft"
+                    : "chip transition-colors hover:border-line-strong"
+                }
+              >
+                {y === "all" ? "Tutti" : `${y}° anno`}
+              </button>
+            ))}
+          </div>
           <CoursePicker
             courses={allCourses}
             pinned={pinnedCourses}
