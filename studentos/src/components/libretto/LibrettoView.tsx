@@ -3,8 +3,9 @@
 /** /libretto: the manual territory. Everything here lives only in the
  *  local IndexedDB — sync never reads or writes it. */
 import { useMemo, useState } from "react";
-import { ChevronDown, FileText, GraduationCap, Info } from "lucide-react";
+import { ChevronDown, FileText, GraduationCap, Info, Printer } from "lucide-react";
 import { CfuPanel, GoalPanel, MediaPanel } from "@/components/dashboard/CareerPanels";
+import { Button } from "@/components/primitives/Button";
 import { ConfirmButton } from "@/components/primitives/ConfirmButton";
 import { CountUp } from "@/components/primitives/CountUp";
 import { Panel } from "@/components/primitives/Panel";
@@ -14,11 +15,14 @@ import {
   graduationBase,
   weightedAverage,
 } from "@/lib/domain/libretto";
+import { fmtLongDay } from "@/lib/format";
+import { useNowMinute } from "@/lib/hooks/useNowMinute";
 import { useLibretto } from "@/lib/state/manual";
 import { useSettings } from "@/lib/state/settings";
 import { DelphiConnect } from "./DelphiConnect";
 import { EntryForm } from "./EntryForm";
 import { EntryTable } from "./EntryTable";
+import { GradeSimulator } from "./GradeSimulator";
 import { ImportDelphiPdf } from "./ImportDelphiPdf";
 import { ImportExams } from "./ImportExams";
 import { ProjectionPanel } from "./ProjectionPanel";
@@ -26,6 +30,7 @@ import { ProjectionPanel } from "./ProjectionPanel";
 export function LibrettoView() {
   const libretto = useLibretto();
   const settings = useSettings();
+  const now = useNowMinute();
   const [editingId, setEditingId] = useState<string | null>(null);
   const [yearFilter, setYearFilter] = useState<string>("all");
 
@@ -60,12 +65,16 @@ export function LibrettoView() {
         <div>
           <h1 className="text-2xl font-semibold">Libretto</h1>
           <p className="muted mt-1 text-sm">
-            {verbalised} esami verbalizzati · importati da Delphi
+            {verbalised} esami verbalizzati
           </p>
         </div>
-        <a href="#importa-delphi" className="btn" style={{ padding: "0.6rem 1.1rem", fontSize: "0.85rem" }}>
+        <a
+          href="#importa-delphi"
+          className="btn no-print"
+          style={{ padding: "0.6rem 1.1rem", fontSize: "0.85rem" }}
+        >
           <FileText aria-hidden="true" size={15} />
-          Importa da PDF Delphi
+          Importa da PDF
         </a>
       </header>
 
@@ -137,18 +146,20 @@ export function LibrettoView() {
                 degreePlan: { ...settings.degreePlan, targetAverage: value },
               })
             }
-            className="lg:col-span-12"
+            className="lg:col-span-12 no-print"
           />
+
+          <GradeSimulator className="lg:col-span-12 no-print" />
 
           <MediaPanel
             entries={libretto.items}
             targetAverage={settings.degreePlan.targetAverage}
-            className="lg:col-span-4"
+            className="lg:col-span-4 no-print"
           />
           <CfuPanel
             entries={libretto.items}
             totalCfu={settings.degreePlan.totalCfu}
-            className="lg:col-span-3"
+            className="lg:col-span-3 no-print"
           />
           <ProjectionPanel
             entries={libretto.items}
@@ -159,10 +170,10 @@ export function LibrettoView() {
                 degreePlan: { ...settings.degreePlan, ...patch },
               })
             }
-            className="lg:col-span-5"
+            className="lg:col-span-5 no-print"
           />
 
-          <DelphiConnect className="lg:col-span-5" />
+          <DelphiConnect className="lg:col-span-5 no-print" />
           <EntryForm
             key={editingId ?? "new"}
             initial={editing}
@@ -171,7 +182,7 @@ export function LibrettoView() {
               setEditingId(null);
             }}
             onCancel={editing ? () => setEditingId(null) : undefined}
-            className="lg:col-span-7"
+            className="lg:col-span-7 no-print"
           />
           <Panel
             title="Esami registrati"
@@ -180,7 +191,11 @@ export function LibrettoView() {
             className="lg:col-span-12"
             actions={
               libretto.items.length > 0 ? (
-                <>
+                <div className="no-print flex flex-wrap items-center gap-2">
+                  <Button size="sm" onClick={() => window.print()}>
+                    <Printer aria-hidden="true" className="size-3.5" />
+                    Esporta PDF
+                  </Button>
                   {(years.length > 0 || hasUndated) && (
                     <>
                       <label htmlFor="anno-filter" className="sr-only">
@@ -211,11 +226,16 @@ export function LibrettoView() {
                   >
                     Svuota libretto
                   </ConfirmButton>
-                </>
+                </div>
               ) : undefined
             }
           >
-            <div className="flex flex-col gap-3 border-b border-line p-3">
+            <div className="print-only px-3 pt-3">
+              <h2 className="text-base font-semibold text-ink">
+                Libretto — StudentOS{now ? ` — ${fmtLongDay(now)}` : ""}
+              </h2>
+            </div>
+            <div className="no-print flex flex-col gap-3 border-b border-line p-3">
               <details className="group rounded-md border border-line bg-night-950">
                 <summary className="flex cursor-pointer list-none items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-ink transition-colors hover:bg-night-900 [&::-webkit-details-marker]:hidden">
                   <Info aria-hidden="true" className="size-4 text-signal" />

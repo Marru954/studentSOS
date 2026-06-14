@@ -1,4 +1,4 @@
-import { Gauge, Target, TrendingUp } from "lucide-react";
+import { Gauge, Share2, Target, TrendingUp } from "lucide-react";
 import { Badge } from "@/components/primitives/Badge";
 import { Field, inputClass } from "@/components/primitives/Field";
 import { CountUp } from "@/components/primitives/CountUp";
@@ -16,6 +16,7 @@ import {
 import { estimateGraduation, requiredAverage } from "@/lib/domain/projection";
 import type { LibrettoEntry } from "@/lib/domain/types";
 import { fmtMonthYear, fmtNum } from "@/lib/format";
+import { useToast } from "@/lib/state/toast";
 
 /** Weighted average instrument with the grades-over-time scatter and base di
  *  laurea projection. */
@@ -31,8 +32,41 @@ export function MediaPanel({
   const average = weightedAverage(entries);
   const points = gradePoints(entries);
 
+  async function share() {
+    if (average === undefined) return;
+    const text = `La mia media ponderata su StudentOS: ${fmtNum(average, 2)}/30 (base di laurea: ${fmtNum(graduationBase(average), 1)}/110) 🎓 studentos.app`;
+    try {
+      if (typeof navigator !== "undefined" && navigator.share) {
+        await navigator.share({ text });
+      } else if (typeof navigator !== "undefined" && navigator.clipboard) {
+        await navigator.clipboard.writeText(text);
+        useToast.getState().show("Copiato negli appunti!", "ok");
+      } else {
+        useToast.getState().show("Condivisione non disponibile.", "warn");
+      }
+    } catch {
+      // condivisione annullata dall'utente o permesso negato — ignora
+    }
+  }
+
   return (
-    <Panel title="Carriera" icon={<TrendingUp />} className={className}>
+    <Panel
+      title="Carriera"
+      icon={<TrendingUp />}
+      className={className}
+      actions={
+        average !== undefined ? (
+          <button
+            type="button"
+            onClick={share}
+            className="no-print inline-flex items-center gap-1.5 rounded-full border border-line px-3 py-1 text-xs font-medium text-ink-mute transition-colors hover:border-line-strong hover:text-ink"
+          >
+            <Share2 aria-hidden="true" className="size-3.5" />
+            Condividi
+          </button>
+        ) : undefined
+      }
+    >
       {average === undefined ? (
         <p className="text-sm text-ink-mute">
           Registra i voti nel libretto per vedere media, andamento e base di

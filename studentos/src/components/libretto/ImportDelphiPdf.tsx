@@ -13,48 +13,9 @@ import { useRef, useState } from "react";
 import { Badge } from "@/components/primitives/Badge";
 import { Button } from "@/components/primitives/Button";
 import { parseDelphiPdfText, type DelphiPdfResult } from "@/lib/domain/delphiPdf";
+import { itemsToLines, type PdfTextItem } from "@/lib/domain/pdfLayout";
 import type { Grade } from "@/lib/domain/types";
 import { useLibretto } from "@/lib/state/manual";
-
-/** Item di testo restituito da pdfjs (sottoinsieme che ci serve). */
-interface PdfTextItem {
-  str: string;
-  width: number;
-  height: number;
-  transform: number[];
-}
-
-/** Ricostruisce le righe di una pagina: raggruppa per coordinata Y, ordina per
- *  X, e inserisce un TAB dove il salto orizzontale è ampio (confine di colonna)
- *  e uno spazio per i salti piccoli — così il nome del corso resta unito. */
-function itemsToLines(items: PdfTextItem[]): string {
-  const rows = new Map<number, PdfTextItem[]>();
-  for (const it of items) {
-    // pdfjs intercala "marked content" senza testo né transform: ignorali.
-    if (!it.str || !it.str.trim() || !it.transform) continue;
-    const y = Math.round(it.transform[5] / 3) * 3; // tolleranza ~3pt
-    (rows.get(y) ?? rows.set(y, []).get(y)!).push(it);
-  }
-  const ys = [...rows.keys()].sort((a, b) => b - a); // PDF: Y cresce verso l'alto
-  const lines: string[] = [];
-  for (const y of ys) {
-    const cells = rows.get(y)!.sort((a, b) => a.transform[4] - b.transform[4]);
-    let line = "";
-    let prevEnd: number | null = null;
-    for (const c of cells) {
-      const x = c.transform[4];
-      if (prevEnd !== null) {
-        const gap = x - prevEnd;
-        const big = Math.max(8, c.height * 0.6);
-        line += gap > big ? "\t" : gap > c.height * 0.15 ? " " : "";
-      }
-      line += c.str;
-      prevEnd = x + c.width;
-    }
-    lines.push(line);
-  }
-  return lines.join("\n");
-}
 
 /** Estrae tutto il testo del PDF lato client. Lazy-import di pdfjs: pesa, e non
  *  deve entrare nel bundle finché l'utente non importa davvero un PDF. */

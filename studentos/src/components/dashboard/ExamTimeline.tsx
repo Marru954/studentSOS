@@ -184,7 +184,14 @@ export function ExamTimeline({
                     </div>
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="text-sm font-medium text-ink">{g.course}</p>
+                    <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm font-medium text-ink">
+                      {g.course}
+                      {bookingDays === 0 && (
+                        <span className="chip chip-danger pulse-soft">
+                          iscriviti oggi!
+                        </span>
+                      )}
+                    </p>
                     <p className="font-num text-xs text-ink-faint">
                       {timeRoom(g.nearest)}
                     </p>

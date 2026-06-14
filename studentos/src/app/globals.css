@@ -636,3 +636,13 @@ input[type="radio"]:active {
   .anim-ready .word .mid { animation: none !important; }
   .reveal { opacity: 1 !important; transform: none !important; transition: none; }
 }
+
+/* print: strip the immersive chrome so an export (e.g. the libretto PDF) is a
+   clean document. `.print-only` blocks are hidden on screen, shown on paper. */
+.print-only { display: none; }
+@media print {
+  .no-print { display: none !important; }
+  .print-only { display: block !important; }
+  .atmosphere, .grain { display: none !important; }
+  body { background: #fff; }
+}

@@ -12,6 +12,7 @@ import { Field, inputClass } from "@/components/primitives/Field";
 import { cn } from "@/lib/cn";
 import type { IsoDate, StudyTask, TaskStatus } from "@/lib/domain/types";
 import { daysBetweenIso, fmtPlainDayMonth } from "@/lib/format";
+import { useToast } from "@/lib/state/toast";
 
 const STATUS_ORDER: TaskStatus[] = ["backlog", "todo", "doing", "done"];
 const STATUS_LABEL: Record<TaskStatus, string> = {
@@ -70,6 +71,7 @@ export function TaskBoard({
     });
     setTitle("");
     setDue("");
+    useToast.getState().show("Obiettivo aggiunto.", "ok");
   }
 
   function move(task: StudyTask, direction: 1 | -1) {

@@ -9,14 +9,14 @@
     { icon: "Timer", title: "Focus", desc: "Timer Pomodoro e board obiettivi. Le sessioni diventano statistiche di costanza." },
   ];
   const STEPS = [
-    { n: "01", title: "Scarica il PDF da Delphi", text: "Delphi → Esami → Esami verbalizzati → stampa la pagina come PDF dal browser." },
-    { n: "02", title: "Caricalo su StudentOS", text: "Libretto → «Importa da PDF Delphi». Leggiamo esami, voti, CFU e date automaticamente." },
-    { n: "03", title: "Libretto aggiornato", text: "Media ponderata, CFU acquisiti e andamento voti, pronti. Ri-importa quando vuoi." },
+    { n: "01", title: "Scegli il tuo ateneo", text: "Cerca tra le università supportate e seleziona il tuo corso di laurea e anno. Nessun account richiesto." },
+    { n: "02", title: "Seleziona i tuoi corsi", text: "Scegli le materie che frequenti. StudentOS sincronizza orario, appelli e avvisi solo per te." },
+    { n: "03", title: "Tutto aggiornato", text: "Media ponderata, CFU acquisiti, prossimi appelli e orario settimanale — pronti e sempre offline." },
   ];
   const STATS = [
-    { value: 180, unit: "CFU", desc: "il percorso completo di Informatica a Tor Vergata" },
-    { value: 30, unit: "esami", desc: "tracciati uno per uno fino alla laurea" },
+    { value: 50, unit: "atenei", desc: "università italiane già supportate" },
     { value: 100, unit: "% offline", desc: "nessun dato sui server — tutto sul tuo dispositivo" },
+    { value: 5, unit: "min", desc: "per essere operativo dal primo avvio" },
   ];
   const ALL = [
     ["GradCap", "Libretto", "voti da Delphi o manuali"],

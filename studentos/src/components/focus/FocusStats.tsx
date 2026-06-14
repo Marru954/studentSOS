@@ -4,7 +4,23 @@ import { Badge } from "@/components/primitives/Badge";
 import { cn } from "@/lib/cn";
 import { focusByCourse, minutesInRange } from "@/lib/domain/focus";
 import type { FocusSession, Grade, LibrettoEntry } from "@/lib/domain/types";
-import { fmtMinutes } from "@/lib/format";
+import { fmtMinutes, localToday } from "@/lib/format";
+
+/** Consecutive days (ending today, or yesterday as grace) with ≥1 session.
+ *  0 when neither today nor yesterday has a session. */
+function studyStreak(sessions: FocusSession[], now: Date): number {
+  const days = new Set(sessions.map((s) => localToday(new Date(s.startedAt))));
+  const cursor = new Date(now);
+  cursor.setHours(0, 0, 0, 0);
+  // allow the streak to anchor on yesterday if nothing's logged today yet
+  if (!days.has(localToday(cursor))) cursor.setDate(cursor.getDate() - 1);
+  let streak = 0;
+  while (days.has(localToday(cursor))) {
+    streak++;
+    cursor.setDate(cursor.getDate() - 1);
+  }
+  return streak;
+}
 
 function gradeLabel(grade?: Grade): React.ReactNode {
   if (!grade) return <span className="text-ink-mute">—</span>;
@@ -43,6 +59,13 @@ export function FocusStats({
   const today = minutesInRange(sessions, dayStart.toISOString(), end.toISOString());
   const week = minutesInRange(sessions, weekStart.toISOString(), end.toISOString());
   const perCourse = focusByCourse(sessions, libretto);
+  const streak = studyStreak(sessions, now);
+  const streakLabel =
+    streak === 0
+      ? "Inizia oggi"
+      : streak === 1
+        ? "🔥 1 giorno"
+        : `🔥 ${streak} giorni di fila`;
 
   const cells = [
     { value: fmtMinutes(today), label: "Tempo oggi", Icon: Flame },
@@ -52,6 +75,21 @@ export function FocusStats({
 
   return (
     <div className={cn("flex flex-col gap-5", className)}>
+      <div className="reveal flex items-center gap-2">
+        <span
+          className={cn(
+            "chip",
+            streak > 0 ? "chip-warn font-semibold" : "text-ink-mute",
+          )}
+        >
+          {streakLabel}
+        </span>
+        <span className="text-[0.8rem] text-ink-faint">
+          {streak > 0
+            ? "Continua così: ogni giorno conta."
+            : "Avvia una sessione per accendere la streak."}
+        </span>
+      </div>
       <div className="grid grid-cols-3 gap-3">
         {cells.map(({ value, label, Icon }) => (
           <div

@@ -19,11 +19,22 @@ export function TodayTimeline({
   events: ClassEvent[];
   className?: string;
 }) {
-  // Niente lezioni oggi → non mostrare nulla.
-  if (events.length === 0) return null;
+  // Niente lezioni oggi → messaggio positivo, non un buco nel cruscotto.
+  if (events.length === 0) {
+    return (
+      <Panel title="Oggi" icon={<Clock />} className={className}>
+        <p className="text-sm text-ink-mute">Nessuna lezione oggi 🎉</p>
+      </Panel>
+    );
+  }
 
   return (
-    <Panel title="Oggi" icon={<Clock />} className={className}>
+    <Panel
+      title="Oggi"
+      icon={<Clock />}
+      className={className}
+      actions={<Badge tone="neutral">{events.length}</Badge>}
+    >
       {
         <ol className="flex flex-col divide-y divide-line">
           {events.map((e) => {

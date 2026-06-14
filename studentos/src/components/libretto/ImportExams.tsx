@@ -10,6 +10,7 @@ import { useRef, useState } from "react";
 import { Button } from "@/components/primitives/Button";
 import { parseLibrettoCsv } from "@/lib/domain/csv";
 import { useLibretto } from "@/lib/state/manual";
+import { useToast } from "@/lib/state/toast";
 
 const TEMPLATE = `# Formati accettati: voto da 18 a 30, "30L" per la lode, "Idoneo" per le idoneità, data in formato gg/mm/aaaa. Sostituisci le righe di esempio con i tuoi esami.
 corso,cfu,voto,data,anno_accademico
@@ -36,14 +37,16 @@ export function ImportExams() {
     const text = await file.text();
     const result = parseLibrettoCsv(text);
     if (result.entries.length > 0) await upsertMany(result.entries);
+    const summary =
+      result.imported > 0
+        ? `${result.imported} esami importati${result.skipped ? `, ${result.skipped} saltati` : ""}.`
+        : "Nessun esame importato.";
     setFeedback({
       ok: result.imported > 0,
-      text:
-        result.imported > 0
-          ? `${result.imported} esami importati${result.skipped ? `, ${result.skipped} saltati` : ""}.`
-          : "Nessun esame importato.",
+      text: summary,
       errors: result.errors.slice(0, 6),
     });
+    useToast.getState().show(summary, result.imported > 0 ? "ok" : "warn");
   }
 
   function downloadTemplate() {

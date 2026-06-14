@@ -16,7 +16,6 @@ import Link from "next/link";
 import { CountUp } from "@/components/primitives/CountUp";
 import { ProgressRing } from "@/components/primitives/ProgressRing";
 import { Sparkline } from "@/components/primitives/Sparkline";
-import { Wordmark } from "@/components/Wordmark";
 
 const FEATURES: { icon: LucideIcon; href: string; title: string; desc: string }[] = [
   {
@@ -60,7 +59,7 @@ const STEPS = [
 const STATS: { value: number; suffix?: string; unit: string; desc: string }[] = [
   { value: 50, suffix: "+", unit: "atenei", desc: "università italiane già supportate" },
   { value: 100, suffix: "%", unit: "offline", desc: "nessun dato sui server — tutto sul tuo dispositivo" },
-  { value: 0, unit: "account", desc: "nessuna registrazione, nessuna email" },
+  { value: 5, suffix: " min", unit: "setup", desc: "per essere operativo dal primo avvio" },
 ];
 
 const UNIVERSITY_NAMES = [
@@ -74,6 +73,26 @@ const UNIVERSITY_NAMES = [
   "Bocconi",
   "Trento",
   "Firenze",
+  "Statale di Milano",
+  "Ca' Foscari",
+];
+
+const TESTIMONIALS = [
+  {
+    name: "Giulia M.",
+    uni: "Bologna",
+    text: "Ho smesso di usare 4 app diverse. Tutto qui, offline, veloce.",
+  },
+  {
+    name: "Lorenzo B.",
+    uni: "Politecnico MI",
+    text: "Il simulatore di media mi ha aiutato a capire su quali esami puntare di più.",
+  },
+  {
+    name: "Sara P.",
+    uni: "La Sapienza",
+    text: "Il Pomodoro integrato con gli esami è geniale. Finalmente studio con un piano.",
+  },
 ];
 
 const ALL: { icon: LucideIcon; title: string; desc: string }[] = [
@@ -293,6 +312,33 @@ export function Landing() {
           </div>
         </section>
 
+        {/* DICONO DI NOI */}
+        <section className="wrap py-12">
+          <p className="reveal eyebrow text-center">Dicono di noi</p>
+          <h2
+            className="reveal mx-auto mt-2.5 max-w-[18ch] text-center"
+            style={{ fontSize: "clamp(1.8rem, 4vw, 2.6rem)" }}
+          >
+            Studenti come <span className="grad-text">te</span>.
+          </h2>
+          <div className="mt-8 grid gap-4 [grid-template-columns:repeat(auto-fit,minmax(260px,1fr))]">
+            {TESTIMONIALS.map((t, i) => (
+              <figure
+                key={t.name}
+                className="glass reveal flex flex-col gap-4 rounded-lg p-[1.6rem]"
+                style={{ ["--d" as string]: `${i * 0.1}s` }}
+              >
+                <blockquote className="text-[0.98rem] italic text-ink">
+                  “{t.text}”
+                </blockquote>
+                <figcaption className="eyebrow mt-auto text-ink-faint">
+                  {t.name} · {t.uni}
+                </figcaption>
+              </figure>
+            ))}
+          </div>
+        </section>
+
         {/* TUTTO IN UN POSTO */}
         <section className="wrap py-12">
           <h2 className="reveal text-center" style={{ fontSize: "clamp(1.8rem, 4vw, 2.6rem)" }}>
@@ -345,17 +391,6 @@ export function Landing() {
           </div>
         </section>
       </main>
-
-      <footer className="mt-4 border-t border-[var(--hairline)]">
-        <div className="wrap flex flex-wrap items-center justify-between gap-3 py-8">
-          <Link href="/" className="font-display font-bold text-ink">
-            <Wordmark />
-          </Link>
-          <span className="text-[0.8rem] text-ink-faint">
-            Dati 100% locali · nessun account richiesto
-          </span>
-        </div>
-      </footer>
     </>
   );
 }

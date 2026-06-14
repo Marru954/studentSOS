@@ -118,12 +118,22 @@ export function OnboardingDialog() {
               onChange={(e) => setPresetId(e.target.value)}
               className={inputClass}
             >
+              <option value="" disabled>
+                — Seleziona ateneo —
+              </option>
               {UNIVERSITY_PRESETS.map((p) => (
                 <option key={p.id} value={p.id}>
                   {p.name} — {p.programme}
                 </option>
               ))}
             </select>
+            <p className="mt-1 text-xs text-ink-mute">
+              Non trovi il tuo ateneo?{" "}
+              <a href="mailto:hello@studentos.app" className="underline">
+                Segnalacelo
+              </a>{" "}
+              — stiamo aggiungendo nuovi atenei ogni settimana.
+            </p>
           </Field>
 
           <fieldset>

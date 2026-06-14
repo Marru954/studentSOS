@@ -6,12 +6,20 @@
  * waits for the first client tick (`now !== null`), so the SSR skeleton and
  * the first client render always match.
  */
-import { Settings2 } from "lucide-react";
+import { CalendarClock, Settings2 } from "lucide-react";
 import { useMemo } from "react";
 import { Button } from "@/components/primitives/Button";
 import { PanelSkeleton } from "@/components/primitives/Skeleton";
+import type { ExamCall } from "@/lib/domain/types";
 import { weightedAverage } from "@/lib/domain/libretto";
-import { daysFromToday, fmtLongDay, localDayOf, localToday } from "@/lib/format";
+import {
+  daysFromToday,
+  fmtDayOfMonth,
+  fmtLongDay,
+  fmtMonthAbbr,
+  localDayOf,
+  localToday,
+} from "@/lib/format";
 import { useNowMinute } from "@/lib/hooks/useNowMinute";
 import { useLibretto } from "@/lib/state/manual";
 import { useSettings } from "@/lib/state/settings";
@@ -25,6 +33,31 @@ import { QuickActions } from "./QuickActions";
 import { SummaryBar } from "./SummaryBar";
 import { SyncStatus } from "./SyncStatus";
 import { TodayTimeline } from "./TodayTimeline";
+
+/** Compact banner for the soonest upcoming exam, tone-graded by how close it is
+ *  (rosso < 7 giorni, arancione < 14, neutro oltre). Hidden when none ahead. */
+function NextExamBanner({ exam, days }: { exam: ExamCall; days: number }) {
+  const tone =
+    days < 7
+      ? { border: "var(--danger)", text: "text-danger" }
+      : days < 14
+        ? { border: "var(--warn)", text: "text-warn" }
+        : { border: "var(--signal-2)", text: "text-ink-mute" };
+  const rel = days === 0 ? "oggi" : days === 1 ? "domani" : `tra ${days} giorni`;
+  return (
+    <div
+      className="glass flex flex-wrap items-center gap-x-2 gap-y-1 rounded-lg px-4 py-2.5 text-sm lg:col-span-12"
+      style={{ borderLeft: `3px solid ${tone.border}` }}
+    >
+      <CalendarClock aria-hidden="true" className={`size-4 shrink-0 ${tone.text}`} />
+      <span className="text-ink-mute">Prossimo esame:</span>
+      <span className="font-medium text-ink">{exam.courseName}</span>
+      <span className="text-ink-faint">
+        — {fmtDayOfMonth(exam.date)} {fmtMonthAbbr(exam.date)} · {rel}
+      </span>
+    </div>
+  );
+}
 
 export function Dashboard() {
   const synced = useSynced();
@@ -63,6 +96,19 @@ export function Dashboard() {
     () => (ready ? weightedAverage(libretto.items) : undefined),
     [ready, libretto.items],
   );
+
+  // soonest upcoming exam, for the header banner
+  const nextExam = useMemo<{ exam: ExamCall; days: number } | null>(() => {
+    if (!ready || now === null) return null;
+    const exam = synced.examCalls
+      .filter((e) => daysFromToday(e.date, now) >= 0)
+      .sort(
+        (a, b) =>
+          a.date.localeCompare(b.date) ||
+          (a.time ?? "").localeCompare(b.time ?? ""),
+      )[0];
+    return exam ? { exam, days: daysFromToday(exam.date, now) } : null;
+  }, [ready, synced.examCalls, now]);
 
   return (
     <div className="flex flex-col gap-5">
@@ -115,7 +161,12 @@ export function Dashboard() {
           {/* One-tap shortcuts. */}
           <QuickActions className="lg:col-span-12" />
 
-          {/* Today's lessons: a card when there are any, nothing when not. */}
+          {/* The next exam, front and centre. */}
+          {nextExam && (
+            <NextExamBanner exam={nextExam.exam} days={nextExam.days} />
+          )}
+
+          {/* Today's lessons. */}
           <TodayTimeline events={todayEvents} className="lg:col-span-12" />
 
           {/* Header stats: the two career instruments, front and centre. */}

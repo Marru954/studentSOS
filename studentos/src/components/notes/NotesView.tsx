@@ -10,6 +10,7 @@ import { extractCourseNames, searchNotes } from "@/lib/domain/notes";
 import type { Note } from "@/lib/domain/types";
 import { useNotes } from "@/lib/state/manual";
 import { useSynced } from "@/lib/state/synced";
+import { useToast } from "@/lib/state/toast";
 import { NoteEditor } from "./NoteEditor";
 import { NoteList } from "./NoteList";
 
@@ -47,6 +48,7 @@ export function NotesView() {
     };
     void notes.upsert(note);
     setSelectedId(note.id);
+    useToast.getState().show("Nota creata.", "ok");
   }
 
   return (

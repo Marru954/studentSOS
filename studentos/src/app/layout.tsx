@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import { Bricolage_Grotesque, Inter } from "next/font/google";
+import { AppFooter } from "@/components/AppFooter";
 import { AppNav } from "@/components/AppNav";
 import { OnboardingDialog } from "@/components/onboarding/OnboardingDialog";
 import { RevealManager } from "@/components/RevealManager";
 import { StoreProvider } from "@/components/StoreProvider";
+import { ToastHost } from "@/components/primitives/Toast";
 import "./globals.css";
 
 const inter = Inter({
@@ -40,7 +42,7 @@ export default function RootLayout({
       <head>
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT }} />
       </head>
-      <body className="min-h-full flex flex-col">
+      <body className="min-h-full flex flex-col pb-[68px] sm:pb-0">
         {/* drifting aurora behind the glass UI */}
         <div className="atmosphere" aria-hidden="true">
           <div className="aurora a1" />
@@ -58,8 +60,10 @@ export default function RootLayout({
         <StoreProvider>
           <AppNav />
           {children}
+          <AppFooter />
           <OnboardingDialog />
         </StoreProvider>
+        <ToastHost />
         <RevealManager />
       </body>
     </html>
