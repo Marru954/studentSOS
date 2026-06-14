@@ -14,7 +14,7 @@ export function AppFooter() {
           <Wordmark />
         </Link>
         <span className="text-ink-mute">
-          Dati 100% locali · nessun account richiesto
+          Dati sincronizzati sul tuo account · accesso con email universitaria
         </span>
         <span className="font-num text-ink-faint">v0.1.0</span>
       </div>

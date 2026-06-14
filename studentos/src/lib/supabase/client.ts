@@ -36,8 +36,11 @@ export function getSupabase(): SupabaseClient | null {
     auth: {
       // magic-link tokens land in the URL; finalise the session client-side.
       detectSessionInUrl: true,
+      // session persists in localStorage under our own key → a reload restores
+      // it without re-login; the token auto-refreshes in the background.
       persistSession: true,
       autoRefreshToken: true,
+      storageKey: "studentos-auth",
       flowType: "pkce",
     },
   });

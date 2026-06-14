@@ -44,7 +44,7 @@ const STEPS = [
   {
     n: "01",
     title: "Scegli il tuo ateneo",
-    text: "Cerca tra le università supportate e seleziona il tuo corso di laurea e anno. Nessun account richiesto.",
+    text: "Cerca tra le università supportate e seleziona il tuo corso di laurea e anno. Accedi con la tua email universitaria.",
   },
   {
     n: "02",
@@ -54,12 +54,12 @@ const STEPS = [
   {
     n: "03",
     title: "Tutto aggiornato",
-    text: "Media ponderata, CFU acquisiti, prossimi appelli e orario settimanale — pronti e sempre offline.",
+    text: "Media ponderata, CFU acquisiti, prossimi appelli e orario settimanale — pronti ovunque, sempre sincronizzati.",
   },
 ];
 
 const STATS: { value: number; suffix?: string; unit: string; desc: string }[] = [
-  { value: 100, suffix: "%", unit: "offline", desc: "nessun dato sui server — tutto sul tuo dispositivo" },
+  { value: 100, suffix: "%", unit: "sincronizzato", desc: "i tuoi dati sul tuo account, accessibili da ogni dispositivo" },
   { value: 1, unit: "PDF", desc: "tutta la carriera importata in un colpo solo" },
   { value: 5, suffix: " min", unit: "setup", desc: "per essere operativo dal primo avvio" },
 ];
@@ -85,13 +85,13 @@ const SAMPLE_TROPHIES: {
 const COMPARE_COLS = ["StudentOS", "Excel", "Portale ateneo", "Altre app"];
 type Cell = "yes" | "no" | "partial";
 const COMPARE_ROWS: { feature: string; cells: Cell[] }[] = [
-  { feature: "100% offline", cells: ["yes", "yes", "no", "no"] },
-  { feature: "Nessun account", cells: ["yes", "yes", "no", "no"] },
+  { feature: "Accesso da qualsiasi dispositivo", cells: ["yes", "yes", "no", "no"] },
+  { feature: "Nessun abbonamento", cells: ["yes", "yes", "no", "no"] },
   { feature: "Media e proiezione laurea live", cells: ["yes", "partial", "no", "partial"] },
   { feature: "Appelli + avvisi sui conflitti", cells: ["yes", "no", "partial", "partial"] },
   { feature: "Focus / Pomodoro integrato", cells: ["yes", "no", "no", "partial"] },
   { feature: "Import del PDF carriera", cells: ["yes", "no", "no", "no"] },
-  { feature: "Dati solo sul tuo dispositivo", cells: ["yes", "yes", "no", "no"] },
+  { feature: "Privacy: i tuoi dati restano tuoi", cells: ["yes", "yes", "no", "no"] },
 ];
 
 const UNIVERSITY_NAMES = [
@@ -113,7 +113,7 @@ const TESTIMONIALS = [
   {
     name: "Giulia M.",
     uni: "Bologna",
-    text: "Ho smesso di usare 4 app diverse. Tutto qui, offline, veloce.",
+    text: "Ho smesso di usare 4 app diverse. Tutto qui, sincronizzato, veloce.",
   },
   {
     name: "Lorenzo B.",
@@ -206,12 +206,12 @@ export function Landing() {
             style={{ fontSize: "clamp(1.05rem, 2.4vw, 1.35rem)" }}
           >
             Esami, appelli, libretto e carriera in un unico posto.{" "}
-            <span className="text-ink">Calmo, immersivo, tutto offline.</span>
+            <span className="text-ink">Calmo, immersivo, sempre sincronizzato.</span>
           </p>
           <div ref={fadeIn(2000)} className="mt-9 flex flex-col items-center gap-3">
             <div className="flex flex-wrap justify-center gap-3">
               <Link href="/cruscotto" className="btn btn-primary">
-                Inizia ora — senza account
+                Inizia ora — con la tua email
                 <ArrowRight className="size-[1.05rem]" aria-hidden="true" />
               </Link>
               <Link href="/focus" className="btn">
@@ -219,7 +219,7 @@ export function Landing() {
               </Link>
             </div>
             <p className="eyebrow text-ink-faint">
-              Nessuna registrazione · 100% offline · gratis
+              Email universitaria · dati sincronizzati · gratis
             </p>
           </div>
           <div className="mt-12">
@@ -483,7 +483,7 @@ export function Landing() {
                 Prendi il largo senza affogare negli appelli.
               </h2>
               <p className="mx-auto mt-4 max-w-[36ch] text-ink-mute">
-                Nessun account, nessun server. Apri il cruscotto e parti.
+                Accedi con la tua email universitaria. Apri il cruscotto e parti.
               </p>
               <div className="mt-7 flex justify-center">
                 <Link href="/cruscotto" className="btn btn-primary">

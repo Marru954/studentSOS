@@ -64,6 +64,28 @@ export const useAuth = create<AuthState>()((set, get) => ({
   },
 }));
 
+/**
+ * DEV ONLY. Fakes a signed-in session for any email so the logged-in UX can be
+ * tested locally without a magic link. No real Supabase auth happens — the
+ * synthetic user has no JWT, so any cloud write is silently rejected by RLS
+ * (best-effort, harmless). The whole branch is stripped from production builds
+ * by the static NODE_ENV check.
+ */
+export function devLogin(emailRaw: string): void {
+  if (process.env.NODE_ENV !== "development") return;
+  const email = emailRaw.trim().toLowerCase() || "test@studenti.uniroma2.it";
+  const user = {
+    id: "00000000-0000-0000-0000-000000000000",
+    email,
+    aud: "authenticated",
+    role: "authenticated",
+    app_metadata: { provider: "dev" },
+    user_metadata: {},
+    created_at: "1970-01-01T00:00:00.000Z",
+  } as unknown as User;
+  useAuth.setState({ user, email, status: "signedIn", hydrated: true });
+}
+
 export interface MagicLinkResult {
   ok: boolean;
   /** Localised message to surface to the user. */

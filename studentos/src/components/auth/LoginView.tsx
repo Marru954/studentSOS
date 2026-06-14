@@ -10,12 +10,16 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { Wordmark } from "@/components/Wordmark";
 import { Button } from "@/components/primitives/Button";
+import { useRouter } from "next/navigation";
 import { detectAteneo, isUniversityEmail } from "@/lib/domain/emailToAteneo";
 import { getPreset } from "@/lib/sync/universities";
-import { sendMagicLink } from "@/lib/supabase/auth";
+import { devLogin, sendMagicLink } from "@/lib/supabase/auth";
 import { supabaseConfigured } from "@/lib/supabase/client";
 
+const IS_DEV = process.env.NODE_ENV === "development";
+
 export function LoginView() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
@@ -145,6 +149,37 @@ export function LoginView() {
           </form>
         )}
       </div>
+
+      {IS_DEV && (
+        <div className="mt-4 rounded-xl border border-dashed border-warn/50 bg-warn-dim p-4">
+          <p className="mb-2 text-xs font-semibold text-warn">
+            Dev · accesso di test (solo development)
+          </p>
+          <p className="mb-3 text-[0.7rem] text-ink-mute">
+            Salta il magic link: entra con qualsiasi email per provare la UX
+            loggata. Sessione finta, nessuna auth reale.
+          </p>
+          <div className="flex gap-2">
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="test@studenti.uniroma2.it"
+              aria-label="Email utente di test"
+              className="h-9 flex-1 rounded-lg border border-line bg-night-800 px-3 text-sm text-ink placeholder:text-ink-faint focus:border-warn focus:outline-none"
+            />
+            <Button
+              type="button"
+              onClick={() => {
+                devLogin(email);
+                router.push("/cruscotto");
+              }}
+            >
+              Accedi come test
+            </Button>
+          </div>
+        </div>
+      )}
 
       <p className="mt-6 text-center text-xs text-ink-mute">
         Preferisci senza account?{" "}
