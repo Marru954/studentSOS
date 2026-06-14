@@ -23,7 +23,7 @@ const FEATURES: { icon: LucideIcon; href: string; title: string; desc: string }[
     icon: GraduationCap,
     href: "/libretto",
     title: "Libretto digitale",
-    desc: "Importa i voti da Delphi: media ponderata e CFU sempre aggiornati, in tempo reale.",
+    desc: "Importa i voti dal portale del tuo ateneo o inseriscili a mano: media ponderata e CFU sempre aggiornati.",
   },
   {
     icon: CalendarClock,
@@ -42,29 +42,42 @@ const FEATURES: { icon: LucideIcon; href: string; title: string; desc: string }[
 const STEPS = [
   {
     n: "01",
-    title: "Scarica il PDF da Delphi",
-    text: "Delphi → Esami → Esami verbalizzati → stampa la pagina come PDF dal browser.",
+    title: "Scegli il tuo ateneo",
+    text: "Cerca tra le università supportate e seleziona il tuo corso di laurea e anno. Nessun account richiesto.",
   },
   {
     n: "02",
-    title: "Caricalo su StudentOS",
-    text: "Libretto → «Importa da PDF Delphi». Leggiamo esami, voti, CFU e date automaticamente.",
+    title: "Seleziona i tuoi corsi",
+    text: "Scegli le materie che frequenti. StudentOS sincronizza orario, appelli e avvisi solo per te.",
   },
   {
     n: "03",
-    title: "Libretto aggiornato",
-    text: "Media ponderata, CFU acquisiti e andamento voti, pronti. Ri-importa quando vuoi.",
+    title: "Tutto aggiornato",
+    text: "Media ponderata, CFU acquisiti, prossimi appelli e orario settimanale — pronti e sempre offline.",
   },
 ];
 
 const STATS: { value: number; suffix?: string; unit: string; desc: string }[] = [
-  { value: 180, unit: "CFU", desc: "il percorso completo di Informatica a Tor Vergata" },
-  { value: 30, unit: "esami", desc: "tracciati uno per uno fino alla laurea" },
+  { value: 50, suffix: "+", unit: "atenei", desc: "università italiane già supportate" },
   { value: 100, suffix: "%", unit: "offline", desc: "nessun dato sui server — tutto sul tuo dispositivo" },
+  { value: 0, unit: "account", desc: "nessuna registrazione, nessuna email" },
+];
+
+const UNIVERSITY_NAMES = [
+  "Tor Vergata",
+  "La Sapienza",
+  "Politecnico di Milano",
+  "Università di Bologna",
+  "Federico II",
+  "Politecnico di Torino",
+  "Università di Padova",
+  "Bocconi",
+  "Trento",
+  "Firenze",
 ];
 
 const ALL: { icon: LucideIcon; title: string; desc: string }[] = [
-  { icon: GraduationCap, title: "Libretto", desc: "voti da Delphi o manuali" },
+  { icon: GraduationCap, title: "Libretto", desc: "voti dal portale o manuali" },
   { icon: CalendarClock, title: "Appelli", desc: "date, avvisi e conflitti" },
   { icon: NotebookPen, title: "Note", desc: "appunti per materia" },
   { icon: Timer, title: "Focus", desc: "Pomodoro per studiare meglio" },
@@ -120,8 +133,8 @@ function HeroCard() {
         </div>
       </div>
       <div className="mt-[1.1rem] flex items-center gap-2.5 border-t border-[var(--hairline)] pt-4">
-        <span className="chip chip-danger">Calcolo prob. · 2g</span>
-        <span className="chip">Basi di dati · 03/07</span>
+        <span className="chip chip-danger">Analisi I · 2g</span>
+        <span className="chip">Sistemi · 10/07</span>
       </div>
     </div>
   );
@@ -203,6 +216,34 @@ export function Landing() {
           </div>
         </section>
 
+        {/* ATENEI SUPPORTATI */}
+        <section className="wrap py-12">
+          <p className="reveal eyebrow text-center">Atenei supportati</p>
+          <h2
+            className="reveal mx-auto mt-2.5 max-w-[20ch] text-center"
+            style={{ fontSize: "clamp(1.8rem, 4vw, 2.6rem)" }}
+          >
+            Funziona per il <span className="grad-text">tuo ateneo</span>.
+          </h2>
+          <div className="mt-8 grid gap-3 [grid-template-columns:repeat(auto-fit,minmax(200px,1fr))]">
+            {UNIVERSITY_NAMES.map((name, i) => (
+              <div
+                key={name}
+                className="glass lift reveal flex items-center justify-center rounded-lg px-[1.2rem] py-[1.1rem] text-center text-[0.95rem] font-semibold"
+                style={{ ["--d" as string]: `${(i % 3) * 0.07}s` }}
+              >
+                {name}
+              </div>
+            ))}
+          </div>
+          <p className="reveal mt-6 text-center text-sm text-ink-mute">
+            Il tuo ateneo non è in lista?{" "}
+            <a href="mailto:support@studentos.app" className="underline hover:text-ink">
+              Segnalacelo →
+            </a>
+          </p>
+        </section>
+
         {/* COME FUNZIONA */}
         <section className="wrap py-16">
           <p className="reveal eyebrow text-center">Come funziona</p>
@@ -210,7 +251,7 @@ export function Landing() {
             className="reveal mx-auto mt-2.5 max-w-[16ch] text-center"
             style={{ ["--d" as string]: "0.05s", fontSize: "clamp(2rem, 5vw, 3.2rem)" }}
           >
-            Dal PDF di Delphi al <span className="grad-text">libretto vivo</span> in tre passi.
+            Dal tuo ateneo al <span className="grad-text">cruscotto</span> in tre passi.
           </h2>
           <div className="mt-10 grid gap-4 [grid-template-columns:repeat(auto-fit,minmax(240px,1fr))]">
             {STEPS.map((s, i) => (
