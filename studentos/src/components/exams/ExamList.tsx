@@ -169,7 +169,7 @@ export function ExamList() {
         </Panel>
       ) : (
         <>
-          <Panel title="Calendario" icon={<CalendarDays />}>
+          <Panel title="Calendario" icon={<CalendarDays />} className="accent-top">
             <MonthCalendar
               year={displayed.getFullYear()}
               month0={displayed.getMonth()}
@@ -276,7 +276,7 @@ export function ExamList() {
             )}
           </section>
 
-          <div className="glass reveal rounded-xl p-5">
+          <div className="glass card-glow reveal rounded-xl p-5">
             <p className="eyebrow mb-3 text-ink-mute">Riepilogo sessione</p>
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
               <div className="text-center">

@@ -248,7 +248,7 @@ export function WeekView() {
               {pinnedCourses.length > 0 ? " per i corsi selezionati" : ""}.
             </p>
           )}
-          <div className="glass reveal overflow-x-auto p-5">
+          <div className="glass gradient-ring reveal overflow-x-auto p-5">
             <WeekGrid events={weekEvents} weekStart={weekStart!} now={now} />
           </div>
         </>

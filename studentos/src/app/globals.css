@@ -605,6 +605,45 @@ input[type="radio"]:active {
 .no-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
 .no-scrollbar::-webkit-scrollbar { display: none; }
 
+/* ── depth / bento helpers ─────────────────────────────────────────────
+   Tasteful elevation for a non-uniform layout: a hero panel reads heavier,
+   accent strips and gradient rings add edge definition, a soft inner glow
+   warms up "focus" surfaces. */
+
+/* deeper ambient shadow — the page's primary/hero card */
+.panel-hero {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3), 0 34px 80px -28px var(--glow-1);
+}
+
+/* gradient accent strip along the top edge (inset to match px-5 headers) */
+.accent-top { position: relative; isolation: isolate; }
+.accent-top::after {
+  content: ""; position: absolute; left: 1.25rem; right: 1.25rem; top: 0; height: 2px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--signal), var(--signal-2) 55%, transparent);
+  opacity: 0.85;
+}
+
+/* 1px gradient ring around a card for a premium, defined edge */
+.gradient-ring { position: relative; isolation: isolate; }
+.gradient-ring::before {
+  content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 1px;
+  pointer-events: none;
+  background: linear-gradient(140deg,
+    var(--hairline-strong) 0%, transparent 35%,
+    transparent 65%, color-mix(in oklch, var(--signal) 32%, transparent) 100%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+}
+
+/* soft radial inner glow (immersive / CTA surfaces) */
+.card-glow { position: relative; }
+.card-glow::before {
+  content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  background: radial-gradient(75% 65% at 50% -10%, var(--glow-1), transparent 70%);
+  opacity: 0.16;
+}
+
 /* slow buoy spin (hero wordmark) */
 .buoy-spin { animation: buoy-spin 28s linear infinite; transform-origin: center; }
 @keyframes buoy-spin { to { transform: rotate(360deg); } }

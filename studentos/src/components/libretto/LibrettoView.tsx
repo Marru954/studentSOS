@@ -97,7 +97,7 @@ export function LibrettoView() {
             className="grid gap-3 lg:col-span-12"
             style={{ gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))" }}
           >
-            <div className="glass" style={{ padding: "1.4rem", textAlign: "center" }}>
+            <div className="glass accent-top" style={{ padding: "1.4rem", textAlign: "center" }}>
               <div className="eyebrow" style={{ color: "var(--ink-faint)" }}>
                 Media ponderata
               </div>

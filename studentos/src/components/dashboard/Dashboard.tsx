@@ -116,8 +116,14 @@ export function Dashboard() {
         <div>
           <h1 className="text-[clamp(2rem,5vw,3rem)] font-bold">Cruscotto</h1>
           {now && (
-            <p className="mt-1 text-sm text-ink-mute first-letter:uppercase">
-              {fmtLongDay(now)} · tutto ciò che conta, adesso
+            <p className="mt-1 text-sm text-ink-mute">
+              {now.getHours() < 12
+                ? "Buongiorno"
+                : now.getHours() < 18
+                  ? "Buon pomeriggio"
+                  : "Buonasera"}
+              {" · "}
+              <span className="first-letter:uppercase">{fmtLongDay(now)}</span>
             </p>
           )}
         </div>
@@ -173,7 +179,7 @@ export function Dashboard() {
           <MediaPanel
             entries={libretto.items}
             targetAverage={settings.degreePlan.targetAverage}
-            className="lg:col-span-7"
+            className="accent-top lg:col-span-7"
           />
           <CfuPanel
             entries={libretto.items}
@@ -186,7 +192,7 @@ export function Dashboard() {
           <ExamTimeline
             exams={synced.examCalls}
             now={now}
-            className="lg:col-span-8"
+            className="panel-hero accent-top lg:col-span-8"
           />
           <NewsList items={synced.news} className="h-full lg:col-span-4" />
 

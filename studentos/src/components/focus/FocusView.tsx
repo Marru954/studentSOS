@@ -65,7 +65,7 @@ export function FocusView() {
         </div>
       ) : (
         <>
-          <div className="glass reveal flex flex-wrap items-start gap-6 rounded-xl p-4">
+          <div className="glass card-glow gradient-ring reveal flex flex-wrap items-center gap-x-10 gap-y-4 rounded-2xl px-5 py-4">
             <AmbientSounds />
             <BackgroundPicker />
           </div>
@@ -75,7 +75,7 @@ export function FocusView() {
               examCalls={examCalls}
               now={now}
               onRecord={recordSession}
-              className="lg:col-span-5"
+              className="panel-hero lg:col-span-5"
             />
             <FocusStats
               sessions={focus.items}
