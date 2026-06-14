@@ -59,8 +59,16 @@ export interface UniversityPreset {
   id: string;
   name: string;
   shortName: string;
+  /** City, for the onboarding picker. */
+  city?: string;
   /** Department / degree programme this preset covers, if scoped. */
   programme?: string;
+  /** Degree courses offered in the onboarding "corso" step. Falls back to
+   *  `programme` when absent. */
+  programmes?: string[];
+  /** True when live sources (timetable/exams/news) are wired and verified.
+   *  Presets without live sources still work in manual / PDF-import mode. */
+  liveSources?: boolean;
   sources: SyncSource[];
 }
 

@@ -25,11 +25,13 @@ import { useLibretto } from "@/lib/state/manual";
 import { useSettings } from "@/lib/state/settings";
 import { useSynced } from "@/lib/state/synced";
 import { useUi } from "@/lib/state/ui";
+import { BackupCard } from "@/components/backup/BackupCard";
 import { CfuPanel, MediaPanel } from "./CareerPanels";
 import { ChangeNotices } from "./ChangeNotices";
 import { ExamTimeline } from "./ExamTimeline";
 import { NewsList } from "./NewsList";
 import { QuickActions } from "./QuickActions";
+import { ReminderCard } from "./ReminderCard";
 import { SummaryBar } from "./SummaryBar";
 import { SyncStatus } from "./SyncStatus";
 import { TodayTimeline } from "./TodayTimeline";
@@ -203,6 +205,10 @@ export function Dashboard() {
               className="lg:col-span-12"
             />
           )}
+
+          {/* Promemoria locali + backup dei dati. */}
+          <ReminderCard className="lg:col-span-6" />
+          <BackupCard className="lg:col-span-6" />
         </div>
       )}
     </div>

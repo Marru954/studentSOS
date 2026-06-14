@@ -32,6 +32,8 @@ export interface AppSettings {
   presetId?: string;
   /** Year of study chosen at onboarding (tailors exams, defaults). */
   yearOfStudy?: number;
+  /** Degree course chosen at onboarding (label only — tailors copy). */
+  programme?: string;
   /** Which of the preset's sources actually sync. */
   enabledSourceIds: string[];
   /** Courses the user actually attends; empty = show everything.

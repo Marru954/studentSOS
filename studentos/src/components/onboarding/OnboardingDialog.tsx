@@ -1,10 +1,11 @@
 "use client";
 
 /**
- * First-run setup: which university, which year. Opens automatically when
- * no preset is configured (after hydration) and on demand from the
- * dashboard. Enables ALL timetable years (merged view), the chosen year's
- * exams, and the news sources. Public data only — no login.
+ * First-run setup: university, course, year of study. Opens automatically when
+ * no preset is configured (after hydration) and on demand from the dashboard.
+ * For wired presets it enables the timetable (all years), the chosen year's
+ * exams and the news; for manual-mode presets it just records the choice.
+ * Public data only — no login, no credentials.
  */
 import { GraduationCap } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
@@ -13,9 +14,15 @@ import { Field, inputClass } from "@/components/primitives/Field";
 import { useSettings } from "@/lib/state/settings";
 import { useSynced } from "@/lib/state/synced";
 import { useUi } from "@/lib/state/ui";
+import type { UniversityPreset } from "@/lib/sync/provider";
 import { UNIVERSITY_PRESETS } from "@/lib/sync/universities";
 
 const YEARS = [1, 2, 3];
+
+function programmesOf(p: UniversityPreset | undefined): string[] {
+  if (!p) return [];
+  return p.programmes ?? (p.programme ? [p.programme] : []);
+}
 
 export function OnboardingDialog() {
   const settings = useSettings();
@@ -24,12 +31,12 @@ export function OnboardingDialog() {
   const closeOnboarding = useUi((s) => s.closeOnboarding);
 
   const [presetId, setPresetId] = useState(UNIVERSITY_PRESETS[0].id);
+  const [corso, setCorso] = useState(programmesOf(UNIVERSITY_PRESETS[0])[0] ?? "");
   const [year, setYear] = useState(1);
   const dialogRef = useRef<HTMLDivElement>(null);
 
-  // Block the first run until BOTH university and year are chosen. Requiring
-  // yearOfStudy (not just presetId) also re-prompts legacy/incomplete setups
-  // that recorded a preset but never captured the year of study.
+  // Block the first run until university AND year are chosen. Requiring
+  // yearOfStudy (not just presetId) also re-prompts legacy/incomplete setups.
   const setupComplete =
     Boolean(settings.presetId) && settings.yearOfStudy !== undefined;
   const firstRun = settings.hydrated && !setupComplete && !firstRunDismissed;
@@ -43,10 +50,17 @@ export function OnboardingDialog() {
 
   const preset =
     UNIVERSITY_PRESETS.find((p) => p.id === presetId) ?? UNIVERSITY_PRESETS[0];
+  const corsi = programmesOf(preset);
+
+  function onPresetChange(id: string) {
+    setPresetId(id);
+    const p = UNIVERSITY_PRESETS.find((x) => x.id === id);
+    setCorso(programmesOf(p)[0] ?? "");
+  }
 
   async function confirm() {
-    // merged timetable: every year's lessons sync; exams follow the
-    // chosen year; news always on
+    // merged timetable: every year's lessons sync; exams follow the chosen
+    // year; news always on. Manual-mode presets have no sources → empty list.
     const enabledSourceIds = preset.sources
       .filter(
         (s) =>
@@ -55,7 +69,12 @@ export function OnboardingDialog() {
           s.id.endsWith(`-anno-${year}`),
       )
       .map((s) => s.id);
-    await settings.update({ presetId: preset.id, yearOfStudy: year, enabledSourceIds });
+    await settings.update({
+      presetId: preset.id,
+      programme: corso || undefined,
+      yearOfStudy: year,
+      enabledSourceIds,
+    });
     closeOnboarding();
     void useSynced.getState().sync();
   }
@@ -105,7 +124,7 @@ export function OnboardingDialog() {
               Benvenuto in StudentOS
             </h2>
             <p className="text-xs text-ink-mute">
-              Due domande e il cruscotto si adatta a te.
+              Tre domande e il cruscotto si adatta a te.
             </p>
           </div>
         </div>
@@ -115,7 +134,7 @@ export function OnboardingDialog() {
             <select
               id="onb-ateneo"
               value={presetId}
-              onChange={(e) => setPresetId(e.target.value)}
+              onChange={(e) => onPresetChange(e.target.value)}
               className={inputClass}
             >
               <option value="" disabled>
@@ -123,7 +142,8 @@ export function OnboardingDialog() {
               </option>
               {UNIVERSITY_PRESETS.map((p) => (
                 <option key={p.id} value={p.id}>
-                  {p.name} — {p.programme}
+                  {p.shortName}
+                  {p.city ? ` · ${p.city}` : ""}
                 </option>
               ))}
             </select>
@@ -134,6 +154,32 @@ export function OnboardingDialog() {
               </a>{" "}
               — stiamo aggiungendo nuovi atenei ogni settimana.
             </p>
+          </Field>
+
+          <Field label="Quale corso di laurea?" htmlFor="onb-corso">
+            {corsi.length > 0 ? (
+              <select
+                id="onb-corso"
+                value={corso}
+                onChange={(e) => setCorso(e.target.value)}
+                className={inputClass}
+              >
+                {corsi.map((c) => (
+                  <option key={c} value={c}>
+                    {c}
+                  </option>
+                ))}
+              </select>
+            ) : (
+              <input
+                id="onb-corso"
+                type="text"
+                value={corso}
+                placeholder="es. Informatica"
+                onChange={(e) => setCorso(e.target.value)}
+                className={inputClass}
+              />
+            )}
           </Field>
 
           <fieldset>
@@ -164,9 +210,20 @@ export function OnboardingDialog() {
           </fieldset>
 
           <p className="text-xs text-ink-mute">
-            Sincronizzeremo l&rsquo;orario di tutti gli anni (potrai scegliere
-            i corsi che frequenti), gli appelli del tuo anno e gli avvisi del
-            dipartimento. Nessun accesso richiesto.
+            {preset.liveSources ? (
+              <>
+                Sincronizzeremo l&rsquo;orario di tutti gli anni (potrai
+                scegliere i corsi che frequenti), gli appelli del tuo anno e gli
+                avvisi del dipartimento. Nessun accesso richiesto.
+              </>
+            ) : (
+              <>
+                Per questo ateneo la sincronizzazione automatica è in arrivo: nel
+                frattempo inserisci i voti a mano o importa il PDF della carriera
+                dal portale. Tutto resta sul tuo dispositivo, nessuna password
+                richiesta.
+              </>
+            )}
           </p>
 
           <div className="flex justify-end gap-2">

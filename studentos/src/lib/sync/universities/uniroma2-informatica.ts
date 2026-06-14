@@ -15,7 +15,10 @@ export const uniroma2Informatica: UniversityPreset = {
   id: "uniroma2-informatica-triennale",
   name: 'Università di Roma "Tor Vergata"',
   shortName: "Tor Vergata",
+  city: "Roma",
   programme: "Informatica (triennale, H02)",
+  programmes: ["Informatica (triennale, H02)"],
+  liveSources: true,
   sources: [
     ...[1, 2, 3].map((year) => ({
       id: `orario-anno-${year}`,

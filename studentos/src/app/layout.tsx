@@ -1,9 +1,10 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Bricolage_Grotesque, Inter } from "next/font/google";
 import { AppFooter } from "@/components/AppFooter";
 import { AppNav } from "@/components/AppNav";
 import { OnboardingDialog } from "@/components/onboarding/OnboardingDialog";
 import { RevealManager } from "@/components/RevealManager";
+import { ServiceWorkerRegister } from "@/components/ServiceWorkerRegister";
 import { StoreProvider } from "@/components/StoreProvider";
 import { ToastHost } from "@/components/primitives/Toast";
 import "./globals.css";
@@ -22,6 +23,11 @@ export const metadata: Metadata = {
   title: { default: "StudentOS", template: "%s — StudentOS" },
   description:
     "Sistema operativo per la vita universitaria: orari, appelli, libretto, note e focus in un unico strumento.",
+  appleWebApp: { capable: true, title: "StudentOS", statusBarStyle: "black-translucent" },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#0a0a0f",
 };
 
 // Apply the saved theme before first paint to avoid a flash. Dark is default.
@@ -65,6 +71,7 @@ export default function RootLayout({
         </StoreProvider>
         <ToastHost />
         <RevealManager />
+        <ServiceWorkerRegister />
       </body>
     </html>
   );

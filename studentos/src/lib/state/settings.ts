@@ -30,6 +30,7 @@ export const useSettings = create<SettingsState>()((set, get) => ({
     const next: AppSettings = {
       presetId: patch.presetId ?? get().presetId,
       yearOfStudy: patch.yearOfStudy ?? get().yearOfStudy,
+      programme: patch.programme ?? get().programme,
       enabledSourceIds: patch.enabledSourceIds ?? get().enabledSourceIds,
       pinnedCourses: patch.pinnedCourses ?? get().pinnedCourses,
       degreePlan: patch.degreePlan ?? get().degreePlan,
