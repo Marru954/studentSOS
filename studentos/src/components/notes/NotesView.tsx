@@ -2,10 +2,9 @@
 
 /** /note: knowledge base. Manual territory — notes live only in the local
  *  IndexedDB. Course names from the synced caches feed linking and search. */
+import { Plus } from "lucide-react";
 import { useMemo, useState } from "react";
-import { Button } from "@/components/primitives/Button";
 import { inputClass } from "@/components/primitives/Field";
-import { Panel } from "@/components/primitives/Panel";
 import { PanelSkeleton } from "@/components/primitives/Skeleton";
 import { extractCourseNames, searchNotes } from "@/lib/domain/notes";
 import type { Note } from "@/lib/domain/types";
@@ -51,89 +50,89 @@ export function NotesView() {
   }
 
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex flex-col gap-6">
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold">Note</h1>
-          {ready && (
-            <p className="mt-1 font-mono text-xs text-ink-mute">
-              {notes.items.length} note · solo su questo dispositivo
-            </p>
-          )}
+          <h1 className="grad-text text-3xl">Note</h1>
+          <p className="muted mt-1 text-sm">Appunti organizzati per materia</p>
         </div>
-        <Button variant="primary" onClick={createNote}>
+        <button
+          type="button"
+          onClick={createNote}
+          className="btn btn-primary"
+          style={{ padding: "0.6rem 1.1rem", fontSize: "0.85rem" }}
+        >
+          <Plus size={16} aria-hidden="true" />
           Nuova nota
-        </Button>
+        </button>
       </header>
 
       {!ready ? (
-        <div
-          role="status"
-          aria-busy="true"
-          className="grid grid-cols-1 items-start gap-3 lg:grid-cols-12"
-        >
+        <div role="status" aria-busy="true" className="flex flex-col gap-4">
           <span className="sr-only">Caricamento dei dati locali…</span>
-          <PanelSkeleton className="lg:col-span-4" />
-          <PanelSkeleton className="lg:col-span-8" />
+          <PanelSkeleton />
+          <PanelSkeleton />
+        </div>
+      ) : selected ? (
+        <div className="flex flex-col gap-4">
+          <button
+            type="button"
+            onClick={() => setSelectedId(null)}
+            className="btn self-start"
+            style={{ padding: "0.5rem 1rem", fontSize: "0.82rem" }}
+          >
+            ← Tutte le note
+          </button>
+          <NoteEditor
+            key={selected.id}
+            note={selected}
+            courses={courses}
+            onSave={(n) => void notes.upsert(n)}
+            onDelete={(id) => {
+              setSelectedId(null);
+              void notes.remove(id);
+            }}
+          />
         </div>
       ) : (
-        <div className="grid grid-cols-1 items-start gap-3 lg:grid-cols-12">
-          <div className="flex flex-col gap-3 lg:col-span-4">
-            <div>
-              <label htmlFor="cerca-note" className="sr-only">
-                Cerca nelle note
-              </label>
-              <input
-                id="cerca-note"
-                type="search"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Cerca per titolo, testo, tag, corso…"
-                className={inputClass}
-              />
-            </div>
-            <Panel flush>
-              <NoteList
-                notes={results}
-                selectedId={selectedId}
-                onSelect={setSelectedId}
-              />
-            </Panel>
+        <div className="flex flex-col gap-5">
+          <div>
+            <label htmlFor="cerca-note" className="sr-only">
+              Cerca nelle note
+            </label>
+            <input
+              id="cerca-note"
+              type="search"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Cerca per titolo, testo, tag, corso…"
+              className={inputClass}
+            />
           </div>
 
-          <div className="lg:col-span-8">
-            {selected ? (
-              <NoteEditor
-                key={selected.id}
-                note={selected}
-                courses={courses}
-                onSave={(n) => void notes.upsert(n)}
-                onDelete={(id) => {
-                  setSelectedId(null);
-                  void notes.remove(id);
-                }}
-              />
-            ) : (
-              <Panel>
-                {notes.items.length === 0 ? (
-                  <div className="flex flex-col items-start gap-3">
-                    <p className="text-sm text-ink-mute">
-                      Non hai ancora appunti. Crea la tua prima nota: supporta
-                      Markdown, codice evidenziato e formule LaTeX.
-                    </p>
-                    <Button variant="primary" onClick={createNote}>
-                      Crea la prima nota
-                    </Button>
-                  </div>
-                ) : (
-                  <p className="text-sm text-ink-mute">
-                    Seleziona una nota dall&rsquo;elenco o creane una nuova.
-                    Markdown, codice evidenziato e formule LaTeX sono supportati.
-                  </p>
-                )}
-              </Panel>
-            )}
-          </div>
+          {notes.items.length === 0 ? (
+            <div className="glass flex flex-col items-start gap-3 rounded-lg p-6">
+              <p className="muted text-sm">
+                Non hai ancora appunti. Crea la tua prima nota: supporta
+                Markdown, codice evidenziato e formule LaTeX.
+              </p>
+              <button
+                type="button"
+                onClick={createNote}
+                className="btn btn-primary"
+                style={{ padding: "0.6rem 1.1rem", fontSize: "0.85rem" }}
+              >
+                <Plus size={16} aria-hidden="true" />
+                Crea la prima nota
+              </button>
+            </div>
+          ) : (
+            <NoteList
+              notes={results}
+              selectedId={selectedId}
+              onSelect={setSelectedId}
+            />
+          )}
         </div>
       )}
     </div>

@@ -40,11 +40,11 @@ export function FocusView() {
   }
 
   return (
-    <div className="flex flex-col gap-5">
-      <header>
-        <h1 className="text-2xl font-semibold">Focus</h1>
-        <p className="mt-1 text-xs text-ink-mute">
-          Sessioni di studio e attività, solo su questo dispositivo.
+    <div className="flex flex-col gap-6">
+      <header className="reveal">
+        <h1 className="text-[clamp(2rem,5vw,3rem)]">Focus</h1>
+        <p className="muted mt-1.5">
+          Studia in sessioni. La costanza diventa una statistica.
         </p>
       </header>
 
@@ -63,7 +63,7 @@ export function FocusView() {
         </div>
       ) : (
         <>
-          <div className="grid grid-cols-1 gap-3 lg:grid-cols-12">
+          <div className="grid grid-cols-1 gap-5 lg:grid-cols-12">
             <PomodoroTimer
               courses={courses}
               examCalls={examCalls}

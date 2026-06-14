@@ -2,10 +2,15 @@
 
 import { CalendarClock, TriangleAlert } from "lucide-react";
 import { useState } from "react";
-import { Badge, type BadgeTone } from "@/components/primitives/Badge";
+import { Badge } from "@/components/primitives/Badge";
 import { Panel } from "@/components/primitives/Panel";
 import type { ExamCall } from "@/lib/domain/types";
-import { daysFromToday, fmtPlainDayMonth } from "@/lib/format";
+import {
+  daysFromToday,
+  fmtDayOfMonth,
+  fmtMonthAbbr,
+  fmtPlainDayMonth,
+} from "@/lib/format";
 
 /** Urgency tier from the REAL days left: rosso oggi/domani, arancione entro la
  *  settimana, grigio oltre. */
@@ -17,10 +22,20 @@ function tierOf(days: number): Tier {
   return "later";
 }
 
-const TONE: Record<Tier, BadgeTone> = {
-  today: "danger",
-  week: "warn",
-  later: "neutral",
+/** Thin, neutral, hover-revealed scrollbar — no resting groove or line.
+ *  Webkit (Chrome/Safari) + Firefox `scrollbar-width: thin`. */
+const SOFT_SCROLL =
+  "[scrollbar-width:thin] [scrollbar-color:transparent_transparent] hover:[scrollbar-color:var(--hairline-strong)_transparent] " +
+  "[&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent " +
+  "[&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-transparent " +
+  "[&::-webkit-scrollbar-thumb]:transition-colors [&::-webkit-scrollbar-thumb]:duration-200 " +
+  "hover:[&::-webkit-scrollbar-thumb]:bg-[var(--hairline-strong)]";
+
+/** Reference chip class per urgency tier. */
+const CHIP: Record<Tier, string> = {
+  today: "chip chip-danger",
+  week: "chip chip-warn",
+  later: "chip",
 };
 
 function relLabel(days: number): string {
@@ -29,10 +44,9 @@ function relLabel(days: number): string {
   return `tra ${days} giorni`;
 }
 
-function metaLine(e: ExamCall): string {
-  return [fmtPlainDayMonth(e.date), e.time && `ore ${e.time}`, e.room]
-    .filter(Boolean)
-    .join(" · ");
+/** "ore 09:30 · Aula T5" — the date now lives in the row's date block. */
+function timeRoom(e: ExamCall): string {
+  return [e.time && `ore ${e.time}`, e.room].filter(Boolean).join(" · ");
 }
 
 /** One course = one row; multiple future calls of the same course collapse to
@@ -150,24 +164,30 @@ export function ExamTimeline({
             </ul>
           )}
 
-          <ul className="stagger-children flex max-h-[360px] flex-col divide-y divide-line overflow-y-auto">
+          <ul className={`stagger-children flex max-h-[360px] flex-col divide-y divide-line overflow-y-auto ${SOFT_SCROLL}`}>
             {groups.map((g) => {
               const days = daysFromToday(g.nearest.date, now);
+              const tier = tierOf(days);
               const bookingDays = g.nearest.booking?.closesAt
                 ? daysFromToday(g.nearest.booking.closesAt, now)
                 : undefined;
               const datesOpen = openDates.has(g.course);
               return (
                 <li key={g.course} className="flex items-start gap-3 py-3 first:pt-0">
-                  <Badge
-                    tone={TONE[tierOf(days)]}
-                    className={`mt-0.5 w-24 shrink-0 justify-center${days <= 2 ? " pulse-soft" : ""}`}
-                  >
-                    {relLabel(days)}
-                  </Badge>
+                  {/* date block — reference ExamRow */}
+                  <div className="min-w-[3.25rem] shrink-0 text-center">
+                    <div className="font-display text-[1.05rem] font-bold leading-none text-ink">
+                      {fmtDayOfMonth(g.nearest.date)}
+                    </div>
+                    <div className="text-[0.7rem] uppercase text-ink-faint">
+                      {fmtMonthAbbr(g.nearest.date)}
+                    </div>
+                  </div>
                   <div className="min-w-0 flex-1">
                     <p className="text-sm font-medium text-ink">{g.course}</p>
-                    <p className="text-xs text-ink-mute">{metaLine(g.nearest)}</p>
+                    <p className="font-num text-xs text-ink-faint">
+                      {timeRoom(g.nearest)}
+                    </p>
                     {bookingDays !== undefined &&
                       bookingDays >= 0 &&
                       bookingDays <= 14 && (
@@ -191,8 +211,9 @@ export function ExamTimeline({
                           <ul className="mt-1 flex flex-col gap-0.5 border-l border-line pl-3">
                             {g.extra.map((x) => (
                               <li key={x.id} className="text-xs text-ink-mute">
-                                {relLabel(daysFromToday(x.date, now))} ·{" "}
-                                {metaLine(x)}
+                                {fmtPlainDayMonth(x.date)}
+                                {timeRoom(x) && ` · ${timeRoom(x)}`} ·{" "}
+                                {relLabel(daysFromToday(x.date, now))}
                               </li>
                             ))}
                           </ul>
@@ -200,6 +221,11 @@ export function ExamTimeline({
                       </>
                     )}
                   </div>
+                  <span
+                    className={`${CHIP[tier]} mt-0.5 shrink-0${days <= 2 ? " pulse-soft" : ""}`}
+                  >
+                    {relLabel(days)}
+                  </span>
                 </li>
               );
             })}

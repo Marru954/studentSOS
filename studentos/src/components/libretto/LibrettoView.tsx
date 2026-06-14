@@ -3,11 +3,17 @@
 /** /libretto: the manual territory. Everything here lives only in the
  *  local IndexedDB — sync never reads or writes it. */
 import { useMemo, useState } from "react";
-import { ChevronDown, GraduationCap, Info } from "lucide-react";
+import { ChevronDown, FileText, GraduationCap, Info } from "lucide-react";
 import { CfuPanel, GoalPanel, MediaPanel } from "@/components/dashboard/CareerPanels";
 import { ConfirmButton } from "@/components/primitives/ConfirmButton";
+import { CountUp } from "@/components/primitives/CountUp";
 import { Panel } from "@/components/primitives/Panel";
 import { PanelSkeleton } from "@/components/primitives/Skeleton";
+import {
+  earnedCfu,
+  graduationBase,
+  weightedAverage,
+} from "@/lib/domain/libretto";
 import { useLibretto } from "@/lib/state/manual";
 import { useSettings } from "@/lib/state/settings";
 import { DelphiConnect } from "./DelphiConnect";
@@ -36,6 +42,12 @@ export function LibrettoView() {
 
   const hasUndated = libretto.items.some((e) => !e.academicYear);
 
+  const totalCfu = settings.degreePlan.totalCfu;
+  const average = weightedAverage(libretto.items);
+  const base = average === undefined ? 0 : graduationBase(average);
+  const acquired = earnedCfu(libretto.items);
+  const verbalised = libretto.items.length;
+
   const visible = useMemo(() => {
     if (yearFilter === "all") return libretto.items;
     if (yearFilter === "none") return libretto.items.filter((e) => !e.academicYear);
@@ -44,12 +56,17 @@ export function LibrettoView() {
 
   return (
     <div className="flex flex-col gap-5">
-      <header>
-        <h1 className="text-2xl font-semibold">Libretto</h1>
-        <p className="mt-1 text-xs text-ink-mute">
-          Aggiungi gli esami a mano o importali da CSV. Tutto resta su questo
-          dispositivo; media, CFU e proiezioni si aggiornano in tempo reale.
-        </p>
+      <header className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <h1 className="text-2xl font-semibold">Libretto</h1>
+          <p className="muted mt-1 text-sm">
+            {verbalised} esami verbalizzati · importati da Delphi
+          </p>
+        </div>
+        <a href="#importa-delphi" className="btn" style={{ padding: "0.6rem 1.1rem", fontSize: "0.85rem" }}>
+          <FileText aria-hidden="true" size={15} />
+          Importa da PDF Delphi
+        </a>
       </header>
 
       {!ready ? (
@@ -66,6 +83,51 @@ export function LibrettoView() {
         </div>
       ) : (
         <div className="stagger-children grid grid-cols-1 gap-3 lg:grid-cols-12">
+          <div
+            className="grid gap-3 lg:col-span-12"
+            style={{ gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))" }}
+          >
+            <div className="glass" style={{ padding: "1.4rem", textAlign: "center" }}>
+              <div className="eyebrow" style={{ color: "var(--ink-faint)" }}>
+                Media ponderata
+              </div>
+              <div
+                className="grad-text font-num"
+                style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "2.6rem" }}
+              >
+                <CountUp value={average ?? 0} decimals={1} />
+              </div>
+            </div>
+            <div className="glass" style={{ padding: "1.4rem", textAlign: "center" }}>
+              <div className="eyebrow" style={{ color: "var(--ink-faint)" }}>
+                Base di laurea
+              </div>
+              <div
+                className="font-num"
+                style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "2.6rem" }}
+              >
+                <CountUp value={base} decimals={1} />
+                <span className="muted" style={{ fontSize: "1rem" }}>
+                  /110
+                </span>
+              </div>
+            </div>
+            <div className="glass" style={{ padding: "1.4rem", textAlign: "center" }}>
+              <div className="eyebrow" style={{ color: "var(--ink-faint)" }}>
+                CFU acquisiti
+              </div>
+              <div
+                className="font-num"
+                style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "2.6rem" }}
+              >
+                <CountUp value={acquired} />
+                <span className="muted" style={{ fontSize: "1rem" }}>
+                  /{totalCfu}
+                </span>
+              </div>
+            </div>
+          </div>
+
           <GoalPanel
             entries={libretto.items}
             totalCfu={settings.degreePlan.totalCfu}
@@ -182,7 +244,9 @@ export function LibrettoView() {
                   </p>
                 </div>
               </details>
-              <ImportDelphiPdf />
+              <div id="importa-delphi" style={{ scrollMarginTop: "5rem" }}>
+                <ImportDelphiPdf />
+              </div>
               <div className="border-t border-line pt-3">
                 <ImportExams />
               </div>

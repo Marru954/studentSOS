@@ -26,19 +26,18 @@ export function Panel({
   children,
 }: PanelProps) {
   const Heading = `h${headingLevel}` as const;
+  const titled = Boolean(title || actions);
   return (
-    <section
-      className={cn(
-        "glass rounded-md border border-line shadow-soft",
-        className,
-      )}
-    >
-      {(title || actions) && (
-        <header className="flex min-h-11 items-center justify-between gap-3 border-b border-line px-4 py-1.5">
+    <section className={cn("glass rounded-lg shadow-soft", className)}>
+      {titled && (
+        <header className="flex min-h-11 items-center justify-between gap-3 px-5 pb-4 pt-5">
           {title && (
-            <Heading className="flex items-center gap-2 text-sm font-semibold text-ink">
+            <Heading className="flex items-center gap-2 font-sans text-[0.95rem] font-semibold tracking-normal text-ink">
               {icon && (
-                <span aria-hidden="true" className="text-signal [&>svg]:size-4">
+                <span
+                  aria-hidden="true"
+                  className="text-[var(--signal-2)] [&>svg]:size-[1.125rem]"
+                >
                   {icon}
                 </span>
               )}
@@ -48,7 +47,9 @@ export function Panel({
           {actions && <div className="flex items-center gap-2">{actions}</div>}
         </header>
       )}
-      <div className={flush ? undefined : "p-4"}>{children}</div>
+      <div className={flush ? undefined : cn("px-5 pb-5", !titled && "pt-5")}>
+        {children}
+      </div>
     </section>
   );
 }

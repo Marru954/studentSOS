@@ -17,11 +17,12 @@ const monthFmt = new Intl.DateTimeFormat("it-IT", {
   year: "numeric",
 });
 
-/** Tailwind classes for a chip, by how soon the exam is. */
+/** Classes for a calendar chip, by how soon the exam is. */
 function chipTone(days: number): string {
-  if (days < 0) return "bg-night-700 text-ink-mute";
-  if (days <= 7) return "bg-danger-dim text-danger";
-  return "bg-signal-dim text-signal";
+  if (days < 0) return "text-ink-mute [background:var(--hover)]";
+  if (days <= 7)
+    return "text-danger [background:color-mix(in_oklch,var(--danger)_16%,transparent)]";
+  return "text-signal [background:var(--signal-dim)]";
 }
 
 export function MonthCalendar({
@@ -77,7 +78,7 @@ export function MonthCalendar({
               className={cn(
                 "min-h-16 rounded-sm border p-1.5",
                 cell.inMonth
-                  ? "border-line bg-night-800"
+                  ? "glass-2 border-line"
                   : "border-transparent bg-transparent",
                 isToday && "ring-1 ring-signal",
               )}

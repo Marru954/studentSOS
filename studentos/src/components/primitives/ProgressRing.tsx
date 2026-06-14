@@ -32,6 +32,8 @@ export function ProgressRing({
   const clamped = Math.min(1, Math.max(0, value));
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
+  // unique gradient id per size so multiple rings on a page don't collide
+  const gradId = `ring-grad-${size}-${strokeWidth}`;
 
   return (
     <div
@@ -41,6 +43,12 @@ export function ProgressRing({
       style={{ width: size, height: size }}
     >
       <svg width={size} height={size} className="-rotate-90" aria-hidden="true">
+        <defs>
+          <linearGradient id={gradId} x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor="var(--signal)" />
+            <stop offset="100%" stopColor="var(--signal-2)" />
+          </linearGradient>
+        </defs>
         <circle
           cx={size / 2}
           cy={size / 2}
@@ -54,7 +62,7 @@ export function ProgressRing({
           cy={size / 2}
           r={radius}
           fill="none"
-          stroke="currentColor"
+          stroke={tone === "signal" ? `url(#${gradId})` : "currentColor"}
           strokeWidth={strokeWidth}
           strokeLinecap="round"
           strokeDasharray={circumference}

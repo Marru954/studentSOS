@@ -4,9 +4,8 @@ import { Field, inputClass } from "@/components/primitives/Field";
 import { CountUp } from "@/components/primitives/CountUp";
 import { Panel } from "@/components/primitives/Panel";
 import { ProgressRing } from "@/components/primitives/ProgressRing";
-import { ScatterPlot } from "@/components/primitives/ScatterPlot";
+import { Sparkline } from "@/components/primitives/Sparkline";
 import { Stat } from "@/components/primitives/Stat";
-import { Term } from "@/components/primitives/Term";
 import {
   cfuPerMonth,
   earnedCfu,
@@ -16,7 +15,7 @@ import {
 } from "@/lib/domain/libretto";
 import { estimateGraduation, requiredAverage } from "@/lib/domain/projection";
 import type { LibrettoEntry } from "@/lib/domain/types";
-import { daysBetweenIso, fmtMonthYear, fmtNum } from "@/lib/format";
+import { fmtMonthYear, fmtNum } from "@/lib/format";
 
 /** Weighted average instrument with the grades-over-time scatter and base di
  *  laurea projection. */
@@ -33,25 +32,20 @@ export function MediaPanel({
   const points = gradePoints(entries);
 
   return (
-    <Panel title="Media pesata" icon={<TrendingUp />} className={className}>
+    <Panel title="Carriera" icon={<TrendingUp />} className={className}>
       {average === undefined ? (
         <p className="text-sm text-ink-mute">
           Registra i voti nel libretto per vedere media, andamento e base di
           laurea. I dati restano solo su questo dispositivo.
         </p>
       ) : (
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-wrap items-center gap-x-8 gap-y-5">
           <Stat
-            label="media"
-            value={<CountUp value={average} decimals={2} />}
-            unit="/30"
-            hint={
-              <>
-                <Term title="Voto di partenza per la laurea: la media degli esami (in trentesimi) convertita in centodecimi, cioè media ÷ 30 × 110.">
-                  base di laurea
-                </Term>{" "}
-                ≈ {fmtNum(graduationBase(average), 1)}/110
-              </>
+            label="Media ponderata"
+            value={
+              <span className="text-[var(--signal-2)]">
+                <CountUp value={average} decimals={2} />
+              </span>
             }
             delta={
               targetAverage !== undefined
@@ -62,35 +56,22 @@ export function MediaPanel({
                 : undefined
             }
           />
+          <Stat
+            label="Base di laurea"
+            value={fmtNum(graduationBase(average), 1)}
+            unit="/110"
+          />
           {points.length >= 2 && (
-            <div className="flex flex-col gap-2">
-              <ScatterPlot
-                points={points}
-                label={`Andamento dei voti nel tempo su ${points.length} esami registrati`}
-              />
-              {/* Caption below the canvas — never overlapping the dots. */}
-              <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 text-xs text-ink-mute">
-                <span className="flex items-center gap-3">
-                  <span className="flex items-center gap-1.5">
-                    <span className="size-2 rounded-full bg-signal" /> voto
-                  </span>
-                  <span className="flex items-center gap-1.5">
-                    <span className="size-2 rounded-full border border-ok" /> con
-                    lode
-                  </span>
-                </span>
-                <span>
-                  {points.length} esami · ~
-                  {Math.max(
-                    1,
-                    Math.round(
-                      daysBetweenIso(points[0].date, points[points.length - 1].date) /
-                        30.44,
-                    ),
-                  )}{" "}
-                  mesi
-                </span>
+            <div>
+              <div className="eyebrow mb-2 text-ink-faint [letter-spacing:0.08em]">
+                Andamento voti
               </div>
+              <Sparkline
+                values={points.map((p) => p.value)}
+                label={`Andamento dei voti su ${points.length} esami registrati`}
+                width={180}
+                height={48}
+              />
             </div>
           )}
         </div>
@@ -118,27 +99,29 @@ export function CfuPanel({
   const pace = cfuPerMonth(entries);
   const eta = now ? estimateGraduation(entries, totalCfu, now) : undefined;
 
+  const remaining = Math.max(totalCfu - earned, 0);
+  const pct = Math.round(Math.min(1, ratio) * 100);
+
   return (
     <Panel title="Avanzamento CFU" icon={<Gauge />} className={className}>
       <div className="flex flex-col gap-3">
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-5">
           <ProgressRing
             value={ratio}
             label={`${earned} CFU su ${totalCfu}`}
-            size={88}
+            size={124}
+            strokeWidth={10}
             tone="signal"
           >
-            <span className="text-lg font-medium text-ink">
+            <span className="font-display text-[1.7rem] font-bold text-ink">
               <CountUp value={earned} />
             </span>
-            <span className="text-label text-ink-mute">CFU</span>
+            <span className="text-[0.72rem] text-ink-faint">/{totalCfu} CFU</span>
           </ProgressRing>
-          <div className="font-mono">
-            <p className="text-sm text-ink">
-              <CountUp value={Math.min(1, ratio) * 100} />%
-            </p>
-            <p className="text-xs text-ink-mute">su {totalCfu} CFU previsti</p>
-          </div>
+          <p className="max-w-[20ch] text-sm text-ink-mute">
+            Mancano <strong className="text-ink">{remaining} CFU</strong> alla
+            laurea. Sei al {pct}% del percorso.
+          </p>
         </div>
         {pace !== undefined && eta && (
           <p className="border-t border-line pt-3 text-xs text-ink-mute">

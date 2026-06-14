@@ -4,12 +4,11 @@
  * phase ≥ 5 minutes is recorded as a FocusSession even when interrupted;
  * the break auto-starts, the next focus waits for the user.
  */
-import { Timer } from "lucide-react";
+import { Pause, Play, RotateCcw } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { Button } from "@/components/primitives/Button";
-import { Field, inputClass } from "@/components/primitives/Field";
-import { Panel } from "@/components/primitives/Panel";
+import { inputClass } from "@/components/primitives/Field";
 import { ProgressRing } from "@/components/primitives/ProgressRing";
+import { cn } from "@/lib/cn";
 import type { ExamCall, FocusSession } from "@/lib/domain/types";
 import { daysFromToday, fmtPlainDayMonth } from "@/lib/format";
 
@@ -132,72 +131,113 @@ export function PomodoroTimer({
     : undefined;
 
   return (
-    <Panel title="Pomodoro" icon={<Timer />} className={className}>
-      <div className="flex flex-col gap-4">
-        <Field label="Corso in studio" htmlFor="pomodoro-corso">
-          <select
-            id="pomodoro-corso"
-            value={course}
-            onChange={(e) => setCourse(e.target.value)}
-            className={inputClass}
-          >
-            <option value="">— nessuno —</option>
-            {courses.map((c) => (
-              <option key={c} value={c}>
-                {c}
-              </option>
-            ))}
-          </select>
-        </Field>
+    <section
+      className={cn(
+        "glass reveal relative flex flex-col items-center gap-6 overflow-hidden rounded-lg p-8",
+        className,
+      )}
+    >
+      {/* radial glow behind the ring — intensifies while running */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 transition-opacity duration-700"
+        style={{
+          background:
+            "radial-gradient(60% 50% at 50% 30%, var(--signal), transparent 70%)",
+          opacity: status === "running" ? 0.22 : 0.1,
+        }}
+      />
+
+      <div className="relative flex w-full flex-col gap-2">
+        <label
+          htmlFor="pomodoro-corso"
+          className="eyebrow self-center"
+        >
+          Corso in studio
+        </label>
+        <select
+          id="pomodoro-corso"
+          value={course}
+          onChange={(e) => setCourse(e.target.value)}
+          className={inputClass}
+        >
+          <option value="">— nessuno —</option>
+          {courses.map((c) => (
+            <option key={c} value={c}>
+              {c}
+            </option>
+          ))}
+        </select>
         {nextExam && (
-          <p className="text-xs text-ink-mute">
+          <p className="muted self-center text-center text-xs">
             Prossimo appello: {fmtPlainDayMonth(nextExam.date)}{" "}
             {daysFromToday(nextExam.date, now) === 0
               ? "(oggi)"
               : `(tra ${daysFromToday(nextExam.date, now)} giorni)`}
           </p>
         )}
-
-        <div className="flex items-center gap-5">
-          <ProgressRing
-            value={1 - remainingMs / phaseTotal}
-            label={`${PHASE_LABEL[phase]}: mancano ${mmss(remainingMs)}`}
-            size={120}
-            tone={phase === "focus" ? "signal" : "ok"}
-          >
-            <span className="text-2xl font-medium text-ink">
-              {mmss(remainingMs)}
-            </span>
-            <span className="text-label text-ink-mute">
-              {PHASE_LABEL[phase]}
-            </span>
-          </ProgressRing>
-
-          <div className="flex flex-col gap-2">
-            {status === "running" ? (
-              <Button onClick={pause}>Pausa</Button>
-            ) : (
-              <Button variant="primary" onClick={start}>
-                {status === "paused" ? "Riprendi" : "Avvia"}
-              </Button>
-            )}
-            {(status !== "idle" || phase === "break") && (
-              <Button onClick={stop}>Interrompi</Button>
-            )}
-          </div>
-        </div>
-
-        <p
-          aria-live="polite"
-          className="min-h-4 text-xs font-medium text-signal"
-        >
-          {announce}
-        </p>
-        <p className="text-xs text-ink-mute">
-          25 minuti di focus, 5 di pausa. Le sessioni da almeno 5 minuti
-          vengono registrate{course ? ` su «${course}»` : ""}.
-        </p>
       </div>
-    </Panel>
+
+      {/* big timer ring — indigo→violet gradient, Bricolage mm:ss readout */}
+      <div className="relative w-[320px] max-w-[78vw]">
+        <ProgressRing
+          value={1 - remainingMs / phaseTotal}
+          label={`${PHASE_LABEL[phase]}: mancano ${mmss(remainingMs)}`}
+          size={320}
+          strokeWidth={14}
+          tone="signal"
+          className="w-full [&>svg]:h-auto [&>svg]:w-full"
+        >
+          <span className="font-num text-[clamp(3rem,12vw,4.6rem)] font-extrabold leading-none tracking-[-0.03em] text-ink [font-family:var(--font-display)]">
+            {mmss(remainingMs)}
+          </span>
+          <span className="eyebrow mt-1.5">{PHASE_LABEL[phase]}</span>
+        </ProgressRing>
+      </div>
+
+      {/* controls */}
+      <div className="relative flex items-center gap-3">
+        {status === "running" ? (
+          <button
+            type="button"
+            className="btn btn-primary px-8 py-3.5 text-base"
+            onClick={pause}
+          >
+            <Pause size={18} aria-hidden="true" />
+            Pausa
+          </button>
+        ) : (
+          <button
+            type="button"
+            className="btn btn-primary px-8 py-3.5 text-base"
+            onClick={start}
+          >
+            <Play size={18} aria-hidden="true" />
+            {status === "paused" ? "Riprendi" : "Avvia"}
+          </button>
+        )}
+        {(status !== "idle" || phase === "break") && (
+          <button
+            type="button"
+            className="btn px-3.5 py-3.5"
+            onClick={stop}
+            aria-label="Interrompi"
+          >
+            <RotateCcw size={18} aria-hidden="true" />
+          </button>
+        )}
+      </div>
+
+      <p
+        aria-live="polite"
+        className="relative min-h-4 text-center text-xs font-medium text-signal"
+      >
+        {announce}
+      </p>
+      <p className="muted relative text-center text-xs">
+        25 minuti di focus, 5 di pausa. Le sessioni da almeno 5 minuti vengono
+        registrate{course ? ` su «${course}»` : ""}.
+      </p>
+    </section>
   );
 }

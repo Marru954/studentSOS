@@ -222,7 +222,7 @@ export function NoteEditor({
           </div>
           <div
             className={cn(
-              "min-h-96 overflow-x-auto rounded-sm border border-line bg-night-900 p-3",
+              "glass-2 min-h-96 overflow-x-auto rounded-md border border-line p-4",
               mobilePane !== "anteprima" && "hidden lg:block",
             )}
           >

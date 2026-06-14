@@ -68,10 +68,10 @@ export function Dashboard() {
     <div className="flex flex-col gap-5">
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold">Cruscotto</h1>
+          <h1 className="text-[clamp(2rem,5vw,3rem)] font-bold">Cruscotto</h1>
           {now && (
-            <p className="mt-1 font-mono text-xs text-ink-mute">
-              {fmtLongDay(now)}
+            <p className="mt-1 text-sm text-ink-mute first-letter:uppercase">
+              {fmtLongDay(now)} · tutto ciò che conta, adesso
             </p>
           )}
         </div>

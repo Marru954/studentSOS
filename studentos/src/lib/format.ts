@@ -87,6 +87,18 @@ export function fmtPlainDayMonth(date: IsoDate): string {
   return `${date.slice(8, 10)}/${date.slice(5, 7)}`;
 }
 
+const monthAbbr = new Intl.DateTimeFormat("it-IT", { month: "short" });
+
+/** Day-of-month without leading zero, e.g. "19" from "2026-06-19". */
+export function fmtDayOfMonth(date: IsoDate): string {
+  return String(Number(date.slice(8, 10)));
+}
+
+/** Italian short month, e.g. "giu" from a plain IsoDate. */
+export function fmtMonthAbbr(date: IsoDate): string {
+  return monthAbbr.format(new Date(`${date}T00:00:00`)).replace(".", "");
+}
+
 /** Monday 00:00 (local) of the week containing `date`. */
 export function mondayOf(date: Date): Date {
   const d = new Date(date);

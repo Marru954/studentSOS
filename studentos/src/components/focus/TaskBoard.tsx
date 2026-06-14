@@ -3,13 +3,12 @@
  * explicit ←/→ buttons, which makes the board keyboard- and screen-reader-
  * accessible by construction.
  */
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
 import { useState } from "react";
 import { Badge } from "@/components/primitives/Badge";
 import { Button } from "@/components/primitives/Button";
 import { ConfirmButton } from "@/components/primitives/ConfirmButton";
 import { Field, inputClass } from "@/components/primitives/Field";
-import { Panel } from "@/components/primitives/Panel";
 import { cn } from "@/lib/cn";
 import type { IsoDate, StudyTask, TaskStatus } from "@/lib/domain/types";
 import { daysBetweenIso, fmtPlainDayMonth } from "@/lib/format";
@@ -79,11 +78,18 @@ export function TaskBoard({
     if (status) onUpsert({ ...task, status });
   }
 
+  const openCount = tasks.filter((t) => t.status !== "done").length;
+
   return (
-    <section aria-label="Attività di studio" className="flex flex-col gap-3">
+    <section aria-label="Attività di studio" className="flex flex-col gap-5">
+      <div className="reveal flex items-center justify-between gap-3">
+        <h2 className="text-[1.4rem]">Obiettivi di studio</h2>
+        <span className="chip">{openCount} da fare</span>
+      </div>
+
       <form
         onSubmit={addTask}
-        className="glass flex flex-wrap items-end gap-3 rounded-md border border-line p-4 shadow-soft"
+        className="glass reveal flex flex-wrap items-end gap-3 rounded-lg p-[1.4rem]"
       >
         <Field label="Nuova attività" htmlFor="task-titolo" className="min-w-56 flex-1">
           <input
@@ -91,7 +97,7 @@ export function TaskBoard({
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            placeholder="es. Esercizi capitolo 9"
+            placeholder="Aggiungi un obiettivo…"
             required
             className={inputClass}
           />
@@ -120,25 +126,28 @@ export function TaskBoard({
             className={inputClass}
           />
         </Field>
-        <Button type="submit" variant="primary">
+        <button type="submit" className="btn btn-primary">
+          <Plus size={16} aria-hidden="true" />
           Aggiungi
-        </Button>
+        </button>
       </form>
 
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {STATUS_ORDER.map((status) => {
           const column = tasks.filter((t) => t.status === status).sort(byUrgency);
           return (
-            <Panel
+            <section
               key={status}
-              title={`${STATUS_LABEL[status]} · ${column.length}`}
-              headingLevel={3}
-              flush
+              className="glass reveal flex flex-col overflow-hidden rounded-lg"
             >
+              <header className="flex items-center justify-between gap-2 border-b border-line px-4 py-3">
+                <h3 className="text-sm font-semibold [font-family:var(--font-sans)] [letter-spacing:0]">
+                  {STATUS_LABEL[status]}
+                </h3>
+                <span className="chip">{column.length}</span>
+              </header>
               {column.length === 0 ? (
-                <p className="p-3 text-xs text-ink-mute">
-                  Nessuna attività qui.
-                </p>
+                <p className="faint p-3 text-xs">Nessuna attività qui.</p>
               ) : (
                 <ul className="flex flex-col divide-y divide-line">
                   {column.map((task) => (
@@ -188,7 +197,7 @@ export function TaskBoard({
                   ))}
                 </ul>
               )}
-            </Panel>
+            </section>
           );
         })}
       </div>

@@ -28,7 +28,7 @@ export function CoursePicker({
   }
 
   return (
-    <details className="glass rounded-md border border-line shadow-soft">
+    <details className="glass rounded-lg border border-line shadow-soft">
       <summary className="flex cursor-pointer list-none items-center gap-2 rounded-md px-4 py-3 text-sm font-semibold text-ink transition-colors hover:bg-night-900 [&::-webkit-details-marker]:hidden">
         <ListFilter aria-hidden="true" className="size-4 text-signal" />
         I miei corsi

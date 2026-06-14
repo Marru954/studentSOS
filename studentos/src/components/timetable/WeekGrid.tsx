@@ -26,6 +26,17 @@ function localMinutes(iso: string): number {
   return d.getHours() * 60 + d.getMinutes();
 }
 
+// A stable colour hue per course so lesson blocks read consistently across
+// the week (the immersive reference tints each block by course).
+export const COURSE_HUES = [255, 280, 200, 330, 160, 25, 100, 220];
+export function hueOf(courseName: string): number {
+  let h = 0;
+  for (let i = 0; i < courseName.length; i++) {
+    h = (h * 31 + courseName.charCodeAt(i)) >>> 0;
+  }
+  return COURSE_HUES[h % COURSE_HUES.length];
+}
+
 export function WeekGrid({
   events,
   weekStart,
@@ -72,14 +83,13 @@ export function WeekGrid({
       <div
         className="grid min-w-2xl"
         style={{
-          gridTemplateColumns: `3.5rem repeat(${DAYS_SHOWN}, minmax(6.5rem, 1fr))`,
-          gridTemplateRows: `2.25rem repeat(${slots}, 1.5rem)`,
+          gridTemplateColumns: `3.2rem repeat(${DAYS_SHOWN}, minmax(6.5rem, 1fr))`,
+          gridTemplateRows: `2.25rem repeat(${slots}, 28px)`,
         }}
       >
         {/* header row */}
         <div
           aria-hidden="true"
-          className="sticky left-0 z-10 border-b border-line bg-night-900/90"
           style={{ gridColumn: 1, gridRow: 1 }}
         />
         {dayDates.map((d, i) => (
@@ -87,8 +97,8 @@ export function WeekGrid({
             key={dayKeys[i]}
             style={{ gridColumn: i + 2, gridRow: 1 }}
             className={cn(
-              "flex items-center justify-center gap-1.5 border-b border-l border-line text-label font-medium",
-              dayKeys[i] === today ? "text-signal" : "text-ink-mute",
+              "flex items-center justify-center gap-1.5 pb-1.5 text-center text-[0.85rem] font-semibold",
+              dayKeys[i] === today ? "text-signal" : "text-ink",
             )}
           >
             {weekdayShort.format(d)} {d.getDate()}
@@ -104,7 +114,7 @@ export function WeekGrid({
             key={`label-${h}`}
             aria-hidden="true"
             style={{ gridColumn: 1, gridRow: `${2 + hi * 2} / span 2` }}
-            className="sticky left-0 z-10 bg-night-900/90 pr-2 pt-0.5 text-right font-mono text-label text-ink-mute"
+            className="faint font-num -translate-y-1.5 pr-2 text-right text-[0.72rem]"
           >
             {String(h).padStart(2, "0")}:00
           </div>
@@ -114,12 +124,13 @@ export function WeekGrid({
             <div
               key={`cell-${h}-${key}`}
               aria-hidden="true"
-              style={{ gridColumn: di + 2, gridRow: `${2 + hi * 2} / span 2` }}
-              className={cn(
-                "border-l border-line",
-                hi > 0 && "border-t",
-                key === today && "bg-night-700/25",
-              )}
+              style={{
+                gridColumn: di + 2,
+                gridRow: `${2 + hi * 2} / span 2`,
+                borderLeft: "1px solid var(--hairline)",
+                borderBottom: "1px solid var(--hairline)",
+              }}
+              className={cn(key === today && "bg-signal-dim/40")}
             />
           )),
         )}
@@ -132,6 +143,7 @@ export function WeekGrid({
               const roomChanged = event.change?.field === "room";
               const r1 = 2 + Math.floor(rowOf(localMinutes(event.start)));
               const r2 = Math.max(2 + Math.ceil(rowOf(localMinutes(event.end))), r1 + 1);
+              const hue = hueOf(event.courseName);
               return (
                 <li key={event.id} className="contents">
                   <div
@@ -139,17 +151,19 @@ export function WeekGrid({
                     style={{
                       gridColumn: di + 2,
                       gridRow: `${r1} / ${r2}`,
+                      borderRadius: 10,
+                      borderLeft: cancelled
+                        ? "3px solid var(--danger)"
+                        : `3px solid oklch(0.68 0.2 ${hue})`,
+                      background: cancelled
+                        ? "var(--bg-2)"
+                        : `color-mix(in oklch, oklch(0.6 0.2 ${hue}) 22%, var(--bg-2))`,
                       ...(laneCount > 1 && {
                         width: `${100 / laneCount}%`,
                         marginLeft: `${(100 / laneCount) * lane}%`,
                       }),
                     }}
-                    className={cn(
-                      "relative z-[1] m-px overflow-hidden rounded-xs border p-1",
-                      cancelled
-                        ? "border-danger/40 bg-night-800"
-                        : "border-line-strong/60 bg-night-700",
-                    )}
+                    className="lift relative z-[1] m-px overflow-hidden px-2 py-1.5"
                   >
                     <span className="sr-only">
                       {weekdayLong.format(dayDates[di])},{" "}
@@ -157,32 +171,37 @@ export function WeekGrid({
                     </span>
                     <p
                       className={cn(
-                        "line-clamp-2 text-xs font-medium leading-tight",
+                        "line-clamp-2 text-[0.78rem] font-semibold leading-tight",
                         cancelled ? "text-ink-mute line-through" : "text-ink",
                       )}
                     >
                       {event.courseName}
                     </p>
                     {cancelled ? (
-                      <p className="mt-0.5 text-label font-medium text-danger">
+                      <p className="mt-0.5 text-[0.68rem] font-medium text-danger">
                         Annullata
                       </p>
                     ) : (
-                      event.room && (
-                        <p
-                          className={cn(
-                            "mt-0.5 truncate font-mono text-label",
-                            roomChanged ? "text-warn" : "text-ink-mute",
-                          )}
-                        >
-                          {roomChanged && (
-                            <span>
-                              →<span className="sr-only"> aula cambiata:</span>{" "}
-                            </span>
-                          )}
-                          {event.room}
-                        </p>
-                      )
+                      <p
+                        className={cn(
+                          "faint font-num mt-0.5 truncate text-[0.68rem]",
+                          roomChanged && "text-warn",
+                        )}
+                      >
+                        {fmtTime(event.start)}
+                        {event.room && (
+                          <>
+                            {" · "}
+                            {roomChanged && (
+                              <span>
+                                →
+                                <span className="sr-only"> aula cambiata:</span>{" "}
+                              </span>
+                            )}
+                            {event.room}
+                          </>
+                        )}
+                      </p>
                     )}
                   </div>
                 </li>

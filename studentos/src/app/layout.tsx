@@ -47,6 +47,8 @@ export default function RootLayout({
           <div className="aurora a2" />
           <div className="aurora a3" />
         </div>
+        {/* film grain over the aurora so the glass reads premium, not flat */}
+        <div className="grain" aria-hidden="true" />
         <a
           href="#contenuto"
           className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-sm focus:bg-signal focus:px-3 focus:py-2 focus:text-label focus:font-semibold focus:text-white"

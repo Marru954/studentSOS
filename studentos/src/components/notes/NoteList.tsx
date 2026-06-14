@@ -1,8 +1,13 @@
-/** Search results / note index. Selection is a real button per note. */
-import { Badge } from "@/components/primitives/Badge";
-import { cn } from "@/lib/cn";
+/** Note index as an immersive card grid. Selection is a real button per note. */
 import type { Note } from "@/lib/domain/types";
 import { fmtDayMonth } from "@/lib/format";
+
+/** Words in a note's Markdown body — derived from the real content. */
+function wordCount(content: string): number {
+  const trimmed = content.trim();
+  if (!trimmed) return 0;
+  return trimmed.split(/\s+/).length;
+}
 
 export function NoteList({
   notes,
@@ -16,47 +21,51 @@ export function NoteList({
 }) {
   if (notes.length === 0) {
     return (
-      <p className="p-4 text-sm text-ink-mute">
-        Nessuna nota trovata.
-      </p>
+      <p className="muted p-4 text-sm">Nessuna nota trovata.</p>
     );
   }
   return (
-    <ul className="flex flex-col divide-y divide-line">
-      {notes.map((note) => (
-        <li key={note.id}>
+    <div
+      className="grid gap-4"
+      style={{
+        gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))",
+      }}
+    >
+      {notes.map((note, i) => {
+        const words = wordCount(note.content);
+        return (
           <button
+            key={note.id}
             type="button"
             onClick={() => onSelect(note.id)}
             aria-current={note.id === selectedId || undefined}
-            className={cn(
-              "block w-full px-4 py-2.5 text-left transition-colors hover:bg-night-700/50",
-              note.id === selectedId && "bg-signal-dim hover:bg-signal-dim",
-            )}
+            className="glass lift reveal flex flex-col gap-3 rounded-lg p-6 text-left text-[color:inherit]"
+            style={{
+              minHeight: 150,
+              ["--d" as string]: `${i * 0.06}s`,
+            }}
           >
-            <span className="flex items-baseline justify-between gap-3">
-              <span className="truncate text-sm text-ink">
-                {note.title.trim() || "Senza titolo"}
-              </span>
-              <span className="shrink-0 font-mono text-xs text-ink-mute">
-                {fmtDayMonth(note.updatedAt)}
-              </span>
+            <span className="chip chip-signal self-start">
+              {note.courseName || note.tags[0] || "Generale"}
             </span>
-            {(note.courseName || note.tags.length > 0) && (
-              <span className="mt-1 flex flex-wrap items-center gap-1.5">
-                {note.courseName && (
-                  <Badge tone="signal">{note.courseName}</Badge>
-                )}
-                {note.tags.slice(0, 3).map((tag) => (
-                  <Badge key={tag} tone="neutral">
-                    {tag}
-                  </Badge>
-                ))}
-              </span>
-            )}
+            <h3
+              style={{
+                fontSize: "1.05rem",
+                fontFamily: "var(--font-sans)",
+                fontWeight: 600,
+                letterSpacing: 0,
+                lineHeight: 1.3,
+              }}
+            >
+              {note.title.trim() || "Senza titolo"}
+            </h3>
+            <div className="faint font-num mt-auto flex items-center justify-between text-[0.78rem]">
+              <span>{fmtDayMonth(note.updatedAt)}</span>
+              <span>{words} parole</span>
+            </div>
           </button>
-        </li>
-      ))}
-    </ul>
+        );
+      })}
+    </div>
   );
 }

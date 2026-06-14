@@ -5,17 +5,28 @@
  * exam cards with filter chips. The calendar always shows the whole visible
  * month; the chips filter only the card list below.
  */
-import { CalendarDays } from "lucide-react";
+import {
+  Archive,
+  CalendarClock,
+  CalendarDays,
+  ChevronDown,
+  Plus,
+  Ticket,
+  TriangleAlert,
+  type LucideIcon,
+} from "lucide-react";
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { Panel } from "@/components/primitives/Panel";
 import { PanelSkeleton } from "@/components/primitives/Skeleton";
 import { SourceStatus } from "@/components/SourceStatus";
+import { bookingState } from "@/lib/domain/booking";
 import {
   type ExamFilter,
   filterExams,
 } from "@/lib/domain/calendar";
-import { localToday } from "@/lib/format";
+import type { ExamCall } from "@/lib/domain/types";
+import { daysBetweenIso, localToday } from "@/lib/format";
 import { useNowMinute } from "@/lib/hooks/useNowMinute";
 import { useSettings } from "@/lib/state/settings";
 import { useSynced } from "@/lib/state/synced";
@@ -28,6 +39,28 @@ const FILTERS: { id: ExamFilter; label: string }[] = [
   { id: "futuri", label: "Futuri" },
   { id: "passati", label: "Passati" },
 ];
+
+type GroupId = "urgenti" | "prenotabili" | "futuri" | "passati";
+
+const GROUPS: { id: GroupId; label: string; icon: LucideIcon }[] = [
+  { id: "urgenti", label: "Urgenti", icon: TriangleAlert },
+  { id: "prenotabili", label: "Prenotabili", icon: Ticket },
+  { id: "futuri", label: "Futuri", icon: CalendarClock },
+  { id: "passati", label: "Passati", icon: Archive },
+];
+
+/** Bucket an exam by its own date/booking state — drives the accordion. */
+function groupOf(exam: ExamCall, today: string): GroupId {
+  const days = daysBetweenIso(today, exam.date);
+  if (days < 0) return "passati";
+  if (days <= 2) return "urgenti";
+  const b = bookingState(exam.booking, today).kind;
+  if (b === "open" || b === "closing" || b === "opens") return "prenotabili";
+  return "futuri";
+}
+
+/** Cards shown collapsed before "Mostra altri". */
+const COLLAPSED_COUNT = 6;
 
 export function ExamList() {
   const examCalls = useSynced((s) => s.examCalls);
@@ -66,15 +99,52 @@ export function ExamList() {
     ) as Record<ExamFilter, number>;
   }, [examCalls, today]);
 
+  // the filtered cards, bucketed into the accordion groups (empty groups drop)
+  const grouped = useMemo(() => {
+    if (!today) return [];
+    const buckets: Record<GroupId, ExamCall[]> = {
+      urgenti: [],
+      prenotabili: [],
+      futuri: [],
+      passati: [],
+    };
+    for (const e of cards) buckets[groupOf(e, today)].push(e);
+    return GROUPS.map((g) => ({ ...g, items: buckets[g.id] })).filter(
+      (g) => g.items.length > 0,
+    );
+  }, [cards, today]);
+
+  // Urgenti open by default; others closed. "Mostra altri" expands per group.
+  const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({
+    urgenti: true,
+  });
+  const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>(
+    {},
+  );
+  const toggleOpen = (id: GroupId) =>
+    setOpenGroups((s) => ({ ...s, [id]: !(s[id] ?? false) }));
+  const toggleExpanded = (id: GroupId) =>
+    setExpandedGroups((s) => ({ ...s, [id]: !(s[id] ?? false) }));
+
   return (
     <div className="flex flex-col gap-5">
-      <header>
-        <h1 className="text-2xl font-semibold">Appelli</h1>
-        {ready && (
-          <p className="mt-1 font-mono text-xs text-ink-mute">
-            {examCalls.length} appelli sincronizzati
-          </p>
-        )}
+      <header className="reveal flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <h1 className="text-[clamp(2rem,5vw,3rem)]">Appelli</h1>
+          {ready && (
+            <p className="muted mt-1.5">
+              Sessione estiva 2026 · {examCalls.length} appelli tracciati
+            </p>
+          )}
+        </div>
+        <button
+          type="button"
+          className="btn btn-primary"
+          style={{ padding: "0.6rem 1.1rem", fontSize: "0.85rem" }}
+        >
+          <Plus aria-hidden="true" className="size-4" />
+          Aggiungi
+        </button>
       </header>
 
       {!ready ? (
@@ -111,8 +181,9 @@ export function ExamList() {
           </Panel>
 
           <section className="flex flex-col gap-3">
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <h2 className="text-lg font-semibold">Prossimi appelli</h2>
+            {/* Sticky filter tabs — stay reachable while the list scrolls. */}
+            <div className="glass sticky top-3 z-20 flex flex-wrap items-center justify-between gap-3 rounded-xl px-3 py-2 shadow-soft">
+              <h2 className="pl-1 text-lg font-semibold">Prossimi appelli</h2>
               <div
                 role="group"
                 aria-label="Filtra gli appelli"
@@ -128,8 +199,8 @@ export function ExamList() {
                       onClick={() => setFilter(f.id)}
                       className={
                         active
-                          ? "bg-primary-gradient rounded-full px-3 py-1 text-xs font-semibold text-white shadow-soft transition-colors"
-                          : "rounded-full bg-night-950 px-3 py-1 text-xs font-medium text-ink-mute transition-colors hover:bg-night-700 hover:text-ink"
+                          ? "grad-fill rounded-full px-3 py-1 text-xs font-semibold text-white shadow-soft transition-colors"
+                          : "chip transition-colors hover:border-line-strong"
                       }
                     >
                       {f.label}
@@ -143,7 +214,66 @@ export function ExamList() {
                 })}
               </div>
             </div>
-            <ExamCards exams={cards} today={today!} />
+
+            {grouped.length === 0 ? (
+              <p className="muted text-sm">Nessun appello in questa vista.</p>
+            ) : (
+              <div className="flex flex-col gap-3">
+                {grouped.map((g) => {
+                  const open = openGroups[g.id] ?? false;
+                  const expanded = expandedGroups[g.id] ?? false;
+                  const shown = expanded
+                    ? g.items
+                    : g.items.slice(0, COLLAPSED_COUNT);
+                  const Icon = g.icon;
+                  const extra = g.items.length - COLLAPSED_COUNT;
+                  return (
+                    <section
+                      key={g.id}
+                      className="glass reveal overflow-hidden rounded-lg"
+                    >
+                      <button
+                        type="button"
+                        onClick={() => toggleOpen(g.id)}
+                        aria-expanded={open}
+                        className="flex w-full items-center gap-2.5 px-4 py-3 text-left transition-colors hover:bg-night-900"
+                      >
+                        <Icon
+                          aria-hidden="true"
+                          className="size-[1.1rem] text-[var(--signal-2)]"
+                        />
+                        <span className="font-semibold">{g.label}</span>
+                        <span className="chip ml-1">{g.items.length}</span>
+                        <ChevronDown
+                          aria-hidden="true"
+                          className={`ml-auto size-4 text-ink-mute transition-transform duration-200 ${open ? "rotate-180" : ""}`}
+                        />
+                      </button>
+                      <div
+                        className={`overflow-hidden transition-[max-height] duration-300 ease-out ${open ? "max-h-[6000px]" : "max-h-0"}`}
+                      >
+                        <div className="px-4 pb-4 pt-1">
+                          <ExamCards exams={shown} today={today!} />
+                          {extra > 0 && (
+                            <div className="mt-3 flex justify-center">
+                              <button
+                                type="button"
+                                onClick={() => toggleExpanded(g.id)}
+                                className="chip transition-colors hover:border-line-strong"
+                              >
+                                {expanded
+                                  ? "Mostra meno"
+                                  : `Mostra altri ${extra} appelli`}
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </section>
+                  );
+                })}
+              </div>
+            )}
           </section>
         </>
       )}
