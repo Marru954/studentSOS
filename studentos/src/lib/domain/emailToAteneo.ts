@@ -67,6 +67,12 @@ const DOMAIN_TO_PRESET: Record<string, string> = {
   "unige.it": "unige",
   "studenti.unige.it": "unige",
   "edu.unige.it": "unige",
+  // Trieste — live EasyAcademy preset (Ingegneria Elettronica e Informatica)
+  "units.it": "units-ingegneria-informatica",
+  "studenti.units.it": "units-ingegneria-informatica",
+  // Perugia — live EasyAcademy preset (Informatica)
+  "unipg.it": "unipg-informatica",
+  "studenti.unipg.it": "unipg-informatica",
 };
 
 /** Valid Italian academic domains WITHOUT a preset yet — login allowed, the
@@ -105,8 +111,6 @@ const EXTRA_ACADEMIC_DOMAINS = new Set<string>([
   "studenti.uniba.it",
   "poliba.it",
   "studenti.poliba.it",
-  "units.it",
-  "studenti.units.it",
   "uniud.it",
   "spes.uniud.it",
   "univr.it",
@@ -124,8 +128,6 @@ const EXTRA_ACADEMIC_DOMAINS = new Set<string>([
   "studenti.uninsubria.it",
   "unimib.it",
   "campus.unimib.it",
-  "unipg.it",
-  "studenti.unipg.it",
   "unicam.it",
   "unimc.it",
   "unitus.it",

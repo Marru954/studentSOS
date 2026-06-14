@@ -13,6 +13,7 @@ import type { User } from "@supabase/supabase-js";
 import { create } from "zustand";
 import { isUniversityEmail } from "@/lib/domain/emailToAteneo";
 import { getSupabase } from "./client";
+import { resetLocalData } from "./sync";
 
 type AuthStatus = "loading" | "signedIn" | "signedOut" | "offline";
 
@@ -47,13 +48,16 @@ export const useAuth = create<AuthState>()((set, get) => ({
         status: user ? "signedIn" : "signedOut",
       });
     });
-    sb.auth.onAuthStateChange((_event, session) => {
+    sb.auth.onAuthStateChange((event, session) => {
       const user = session?.user ?? null;
       set({
         user,
         email: user?.email ?? null,
         status: user ? "signedIn" : "signedOut",
       });
+      // Account changed → wipe the previous user's local data so nothing leaks
+      // into the next session, and the next sign-in can't migrate it upward.
+      if (event === "SIGNED_OUT") void resetLocalData();
     });
   },
 

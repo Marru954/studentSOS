@@ -18,6 +18,10 @@ import {
   useTasks,
 } from "@/lib/state/manual";
 import { useSettings } from "@/lib/state/settings";
+import { useSynced } from "@/lib/state/synced";
+import { getDb } from "@/lib/storage/db";
+import { saveSettings } from "@/lib/storage/repo";
+import { DEFAULT_SETTINGS } from "@/lib/storage/types";
 import {
   deleteItem,
   pullAll,
@@ -161,4 +165,59 @@ function profileKey(): string {
 export function stopCloudSync(): void {
   for (const stop of stopFns) stop();
   stopFns = [];
+}
+
+/**
+ * Wipe every local store + IndexedDB territory when the account changes
+ * (sign-out, or switching user). Two reasons it must run:
+ *  1. privacy — no previous user's libretto/notes/tasks/focus may linger;
+ *  2. correctness — if stale local data survived, the next sign-in's reconcile
+ *     would see an "empty cloud + non-empty local" and migrate one user's data
+ *     up into another user's account.
+ * Mirrors are detached first (and `applying` set) so none of these clears can
+ * echo out as deletes against the just-ended cloud session.
+ */
+export async function resetLocalData(): Promise<void> {
+  stopCloudSync();
+  applying = true;
+  try {
+    await Promise.all([
+      useLibretto.getState().clear(),
+      useNotes.getState().clear(),
+      useTasks.getState().clear(),
+      useFocusSessions.getState().clear(),
+    ]);
+
+    // Synced caches are public ateneo data, but they belong to the previous
+    // account's university — drop them so nothing stale flashes for the next.
+    const db = await getDb();
+    await Promise.all([
+      db.clear("classEvents"),
+      db.clear("examCalls"),
+      db.clear("news"),
+      db.clear("syncMeta"),
+      db.clear("changeNotices"),
+      db.clear("secrets"),
+    ]);
+    useSynced.setState({
+      classEvents: [],
+      examCalls: [],
+      news: [],
+      syncMeta: [],
+      notices: [],
+    });
+
+    // Settings back to defaults → the next user gets a fresh onboarding and we
+    // never carry the previous preset/profile into their account. setState is a
+    // shallow merge, so the optional keys are cleared explicitly.
+    await saveSettings(DEFAULT_SETTINGS);
+    useSettings.setState({
+      presetId: undefined,
+      yearOfStudy: undefined,
+      programme: undefined,
+      ...DEFAULT_SETTINGS,
+    });
+  } finally {
+    applying = false;
+  }
 }

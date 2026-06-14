@@ -85,6 +85,23 @@ export async function pullAll(userId: string): Promise<RemoteSnapshot> {
   };
 }
 
+/** Just the profile row — the cheap query the auth callback uses to decide
+ *  first-run vs returning, authoritative across devices. Null when Supabase is
+ *  off, the row is missing, or the read fails. */
+export async function fetchProfile(
+  userId: string,
+): Promise<RemoteProfile | null> {
+  const sb = getSupabase();
+  if (!sb) return null;
+  const { data, error } = await sb
+    .from("profiles")
+    .select("preset_id, programme, year_of_study, degree_plan")
+    .eq("id", userId)
+    .maybeSingle();
+  if (error) return null;
+  return (data as RemoteProfile | null) ?? null;
+}
+
 /** Upsert one record into a territory table. Best-effort. */
 export async function pushItem(
   table: RemoteTable,

@@ -51,10 +51,9 @@ const ATENEI: Ateneo[] = [
   { id: "unibocconi", name: "Università Commerciale Luigi Bocconi", shortName: "Bocconi", city: "Milano", programmes: ["Economia", "Management", "Finanza", "Scienze Politiche", "Data Science"] },
   { id: "unipv", name: "Università degli Studi di Pavia", shortName: "Università di Pavia", city: "Pavia" },
   { id: "unige", name: "Università degli Studi di Genova", shortName: "Università di Genova", city: "Genova" },
-  // EasyStaff agendaweb instances verified (see easystaff.ts EASYSTAFF_BASES):
-  // ready to flip to live as soon as the per-course codes are captured.
-  { id: "units", name: "Università degli Studi di Trieste", shortName: "Università di Trieste", city: "Trieste" },
-  { id: "unipg", name: "Università degli Studi di Perugia", shortName: "Università di Perugia", city: "Perugia" },
+  // NB: Trieste (units) and Perugia (unipg) now ship as fully-wired LIVE presets
+  // — see easyacademy-live.ts. Cagliari (unica) stays manual: its agendaweb
+  // works but every year is curriculum-split, so no clean course is verified yet.
   { id: "unica", name: "Università degli Studi di Cagliari", shortName: "Università di Cagliari", city: "Cagliari" },
 ];
 

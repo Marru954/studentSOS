@@ -16,6 +16,7 @@ import { detectAteneo, isUniversityEmail } from "@/lib/domain/emailToAteneo";
 import { useSettings } from "@/lib/state/settings";
 import { useSynced } from "@/lib/state/synced";
 import { useAuth } from "@/lib/supabase/auth";
+import { pushProfile } from "@/lib/supabase/remote";
 import type { UniversityPreset } from "@/lib/sync/provider";
 import { UNIVERSITY_PRESETS, getPreset } from "@/lib/sync/universities";
 
@@ -102,6 +103,21 @@ export function OnboardingFlow() {
         totalCfu,
       },
     });
+    // Write the onboarding facts straight to the cloud profile so "already
+    // onboarded" is true on every device. Best-effort: local-first is the
+    // source of truth and never blocks on the network. (The settings mirror in
+    // cloud sync also pushes this; the explicit call covers the case where the
+    // mirror isn't attached yet.)
+    const user = useAuth.getState().user;
+    if (user) {
+      const s = useSettings.getState();
+      void pushProfile(user.id, user.email ?? null, {
+        presetId: s.presetId,
+        programme: s.programme,
+        yearOfStudy: s.yearOfStudy,
+        degreePlan: s.degreePlan,
+      });
+    }
     void useSynced.getState().sync();
     router.replace("/cruscotto");
   }
