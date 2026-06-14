@@ -7,6 +7,7 @@
  * the first client render always match.
  */
 import { CalendarClock, Settings2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useMemo } from "react";
 import { Button } from "@/components/primitives/Button";
 import { PanelSkeleton } from "@/components/primitives/Skeleton";
@@ -24,7 +25,6 @@ import { useNowMinute } from "@/lib/hooks/useNowMinute";
 import { useLibretto } from "@/lib/state/manual";
 import { useSettings } from "@/lib/state/settings";
 import { useSynced } from "@/lib/state/synced";
-import { useUi } from "@/lib/state/ui";
 import { BackupCard } from "@/components/backup/BackupCard";
 import { CfuPanel, MediaPanel } from "./CareerPanels";
 import { ChangeNotices } from "./ChangeNotices";
@@ -66,6 +66,7 @@ export function Dashboard() {
   const settings = useSettings();
   const libretto = useLibretto();
   const now = useNowMinute();
+  const router = useRouter();
 
   const ready =
     now !== null && synced.hydrated && settings.hydrated && libretto.hydrated;
@@ -130,7 +131,7 @@ export function Dashboard() {
           )}
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <Button size="sm" onClick={() => useUi.getState().openOnboarding()}>
+          <Button size="sm" onClick={() => router.push("/onboarding")}>
             <Settings2 aria-hidden="true" className="size-3.5" />
             Configura
           </Button>

@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Bricolage_Grotesque, Inter } from "next/font/google";
 import { AppFooter } from "@/components/AppFooter";
 import { AppNav } from "@/components/AppNav";
-import { OnboardingDialog } from "@/components/onboarding/OnboardingDialog";
+import { FirstRunGate } from "@/components/onboarding/FirstRunGate";
 import { RevealManager } from "@/components/RevealManager";
 import { ServiceWorkerRegister } from "@/components/ServiceWorkerRegister";
 import { StoreProvider } from "@/components/StoreProvider";
@@ -67,7 +67,7 @@ export default function RootLayout({
           <AppNav />
           {children}
           <AppFooter />
-          <OnboardingDialog />
+          <FirstRunGate />
         </StoreProvider>
         <ToastHost />
         <RevealManager />

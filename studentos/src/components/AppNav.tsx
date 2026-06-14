@@ -11,6 +11,7 @@ import {
 import { useMemo } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { AccountButton } from "@/components/auth/AccountButton";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Wordmark } from "@/components/Wordmark";
 import { cn } from "@/lib/cn";
@@ -101,7 +102,8 @@ export function AppNav() {
               );
             })}
           </div>
-          <div className="ml-auto pl-1">
+          <div className="ml-auto flex items-center gap-2 pl-1">
+            <AccountButton />
             <ThemeToggle />
           </div>
         </nav>

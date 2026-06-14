@@ -2,20 +2,22 @@
 
 import {
   ArrowRight,
+  Award,
   CalendarClock,
   CalendarDays,
+  Check,
   GraduationCap,
   LayoutDashboard,
   LifeBuoy,
+  Minus,
   NotebookPen,
-  Sparkles,
   Timer,
+  Trophy,
   type LucideIcon,
 } from "lucide-react";
 import Link from "next/link";
 import { CountUp } from "@/components/primitives/CountUp";
-import { ProgressRing } from "@/components/primitives/ProgressRing";
-import { Sparkline } from "@/components/primitives/Sparkline";
+import { HeroDemo } from "./HeroDemo";
 
 const FEATURES: { icon: LucideIcon; href: string; title: string; desc: string }[] = [
   {
@@ -57,9 +59,39 @@ const STEPS = [
 ];
 
 const STATS: { value: number; suffix?: string; unit: string; desc: string }[] = [
-  { value: 50, suffix: "+", unit: "atenei", desc: "università italiane già supportate" },
   { value: 100, suffix: "%", unit: "offline", desc: "nessun dato sui server — tutto sul tuo dispositivo" },
+  { value: 1, unit: "PDF", desc: "tutta la carriera importata in un colpo solo" },
   { value: 5, suffix: " min", unit: "setup", desc: "per essere operativo dal primo avvio" },
+];
+
+/** Sample unlocked exams for the gamification teaser. */
+const SAMPLE_TROPHIES: {
+  grade: string;
+  laude?: boolean;
+  course: string;
+  border: string;
+  Icon: LucideIcon;
+  iconColor: string;
+  grad?: boolean;
+}[] = [
+  { grade: "30", laude: true, course: "Algoritmi", border: "border-yellow-400/60", Icon: Trophy, iconColor: "text-yellow-400", grad: true },
+  { grade: "29", course: "Basi di dati", border: "border-[color:var(--signal)]/50", Icon: Trophy, iconColor: "text-[var(--signal-2)]", grad: true },
+  { grade: "28", course: "Reti", border: "border-[color:var(--signal)]/50", Icon: Trophy, iconColor: "text-[var(--signal-2)]", grad: true },
+  { grade: "26", course: "Fisica", border: "border-line", Icon: Award, iconColor: "text-ink-mute" },
+  { grade: "Idoneo", course: "Inglese B2", border: "border-line/60", Icon: GraduationCap, iconColor: "text-ink-mute" },
+];
+
+/** Feature comparison: StudentOS vs the usual alternatives. */
+const COMPARE_COLS = ["StudentOS", "Excel", "Portale ateneo", "Altre app"];
+type Cell = "yes" | "no" | "partial";
+const COMPARE_ROWS: { feature: string; cells: Cell[] }[] = [
+  { feature: "100% offline", cells: ["yes", "yes", "no", "no"] },
+  { feature: "Nessun account", cells: ["yes", "yes", "no", "no"] },
+  { feature: "Media e proiezione laurea live", cells: ["yes", "partial", "no", "partial"] },
+  { feature: "Appelli + avvisi sui conflitti", cells: ["yes", "no", "partial", "partial"] },
+  { feature: "Focus / Pomodoro integrato", cells: ["yes", "no", "no", "partial"] },
+  { feature: "Import del PDF carriera", cells: ["yes", "no", "no", "no"] },
+  { feature: "Dati solo sul tuo dispositivo", cells: ["yes", "yes", "no", "no"] },
 ];
 
 const UNIVERSITY_NAMES = [
@@ -122,41 +154,22 @@ const fadeIn =
     );
   };
 
-/** Floating glass preview of the Cruscotto — illustrative figures, not live. */
-function HeroCard() {
-  return (
-    <div className="glass float w-[min(380px,86vw)] shadow-soft" style={{ padding: "1.3rem" }}>
-      <div className="mb-[1.1rem] flex items-center justify-between">
-        <span className="eyebrow">Cruscotto</span>
-        <span className="chip chip-signal">
-          <Sparkles className="size-[0.8rem]" aria-hidden="true" />
-          live
-        </span>
-      </div>
-      <div className="flex items-center gap-[1.1rem]">
-        <ProgressRing value={96 / 180} label="96 CFU su 180" size={104} strokeWidth={9}>
-          <span className="font-display text-[1.5rem] font-bold text-ink">96</span>
-          <span className="text-[0.7rem] text-ink-faint">/180 CFU</span>
-        </ProgressRing>
-        <div className="flex-1">
-          <div className="eyebrow text-ink-faint">Media ponderata</div>
-          <div className="font-display text-[2.4rem] font-bold leading-none text-ink">27,4</div>
-          <div className="mt-1.5">
-            <Sparkline
-              values={[25, 26, 24, 27, 28, 27, 28]}
-              label="Andamento dei voti recenti"
-              width={150}
-              height={40}
-            />
-          </div>
-        </div>
-      </div>
-      <div className="mt-[1.1rem] flex items-center gap-2.5 border-t border-[var(--hairline)] pt-4">
-        <span className="chip chip-danger">Analisi I · 2g</span>
-        <span className="chip">Sistemi · 10/07</span>
-      </div>
-    </div>
-  );
+/** A single comparison-table cell. */
+function CompareCell({ value, highlight }: { value: Cell; highlight: boolean }) {
+  if (value === "yes")
+    return (
+      <Check
+        aria-label="sì"
+        className={`mx-auto size-[1.1rem] ${highlight ? "text-[var(--signal-2)]" : "text-ok"}`}
+      />
+    );
+  if (value === "partial")
+    return (
+      <span aria-label="parziale" className="text-ink-faint">
+        ~
+      </span>
+    );
+  return <Minus aria-label="no" className="mx-auto size-[1.1rem] text-ink-faint" />;
 }
 
 /** Public landing — no login required. The global AppNav sits above it as the
@@ -167,23 +180,6 @@ export function Landing() {
       <main id="contenuto" className="relative z-[2] flex-1">
         {/* HERO */}
         <section className="wrap relative overflow-hidden py-12 text-center sm:py-16">
-          {/* floating stat bubbles — riempiono i lati vuoti su schermi larghi */}
-          <div
-            className="glass float-slow reveal absolute left-4 top-1/3 hidden flex-col items-center gap-1 rounded-2xl px-5 py-4 text-center shadow-soft lg:flex xl:left-12"
-            style={{ ["--d" as string]: "0.4s" }}
-            aria-hidden="true"
-          >
-            <span className="grad-text font-display text-3xl font-bold">🔥 12g</span>
-            <span className="eyebrow text-ink-mute">streak studio</span>
-          </div>
-          <div
-            className="glass float reveal absolute right-4 top-1/4 hidden flex-col items-center gap-1 rounded-2xl px-5 py-4 text-center shadow-soft lg:flex xl:right-12"
-            style={{ ["--d" as string]: "0.6s" }}
-            aria-hidden="true"
-          >
-            <span className="grad-text font-display text-3xl font-bold">27,4</span>
-            <span className="eyebrow text-ink-mute">media ponderata</span>
-          </div>
           <div className="reveal in mb-6 inline-flex">
             <span className="chip chip-signal">
               <LifeBuoy className="size-[0.85rem]" aria-hidden="true" />
@@ -212,19 +208,22 @@ export function Landing() {
             Esami, appelli, libretto e carriera in un unico posto.{" "}
             <span className="text-ink">Calmo, immersivo, tutto offline.</span>
           </p>
-          <div ref={fadeIn(2000)} className="mt-9 flex flex-wrap justify-center gap-3">
-            <Link href="/cruscotto" className="btn btn-primary">
-              Inizia ora
-              <ArrowRight className="size-[1.05rem]" aria-hidden="true" />
-            </Link>
-            <Link href="/focus" className="btn">
-              Prova il Focus
-            </Link>
-          </div>
-          <div className="mt-14 flex justify-center">
-            <div className="reveal" style={{ ["--d" as string]: "0.1s" }}>
-              <HeroCard />
+          <div ref={fadeIn(2000)} className="mt-9 flex flex-col items-center gap-3">
+            <div className="flex flex-wrap justify-center gap-3">
+              <Link href="/cruscotto" className="btn btn-primary">
+                Inizia ora — senza account
+                <ArrowRight className="size-[1.05rem]" aria-hidden="true" />
+              </Link>
+              <Link href="/focus" className="btn">
+                Prova il Focus
+              </Link>
             </div>
+            <p className="eyebrow text-ink-faint">
+              Nessuna registrazione · 100% offline · gratis
+            </p>
+          </div>
+          <div className="mt-12">
+            <HeroDemo />
           </div>
         </section>
 
@@ -326,6 +325,94 @@ export function Landing() {
                 </p>
               </div>
             ))}
+          </div>
+        </section>
+
+        {/* PERCHÉ STUDENTOS — comparativa */}
+        <section className="wrap py-12">
+          <p className="reveal eyebrow text-center">Perché StudentOS</p>
+          <h2
+            className="reveal mx-auto mt-2.5 max-w-[20ch] text-center"
+            style={{ fontSize: "clamp(1.8rem, 4vw, 2.6rem)" }}
+          >
+            Non è un altro <span className="grad-text">foglio Excel</span>.
+          </h2>
+          <div className="reveal mt-8 overflow-x-auto">
+            <table className="glass mx-auto w-full min-w-[34rem] overflow-hidden rounded-2xl text-sm shadow-soft">
+              <thead>
+                <tr className="border-b border-line">
+                  <th className="px-4 py-3.5 text-left font-medium text-ink-mute" />
+                  {COMPARE_COLS.map((c, i) => (
+                    <th
+                      key={c}
+                      scope="col"
+                      className="px-4 py-3.5 text-center font-semibold"
+                    >
+                      {i === 0 ? <span className="grad-text">{c}</span> : <span className="text-ink-mute">{c}</span>}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {COMPARE_ROWS.map((row) => (
+                  <tr key={row.feature} className="border-b border-line/50 last:border-0">
+                    <th scope="row" className="px-4 py-3 text-left font-normal text-ink">
+                      {row.feature}
+                    </th>
+                    {row.cells.map((cell, i) => (
+                      <td
+                        key={i}
+                        className={`px-4 py-3 text-center ${i === 0 ? "bg-[color-mix(in_oklch,var(--signal)_9%,transparent)]" : ""}`}
+                      >
+                        <CompareCell value={cell} highlight={i === 0} />
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        {/* RESTA IN PISTA — gamification teaser */}
+        <section className="wrap py-12">
+          <p className="reveal eyebrow text-center">Resta in pista</p>
+          <h2
+            className="reveal mx-auto mt-2.5 max-w-[20ch] text-center"
+            style={{ fontSize: "clamp(1.8rem, 4vw, 2.6rem)" }}
+          >
+            Ogni esame è un <span className="grad-text">trofeo</span> sbloccato.
+          </h2>
+          <p className="reveal mx-auto mt-3 max-w-[46ch] text-center text-sm text-ink-mute">
+            Media, CFU e streak crescono a ogni voto registrato. Piccole
+            vittorie che ti tengono sul pezzo fino alla laurea.
+          </p>
+          <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+            {SAMPLE_TROPHIES.map((t, i) => {
+              const Icon = t.Icon;
+              return (
+                <div
+                  key={t.course}
+                  className={`glass lift reveal flex flex-col items-center gap-1.5 rounded-xl border-2 ${t.border} p-4 text-center`}
+                  style={{ ["--d" as string]: `${(i % 5) * 0.06}s` }}
+                >
+                  <Icon aria-hidden="true" className={`size-5 ${t.iconColor}`} />
+                  <div
+                    className={`font-display text-[1.7rem] font-bold leading-none ${t.grad ? "grad-text" : "text-ink"}`}
+                  >
+                    {t.grade}
+                    {t.laude && (
+                      <span aria-hidden="true" className="ml-0.5 align-top text-sm">
+                        ⭐
+                      </span>
+                    )}
+                  </div>
+                  <div className="text-xs font-medium text-ink-mute">
+                    {t.course}
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </section>
 
