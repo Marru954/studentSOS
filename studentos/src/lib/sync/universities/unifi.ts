@@ -1390,6 +1390,7 @@ export const unifi: UniversityPreset = {
   city: "Firenze",
   programme: "Informatica",
   liveSources: true,
+  portalUrl: "https://sol.unifi.it",
   sources: [],
   livePrograms,
 };

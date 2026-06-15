@@ -1055,6 +1055,7 @@ export const unica: UniversityPreset = {
   city: "Cagliari",
   programme: "Informatica",
   liveSources: true,
+  portalUrl: "https://unica.esse3.cineca.it",
   sources: [],
   livePrograms,
 };

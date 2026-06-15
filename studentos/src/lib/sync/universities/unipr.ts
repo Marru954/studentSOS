@@ -865,6 +865,7 @@ export const unipr: UniversityPreset = {
   city: "Parma",
   programme: "Informatica",
   liveSources: true,
+  portalUrl: "https://unipr.esse3.cineca.it",
   sources: [],
   livePrograms,
 };
