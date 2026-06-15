@@ -94,6 +94,11 @@ export interface UniversityPreset {
    *  the dashboard "Link utili" panel. Optional: presets without it fall back to
    *  generic national links, so the panel is never empty. */
   links?: { label: string; url: string }[];
+  /** Ateneo student portal (e.g. the online secretariat) — surfaced as the
+   *  dashboard "Vai al portale" shortcut. Optional: when absent the shortcut
+   *  falls back to `links[0]`, then to an internal page, so it's never a dead
+   *  link. Set only to a real, verified URL. */
+  portalUrl?: string;
 }
 
 export class SyncError extends Error {
