@@ -18,6 +18,7 @@ import { useSynced } from "@/lib/state/synced";
 import { useToast } from "@/lib/state/toast";
 import { deleteClassEventSeries } from "@/lib/storage/repo";
 import { CoursePicker } from "@/components/CoursePicker";
+import { ImportIcalForm } from "./ImportIcalForm";
 import {
   ManualLessonForm,
   type ManualLessonDraft,
@@ -374,6 +375,7 @@ export function WeekView() {
             onChange={(pinned) => void updateSettings({ pinnedCourses: pinned })}
           />
           <ManualLessonForm courses={allCourses} />
+          <ImportIcalForm />
           {weekEvents.length === 0 && (
             <p className="muted text-sm">
               Nessuna lezione in questa settimana
