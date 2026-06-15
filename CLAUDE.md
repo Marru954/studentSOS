@@ -18,11 +18,23 @@ Run all commands **inside `studentos/`**, not from this root.
 
 `studentos/AGENTS.md` warns: this is **Next.js 16.2.9 (Turbopack), React 19, Tailwind v4** — APIs differ from training data. **Before writing any Next/React code, read the relevant guide under `studentos/node_modules/next/dist/docs/`.** Concretely confirmed differences already hit: `cookies()` is **async**; Route Handlers set cookies on the returned `NextResponse`; the `react-hooks` ESLint rules reject `setState` in a mount effect (use `useSyncExternalStore`, see `src/lib/hooks/useNowMinute.ts`) and reject ref writes during render.
 
+## Permanent rules (apply to every task — never need restating in a prompt)
+
+- **Never edit:** `src/lib/storage/db.ts` (IndexedDB schema), existing files in `tests/`, `package.json`, `scripts/`. If a task seems to require a schema bump, find another way; if truly unavoidable, stop and flag rather than change it silently.
+- **Never edit the sync core:** `src/lib/sync/adapters/easyacademy.ts`, `src/lib/sync/engine.ts`.
+- **Never invent EasyAcademy `scuola`/`corso`/`anno2` codes.** Use only codes confirmed by a real GET on `combo.php` (+ POST `grid_call.php`/`test_call.php` returning `celle`/`Appelli`). Unverifiable or empty → `liveSources: false` / leave the degree out of `livePrograms`, with the reason in a comment. Wrong data is worse than none.
+- **Green before commit:** `npm run build`, `npm test`, `tsc --noEmit`, `npm run lint` all pass first. One commit per completed objective/feature.
+- **No new npm dependency** unless the user explicitly asks.
+- **Design language is fixed:** glass, aurora, Bricolage Grotesque, Tailwind v4, CSS-variable tokens — reskin via the `@theme` var blocks, never per-component.
+- **Accessibility on every new component:** `aria-label`, `sr-only`, keyboard-reachable.
+- **UI copy is always Italian.**
+- **`"use client"` only where strictly needed** (state/effects/browser APIs) — components stay server by default.
+
 ## Commands (studentos)
 
 ```bash
 cd studentos
-npm run dev            # next dev (often a stray dev server lingers — kill `next dev`/`next-server` first if a port is busy)
+npm run dev            # next dev on http://localhost:3000 (kill a stray `next dev`/`next-server` first if the port is busy)
 npm run build          # next build (also surfaces SAML/bundling errors)
 npm run lint           # eslint
 npm test               # runs an explicit list of tests/*.test.ts (NOT a glob — add new test files to the script in package.json)
@@ -33,6 +45,12 @@ npm test               # runs an explicit list of tests/*.test.ts (NOT a glob �
 
 Tests use `node:test` + `tsx` + `fake-indexeddb` (no Jest/Vitest). There is **no browser in this environment**: verify UI accessibility/markup via `scripts/audit-render.ts` and verify color contrast by computing WCAG ratios from the compiled CSS in `.next/static`. The Delphi PDF import has two extra helpers that run pdfjs headless in Node: `scripts/dump-pdf-text.ts <file.pdf>` (dump extracted text to a fixture) and `scripts/verify-delphi-pdf.ts <file.pdf>` (end-to-end parse check).
 
+## Git workflow
+
+- `main` is the production branch and this repo's working branch — commits land directly on `main` (the established flow here).
+- Commit subject: `<ateneo|feature|fix|docs>: <short description in Italian>` (e.g. `fix: calendario appelli filtrato per anno`).
+- Push to GitHub after each significant work session.
+
 ## StudentOS architecture (the big picture)
 
 **Offline-first, no backend database.** IndexedDB (via `idb`, schema in `src/lib/storage/db.ts`) is the source of truth. Zustand stores (`src/lib/state/*`) are in-memory mirrors with **write-through**: `StoreProvider` (`src/components/StoreProvider.tsx`) hydrates every store from IndexedDB on mount, renders immediately (cached data), then kicks a background sync. After any sync, the store re-reads from IndexedDB ("single source of truth"). Bump `DB_VERSION` and add an `upgrade()` branch for schema changes.
@@ -41,7 +59,7 @@ Tests use `node:test` + `tsx` + `fake-indexeddb` (no Jest/Vitest). There is **no
 - **SYNCED** (public data: timetable, exams, news) — fetched by pluggable providers, treated as disposable caches replaced wholesale per source.
 - **MANUAL** (libretto, notes, study tasks, focus sessions) — the user's own records; sync never writes here. Persisted in IndexedDB, mirrored by `src/lib/state/manual.ts` (a generic `createManualStore` factory).
 
-**Optional online layer (Supabase) + onboarding gate** (`src/lib/supabase/*`, `src/components/{auth,onboarding}/*`). Entirely env-gated (`NEXT_PUBLIC_SUPABASE_URL`/`ANON_KEY` in `client.ts`); absent → the app is exactly the local-only build and `useAuth` sits in `"offline"`. Auth is **magic-link only**, restricted to institutional inboxes (`isUniversityEmail`/`emailToAteneo`) — no password ever travels; `devLogin` fakes a session in dev (stripped from prod by the `NODE_ENV` check). `sync.ts` reconciles **once per sign-in**: cloud non-empty → cloud wins and replaces the local cache; cloud empty + local present → migrate local up; thereafter per-store subscriptions **push every mutation** best-effort (IndexedDB stays authoritative, UI never blocks on the network). The `profiles` row (`preset_id`, `programme`, `year_of_study`, `degree_plan`; RLS by `user_id`) is the **source of truth for "onboarded"**. **Account switch is a first-class event**: `StoreProvider`'s cloud effect is keyed on `userId` and diffed against `localStorage['studentos-uid']` (`UID_STORAGE_KEY`); a different uid (or `SIGNED_OUT`) runs `resetLocalData()` — wipes all manual territories + synced caches + the saved portal-credential secret + settings back to `DEFAULT_SETTINGS` — **before** hydrating, so no previous user's data shows or migrates upward. `useAuth.reconciled` gates the redirect so it never fires on half-applied settings. `FirstRunGate` sends any signed-in-but-unconfigured user hitting a gated route to `/onboarding`; `OnboardingFlow` walks ateneo → corso → anno and writes the profile. **Invariant: `resetLocalData` touches only local IndexedDB/stores, never cloud rows.**
+**Optional online layer (Supabase) + onboarding gate** (`src/lib/supabase/*`, `src/components/{auth,onboarding}/*`). Entirely env-gated (`NEXT_PUBLIC_SUPABASE_URL`/`ANON_KEY` in `client.ts`); absent → the app is exactly the local-only build and `useAuth` sits in `"offline"`. Auth is **magic-link only** (`src/lib/supabase/auth.ts`), restricted to institutional inboxes (`isUniversityEmail`/`emailToAteneo`) — no password ever travels; `devLogin` fakes a session in dev (stripped from prod by the `NODE_ENV` check). `sync.ts` reconciles **once per sign-in**: cloud non-empty → cloud wins and replaces the local cache; cloud empty + local present → migrate local up; thereafter per-store subscriptions **push every mutation** best-effort (IndexedDB stays authoritative, UI never blocks on the network). The `profiles` row (`preset_id`, `programme`, `year_of_study`, `degree_plan`; RLS by `user_id`) is the **source of truth for "onboarded"**. **Account switch is a first-class event**: `StoreProvider`'s cloud effect is keyed on `userId` and diffed against `localStorage['studentos-uid']` (`UID_STORAGE_KEY`); a different uid (or `SIGNED_OUT`) runs `resetLocalData()` — wipes all manual territories + synced caches + the saved portal-credential secret + settings back to `DEFAULT_SETTINGS` — **before** hydrating, so no previous user's data shows or migrates upward. `useAuth.reconciled` gates the redirect so it never fires on half-applied settings. `FirstRunGate` sends any signed-in-but-unconfigured user hitting a gated route to `/onboarding` — completeness is judged on the cloud `profiles` row (`AuthCallback` reads it via `fetchProfile`), never on leftover local settings; `OnboardingFlow` walks ateneo → corso → anno and writes the profile. **Invariant: `resetLocalData` touches only local IndexedDB/stores, never cloud rows.**
 
 **Pluggable sync engine** (`src/lib/sync/`): everything flows through the `SyncProvider` interface (`provider.ts`, capabilities `"timetable" | "exams" | "news"`, zod-validated params). Adapters live in `adapters/` (`easyacademy` — drives all 14 live EasyAcademy atenei via their JSON endpoints; `ical`; `wordpress-news`); `registry.ts` lists them; `engine.ts` runs sources with per-source failure isolation; `universities/` holds presets (one file per live ateneo, e.g. `uniroma2.ts`, `unifi.ts`). The server entry is `src/app/api/sync/route.ts`; the browser side (`src/lib/storage/syncClient.ts` + `repo.ts`) atomically replaces each source's cache in one transaction and computes **change notices** via the content-diff engine (`src/lib/storage/diff.ts`). `defaultSyncRange` (in `syncClient.ts`) reaches **~15 weeks back** (`LOOKBACK_DAYS`) before "today" so a first sync started mid-semester isn't empty — the EasyAcademy timetable window begins at `from`. Synced entities use stable content-hash ids (`stableId`, cyrb53, in `sync/util.ts`) so they survive re-syncs and are diffable.
 
