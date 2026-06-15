@@ -8,6 +8,7 @@
 import { Clock, Hourglass, MapPin } from "lucide-react";
 import { Badge } from "@/components/primitives/Badge";
 import { ConfirmButton } from "@/components/primitives/ConfirmButton";
+import { cn } from "@/lib/cn";
 import { bookingState } from "@/lib/domain/booking";
 import type { ExamCall, ExamKind, IsoDate } from "@/lib/domain/types";
 import { daysBetweenIso } from "@/lib/format";
@@ -65,7 +66,10 @@ function ExamCard({
 
   return (
     <article
-      className="glass lift flex flex-col gap-4 rounded-lg p-[1.4rem]"
+      className={cn(
+        "glass lift flex flex-col gap-4 rounded-lg p-[1.4rem]",
+        urgent && "urgent-card",
+      )}
       style={{ ["--d" as string]: `${index * 0.06}s` }}
     >
       <div className="flex items-start justify-between gap-2.5">

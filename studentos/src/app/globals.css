@@ -675,10 +675,22 @@ input[type="radio"]:active {
 .ring-track { stroke: var(--hairline-strong); }
 .ring-fill { stroke-linecap: round; }
 
+/* Appelli: urgent exams (≤ 7 days) get a pulsing danger ring so they stand out
+   from regular cards. The static border survives reduced-motion. */
+.urgent-card {
+  border-color: color-mix(in srgb, var(--danger) 55%, transparent);
+  animation: urgent-pulse 2.4s ease-in-out infinite;
+}
+@keyframes urgent-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--danger) 0%, transparent); }
+  50% { box-shadow: 0 0 0 4px color-mix(in srgb, var(--danger) 16%, transparent); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .aurora { animation: none !important; }
   .float, .float-slow, .buoy-spin { animation: none !important; }
   .anim-ready .word .mid { animation: none !important; }
+  .urgent-card { animation: none !important; }
   .reveal { opacity: 1 !important; transform: none !important; transition: none; }
 }
 
