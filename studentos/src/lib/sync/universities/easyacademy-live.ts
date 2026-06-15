@@ -18,6 +18,7 @@
  */
 import type { UniversityPreset } from "../provider";
 import { easyAcademyPreset } from "./easystaff";
+import { uniupo } from "./uniupo";
 import { uniss } from "./uniss";
 import { unipg } from "./unipg";
 import { unistrasi } from "./unistrasi";
@@ -193,24 +194,6 @@ const unige = easyAcademyPreset({
   ],
 });
 
-// Piemonte Orientale — Informatica (sede di Vercelli). y1 A149, y2/3
-// 1932_VERCELLI. Verified 8/5/5 lessons, 8/24/24 appelli. (public app at
-// /timetable; an identical Informatica exists at Alessandria.)
-const uniupo = easyAcademyPreset({
-  id: "uniupo-informatica",
-  name: "Università del Piemonte Orientale",
-  shortName: "Piemonte Orientale",
-  city: "Vercelli",
-  programme: "Informatica",
-  baseUrl: "https://upoplanner.uniupo.it/timetable",
-  scuola: "Vercelli",
-  anno: "2025",
-  years: [
-    { year: 1, corso: "A149", anno2: ["000|1"] },
-    { year: 2, corso: "1932_VERCELLI", anno2: ["000|2"] },
-    { year: 3, corso: "1932_VERCELLI", anno2: ["000|3"] },
-  ],
-});
 
 
 /** All verified live EasyAcademy presets, registered in `index.ts`. */
