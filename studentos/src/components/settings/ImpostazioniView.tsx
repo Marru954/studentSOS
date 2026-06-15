@@ -4,6 +4,7 @@
  *  Tutto è già persistente altrove — questa pagina è solo una vista unificata
  *  sui controlli sparsi (settings store, tema, auth). */
 import {
+  Bell,
   Database,
   Download,
   Info,
@@ -11,19 +12,27 @@ import {
   LogOut,
   MessageSquare,
   Palette,
+  Target,
   University,
+  Upload,
   UserRound,
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useRef, useState } from "react";
 import { Button } from "@/components/primitives/Button";
 import { ConfirmButton } from "@/components/primitives/ConfirmButton";
 import { CoursePicker } from "@/components/CoursePicker";
+import {
+  setWeeklyGoal,
+  useWeeklyGoal,
+  WEEKLY_GOAL_BOUNDS,
+} from "@/components/dashboard/WeeklyGoalCard";
 import { Field, inputClass } from "@/components/primitives/Field";
 import { Panel } from "@/components/primitives/Panel";
 import { PanelSkeleton } from "@/components/primitives/Skeleton";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import { exportBackup } from "@/lib/backup";
+import { exportBackup, importBackup } from "@/lib/backup";
 import { extractCourseNames } from "@/lib/domain/notes";
 import {
   useFocusSessions,
@@ -53,6 +62,25 @@ export function ImpostazioniView() {
   const examCalls = useSynced((s) => s.examCalls);
   const examCount = examCalls.length;
   const courseOptions = extractCourseNames(classEvents, examCalls);
+  const weeklyGoal = useWeeklyGoal();
+  const importInputRef = useRef<HTMLInputElement>(null);
+  const [pendingImport, setPendingImport] = useState<File | null>(null);
+
+  async function runImport(file: File) {
+    try {
+      const r = await importBackup(file);
+      useToast
+        .getState()
+        .show(
+          `Backup importato: ${r.libretto} esami, ${r.notes} note, ${r.tasks} attività.`,
+          "ok",
+        );
+    } catch {
+      useToast.getState().show("File di backup non valido.", "warn");
+    } finally {
+      setPendingImport(null);
+    }
+  }
 
   if (!settings.hydrated) {
     return (
@@ -198,16 +226,141 @@ export function ImpostazioniView() {
 
       {/* ── 3. Aspetto ── */}
       <Panel title="Aspetto" icon={<Palette />}>
-        {/* Lo stesso ThemeToggle resta anche nella barra di navigazione (AppNav)
-            per l'accesso rapido: qui lo mostriamo solo con un'etichetta. */}
-        <div className="flex items-center justify-between gap-3">
-          <div>
-            <p className="text-sm text-ink">Tema chiaro / scuro</p>
-            <p className="muted mt-0.5 text-xs">
-              Scegli l&apos;aspetto dell&apos;interfaccia.
-            </p>
+        <div className="flex flex-col gap-5">
+          {/* Lo stesso ThemeToggle resta anche nella barra di navigazione (AppNav)
+              per l'accesso rapido: qui lo mostriamo solo con un'etichetta. */}
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <p className="text-sm text-ink">Tema chiaro / scuro</p>
+              <p className="muted mt-0.5 text-xs">
+                Scegli l&apos;aspetto dell&apos;interfaccia.
+              </p>
+            </div>
+            <ThemeToggle />
           </div>
-          <ThemeToggle />
+
+          <div className="grid grid-cols-1 gap-3 border-t border-line pt-4 sm:grid-cols-2">
+            <Field label="Densità interfaccia" htmlFor="imp-densita">
+              <select
+                id="imp-densita"
+                value={settings.density ?? "comfortable"}
+                onChange={(e) =>
+                  void settings.update({
+                    density: e.target.value as "comfortable" | "compact",
+                  })
+                }
+                className={inputClass}
+              >
+                <option value="comfortable">Comoda</option>
+                <option value="compact">Compatta</option>
+              </select>
+            </Field>
+            <Field label="Inizio settimana" htmlFor="imp-week-start">
+              <select
+                id="imp-week-start"
+                value={settings.weekStartsOn ?? "mon"}
+                onChange={(e) =>
+                  void settings.update({
+                    weekStartsOn: e.target.value as "mon" | "sun",
+                  })
+                }
+                className={inputClass}
+              >
+                <option value="mon">Lunedì</option>
+                <option value="sun">Domenica</option>
+              </select>
+            </Field>
+          </div>
+        </div>
+      </Panel>
+
+      {/* ── 4. Studio e obiettivi ── */}
+      <Panel title="Studio e obiettivi" icon={<Target />}>
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+          <Field label="Obiettivo studio settimanale (ore)" htmlFor="imp-ore">
+            <input
+              id="imp-ore"
+              type="number"
+              min={WEEKLY_GOAL_BOUNDS.min}
+              max={WEEKLY_GOAL_BOUNDS.max}
+              value={weeklyGoal}
+              onChange={(e) => {
+                const v = Number(e.target.value);
+                if (Number.isFinite(v)) setWeeklyGoal(v);
+              }}
+              className={inputClass}
+            />
+          </Field>
+          <Field label="Media obiettivo laurea" htmlFor="imp-media-2">
+            <input
+              id="imp-media-2"
+              type="number"
+              min={18}
+              max={30}
+              step={0.5}
+              value={settings.degreePlan.targetAverage ?? ""}
+              placeholder="es. 28"
+              onChange={(e) => {
+                const v = Number(e.target.value);
+                void settings.update({
+                  degreePlan: {
+                    ...settings.degreePlan,
+                    targetAverage:
+                      e.target.value === "" || Number.isNaN(v) ? undefined : v,
+                  },
+                });
+              }}
+              className={inputClass}
+            />
+          </Field>
+        </div>
+        <p className="muted mt-3 text-xs">
+          L&apos;obiettivo settimanale alimenta la card «Obiettivo settimana» nel
+          cruscotto; la media obiettivo guida le proiezioni del libretto.
+        </p>
+      </Panel>
+
+      {/* ── 5. Notifiche ── */}
+      <Panel title="Notifiche" icon={<Bell />}>
+        <div className="flex flex-col gap-4">
+          <label className="flex items-center justify-between gap-3">
+            <div>
+              <p className="text-sm text-ink">Promemoria appelli</p>
+              <p className="muted mt-0.5 text-xs">
+                Evidenzia nel cruscotto gli esami in arrivo.
+              </p>
+            </div>
+            <input
+              type="checkbox"
+              checked={settings.examReminders ?? true}
+              onChange={(e) =>
+                void settings.update({ examReminders: e.target.checked })
+              }
+              className="size-5 accent-signal"
+            />
+          </label>
+          <Field
+            label="Quanti giorni prima"
+            htmlFor="imp-giorni"
+            className={
+              settings.examReminders === false ? "opacity-40" : undefined
+            }
+          >
+            <input
+              id="imp-giorni"
+              type="number"
+              min={1}
+              max={30}
+              disabled={settings.examReminders === false}
+              value={settings.reminderDaysBefore ?? 3}
+              onChange={(e) => {
+                const v = Number(e.target.value);
+                if (Number.isInteger(v) && v >= 1)
+                  void settings.update({ reminderDaysBefore: v });
+              }}
+              className={inputClass}
+            />
+          </Field>
         </div>
       </Panel>
 
@@ -272,6 +425,44 @@ export function ImpostazioniView() {
               <Download aria-hidden="true" className="size-4" />
               Esporta JSON
             </Button>
+          </div>
+
+          <div className="flex flex-wrap items-center justify-between gap-3 border-t border-line pt-4">
+            <div>
+              <p className="text-sm text-ink">Importa da backup</p>
+              <p className="muted mt-0.5 text-xs">
+                Ripristina da un file JSON. Sostituisce libretto, note, attività,
+                sessioni e impostazioni attuali.
+              </p>
+            </div>
+            <input
+              ref={importInputRef}
+              type="file"
+              accept="application/json,.json"
+              className="sr-only"
+              onChange={(e) => {
+                const f = e.target.files?.[0] ?? null;
+                setPendingImport(f);
+                e.target.value = "";
+              }}
+            />
+            {pendingImport ? (
+              <ConfirmButton
+                size="sm"
+                armedLabel="Sostituisci tutto?"
+                onConfirm={() => void runImport(pendingImport)}
+              >
+                Importa «{pendingImport.name}»
+              </ConfirmButton>
+            ) : (
+              <Button
+                variant="ghost"
+                onClick={() => importInputRef.current?.click()}
+              >
+                <Upload aria-hidden="true" className="size-4" />
+                Scegli file
+              </Button>
+            )}
           </div>
 
           <div className="flex flex-col gap-3 border-t border-line pt-4">

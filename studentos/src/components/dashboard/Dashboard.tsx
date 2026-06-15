@@ -230,8 +230,11 @@ export function Dashboard() {
         </div>
       ) : (
         <div className="stagger-children grid grid-cols-1 gap-4 lg:grid-cols-6">
-          {/* Banner a tutta larghezza (condizionali) + scorciatoie. */}
-          <BookingReminders className="lg:col-span-6" />
+          {/* Banner a tutta larghezza (condizionali) + scorciatoie. Il promemoria
+              appelli rispetta l'interruttore «Notifiche» nelle impostazioni. */}
+          {(settings.examReminders ?? true) && (
+            <BookingReminders className="lg:col-span-6" />
+          )}
           <QuickActions className="lg:col-span-6" />
 
           {/* HERO bento: prossimo esame + countdown (2/3, alto due righe) con

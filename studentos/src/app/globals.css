@@ -588,6 +588,10 @@ input[type="radio"]:active {
 }
 .btn-primary:hover { box-shadow: 0 14px 36px -8px var(--glow-1); transform: translateY(-2px); }
 
+/* UI density. All spacing/typography is rem-based, so shrinking the root
+   font-size in compact mode scales the whole interface down proportionally. */
+html[data-density="compact"] { font-size: 93.75%; } /* 15px from a 16px base */
+
 /* film grain over the aurora so the glass reads premium, not flat. z-index:-1
    keeps it behind the (normal-flow) UI but above the aurora layer. */
 .grain {

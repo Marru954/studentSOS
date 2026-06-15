@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Bricolage_Grotesque, Inter } from "next/font/google";
 import { AppFooter } from "@/components/AppFooter";
 import { AppNav } from "@/components/AppNav";
+import { DensityApplier } from "@/components/DensityApplier";
 import { OfflineBanner } from "@/components/OfflineBanner";
 import { FirstRunGate } from "@/components/onboarding/FirstRunGate";
 import { QuickAddFab } from "@/components/quickadd/QuickAddFab";
@@ -67,6 +68,7 @@ export default function RootLayout({
           Salta al contenuto
         </a>
         <StoreProvider>
+          <DensityApplier />
           <AppNav />
           {children}
           <AppFooter />

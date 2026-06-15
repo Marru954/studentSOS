@@ -35,6 +35,10 @@ export const useSettings = create<SettingsState>()((set, get) => ({
       pinnedCourses: patch.pinnedCourses ?? get().pinnedCourses,
       degreePlan: patch.degreePlan ?? get().degreePlan,
       syncHorizonDays: patch.syncHorizonDays ?? get().syncHorizonDays,
+      density: patch.density ?? get().density,
+      weekStartsOn: patch.weekStartsOn ?? get().weekStartsOn,
+      examReminders: patch.examReminders ?? get().examReminders,
+      reminderDaysBefore: patch.reminderDaysBefore ?? get().reminderDaysBefore,
     };
     set(next);
     await saveSettings(next);

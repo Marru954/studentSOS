@@ -107,6 +107,7 @@ export function CalendarView() {
   const allExamCalls = useSynced((s) => s.examCalls);
   const pinnedCourses = useSettings((s) => s.pinnedCourses);
   const updateSettings = useSettings((s) => s.update);
+  const weekStartsOn = useSettings((s) => s.weekStartsOn) ?? "mon";
   const syncedHydrated = useSynced((s) => s.hydrated);
   const tasks = useTasks((s) => s.items);
   const tasksHydrated = useTasks((s) => s.hydrated);
@@ -182,9 +183,13 @@ export function CalendarView() {
   );
 
   const weeks = useMemo(
-    () => buildMonthGrid(displayed.getFullYear(), displayed.getMonth()),
-    [displayed],
+    () => buildMonthGrid(displayed.getFullYear(), displayed.getMonth(), weekStartsOn),
+    [displayed, weekStartsOn],
   );
+  const weekdayLabels =
+    weekStartsOn === "sun"
+      ? ["Dom", "Lun", "Mar", "Mer", "Gio", "Ven", "Sab"]
+      : WEEKDAYS;
   const heading = monthFmt.format(displayed);
 
   // Selected-day detail: the four lists for the chosen day (empty arrays when
@@ -439,7 +444,7 @@ export function CalendarView() {
               </div>
 
               <div className="grid grid-cols-7 gap-1.5">
-                {WEEKDAYS.map((d) => (
+                {weekdayLabels.map((d) => (
                   <div
                     key={d}
                     aria-hidden="true"

@@ -37,7 +37,8 @@ function readGoal(): number {
   }
 }
 
-function setGoal(value: number): void {
+/** Persist the weekly study-hours goal (shared store, reused by Impostazioni). */
+export function setWeeklyGoal(value: number): void {
   const goal = clampGoal(value);
   try {
     localStorage.setItem(STORAGE_KEY, String(goal));
@@ -52,9 +53,12 @@ function subscribe(onChange: () => void): () => void {
   return () => listeners.delete(onChange);
 }
 
-function useWeeklyGoal(): number {
+/** Read the weekly study-hours goal reactively (localStorage-backed). */
+export function useWeeklyGoal(): number {
   return useSyncExternalStore(subscribe, readGoal, () => DEFAULT_GOAL);
 }
+
+export const WEEKLY_GOAL_BOUNDS = { min: MIN_GOAL, max: MAX_GOAL } as const;
 
 /** Local-zone start of this week (Monday 00:00) as an ISO datetime. */
 function mondayStartIso(now: Date): string {
@@ -101,7 +105,7 @@ export function WeeklyGoalCard({ className }: { className?: string }) {
             <div className="flex items-center gap-1.5">
               <button
                 type="button"
-                onClick={() => setGoal(goal - 1)}
+                onClick={() => setWeeklyGoal(goal - 1)}
                 disabled={goal <= MIN_GOAL}
                 aria-label="Riduci obiettivo di un'ora"
                 className="btn flex size-7 items-center justify-center p-0 disabled:cursor-not-allowed disabled:opacity-40"
@@ -116,7 +120,7 @@ export function WeeklyGoalCard({ className }: { className?: string }) {
               </span>
               <button
                 type="button"
-                onClick={() => setGoal(goal + 1)}
+                onClick={() => setWeeklyGoal(goal + 1)}
                 disabled={goal >= MAX_GOAL}
                 aria-label="Aumenta obiettivo di un'ora"
                 className="btn flex size-7 items-center justify-center p-0 disabled:cursor-not-allowed disabled:opacity-40"

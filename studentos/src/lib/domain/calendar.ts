@@ -19,15 +19,23 @@ function iso(year: number, month0: number, day: number): IsoDate {
   return `${year}-${String(month0 + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
 }
 
-/** Weeks (Monday-first) covering `month0` (0-based), each exactly 7 days. */
-export function buildMonthGrid(year: number, month0: number): MonthDay[][] {
+/** Weeks covering `month0` (0-based), each exactly 7 days. Monday-first by
+ *  default; pass "sun" for a Sunday-first grid. */
+export function buildMonthGrid(
+  year: number,
+  month0: number,
+  weekStartsOn: "mon" | "sun" = "mon",
+): MonthDay[][] {
   const first = new Date(Date.UTC(year, month0, 1));
-  const mondayOffset = (first.getUTCDay() + 6) % 7; // Monday = 0
+  const startOffset =
+    weekStartsOn === "sun"
+      ? first.getUTCDay() // Sunday = 0
+      : (first.getUTCDay() + 6) % 7; // Monday = 0
   const daysInMonth = new Date(Date.UTC(year, month0 + 1, 0)).getUTCDate();
-  const weeksNeeded = Math.ceil((mondayOffset + daysInMonth) / 7);
+  const weeksNeeded = Math.ceil((startOffset + daysInMonth) / 7);
 
   const weeks: MonthDay[][] = [];
-  let cursor = new Date(Date.UTC(year, month0, 1 - mondayOffset));
+  let cursor = new Date(Date.UTC(year, month0, 1 - startOffset));
   for (let w = 0; w < weeksNeeded; w++) {
     const week: MonthDay[] = [];
     for (let d = 0; d < 7; d++) {

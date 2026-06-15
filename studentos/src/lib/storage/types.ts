@@ -42,6 +42,14 @@ export interface AppSettings {
   degreePlan: { totalCfu: number; targetAverage?: number };
   /** How far ahead the sync window reaches, in days. */
   syncHorizonDays: number;
+  /** UI density: "comfortable" (default) or "compact" (tighter spacing). */
+  density?: "comfortable" | "compact";
+  /** First day of the week for the calendar grid. */
+  weekStartsOn?: "mon" | "sun";
+  /** Show in-app reminders for upcoming exams. */
+  examReminders?: boolean;
+  /** How many days before an exam the reminder kicks in. */
+  reminderDaysBefore?: number;
 }
 
 export const DEFAULT_SETTINGS: AppSettings = {
@@ -49,4 +57,8 @@ export const DEFAULT_SETTINGS: AppSettings = {
   pinnedCourses: [],
   degreePlan: { totalCfu: 180 },
   syncHorizonDays: 120,
+  density: "comfortable",
+  weekStartsOn: "mon",
+  examReminders: true,
+  reminderDaysBefore: 3,
 };
