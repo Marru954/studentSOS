@@ -122,7 +122,7 @@ export function Dashboard() {
 
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="text-[clamp(2rem,5vw,3rem)] font-bold">Cruscotto</h1>
+          <h1 className="text-[clamp(2rem,5vw,3rem)]">Cruscotto</h1>
           {now && (
             <p className="mt-1 text-sm text-ink-mute">
               {now.getHours() < 12

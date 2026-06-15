@@ -135,7 +135,7 @@ export function NotesView() {
     <div className="flex flex-col gap-6">
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="grad-text text-3xl">Note</h1>
+          <h1 className="text-[clamp(2rem,5vw,3rem)]">Note</h1>
           <p className="muted mt-1 text-sm">Appunti organizzati per materia</p>
         </div>
         <button
