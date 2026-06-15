@@ -36,3 +36,25 @@ export function bookingState(
   }
   return { kind: "open", closesAt: booking.closesAt, daysLeft };
 }
+
+/**
+ * Exam calls whose enrolment window closes within `hours` of `today` and is
+ * not already past. Pure: compares by whole calendar days (`closesAt` is a
+ * plain IsoDate with no time), so `hours` is bucketed into days — e.g. 48h ⇒
+ * closes today, tomorrow, or the day after. Sorted by closing date ascending.
+ */
+export function examsClosingWithin(
+  examCalls: ExamCall[],
+  today: IsoDate,
+  hours: number,
+): ExamCall[] {
+  const days = Math.floor(hours / 24);
+  return examCalls
+    .filter((e) => {
+      const closesAt = e.booking?.closesAt;
+      if (!closesAt) return false;
+      const daysLeft = daysBetweenIso(today, closesAt);
+      return daysLeft >= 0 && daysLeft <= days;
+    })
+    .sort((a, b) => (a.booking!.closesAt! < b.booking!.closesAt! ? -1 : 1));
+}

@@ -26,6 +26,7 @@ import { useLibretto } from "@/lib/state/manual";
 import { useSettings } from "@/lib/state/settings";
 import { useSynced } from "@/lib/state/synced";
 import { BackupCard } from "@/components/backup/BackupCard";
+import { BookingReminders } from "./BookingReminders";
 import { CfuPanel, MediaPanel } from "./CareerPanels";
 import { ChangeNotices } from "./ChangeNotices";
 import { ExamTimeline } from "./ExamTimeline";
@@ -159,6 +160,9 @@ export function Dashboard() {
         </div>
       ) : (
         <div className="stagger-children grid grid-cols-1 gap-4 lg:grid-cols-12">
+          {/* Promemoria chiusura iscrizione (notifiche + banner di fallback). */}
+          <BookingReminders className="lg:col-span-12" />
+
           {/* One-line recap of what matters now. */}
           <SummaryBar
             nextExamDays={summary.nextExamDays}
