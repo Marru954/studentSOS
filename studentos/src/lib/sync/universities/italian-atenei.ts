@@ -34,6 +34,13 @@ interface Ateneo {
   programmes?: string[];
 }
 
+// NB: many big atenei (Trieste, Perugia, Cagliari, Trento, Napoli Federico II,
+// Ferrara, Parma, Salerno, Sassari, Firenze, Genova, Piemonte Orientale, …) now
+// ship as fully-wired LIVE EasyAcademy presets — see easyacademy-live.ts. The
+// list below is the manual fallback for atenei whose timetable system isn't yet
+// supported (Bologna in-house, PoliMi/PoliTo homegrown, Sapienza/Roma Tre GOMP,
+// Torino Cineca University Planner, Padova semester-keyed agendaweb, …); see
+// _coverage.md for the full census.
 const ATENEI: Ateneo[] = [
   { id: "uniroma1-sapienza", name: "Sapienza Università di Roma", shortName: "La Sapienza", city: "Roma" },
   { id: "unibo", name: "Alma Mater Studiorum — Università di Bologna", shortName: "Università di Bologna", city: "Bologna" },
@@ -41,20 +48,12 @@ const ATENEI: Ateneo[] = [
   { id: "polito", name: "Politecnico di Torino", shortName: "Politecnico di Torino", city: "Torino", programmes: ["Ingegneria Informatica", "Ingegneria", "Architettura", "Design", "Matematica", "Fisica"] },
   { id: "unipd", name: "Università degli Studi di Padova", shortName: "Università di Padova", city: "Padova" },
   { id: "unisi", name: "Università degli Studi di Siena", shortName: "Università di Siena", city: "Siena" },
-  { id: "unifi", name: "Università degli Studi di Firenze", shortName: "Università di Firenze", city: "Firenze" },
   { id: "unipi", name: "Università di Pisa", shortName: "Università di Pisa", city: "Pisa" },
-  { id: "unina-federico2", name: "Università degli Studi di Napoli Federico II", shortName: "Federico II", city: "Napoli" },
   { id: "unimi-statale", name: "Università degli Studi di Milano", shortName: "Statale di Milano", city: "Milano" },
   { id: "unito", name: "Università degli Studi di Torino", shortName: "Università di Torino", city: "Torino" },
-  { id: "unitn", name: "Università degli Studi di Trento", shortName: "Università di Trento", city: "Trento" },
   { id: "unive-cafoscari", name: "Università Ca' Foscari Venezia", shortName: "Ca' Foscari", city: "Venezia", programmes: ["Economia", "Lingue", "Lettere e Filosofia", "Informatica", "Scienze Ambientali"] },
   { id: "unibocconi", name: "Università Commerciale Luigi Bocconi", shortName: "Bocconi", city: "Milano", programmes: ["Economia", "Management", "Finanza", "Scienze Politiche", "Data Science"] },
   { id: "unipv", name: "Università degli Studi di Pavia", shortName: "Università di Pavia", city: "Pavia" },
-  { id: "unige", name: "Università degli Studi di Genova", shortName: "Università di Genova", city: "Genova" },
-  // NB: Trieste (units) and Perugia (unipg) now ship as fully-wired LIVE presets
-  // — see easyacademy-live.ts. Cagliari (unica) stays manual: its agendaweb
-  // works but every year is curriculum-split, so no clean course is verified yet.
-  { id: "unica", name: "Università degli Studi di Cagliari", shortName: "Università di Cagliari", city: "Cagliari" },
 ];
 
 export const italianAtenei: UniversityPreset[] = ATENEI.map((a) => ({

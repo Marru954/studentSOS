@@ -36,24 +36,25 @@ const DOMAIN_TO_PRESET: Record<string, string> = {
   // Siena
   "unisi.it": "unisi",
   "student.unisi.it": "unisi",
-  // Firenze
-  "unifi.it": "unifi",
-  "stud.unifi.it": "unifi",
+  // Firenze — live EasyAcademy preset (Informatica)
+  "unifi.it": "unifi-informatica",
+  "stud.unifi.it": "unifi-informatica",
+  "edu.unifi.it": "unifi-informatica",
   // Pisa
   "unipi.it": "unipi",
   "studenti.unipi.it": "unipi",
-  // Napoli Federico II
-  "unina.it": "unina-federico2",
-  "studenti.unina.it": "unina-federico2",
+  // Napoli Federico II — live EasyAcademy preset (Informatica)
+  "unina.it": "unina-informatica",
+  "studenti.unina.it": "unina-informatica",
   // Statale Milano
   "unimi.it": "unimi-statale",
   "studenti.unimi.it": "unimi-statale",
   // Torino
   "unito.it": "unito",
   "edu.unito.it": "unito",
-  // Trento
-  "unitn.it": "unitn",
-  "studenti.unitn.it": "unitn",
+  // Trento — live EasyAcademy preset (Informatica)
+  "unitn.it": "unitn-informatica",
+  "studenti.unitn.it": "unitn-informatica",
   // Ca' Foscari Venezia
   "unive.it": "unive-cafoscari",
   "stud.unive.it": "unive-cafoscari",
@@ -63,16 +64,37 @@ const DOMAIN_TO_PRESET: Record<string, string> = {
   // Pavia
   "unipv.it": "unipv",
   "universitadipavia.it": "unipv",
-  // Genova
-  "unige.it": "unige",
-  "studenti.unige.it": "unige",
-  "edu.unige.it": "unige",
-  // Trieste — live EasyAcademy preset (Ingegneria Elettronica e Informatica)
+  // Genova — live EasyAcademy preset (Informatica)
+  "unige.it": "unige-informatica",
+  "studenti.unige.it": "unige-informatica",
+  "edu.unige.it": "unige-informatica",
+  // Trieste — live (Ingegneria Elettronica e Informatica)
   "units.it": "units-ingegneria-informatica",
   "studenti.units.it": "units-ingegneria-informatica",
-  // Perugia — live EasyAcademy preset (Informatica)
+  // Perugia — live (Informatica)
   "unipg.it": "unipg-informatica",
   "studenti.unipg.it": "unipg-informatica",
+  // Cagliari — live (Informatica)
+  "unica.it": "unica-informatica",
+  "studenti.unica.it": "unica-informatica",
+  // Ferrara — live (Informatica)
+  "unife.it": "unife-informatica",
+  "edu.unife.it": "unife-informatica",
+  // Parma — live (Informatica)
+  "unipr.it": "unipr-informatica",
+  "studenti.unipr.it": "unipr-informatica",
+  // Salerno — live (Informatica)
+  "unisa.it": "unisa-informatica",
+  "studenti.unisa.it": "unisa-informatica",
+  // Sassari — live (Ingegneria Informatica)
+  "uniss.it": "uniss-ingegneria-informatica",
+  "studenti.uniss.it": "uniss-ingegneria-informatica",
+  // Piemonte Orientale — live (Informatica, sede di Vercelli)
+  "uniupo.it": "uniupo-informatica",
+  "studenti.uniupo.it": "uniupo-informatica",
+  // Stranieri di Siena — live (Mediazione Linguistica e Culturale)
+  "unistrasi.it": "unistrasi-mediazione",
+  "studenti.unistrasi.it": "unistrasi-mediazione",
 };
 
 /** Valid Italian academic domains WITHOUT a preset yet — login allowed, the

@@ -343,9 +343,10 @@ export function OnboardingFlow() {
                 </>
               ) : (
                 <>
-                  Per questo ateneo la sync automatica è in arrivo: nel frattempo
-                  inserisci i voti a mano o importa il PDF della carriera. Tutto
-                  resta tuo.
+                  Sync automatica non ancora disponibile per il tuo ateneo. Puoi
+                  inserire libretto e voti a mano o importare il PDF della
+                  carriera — tutto il resto di StudentOS funziona. I tuoi dati
+                  restano tuoi.
                 </>
               )}
             </p>

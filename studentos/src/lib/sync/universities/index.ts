@@ -1,20 +1,16 @@
 import type { UniversityPreset } from "../provider";
-import {
-  unipgInformatica,
-  unitsIngegneriaInformatica,
-} from "./easyacademy-live";
+import { easyAcademyLivePresets } from "./easyacademy-live";
 import { italianAtenei } from "./italian-atenei";
 import { uniroma2Informatica } from "./uniroma2-informatica";
 
-/** Built-in presets. Tor Vergata Informatica, Trieste Ingegneria Elettronica e
- *  Informatica and Perugia Informatica are fully wired (live EasyAcademy
- *  sources, verified); the other Italian universities ship in manual /
- *  PDF-import mode until their endpoints are verified. Users can also assemble a
+/** Built-in presets. Tor Vergata plus 12 more EasyAcademy atenei are fully wired
+ *  (live timetable/exam sources, each verified against the real endpoints — see
+ *  easyacademy-live.ts); the remaining Italian universities ship in manual /
+ *  PDF-import mode until their systems are supported. Users can also assemble a
  *  custom preset in the UI. */
 export const UNIVERSITY_PRESETS: UniversityPreset[] = [
   uniroma2Informatica,
-  unitsIngegneriaInformatica,
-  unipgInformatica,
+  ...easyAcademyLivePresets,
   ...italianAtenei,
 ];
 

@@ -59,6 +59,9 @@ export interface EasyAcademyPresetConfig {
   anno: string;
   /** Per-year selectors — every entry verified live before shipping. */
   years: EasyAcademyYear[];
+  /** Some atenei publish the timetable via EasyAcademy but keep exams in Esse3
+   *  (test_call.php returns nothing). Set false to ship timetable-only. */
+  exams?: boolean;
   /** Optional department site for the WordPress news source. */
   newsBaseUrl?: string;
 }
@@ -83,19 +86,21 @@ export function easyAcademyPreset(
         anno2: y.anno2,
       },
     });
-    sources.push({
-      id: `esami-anno-${y.year}`,
-      label: `Appelli ${y.year}° anno`,
-      capability: "exams",
-      providerId: "easyacademy",
-      params: {
-        kind: "exams",
-        baseUrl: cfg.baseUrl,
-        scuola: cfg.scuola,
-        cdl: y.examCdl ?? y.corso,
-        anno2: y.examAnno2 ?? [String(y.year)],
-      },
-    });
+    if (cfg.exams !== false) {
+      sources.push({
+        id: `esami-anno-${y.year}`,
+        label: `Appelli ${y.year}° anno`,
+        capability: "exams",
+        providerId: "easyacademy",
+        params: {
+          kind: "exams",
+          baseUrl: cfg.baseUrl,
+          scuola: cfg.scuola,
+          cdl: y.examCdl ?? y.corso,
+          anno2: y.examAnno2 ?? [String(y.year)],
+        },
+      });
+    }
   }
   if (cfg.newsBaseUrl) {
     sources.push({
