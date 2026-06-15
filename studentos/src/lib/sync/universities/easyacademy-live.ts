@@ -18,24 +18,8 @@
  */
 import type { UniversityPreset } from "../provider";
 import { easyAcademyPreset } from "./easystaff";
+import { units } from "./units";
 
-// Trieste — Ingegneria Elettronica e Informatica. y1 IN05A (new), y2/3 IN05.
-// Verified: y1 12 lessons/22 appelli, y2 22/37, y3 20/15.
-const units = easyAcademyPreset({
-  id: "units-ingegneria-informatica",
-  name: "Università degli Studi di Trieste",
-  shortName: "Università di Trieste",
-  city: "Trieste",
-  programme: "Ingegneria Elettronica e Informatica",
-  baseUrl: "https://orari.units.it/agendaweb",
-  scuola: "DipartimentodiIngegneriaeArchitettura",
-  anno: "2025",
-  years: [
-    { year: 1, corso: "IN05A", anno2: ["IN05A+5+|1", "IN05A+7+|1", "IN05A+6+|1"] },
-    { year: 2, corso: "IN05", anno2: ["IN05+5+|2", "IN05+6+|2", "IN05+7+|2"] },
-    { year: 3, corso: "IN05", anno2: ["IN05+5+|3", "IN05+7+|3"] },
-  ],
-});
 
 // Perugia — Informatica (curriculum GEN). y1 L0921, y2/3 L062.
 // Verified: y1 10 lessons/7 appelli, y2 6, y3 10.

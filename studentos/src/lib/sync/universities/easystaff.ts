@@ -66,6 +66,58 @@ export interface EasyAcademyPresetConfig {
   newsBaseUrl?: string;
 }
 
+/**
+ * Per-year timetable (+ exams unless `exams === false`) sources for ONE degree
+ * inside a multi-programme ateneo preset (the `livePrograms[]` shape). Ids are
+ * namespaced by `slug` so two courses of the same ateneo never share a cache
+ * key. Exams take the plain year number as `anno2` and the year's `corso` as
+ * `cdl` (easytest); the 2025/26 ordinamento reform can split a triennale across
+ * two `corso` codes, so each year carries its own. Used by the generated
+ * whole-ateneo preset files (units.ts, unifi.ts, …).
+ */
+export function degreeSources(
+  baseUrl: string,
+  anno: string,
+  slug: string,
+  scuola: string,
+  years: { year: number; corso: string; anno2: string[] }[],
+  exams = true,
+): SyncSource[] {
+  const out: SyncSource[] = [];
+  for (const y of years) {
+    out.push({
+      id: `${slug}-orario-anno-${y.year}`,
+      label: `Orario lezioni — ${y.year}° anno`,
+      capability: "timetable",
+      providerId: "easyacademy",
+      params: {
+        kind: "timetable",
+        baseUrl,
+        anno,
+        scuola,
+        corso: y.corso,
+        anno2: y.anno2,
+      },
+    });
+    if (exams) {
+      out.push({
+        id: `${slug}-esami-anno-${y.year}`,
+        label: `Appelli d'esame — ${y.year}° anno`,
+        capability: "exams",
+        providerId: "easyacademy",
+        params: {
+          kind: "exams",
+          baseUrl,
+          scuola,
+          cdl: y.corso,
+          anno2: [String(y.year)],
+        },
+      });
+    }
+  }
+  return out;
+}
+
 /** Wire a verified EasyAcademy course into a full, live UniversityPreset. */
 export function easyAcademyPreset(
   cfg: EasyAcademyPresetConfig,
