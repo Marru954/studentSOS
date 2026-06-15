@@ -3,6 +3,7 @@ import { Bricolage_Grotesque, Inter } from "next/font/google";
 import { AppFooter } from "@/components/AppFooter";
 import { AppNav } from "@/components/AppNav";
 import { FirstRunGate } from "@/components/onboarding/FirstRunGate";
+import { QuickAddFab } from "@/components/quickadd/QuickAddFab";
 import { RevealManager } from "@/components/RevealManager";
 import { SearchPalette } from "@/components/search/SearchPalette";
 import { ServiceWorkerRegister } from "@/components/ServiceWorkerRegister";
@@ -70,6 +71,7 @@ export default function RootLayout({
           <AppFooter />
           <FirstRunGate />
           <SearchPalette />
+          <QuickAddFab />
         </StoreProvider>
         <ToastHost />
         <RevealManager />
