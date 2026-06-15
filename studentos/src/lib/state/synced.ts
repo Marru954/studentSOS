@@ -30,6 +30,10 @@ interface SyncedState {
 
   hydrate(): Promise<void>;
   sync(): Promise<void>;
+  /** Re-read the synced caches from IndexedDB without running a sync. Needed
+   *  after an out-of-band write (e.g. a manually-added exam), since hydrate()
+   *  early-returns once hydrated and so wouldn't pick the new row up. */
+  refresh(): Promise<void>;
   dismissNotices(ids: string[]): Promise<void>;
 }
 
@@ -76,6 +80,15 @@ export const useSynced = create<SyncedState>()((set, get) => ({
     } finally {
       set({ syncing: false });
     }
+  },
+
+  async refresh() {
+    const [classEvents, examCalls, news] = await Promise.all([
+      getClassEvents(),
+      getExamCalls(),
+      getNews(),
+    ]);
+    set({ classEvents, examCalls, news });
   },
 
   async dismissNotices(ids) {

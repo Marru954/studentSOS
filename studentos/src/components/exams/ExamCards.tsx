@@ -7,6 +7,7 @@
  */
 import { Clock, Hourglass, MapPin } from "lucide-react";
 import { Badge } from "@/components/primitives/Badge";
+import { ConfirmButton } from "@/components/primitives/ConfirmButton";
 import { bookingState } from "@/lib/domain/booking";
 import type { ExamCall, ExamKind, IsoDate } from "@/lib/domain/types";
 import { daysBetweenIso } from "@/lib/format";
@@ -44,10 +45,12 @@ function ExamCard({
   exam,
   today,
   index,
+  onDelete,
 }: {
   exam: ExamCall;
   today: IsoDate;
   index: number;
+  onDelete?: (id: string) => void;
 }) {
   const days = daysBetweenIso(today, exam.date);
   const month = MONTH_ABBR[Number(exam.date.slice(5, 7)) - 1];
@@ -56,6 +59,9 @@ function ExamCard({
   const chip = statusChip(days);
   const urgent = days >= 0 && days <= 7;
   const barWidth = days < 0 ? 100 : Math.max(8, 100 - days * 2.5);
+  // Manually-added appelli carry a `manual-…` sentinel sourceId; only these
+  // are deletable. Synced exams expose no delete control.
+  const deletable = Boolean(onDelete) && exam.sourceId.startsWith("manual");
 
   return (
     <article
@@ -124,6 +130,17 @@ function ExamCard({
           iscrizione in scadenza
         </Badge>
       )}
+
+      {deletable && (
+        <div className="mt-auto flex justify-end pt-1">
+          <ConfirmButton
+            onConfirm={() => onDelete!(exam.id)}
+            armedLabel="Elimina davvero?"
+          >
+            Elimina
+          </ConfirmButton>
+        </div>
+      )}
     </article>
   );
 }
@@ -131,9 +148,13 @@ function ExamCard({
 export function ExamCards({
   exams,
   today,
+  onDelete,
 }: {
   exams: ExamCall[];
   today: IsoDate;
+  /** When provided, manual appelli (sourceId starting with "manual") show a
+   *  confirm-to-delete control; synced exams never do. */
+  onDelete?: (id: string) => void;
 }) {
   if (exams.length === 0) {
     return (
@@ -146,7 +167,13 @@ export function ExamCards({
       style={{ gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))" }}
     >
       {exams.map((exam, i) => (
-        <ExamCard key={exam.id} exam={exam} today={today} index={i} />
+        <ExamCard
+          key={exam.id}
+          exam={exam}
+          today={today}
+          index={i}
+          onDelete={onDelete}
+        />
       ))}
     </div>
   );

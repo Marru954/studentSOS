@@ -33,9 +33,13 @@ import { matchesYear } from "@/lib/domain/sources";
 import type { ExamCall } from "@/lib/domain/types";
 import { daysBetweenIso, localToday } from "@/lib/format";
 import { useNowMinute } from "@/lib/hooks/useNowMinute";
+import { useLibretto } from "@/lib/state/manual";
 import { useSettings } from "@/lib/state/settings";
 import { useSynced } from "@/lib/state/synced";
+import { useToast } from "@/lib/state/toast";
+import { deleteExamCall } from "@/lib/storage/repo";
 import { ExamCards } from "./ExamCards";
+import { ManualExamForm } from "./ManualExamForm";
 import { MonthCalendar } from "./MonthCalendar";
 
 const FILTERS: { id: ExamFilter; label: string }[] = [
@@ -69,6 +73,8 @@ const COLLAPSED_COUNT = 6;
 
 export function ExamList() {
   const examCalls = useSynced((s) => s.examCalls);
+  const classEvents = useSynced((s) => s.classEvents);
+  const librettoEntries = useLibretto((s) => s.items);
   const hydrated = useSynced((s) => s.hydrated);
   const settingsHydrated = useSettings((s) => s.hydrated);
   const hasSources = useSettings((s) => s.enabledSourceIds.length > 0);
@@ -104,6 +110,23 @@ export function ExamList() {
       ),
     [yearScopedCalls, pinnedCourses],
   );
+
+  // Known course names for the manual-exam datalist: every synced course
+  // (timetable + appelli) plus the libretto, deduped. Year-agnostic on
+  // purpose — a free-text suggestion list, not a filter.
+  const knownCourses = useMemo(() => {
+    const names = new Set(extractCourseNames(classEvents, examCalls));
+    for (const e of librettoEntries) names.add(e.courseName);
+    return [...names].sort((a, b) => a.localeCompare(b, "it"));
+  }, [classEvents, examCalls, librettoEntries]);
+
+  // Manual appelli (sourceId starts with "manual") are deletable; synced ones
+  // are not. Drop the row, then re-read the synced store so the cards update.
+  async function handleDelete(id: string) {
+    await deleteExamCall(id);
+    useSynced.getState().refresh();
+    useToast.getState().show("Appello eliminato.", "ok");
+  }
 
   // displayed month derives from now + offset, so it needs no init-time clock
   const displayed = useMemo(() => {
@@ -210,6 +233,8 @@ export function ExamList() {
             />
           </Panel>
 
+          <ManualExamForm courses={knownCourses} />
+
           <div className="flex flex-col gap-3">
             <YearFilter value={yearFilter} onChange={setYearFilter} />
             <CoursePicker
@@ -294,7 +319,11 @@ export function ExamList() {
                         className={`overflow-hidden transition-[max-height] duration-300 ease-out ${open ? "max-h-[6000px]" : "max-h-0"}`}
                       >
                         <div className="px-4 pb-4 pt-1">
-                          <ExamCards exams={shown} today={today!} />
+                          <ExamCards
+                            exams={shown}
+                            today={today!}
+                            onDelete={handleDelete}
+                          />
                           {extra > 0 && (
                             <div className="mt-3 flex justify-center">
                               <button

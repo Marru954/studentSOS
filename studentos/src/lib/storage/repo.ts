@@ -90,6 +90,19 @@ export async function getExamCalls(): Promise<ExamCall[]> {
   return (await getDb()).getAllFromIndex("examCalls", "by-date");
 }
 
+/** Upsert a single exam call. Used for manually-added appelli, which live in
+ *  the same store as synced ones under a `manual-anno-N` sourceId — sync only
+ *  ever deletes rows whose sourceId matches an *enabled* source, so these
+ *  survive every sync untouched. */
+export async function putExamCall(call: ExamCall): Promise<void> {
+  await (await getDb()).put("examCalls", call);
+}
+
+/** Delete a single exam call by id (only manual appelli are deletable). */
+export async function deleteExamCall(id: string): Promise<void> {
+  await (await getDb()).delete("examCalls", id);
+}
+
 export async function getNews(): Promise<NewsItem[]> {
   return (await getDb()).getAll("news");
 }
