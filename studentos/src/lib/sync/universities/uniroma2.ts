@@ -636,5 +636,9 @@ export const uniroma2: UniversityPreset = {
   liveSources: true,
   sources: [], // multi-programme ateneo: real sources live under livePrograms
   livePrograms,
+  links: [
+    { label: "Delphi — Segreteria online", url: "https://delphi.uniroma2.it" },
+    { label: "Portale di Ateneo", url: "https://web.uniroma2.it" },
+  ],
 };
 

@@ -31,7 +31,7 @@ import { BookingReminders } from "./BookingReminders";
 import { CfuPanel, MediaPanel } from "./CareerPanels";
 import { ChangeNotices } from "./ChangeNotices";
 import { ExamTimeline } from "./ExamTimeline";
-import { NewsList } from "./NewsList";
+import { LinksPanel } from "./LinksPanel";
 import { QuickActions } from "./QuickActions";
 import { ReminderCard } from "./ReminderCard";
 import { SummaryBar } from "./SummaryBar";
@@ -205,7 +205,7 @@ export function Dashboard() {
             now={now}
             className="panel-hero accent-top lg:col-span-8"
           />
-          <NewsList items={synced.news} className="h-full lg:col-span-4" />
+          <LinksPanel className="h-full lg:col-span-4" />
 
           {synced.notices.length > 0 && (
             <ChangeNotices

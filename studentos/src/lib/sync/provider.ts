@@ -90,6 +90,10 @@ export interface UniversityPreset {
    *  the chosen course (`settings.programme`); absent → the legacy single
    *  `programme`/`sources` path is used. */
   livePrograms?: LiveProgram[];
+  /** A few quick institutional links (student portal, ateneo site…) surfaced in
+   *  the dashboard "Link utili" panel. Optional: presets without it fall back to
+   *  generic national links, so the panel is never empty. */
+  links?: { label: string; url: string }[];
 }
 
 export class SyncError extends Error {
