@@ -316,7 +316,7 @@ export function WeekView() {
           <h1 className="text-[clamp(2rem,5vw,3rem)]">Orario</h1>
           {weekStart && (
             <p className="muted font-num mt-1.5">
-              Settimana corrente ·{" "}
+              {weekOffset === 0 ? "Settimana corrente" : "Settimana"} ·{" "}
               {weekRange.formatRange(weekStart, addDays(weekStart, 5))}
             </p>
           )}
@@ -377,10 +377,31 @@ export function WeekView() {
           <ManualLessonForm courses={allCourses} />
           <ImportIcalForm />
           {weekEvents.length === 0 && (
-            <p className="muted text-sm">
-              Nessuna lezione in questa settimana
-              {pinnedCourses.length > 0 ? " per i corsi selezionati" : ""} 🎉
-            </p>
+            <div className="muted flex flex-wrap items-center gap-x-2 gap-y-1 text-sm">
+              <span>
+                Nessuna lezione in questa settimana
+                {pinnedCourses.length > 0 ? " per i corsi selezionati" : ""}
+                {nextLesson && now ? "." : " 🎉"}
+              </span>
+              {nextLesson && now && (
+                <button
+                  type="button"
+                  className="text-signal underline underline-offset-2"
+                  onClick={() =>
+                    setWeekOffset(
+                      Math.round(
+                        (mondayOf(new Date(nextLesson.start)).getTime() -
+                          mondayOf(now).getTime()) /
+                          (7 * 86_400_000),
+                      ),
+                    )
+                  }
+                >
+                  Prossima lezione: {nextLesson.courseName},{" "}
+                  {lessonDay.format(new Date(nextLesson.start))} →
+                </button>
+              )}
+            </div>
           )}
           <div className="glass gradient-ring reveal overflow-x-auto p-5">
             <WeekGrid events={weekEvents} weekStart={weekStart!} now={now} />
