@@ -2,7 +2,8 @@
 
 /** Ambient study sounds, synthesised with the native Web Audio API — no files,
  *  no network, no dependencies. Each "sound" is looping noise shaped by a
- *  filter (plus a slow swell for the waves). One sound at a time. */
+ *  filter (plus a slow swell for the waves). Sounds are combinable: layer rain
+ *  + café + waves and they mix together on a shared master gain. */
 import { useEffect, useRef, useState } from "react";
 
 const SOUNDS = [
@@ -14,6 +15,9 @@ const SOUNDS = [
 ] as const;
 
 type SoundId = (typeof SOUNDS)[number]["id"];
+
+/** Headroom factor per voice so several layered sounds don't clip the master. */
+const MIX = 0.5;
 
 /** A few seconds of white noise, looped. */
 function makeNoiseBuffer(ctx: AudioContext): AudioBuffer {
@@ -30,16 +34,17 @@ interface Voice {
 }
 
 export function AmbientSounds() {
-  const [active, setActive] = useState<SoundId | null>(null);
+  const [active, setActive] = useState<SoundId[]>([]);
   const [volume, setVolume] = useState(0.5);
 
   const ctxRef = useRef<AudioContext | null>(null);
   const bufferRef = useRef<AudioBuffer | null>(null);
   const masterRef = useRef<GainNode | null>(null);
-  const voiceRef = useRef<Voice | null>(null);
+  // One live voice per active sound, so they layer instead of replacing.
+  const voicesRef = useRef<Map<SoundId, Voice>>(new Map());
 
-  function stopVoice() {
-    const v = voiceRef.current;
+  function stopVoice(id: SoundId) {
+    const v = voicesRef.current.get(id);
     if (!v) return;
     try {
       v.noise.stop();
@@ -49,13 +54,12 @@ export function AmbientSounds() {
     }
     v.noise.disconnect();
     v.lfo?.disconnect();
-    voiceRef.current = null;
+    voicesRef.current.delete(id);
   }
 
   function play(id: SoundId) {
     const ctx = ctxRef.current!;
     const master = masterRef.current!;
-    stopVoice();
 
     const noise = ctx.createBufferSource();
     noise.buffer = bufferRef.current;
@@ -63,7 +67,7 @@ export function AmbientSounds() {
 
     const filter = ctx.createBiquadFilter();
     const gain = ctx.createGain();
-    gain.gain.value = 1;
+    let base = 1;
 
     switch (id) {
       case "rain":
@@ -73,7 +77,7 @@ export function AmbientSounds() {
       case "cafe":
         filter.type = "lowpass";
         filter.frequency.value = 700;
-        gain.gain.value = 0.85;
+        base = 0.85;
         break;
       case "forest":
         filter.type = "bandpass";
@@ -88,6 +92,7 @@ export function AmbientSounds() {
         filter.type = "allpass";
         break;
     }
+    gain.gain.value = base * MIX;
 
     noise.connect(filter).connect(gain).connect(master);
     noise.start();
@@ -97,12 +102,12 @@ export function AmbientSounds() {
       lfo = ctx.createOscillator();
       lfo.frequency.value = 0.12;
       const lfoGain = ctx.createGain();
-      lfoGain.gain.value = 0.4; // swell ±0.4 around the base gain of 1
+      lfoGain.gain.value = 0.4 * MIX; // swell around the base gain
       lfo.connect(lfoGain).connect(gain.gain);
       lfo.start();
     }
 
-    voiceRef.current = { noise, lfo };
+    voicesRef.current.set(id, { noise, lfo });
   }
 
   function toggleSound(id: SoundId) {
@@ -118,12 +123,12 @@ export function AmbientSounds() {
     }
     void ctxRef.current.resume();
 
-    if (active === id) {
-      stopVoice();
-      setActive(null);
+    if (voicesRef.current.has(id)) {
+      stopVoice(id);
+      setActive((a) => a.filter((x) => x !== id));
     } else {
       play(id);
-      setActive(id);
+      setActive((a) => [...a, id]);
     }
   }
 
@@ -132,36 +137,43 @@ export function AmbientSounds() {
     if (masterRef.current) masterRef.current.gain.value = volume;
   }, [volume]);
 
-  // tear everything down on unmount (refs only — no external deps)
+  // tear everything down on unmount. The voices Map is created once (stable
+  // identity) so we can copy it; the AudioContext is created lazily on first
+  // play, so it must be read live at cleanup, not captured at mount.
   useEffect(() => {
+    const voices = voicesRef.current;
     return () => {
-      const v = voiceRef.current;
-      try {
-        v?.noise.stop();
-        v?.lfo?.stop();
-      } catch {
-        // already stopped
+      for (const v of voices.values()) {
+        try {
+          v.noise.stop();
+          v.lfo?.stop();
+        } catch {
+          // already stopped
+        }
       }
+      voices.clear();
       void ctxRef.current?.close();
     };
   }, []);
 
   return (
     <div className="flex flex-col gap-2">
-      <span className="eyebrow text-ink-mute">Ambiente:</span>
+      <span className="eyebrow text-ink-mute">
+        Ambiente{active.length > 0 ? ` · ${active.length} attivi` : ""}:
+      </span>
       <div className="flex flex-wrap items-center gap-2">
         {SOUNDS.map((s) => (
           <button
             key={s.id}
             type="button"
-            aria-pressed={active === s.id}
+            aria-pressed={active.includes(s.id)}
             onClick={() => toggleSound(s.id)}
-            className={active === s.id ? "chip chip-signal" : "chip"}
+            className={active.includes(s.id) ? "chip chip-signal" : "chip"}
           >
             {s.label}
           </button>
         ))}
-        {active && (
+        {active.length > 0 && (
           <label className="flex items-center gap-1.5">
             <span className="sr-only">Volume</span>
             <input
