@@ -5,6 +5,14 @@
  * l'onboarding. Quattro passi che indicano: appelli urgenti, aggiunta di un
  * voto al libretto, avvio di una sessione focus, posizione delle impostazioni.
  *
+ * Ogni passo è una card CENTRATA a schermo (position: fixed, via il primitivo
+ * `Overlay align="center"`) su un velo semitrasparente a tutto schermo: niente
+ * ancoraggi agli elementi della pagina, niente frecce/puntatori.
+ *
+ * Apertura LATCHED: si decide una volta sola, al primo gating utile, se aprire;
+ * dopodiché solo la X o "Ho capito" chiudono il tour. Lo stato di auth/sync che
+ * si assesta dopo la prima sincronizzazione non può più chiuderlo.
+ *
  * NB / deviazione: la specifica chiedeva un flag su `profiles` (Supabase), ma
  * aggiungere una colonna remota è fuori scope qui — il completamento è quindi
  * persistito SOLO in localStorage ("studentos-tour-done"). Conseguenza: il tour
@@ -12,7 +20,7 @@
  * profilo quando si toccherà lo schema cloud.
  */
 import { ArrowLeft, ArrowRight, Check, Compass, X } from "lucide-react";
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { Overlay } from "@/components/primitives/Overlay";
 import { Button } from "@/components/primitives/Button";
 import { useSettings } from "@/lib/state/settings";
@@ -55,30 +63,85 @@ function persistDone() {
   }
 }
 
-export function CruscottoTour() {
-  // Lettura una tantum del flag (inizializzatore lazy: niente setState al mount,
-  // così la regola react-hooks resta soddisfatta). `dismissed` chiude il tour
-  // nella sessione corrente subito dopo la persistenza.
-  const [done, setDone] = useState<boolean>(() => tourDone());
-  const [step, setStep] = useState(0);
+/**
+ * Apertura del tour come external store latched (sul modello di `useNowMinute`
+ * / `useTheme`). Lo snapshot lato server è SEMPRE `false` (niente mismatch di
+ * idratazione). Lato client ci si sottoscrive a settings+auth: NON appena il
+ * gating è soddisfatto la PRIMA volta, `tourOpen` passa a `true`. La decisione
+ * è poi CONGELATA (`decided`): i successivi cambi di stato — in particolare la
+ * fine della sincronizzazione iniziale — non possono più riaprire né, soprattutto,
+ * chiudere il tour. L'unica via di chiusura è `dismissTour()` (X o "Ho capito").
+ * Aggiornare lo stato dentro la callback di subscribe (o in un gestore evento) è
+ * la forma consentita dalla regola react-hooks (no setState sincrono al mount).
+ */
+let tourOpen = false;
+let decided = false;
+const tourListeners = new Set<() => void>();
 
-  const hydrated = useSettings((s) => s.hydrated);
-  const presetId = useSettings((s) => s.presetId);
-  const status = useAuth((s) => s.status);
-  const reconciled = useAuth((s) => s.reconciled);
+function emitTour() {
+  for (const l of tourListeners) l();
+}
 
-  // Gating come FirstRunGate: solo a impostazioni pronte e — se l'account è
-  // collegato — dopo la riconciliazione del profilo cloud (autorevole).
+/** Il gating, identico nello spirito a FirstRunGate, letto dagli snapshot
+ *  correnti degli store: impostazioni idratate e — se loggati — profilo cloud
+ *  riconciliato, con un preset scelto, e tour non ancora completato. */
+function tourShouldOpen(): boolean {
+  const { hydrated, presetId } = useSettings.getState();
+  const { status, reconciled } = useAuth.getState();
   const ready =
-    hydrated &&
-    status !== "loading" &&
-    !(status === "signedIn" && !reconciled);
-  const onboarded = ready && Boolean(presetId);
-  const open = onboarded && !done;
+    hydrated && status !== "loading" && !(status === "signedIn" && !reconciled);
+  return ready && Boolean(presetId) && !tourDone();
+}
+
+/** Valutata al mount e a ogni cambio di settings/auth, ma SOLO finché la
+ *  decisione non è presa: può solo APRIRE, mai chiudere. */
+function evaluateTour() {
+  if (decided) return;
+  if (tourShouldOpen()) {
+    tourOpen = true;
+    decided = true;
+    emitTour();
+  }
+}
+
+/** Chiusura definitiva per la sessione: persiste il flag e congela la
+ *  decisione, così un eventuale rimontaggio del cruscotto non lo riapre. */
+function dismissTour() {
+  persistDone();
+  tourOpen = false;
+  decided = true;
+  emitTour();
+}
+
+function subscribeTour(onChange: () => void): () => void {
+  tourListeners.add(onChange);
+  // Lo store può essere già pronto al mount (es. modalità offline): valuta subito.
+  evaluateTour();
+  const unsubSettings = useSettings.subscribe(evaluateTour);
+  const unsubAuth = useAuth.subscribe(evaluateTour);
+  return () => {
+    tourListeners.delete(onChange);
+    unsubSettings();
+    unsubAuth();
+  };
+}
+
+function useTourOpen(): boolean {
+  return useSyncExternalStore(
+    subscribeTour,
+    () => tourOpen,
+    () => false,
+  );
+}
+
+export function CruscottoTour() {
+  const [step, setStep] = useState(0);
+  // Apertura decisa una volta sola e congelata: né la sync né lo stato auth
+  // possono chiudere il tour, solo `close()` (X o "Ho capito").
+  const open = useTourOpen();
 
   function close() {
-    persistDone();
-    setDone(true);
+    dismissTour();
   }
 
   const isLast = step === STEPS.length - 1;
