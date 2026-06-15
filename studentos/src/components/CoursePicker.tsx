@@ -40,7 +40,7 @@ export function CoursePicker({
         <span className="ml-auto text-xs font-normal text-ink-mute">
           {pinned.length > 0
             ? "vedi solo i corsi che frequenti"
-            : "orario completo di tutti gli anni"}
+            : "stai vedendo tutti i corsi"}
         </span>
       </summary>
       <div className="border-t border-line p-4">
