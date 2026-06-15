@@ -6,7 +6,7 @@ Mentalità: "un nuovo utente con zero dati direbbe wow?" + "questa pagina è col
 | # | Priorità | Stato | Commit |
 |---|---|---|---|
 | 1 | Filtro esami personale ("I miei esami") salvato + filtra ovunque | ✅ fatto | (P1) |
-| 2 | Empty state che vendono (cruscotto/libretto/focus/note/orario/appelli) | ⏳ todo | — |
+| 2 | Empty state che vendono (cruscotto/libretto/focus/note/orario/appelli) | ✅ fatto | (P2) |
 | 3 | Collegare le pagine (note↔esame, focus↔esame, cruscotto→studia, appelli azioni) | ⏳ todo | — |
 | 4 | Fastidi utente (login persist, cache-first, freschezza, conferma del, manuale/sync, date IT, offline, override locale) | ⏳ todo | — |
 | 5 | Gerarchia visiva cruscotto (hero asimmetrico, CFU 0% motivante) | ⏳ todo | — |

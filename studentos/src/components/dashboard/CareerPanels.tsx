@@ -1,4 +1,5 @@
-import { Gauge, Share2, Target, TrendingUp } from "lucide-react";
+import { Gauge, Plus, Share2, Target, TrendingUp } from "lucide-react";
+import Link from "next/link";
 import { Badge } from "@/components/primitives/Badge";
 import { Field, inputClass } from "@/components/primitives/Field";
 import { CountUp } from "@/components/primitives/CountUp";
@@ -68,10 +69,19 @@ export function MediaPanel({
       }
     >
       {average === undefined ? (
-        <p className="text-sm text-ink-mute">
-          Registra i voti nel libretto per vedere media, andamento e base di
-          laurea. I dati restano solo su questo dispositivo.
-        </p>
+        <div className="flex flex-col items-start gap-3">
+          <p className="text-sm text-ink-mute">
+            Registra i voti nel libretto e qui vedrai{" "}
+            <span className="text-ink">media ponderata</span>,{" "}
+            <span className="text-ink">andamento</span> e{" "}
+            <span className="text-ink">base di laurea</span> aggiornarsi a ogni
+            esame. I dati restano solo su questo dispositivo.
+          </p>
+          <Link href="/libretto" className="btn btn-primary">
+            <Plus aria-hidden="true" className="size-4" />
+            Aggiungi il primo voto
+          </Link>
+        </div>
       ) : (
         <div className="flex flex-wrap items-center gap-x-8 gap-y-5">
           <Stat
@@ -152,16 +162,32 @@ export function CfuPanel({
             </span>
             <span className="text-[0.72rem] text-ink-faint">/{totalCfu} CFU</span>
           </ProgressRing>
-          <p className="max-w-[20ch] text-sm text-ink-mute">
-            Mancano <strong className="text-ink">{remaining} CFU</strong> alla
-            laurea. Sei al {pct}% del percorso.
-          </p>
+          {earned === 0 ? (
+            <p className="max-w-[22ch] text-sm text-ink-mute">
+              Il tuo percorso parte da qui. Registra gli esami già sostenuti e
+              guarda la barra salire verso i{" "}
+              <strong className="text-ink">{totalCfu} CFU</strong> della laurea.
+            </p>
+          ) : (
+            <p className="max-w-[20ch] text-sm text-ink-mute">
+              Mancano <strong className="text-ink">{remaining} CFU</strong> alla
+              laurea. Sei al {pct}% del percorso.
+            </p>
+          )}
         </div>
-        {pace !== undefined && eta && (
-          <p className="border-t border-line pt-3 text-xs text-ink-mute">
-            Al ritmo attuale ({fmtNum(pace, 1)} CFU/mese) → laurea stimata:{" "}
-            <span className="font-medium text-ink">{fmtMonthYear(eta)}</span>
-          </p>
+        {earned === 0 ? (
+          <Link href="/libretto" className="btn btn-primary self-start">
+            <Plus aria-hidden="true" className="size-4" />
+            Aggiungi i tuoi esami
+          </Link>
+        ) : (
+          pace !== undefined &&
+          eta && (
+            <p className="border-t border-line pt-3 text-xs text-ink-mute">
+              Al ritmo attuale ({fmtNum(pace, 1)} CFU/mese) → laurea stimata:{" "}
+              <span className="font-medium text-ink">{fmtMonthYear(eta)}</span>
+            </p>
+          )
         )}
       </div>
     </Panel>

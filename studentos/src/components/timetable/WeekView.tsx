@@ -1,11 +1,12 @@
 "use client";
 
 /** /orario: week navigation state + store wiring around the pure WeekGrid. */
-import { CalendarClock, CalendarCog, ChevronLeft, ChevronRight, MapPin, Pencil } from "lucide-react";
+import { CalendarClock, CalendarCog, CalendarOff, ChevronLeft, ChevronRight, MapPin, Pencil } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/primitives/Button";
 import { ConfirmButton } from "@/components/primitives/ConfirmButton";
+import { EmptyState } from "@/components/primitives/EmptyState";
 import { PanelSkeleton } from "@/components/primitives/Skeleton";
 import { YearFilter } from "@/components/YearFilter";
 import type { ClassEvent } from "@/lib/domain/types";
@@ -377,16 +378,24 @@ export function WeekView() {
           <ManualLessonForm courses={allCourses} />
           <ImportIcalForm />
           {weekEvents.length === 0 && (
-            <div className="muted flex flex-wrap items-center gap-x-2 gap-y-1 text-sm">
-              <span>
-                Nessuna lezione in questa settimana
-                {pinnedCourses.length > 0 ? " per i corsi selezionati" : ""}
-                {nextLesson && now ? "." : " 🎉"}
-              </span>
+            <EmptyState
+              compact
+              icon={<CalendarOff />}
+              title={
+                pinnedCourses.length > 0
+                  ? "Nessuna lezione per i corsi scelti"
+                  : "Settimana senza lezioni"
+              }
+              description={
+                nextLesson && now
+                  ? "Niente in calendario questa settimana — probabilmente sei in sessione d'esami o in pausa. Salta direttamente alla prossima lezione in programma."
+                  : "Niente lezioni questa settimana: goditi la pausa. Quando ne aggiungi o sincronizzi, compaiono qui nella griglia."
+              }
+            >
               {nextLesson && now && (
                 <button
                   type="button"
-                  className="text-signal underline underline-offset-2"
+                  className="btn btn-primary"
                   onClick={() =>
                     setWeekOffset(
                       Math.round(
@@ -397,11 +406,12 @@ export function WeekView() {
                     )
                   }
                 >
+                  <CalendarClock aria-hidden="true" className="size-4" />
                   Prossima lezione: {nextLesson.courseName},{" "}
-                  {lessonDay.format(new Date(nextLesson.start))} →
+                  {lessonDay.format(new Date(nextLesson.start))}
                 </button>
               )}
-            </div>
+            </EmptyState>
           )}
           <div className="glass gradient-ring reveal overflow-x-auto p-5">
             <WeekGrid events={weekEvents} weekStart={weekStart!} now={now} />

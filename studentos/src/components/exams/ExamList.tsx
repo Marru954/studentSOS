@@ -19,6 +19,7 @@ import {
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { CountUp } from "@/components/primitives/CountUp";
+import { EmptyState } from "@/components/primitives/EmptyState";
 import { Panel } from "@/components/primitives/Panel";
 import { PanelSkeleton } from "@/components/primitives/Skeleton";
 import { CoursePicker } from "@/components/CoursePicker";
@@ -362,9 +363,21 @@ export function ExamList() {
             </div>
 
             {grouped.length === 0 ? (
-              <p className="muted text-sm">
-                Nessun appello in questa vista — tutto sotto controllo 🎉
-              </p>
+              pinnedCourses.length > 0 ? (
+                <EmptyState
+                  compact
+                  icon={<CalendarDays />}
+                  title="Nessun appello per i corsi scelti"
+                  description="Stai filtrando per «I miei esami». Allarga la selezione qui sopra per vedere tutti gli appelli del tuo corso di laurea."
+                />
+              ) : (
+                <EmptyState
+                  compact
+                  icon={<CalendarClock />}
+                  title="Nessun appello in vista"
+                  description="Appena il tuo corso pubblica nuove date compaiono qui, ordinate per urgenza. Intanto puoi aggiungere un appello a mano qui sopra e tenerlo d'occhio."
+                />
+              )
             ) : (
               <div className="flex flex-col gap-3">
                 {grouped.map((g) => {

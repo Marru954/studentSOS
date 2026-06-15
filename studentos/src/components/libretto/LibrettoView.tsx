@@ -10,6 +10,7 @@ import { CfuPanel, GoalPanel, MediaPanel } from "@/components/dashboard/CareerPa
 import { Button } from "@/components/primitives/Button";
 import { ConfirmButton } from "@/components/primitives/ConfirmButton";
 import { CountUp } from "@/components/primitives/CountUp";
+import { EmptyState } from "@/components/primitives/EmptyState";
 import { Panel } from "@/components/primitives/Panel";
 import { PanelSkeleton } from "@/components/primitives/Skeleton";
 import { cn } from "@/lib/cn";
@@ -302,10 +303,16 @@ export function LibrettoView() {
 
           {isEmpty ? (
             <>
-              <p className="muted -mb-1 text-sm">
-                Il tuo libretto è vuoto. Registra il primo esame qui sotto,
-                oppure importa la tua carriera da PDF o CSV.
-              </p>
+              <EmptyState
+                icon={<GraduationCap />}
+                title="La tua carriera, tutta qui"
+                description="Aggiungi gli esami che hai già dato: StudentOS calcola da solo media ponderata, base di laurea su 110, proiezione del voto finale e sblocca i trofei dei tuoi 30 e lode. Inizia dal modulo qui sotto o importa il libretto da Delphi in un secondo."
+              >
+                <a href="#importa-delphi" className="btn btn-primary no-print">
+                  <FileText aria-hidden="true" className="size-4" />
+                  Importa da PDF Delphi
+                </a>
+              </EmptyState>
               {entryForm("no-print")}
               {esamiPanel}
             </>

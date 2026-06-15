@@ -3,8 +3,9 @@
 /** /focus: study modes + immersive session + studio stats + kanban. Sessions and
  *  tasks are manual territory; synced courses and exams only feed selects and
  *  countdowns. While a session runs the page collapses to the timer alone. */
-import { CalendarCheck, Trophy } from "lucide-react";
+import { CalendarCheck, Rocket, Trophy } from "lucide-react";
 import { useMemo, useState } from "react";
+import { EmptyState } from "@/components/primitives/EmptyState";
 import { Panel } from "@/components/primitives/Panel";
 import { PanelSkeleton } from "@/components/primitives/Skeleton";
 import { extractCourseNames } from "@/lib/domain/notes";
@@ -162,6 +163,14 @@ export function FocusView() {
                   libretto={libretto.items}
                   now={now}
                 />
+                {focus.items.length === 0 && (
+                  <EmptyState
+                    compact
+                    icon={<Rocket />}
+                    title="Inizia la tua prima sessione"
+                    description="Scegli una materia, scegli una modalità — Pomodoro per concentrarti a intervalli, Flow per studiare a oltranza — e premi Avvia. Ogni minuto costruisce la tua costanza: la heatmap qui sotto si accende a ogni sessione."
+                  />
+                )}
                 {longest && best && (
                   <div className="glass grid grid-cols-1 gap-3 rounded-2xl p-4 sm:grid-cols-2">
                     <div className="flex items-center gap-3">
