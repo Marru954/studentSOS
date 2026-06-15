@@ -19,7 +19,7 @@ import { useAuth } from "@/lib/supabase/auth";
 import { pushProfile } from "@/lib/supabase/remote";
 import { clearSyncedCaches } from "@/lib/supabase/sync";
 import type { UniversityPreset } from "@/lib/sync/provider";
-import { UNIVERSITY_PRESETS, getPreset } from "@/lib/sync/universities";
+import { UNIVERSITY_PRESETS, getPreset, liveProgramFor } from "@/lib/sync/universities";
 import { ATENEO_COURSES, coursesFor } from "@/lib/sync/universities/ateneo-courses";
 
 const YEARS = [1, 2, 3, 4, 5, 6];
@@ -32,18 +32,30 @@ const STEP_TITLES = ["Ateneo", "Corso", "Anno e CFU", "Conferma"];
 
 function programmesOf(p: UniversityPreset | undefined): string[] {
   if (!p) return [];
-  // Live atenei show their FULL real course catalogue (captured via combo.php),
-  // with the one verified live course first so onboarding can mark it. Every
-  // other course in the list is manual. Manual atenei fall back to their
-  // generic programme list (COMMON_PROGRAMMES).
+  // Multi-programme ateneo (Tor Vergata): show the FULL real catalogue; the
+  // verified-live degrees are marked in place by isLiveCourse. Any live
+  // programme missing from the catalogue is prepended so it's always selectable.
+  if (p.livePrograms?.length) {
+    const catalogue = ATENEO_COURSES[p.id] ?? [];
+    const missing = p.livePrograms
+      .map((lp) => lp.programme)
+      .filter(
+        (n) =>
+          !catalogue.some((c) => c.trim().toLowerCase() === n.trim().toLowerCase()),
+      );
+    return [...missing, ...catalogue];
+  }
+  // Single-live-programme ateneo: FULL catalogue with the one live course first.
+  // Manual atenei fall back to their generic programme list (COMMON_PROGRAMMES).
   if (p.liveSources && p.programme && ATENEO_COURSES[p.id]?.length) {
     return coursesFor(p.id, p.programme);
   }
   return p.programmes ?? (p.programme ? [p.programme] : []);
 }
 
-/** True when this exact course is the ateneo's verified live programme. */
+/** True when this course has verified live sources at the ateneo. */
 function isLiveCourse(p: UniversityPreset | undefined, course: string): boolean {
+  if (p?.livePrograms?.length) return Boolean(liveProgramFor(p, course));
   return (
     Boolean(p?.liveSources) &&
     !!p?.programme &&
@@ -112,9 +124,12 @@ export function OnboardingFlow() {
     await useSettings.getState().hydrate();
     // Only the verified live course activates the live sources; any other course
     // at this ateneo is manual (no sources → enabledSources() stays empty and
-    // the sync is a no-op for it).
+    // the sync is a no-op for it). For a multi-programme ateneo the sources come
+    // from the matched live programme; otherwise from the preset's flat list.
+    const liveProg = liveProgramFor(preset, corso);
+    const liveList = liveProg ? liveProg.sources : preset.sources;
     const enabledSourceIds = corsoLive
-      ? preset.sources
+      ? liveList
           .filter(
             (s) =>
               s.capability === "timetable" ||

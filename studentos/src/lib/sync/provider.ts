@@ -55,6 +55,21 @@ export interface SyncSource {
   params: unknown;
 }
 
+/**
+ * One verified-live degree programme inside a *multi-programme* preset (a whole
+ * ateneo wired end-to-end, e.g. Tor Vergata). Its `sources` are the live
+ * timetable/exams/news for THIS programme only, with ids namespaced per
+ * programme so caches never collide across courses. `programme` is matched
+ * case-insensitively to `settings.programme` (the course the student picked).
+ *
+ * When a preset carries `livePrograms`, it supersedes the single-programme
+ * `programme`/`sources` fields for liveness + sync resolution.
+ */
+export interface LiveProgram {
+  programme: string;
+  sources: SyncSource[];
+}
+
 export interface UniversityPreset {
   id: string;
   name: string;
@@ -70,6 +85,11 @@ export interface UniversityPreset {
    *  Presets without live sources still work in manual / PDF-import mode. */
   liveSources?: boolean;
   sources: SyncSource[];
+  /** Multi-programme atenei: every degree whose EasyAcademy codes were verified
+   *  live, each with its own namespaced sources. Present → the resolver keys off
+   *  the chosen course (`settings.programme`); absent → the legacy single
+   *  `programme`/`sources` path is used. */
+  livePrograms?: LiveProgram[];
 }
 
 export class SyncError extends Error {

@@ -3,7 +3,7 @@
 /** Settings store: which university preset, which sources, degree plan.
  *  Write-through to IndexedDB; hydrate() is called once by StoreProvider. */
 import { create } from "zustand";
-import { getPreset } from "@/lib/sync/universities";
+import { getPreset, liveProgramFor } from "@/lib/sync/universities";
 import type { SyncSource } from "@/lib/sync/provider";
 import { getSettings, saveSettings } from "@/lib/storage/repo";
 import { type AppSettings, DEFAULT_SETTINGS } from "@/lib/storage/types";
@@ -44,7 +44,19 @@ export const useSettings = create<SettingsState>()((set, get) => ({
     const { presetId, programme, enabledSourceIds } = get();
     if (!presetId) return [];
     const preset = getPreset(presetId);
-    if (!preset || preset.sources.length === 0) return [];
+    if (!preset) return [];
+    // Multi-programme ateneo (e.g. Tor Vergata): resolve the chosen course to its
+    // verified-live programme and return only that programme's sources. A course
+    // that isn't one of the live degrees → no sources → manual mode. (Same
+    // all-years-timetable invariant as below: every year syncs once live.)
+    if (preset.livePrograms?.length) {
+      const lp = liveProgramFor(preset, programme);
+      if (!lp) return [];
+      return lp.sources.filter(
+        (s) => s.capability === "timetable" || enabledSourceIds.includes(s.id),
+      );
+    }
+    if (preset.sources.length === 0) return [];
     // A live preset's sources cover ONLY its verified live programme. If the
     // student picked a different course at the same ateneo (onboarding now lists
     // the full catalogue), there are no live sources for it → manual mode.
