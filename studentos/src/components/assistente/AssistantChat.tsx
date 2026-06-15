@@ -1,15 +1,16 @@
 "use client";
 
-/** /assistente: AI chat (Groq via /api/assistente). The student context is
- *  gathered live from the stores and sent with every request; history lives in
- *  component state only (not persisted). iMessage-style bubbles on the glass. */
-import { MessageSquare, Send } from "lucide-react";
+/** /assistente: full-height AI chat (Groq via /api/assistente). Student context
+ *  is gathered live from the stores and sent with every request; history lives
+ *  in component state only (not persisted). Claude.ai/ChatGPT-style layout:
+ *  scrolling message area + pinned composer, AI avatars, rendered Markdown,
+ *  copy-on-hover, retry-on-error, auto-growing textarea. */
+import { Check, Copy, RotateCcw, Send, Sparkles, SquarePen } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
+import ReactMarkdown, { type Components } from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { cn } from "@/lib/cn";
-import {
-  type AssistantContext,
-  type ChatMessage,
-} from "@/lib/assistente";
+import { type AssistantContext, type ChatMessage } from "@/lib/assistente";
 import { earnedCfu, weightedAverage } from "@/lib/domain/libretto";
 import { minutesInRange } from "@/lib/domain/focus";
 import {
@@ -21,32 +22,104 @@ import {
   mondayOf,
 } from "@/lib/format";
 import { useNowMinute } from "@/lib/hooks/useNowMinute";
-import {
-  useFocusSessions,
-  useLibretto,
-} from "@/lib/state/manual";
+import { useFocusSessions, useLibretto } from "@/lib/state/manual";
 import { useSettings } from "@/lib/state/settings";
 import { useSynced } from "@/lib/state/synced";
 import { getPreset } from "@/lib/sync/universities";
 
+interface Turn {
+  id: string;
+  role: "user" | "assistant";
+  content: string;
+  error?: boolean;
+}
+
 const SUGGESTIONS: { label: string; prompt: string }[] = [
+  { label: "Quando è il mio prossimo esame? 📅", prompt: "Quando è il mio prossimo esame?" },
   {
-    label: "Prossimo esame 📅",
-    prompt: "Qual è il mio prossimo esame e come mi conviene prepararmi?",
+    label: "Pianifica le mie sessioni di studio 📚",
+    prompt: "Pianifica le mie sessioni di studio per i prossimi esami.",
   },
   {
-    label: "Piano di studio 📚",
-    prompt: "Aiutami a organizzare un piano di studio per i prossimi esami.",
+    label: "Analizza la mia media e come migliorarla 📊",
+    prompt: "Analizza la mia media e dimmi come posso migliorarla.",
   },
   {
-    label: "La mia media 📊",
-    prompt: "Com'è la mia media e cosa posso fare per migliorarla?",
+    label: "Cosa devo studiare questa settimana? 🎯",
+    prompt: "Cosa mi conviene studiare questa settimana?",
   },
   {
-    label: "Ore studiate questa settimana ⏱️",
-    prompt: "Quante ore ho studiato questa settimana?",
+    label: "Quante ore mi mancano per laurearmi? 🎓",
+    prompt: "Quanti CFU mi mancano per laurearmi e a che punto sono?",
+  },
+  {
+    label: "Crea un piano per il prossimo esame ✏️",
+    prompt: "Crea un piano di studio dettagliato per il mio prossimo esame.",
   },
 ];
+
+const MAX_TEXTAREA_PX = 132; // ~5 lines
+
+const MD_COMPONENTS: Components = {
+  p: ({ children }) => <p className="my-1.5 first:mt-0 last:mb-0">{children}</p>,
+  ul: ({ children }) => (
+    <ul className="my-1.5 list-disc space-y-1 pl-5">{children}</ul>
+  ),
+  ol: ({ children }) => (
+    <ol className="my-1.5 list-decimal space-y-1 pl-5">{children}</ol>
+  ),
+  li: ({ children }) => <li className="leading-relaxed">{children}</li>,
+  strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
+  em: ({ children }) => <em className="italic">{children}</em>,
+  a: ({ href, children }) => (
+    <a
+      href={href}
+      target="_blank"
+      rel="noreferrer"
+      className="text-signal underline underline-offset-2"
+    >
+      {children}
+    </a>
+  ),
+  code: ({ children }) => (
+    <code className="rounded bg-black/25 px-1 py-0.5 font-mono text-[0.85em]">
+      {children}
+    </code>
+  ),
+  pre: ({ children }) => (
+    <pre className="my-2 overflow-x-auto rounded-lg bg-black/25 p-3 text-[0.82em] leading-relaxed">
+      {children}
+    </pre>
+  ),
+  h1: ({ children }) => (
+    <p className="mb-1 mt-2 font-semibold first:mt-0">{children}</p>
+  ),
+  h2: ({ children }) => (
+    <p className="mb-1 mt-2 font-semibold first:mt-0">{children}</p>
+  ),
+  h3: ({ children }) => (
+    <p className="mb-1 mt-2 font-semibold first:mt-0">{children}</p>
+  ),
+  blockquote: ({ children }) => (
+    <blockquote className="my-1.5 border-l-2 border-line pl-3 text-ink-mute">
+      {children}
+    </blockquote>
+  ),
+};
+
+function toApiMessages(turns: Turn[]): ChatMessage[] {
+  return turns
+    .filter((t) => !t.error)
+    .map(({ role, content }) => ({ role, content }));
+}
+
+function AiAvatar() {
+  return (
+    <div className="bg-primary-gradient mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-full">
+      <Sparkles aria-hidden="true" className="size-4 text-white" />
+    </div>
+  );
+}
 
 export function AssistantChat() {
   const now = useNowMinute();
@@ -117,30 +190,39 @@ export function AssistantChat() {
     yearOfStudy,
   ]);
 
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [turns, setTurns] = useState<Turn[]>([]);
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
   const [awaiting, setAwaiting] = useState(false);
+  const [copiedId, setCopiedId] = useState<string | null>(null);
 
   const scrollRef = useRef<HTMLDivElement>(null);
+  const taRef = useRef<HTMLTextAreaElement>(null);
+
   useEffect(() => {
     const el = scrollRef.current;
     if (el) el.scrollTop = el.scrollHeight;
-  }, [messages, awaiting]);
+  }, [turns, awaiting]);
 
-  async function send(text: string) {
-    const content = text.trim();
-    if (!content || busy) return;
-    const next: ChatMessage[] = [...messages, { role: "user", content }];
-    setMessages(next);
-    setInput("");
+  function resizeTextarea() {
+    const el = taRef.current;
+    if (!el) return;
+    el.style.height = "auto";
+    el.style.height = `${Math.min(el.scrollHeight, MAX_TEXTAREA_PX)}px`;
+  }
+
+  function resetTextareaHeight() {
+    if (taRef.current) taRef.current.style.height = "auto";
+  }
+
+  async function runCompletion(apiMessages: ChatMessage[]) {
     setBusy(true);
     setAwaiting(true);
     try {
       const res = await fetch("/api/assistente", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: next, context }),
+        body: JSON.stringify({ messages: apiMessages, context }),
       });
       if (!res.ok || !res.body) {
         let msg = "Si è verificato un errore. Riprova tra poco.";
@@ -151,7 +233,10 @@ export function AssistantChat() {
           /* non-JSON error body */
         }
         setAwaiting(false);
-        setMessages((m) => [...m, { role: "assistant", content: msg }]);
+        setTurns((t) => [
+          ...t,
+          { id: crypto.randomUUID(), role: "assistant", content: msg, error: true },
+        ]);
         return;
       }
 
@@ -166,145 +251,266 @@ export function AssistantChat() {
         if (!started) {
           started = true;
           setAwaiting(false);
-          setMessages((m) => [...m, { role: "assistant", content: chunk }]);
+          setTurns((t) => [
+            ...t,
+            { id: crypto.randomUUID(), role: "assistant", content: chunk },
+          ]);
         } else {
-          setMessages((m) =>
-            m.map((msg, i) =>
-              i === m.length - 1
-                ? { ...msg, content: msg.content + chunk }
-                : msg,
+          setTurns((t) =>
+            t.map((m, i) =>
+              i === t.length - 1 ? { ...m, content: m.content + chunk } : m,
             ),
           );
         }
       }
       if (!started) {
         setAwaiting(false);
-        setMessages((m) => [
-          ...m,
-          { role: "assistant", content: "Non ho ricevuto una risposta. Riprova." },
+        setTurns((t) => [
+          ...t,
+          {
+            id: crypto.randomUUID(),
+            role: "assistant",
+            content: "Non ho ricevuto una risposta. Riprova.",
+            error: true,
+          },
         ]);
       }
     } catch {
       setAwaiting(false);
-      setMessages((m) => [
-        ...m,
-        { role: "assistant", content: "Connessione interrotta. Riprova." },
+      setTurns((t) => [
+        ...t,
+        {
+          id: crypto.randomUUID(),
+          role: "assistant",
+          content: "Connessione interrotta. Riprova.",
+          error: true,
+        },
       ]);
     } finally {
       setBusy(false);
     }
   }
 
+  function send(text: string) {
+    const content = text.trim();
+    if (!content || busy) return;
+    const userTurn: Turn = { id: crypto.randomUUID(), role: "user", content };
+    const updated = [...turns, userTurn];
+    setTurns(updated);
+    setInput("");
+    resetTextareaHeight();
+    void runCompletion(toApiMessages(updated));
+  }
+
+  function retry() {
+    if (busy) return;
+    const cleaned = turns.filter((t) => !t.error);
+    if (cleaned.length === 0) return;
+    setTurns(cleaned);
+    void runCompletion(toApiMessages(cleaned));
+  }
+
+  function newConversation() {
+    if (busy) return;
+    setTurns([]);
+    setInput("");
+    resetTextareaHeight();
+  }
+
+  function copy(id: string, text: string) {
+    void navigator.clipboard?.writeText(text);
+    setCopiedId(id);
+    window.setTimeout(() => {
+      setCopiedId((c) => (c === id ? null : c));
+    }, 1500);
+  }
+
+  const empty = turns.length === 0 && !awaiting;
+
   return (
-    <div className="flex flex-col gap-5">
-      <header className="reveal">
-        <h1 className="text-[clamp(2rem,5vw,3rem)]">Assistente</h1>
-        <p className="muted mt-1.5">
-          Chiedi qualsiasi cosa sulla tua carriera universitaria
-        </p>
+    <div className="flex min-h-0 flex-1 flex-col py-4 sm:py-6">
+      <header className="flex shrink-0 items-center justify-between gap-3 pb-3">
+        <h1 className="text-2xl font-semibold sm:text-3xl">Assistente</h1>
+        {turns.length > 0 && (
+          <button
+            type="button"
+            onClick={newConversation}
+            disabled={busy}
+            className="glass flex items-center gap-1.5 rounded-full border border-line px-3 py-1.5 text-xs font-medium text-ink-mute transition-colors hover:text-ink disabled:opacity-45"
+          >
+            <SquarePen aria-hidden="true" className="size-3.5" />
+            Nuova conversazione
+          </button>
+        )}
       </header>
 
       <div
-        className="glass gradient-ring reveal flex flex-col overflow-hidden rounded-2xl"
-        style={{ height: "min(68vh, 640px)", minHeight: 380 }}
+        ref={scrollRef}
+        role="log"
+        aria-live="polite"
+        aria-label="Conversazione con l'assistente"
+        className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto px-0.5 py-2"
       >
-        <div
-          ref={scrollRef}
-          role="log"
-          aria-live="polite"
-          aria-label="Conversazione con l'assistente"
-          className="flex flex-1 flex-col gap-3 overflow-y-auto p-4 sm:p-5"
-        >
-          {messages.length === 0 && !awaiting ? (
-            <div className="flex flex-1 flex-col items-center justify-center gap-5 text-center">
-              <div className="bg-primary-gradient shadow-accent flex size-14 items-center justify-center rounded-2xl">
-                <MessageSquare aria-hidden="true" className="size-7 text-white" />
-              </div>
-              <p className="muted max-w-sm text-sm">
-                Conosco i tuoi esami, le lezioni, il libretto e le ore di studio.
-                Da dove vuoi iniziare?
-              </p>
-              <div className="flex flex-wrap justify-center gap-2">
-                {SUGGESTIONS.map((s) => (
-                  <button
-                    key={s.label}
-                    type="button"
-                    onClick={() => void send(s.prompt)}
-                    className="glass rounded-full border border-line px-3.5 py-2 text-xs font-medium text-ink transition-colors hover:bg-night-700"
-                  >
-                    {s.label}
-                  </button>
-                ))}
-              </div>
+        {empty ? (
+          <div className="flex flex-1 flex-col items-center justify-center gap-6 px-4 text-center">
+            <div className="bg-primary-gradient shadow-accent flex size-16 items-center justify-center rounded-2xl">
+              <Sparkles aria-hidden="true" className="size-8 text-white" />
             </div>
-          ) : (
-            messages.map((m, i) => (
-              <div
-                key={i}
-                className={cn(
-                  "flex",
-                  m.role === "user" ? "justify-end" : "justify-start",
-                )}
-              >
-                <div
-                  className={cn(
-                    "max-w-[82%] whitespace-pre-wrap rounded-2xl px-4 py-2.5 text-sm leading-relaxed",
-                    m.role === "user"
-                      ? "bg-primary-gradient rounded-br-md text-white"
-                      : "glass rounded-bl-md text-ink",
-                  )}
+            <div>
+              <h2 className="text-2xl font-semibold text-ink">Come posso aiutarti?</h2>
+              <p className="muted mt-1.5 text-sm">
+                Conosco i tuoi esami, l&rsquo;orario, il libretto e le ore di studio.
+              </p>
+            </div>
+            <div className="grid w-full max-w-xl grid-cols-1 gap-2.5 sm:grid-cols-2">
+              {SUGGESTIONS.map((s) => (
+                <button
+                  key={s.label}
+                  type="button"
+                  onClick={() => send(s.prompt)}
+                  className="glass rounded-xl border border-line px-4 py-3 text-left text-sm text-ink transition-colors hover:border-signal/50 hover:bg-night-700"
                 >
-                  {m.content}
+                  {s.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        ) : (
+          <>
+            {turns.map((t) =>
+              t.role === "user" ? (
+                <div key={t.id} className="flex justify-end">
+                  <div className="bg-primary-gradient max-w-[85%] whitespace-pre-wrap rounded-2xl rounded-tr-md px-4 py-2.5 text-sm leading-relaxed text-white">
+                    {t.content}
+                  </div>
+                </div>
+              ) : (
+                <div key={t.id} className="flex gap-2.5">
+                  <AiAvatar />
+                  <div className="group min-w-0 flex-1">
+                    <div
+                      className={cn(
+                        "glass rounded-2xl rounded-tl-md px-4 py-3 text-sm leading-relaxed text-ink",
+                        t.error && "border border-danger/40",
+                      )}
+                    >
+                      {t.error ? (
+                        <span>{t.content}</span>
+                      ) : (
+                        <ReactMarkdown
+                          remarkPlugins={[remarkGfm]}
+                          components={MD_COMPONENTS}
+                        >
+                          {t.content}
+                        </ReactMarkdown>
+                      )}
+                    </div>
+                    <div className="mt-1 flex items-center gap-2">
+                      {t.error ? (
+                        <button
+                          type="button"
+                          onClick={retry}
+                          className="flex items-center gap-1 rounded-md px-1.5 py-0.5 text-xs font-medium text-signal transition-colors hover:underline"
+                        >
+                          <RotateCcw aria-hidden="true" className="size-3" />
+                          Riprova
+                        </button>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => copy(t.id, t.content)}
+                          aria-label="Copia la risposta"
+                          className="flex items-center gap-1 rounded-md px-1.5 py-0.5 text-xs text-ink-mute opacity-0 transition-opacity hover:text-ink focus-visible:opacity-100 group-hover:opacity-100"
+                        >
+                          {copiedId === t.id ? (
+                            <>
+                              <Check aria-hidden="true" className="size-3" />
+                              Copiato
+                            </>
+                          ) : (
+                            <>
+                              <Copy aria-hidden="true" className="size-3" />
+                              Copia
+                            </>
+                          )}
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ),
+            )}
+
+            {awaiting && (
+              <div className="flex gap-2.5">
+                <AiAvatar />
+                <div className="glass flex flex-col gap-1.5 rounded-2xl rounded-tl-md px-4 py-3">
+                  <div className="flex items-center gap-1.5">
+                    {[0, 1, 2].map((i) => (
+                      <span
+                        key={i}
+                        className="size-2 animate-pulse rounded-full bg-signal"
+                        style={{ animationDelay: `${i * 0.2}s` }}
+                      />
+                    ))}
+                  </div>
+                  <span className="text-xs text-ink-mute">
+                    StudentOS sta pensando…
+                  </span>
                 </div>
               </div>
-            ))
-          )}
+            )}
+          </>
+        )}
+      </div>
 
-          {awaiting && (
-            <div className="flex justify-start">
-              <div className="glass flex items-center gap-1 rounded-2xl rounded-bl-md px-4 py-3">
-                {[0, 1, 2].map((i) => (
-                  <span
-                    key={i}
-                    className="size-1.5 animate-bounce rounded-full bg-ink-mute"
-                    style={{ animationDelay: `${i * 0.15}s` }}
-                  />
-                ))}
-                <span className="sr-only">L&rsquo;assistente sta scrivendo…</span>
-              </div>
-            </div>
-          )}
-        </div>
-
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            void send(input);
-          }}
-          className="flex items-center gap-2 border-t border-line p-3"
-        >
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          send(input);
+        }}
+        className="shrink-0 pt-3"
+      >
+        <div className="glass flex items-end gap-2 rounded-2xl border border-line p-2 transition-colors focus-within:border-signal/50">
           <label htmlFor="assistant-input" className="sr-only">
             Scrivi un messaggio
           </label>
-          <input
+          <textarea
             id="assistant-input"
+            ref={taRef}
+            rows={1}
             value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="Scrivi un messaggio…"
-            autoComplete="off"
-            className="placeholder:text-ink-faint flex-1 rounded-xl border border-line bg-night-900/40 px-4 py-2.5 text-sm text-ink outline-none transition-colors focus:border-signal/60"
+            onChange={(e) => {
+              setInput(e.target.value);
+              resizeTextarea();
+            }}
+            onKeyDown={(e) => {
+              if (
+                e.key === "Enter" &&
+                !e.shiftKey &&
+                !e.nativeEvent.isComposing
+              ) {
+                e.preventDefault();
+                send(input);
+              }
+            }}
+            placeholder="Chiedimi degli esami, dell'orario, della tua media…"
+            className="placeholder:text-ink-faint max-h-[132px] flex-1 resize-none bg-transparent px-2 py-1.5 text-sm text-ink outline-none"
           />
           <button
             type="submit"
             disabled={busy || !input.trim()}
             aria-label="Invia messaggio"
-            className="btn btn-primary disabled:pointer-events-none disabled:opacity-45"
+            className="btn btn-primary shrink-0 disabled:pointer-events-none disabled:opacity-45"
             style={{ padding: "0.6rem 0.9rem" }}
           >
             <Send aria-hidden="true" className="size-4" />
           </button>
-        </form>
-      </div>
+        </div>
+        <p className="muted mt-1.5 text-center text-[0.7rem]">
+          L&rsquo;assistente può sbagliare. Verifica le informazioni importanti.
+        </p>
+      </form>
     </div>
   );
 }
