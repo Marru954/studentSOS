@@ -52,9 +52,11 @@ export const useSettings = create<SettingsState>()((set, get) => ({
     if (preset.livePrograms?.length) {
       const lp = liveProgramFor(preset, programme);
       if (!lp) return [];
-      return lp.sources.filter(
-        (s) => s.capability === "timetable" || enabledSourceIds.includes(s.id),
-      );
+      // Sync EVERY year's timetable AND exams for the chosen live course; the
+      // /orario and /appelli year filters narrow the view client-side. Gating
+      // exams on enabledSourceIds synced only the student's own year, so the
+      // /appelli year filter showed 0 appelli for any other year selected.
+      return lp.sources;
     }
     if (preset.sources.length === 0) return [];
     // A live preset's sources cover ONLY its verified live programme. If the
@@ -67,13 +69,13 @@ export const useSettings = create<SettingsState>()((set, get) => ({
     ) {
       return [];
     }
-    // The merged all-years timetable is a V2 invariant: every year's lessons
-    // always sync once the live course is chosen (the student narrows them later
-    // via pinnedCourses, never by disabling a year). This also self-heals legacy
-    // setups that only enabled a single year's `orario` source. Exams and news
-    // still follow the explicit enabledSourceIds picked at onboarding.
+    // The merged all-years timetable + exams are a V2 invariant: every year's
+    // lessons AND appelli always sync once the live course is chosen (the
+    // student narrows the view later via the year/course filters, never by
+    // disabling a year). This also self-heals legacy setups that only enabled a
+    // single year's source. Only news stays opt-in via enabledSourceIds.
     return preset.sources.filter(
-      (s) => s.capability === "timetable" || enabledSourceIds.includes(s.id),
+      (s) => s.capability !== "news" || enabledSourceIds.includes(s.id),
     );
   },
 }));
