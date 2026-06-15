@@ -53,6 +53,7 @@ export function LibrettoView() {
   const base = average === undefined ? 0 : graduationBase(average);
   const acquired = earnedCfu(libretto.items);
   const verbalised = libretto.items.length;
+  const isEmpty = verbalised === 0;
 
   const visible = useMemo(() => {
     if (yearFilter === "all") return libretto.items;
@@ -105,7 +106,7 @@ export function LibrettoView() {
                 className="grad-text font-num"
                 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "2.6rem" }}
               >
-                <CountUp value={average ?? 0} decimals={1} />
+                {average === undefined ? "—" : <CountUp value={average} decimals={1} />}
               </div>
             </div>
             <div className="glass" style={{ padding: "1.4rem", textAlign: "center" }}>
@@ -116,7 +117,7 @@ export function LibrettoView() {
                 className="font-num"
                 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "2.6rem" }}
               >
-                <CountUp value={base} decimals={1} />
+                {average === undefined ? "—" : <CountUp value={base} decimals={1} />}
                 <span className="muted" style={{ fontSize: "1rem" }}>
                   /110
                 </span>
@@ -138,43 +139,53 @@ export function LibrettoView() {
             </div>
           </div>
 
-          <GoalPanel
-            entries={libretto.items}
-            totalCfu={settings.degreePlan.totalCfu}
-            targetAverage={settings.degreePlan.targetAverage}
-            onTargetChange={(value) =>
-              void settings.update({
-                degreePlan: { ...settings.degreePlan, targetAverage: value },
-              })
-            }
-            className="lg:col-span-12 no-print"
-          />
+          {!isEmpty && (
+            <>
+              <GoalPanel
+                entries={libretto.items}
+                totalCfu={settings.degreePlan.totalCfu}
+                targetAverage={settings.degreePlan.targetAverage}
+                onTargetChange={(value) =>
+                  void settings.update({
+                    degreePlan: { ...settings.degreePlan, targetAverage: value },
+                  })
+                }
+                className="lg:col-span-12 no-print"
+              />
 
-          <GradeSimulator className="lg:col-span-12 no-print" />
+              <GradeSimulator className="lg:col-span-12 no-print" />
 
-          <MediaPanel
-            entries={libretto.items}
-            targetAverage={settings.degreePlan.targetAverage}
-            className="lg:col-span-4 no-print"
-          />
-          <CfuPanel
-            entries={libretto.items}
-            totalCfu={settings.degreePlan.totalCfu}
-            className="lg:col-span-3 no-print"
-          />
-          <ProjectionPanel
-            entries={libretto.items}
-            totalCfu={settings.degreePlan.totalCfu}
-            targetAverage={settings.degreePlan.targetAverage}
-            onPlanChange={(patch) =>
-              void settings.update({
-                degreePlan: { ...settings.degreePlan, ...patch },
-              })
-            }
-            className="lg:col-span-5 no-print"
-          />
+              <MediaPanel
+                entries={libretto.items}
+                targetAverage={settings.degreePlan.targetAverage}
+                className="lg:col-span-4 no-print"
+              />
+              <CfuPanel
+                entries={libretto.items}
+                totalCfu={settings.degreePlan.totalCfu}
+                className="lg:col-span-3 no-print"
+              />
+              <ProjectionPanel
+                entries={libretto.items}
+                totalCfu={settings.degreePlan.totalCfu}
+                targetAverage={settings.degreePlan.targetAverage}
+                onPlanChange={(patch) =>
+                  void settings.update({
+                    degreePlan: { ...settings.degreePlan, ...patch },
+                  })
+                }
+                className="lg:col-span-5 no-print"
+              />
 
-          <DelphiConnect className="lg:col-span-5 no-print" />
+              <DelphiConnect className="lg:col-span-5 no-print" />
+            </>
+          )}
+          {isEmpty && (
+            <p className="muted -mb-1 text-sm lg:col-span-12">
+              Il tuo libretto è vuoto. Registra il primo esame qui sotto, oppure
+              importa la tua carriera da PDF o CSV.
+            </p>
+          )}
           <EntryForm
             key={editingId ?? "new"}
             initial={editing}
@@ -183,7 +194,7 @@ export function LibrettoView() {
               setEditingId(null);
             }}
             onCancel={editing ? () => setEditingId(null) : undefined}
-            className="lg:col-span-7 no-print"
+            className={isEmpty ? "lg:col-span-12 no-print" : "lg:col-span-7 no-print"}
           />
           <Panel
             title="Esami registrati"
