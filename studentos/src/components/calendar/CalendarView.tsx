@@ -1,13 +1,17 @@
 "use client";
 
 /**
- * /calendario: one unified month calendar that overlays every kind of dated
- * thing in StudentOS — lessons, exam calls, study tasks with a due date, and
- * focus sessions — each colour-coded by a semantic token. The grid (Monday-first,
- * UTC) comes from the shared `buildMonthGrid`; the four data territories are
- * binned by local YYYY-MM-DD into separate maps so a day cell can show a small
- * coloured count per type. Clicking a day expands its full event list below,
- * grouped by type. No new data is written — this is a read-only overview.
+ * /calendario: one unified view that overlays every kind of dated thing in
+ * StudentOS — lessons, exam calls, study tasks with a due date, and focus
+ * sessions — each colour-coded by a semantic token. Two presentations share the
+ * same four by-date maps (lessons/focus carry ISO datetimes → local day,
+ * exams/tasks are already plain YYYY-MM-DD):
+ *   • "agenda" (default): a flat list of the next 7 days, grouped by day in
+ *     chronological order, each day's events sorted by time (all-day tasks last).
+ *   • "mese": the month grid (Monday-first, UTC) from `buildMonthGrid`, where a
+ *     day cell shows a small coloured count per type and clicking it expands the
+ *     full event list below, grouped by type.
+ * No new data is written — this is a read-only overview.
  */
 import {
   CalendarClock,
@@ -23,7 +27,14 @@ import { PanelSkeleton } from "@/components/primitives/Skeleton";
 import { cn } from "@/lib/cn";
 import { buildMonthGrid } from "@/lib/domain/calendar";
 import type { ClassEvent, ExamCall, IsoDate } from "@/lib/domain/types";
-import { fmtLongDay, fmtMinutes, fmtTime, localDayOf, localToday } from "@/lib/format";
+import {
+  addDays,
+  fmtLongDay,
+  fmtMinutes,
+  fmtTime,
+  localDayOf,
+  localToday,
+} from "@/lib/format";
 import { useNowMinute } from "@/lib/hooks/useNowMinute";
 import { useFocusSessions, useTasks } from "@/lib/state/manual";
 import { useSynced } from "@/lib/state/synced";
@@ -33,6 +44,11 @@ const monthFmt = new Intl.DateTimeFormat("it-IT", {
   month: "long",
   year: "numeric",
 });
+
+/** How far the Agenda looks ahead, inclusive of today (today … today+7 = 8 days). */
+const AGENDA_DAYS = 7;
+
+type CalendarViewMode = "agenda" | "mese";
 
 type TypeId = "lessons" | "exams" | "tasks" | "focus";
 
@@ -93,6 +109,7 @@ export function CalendarView() {
   const focusHydrated = useFocusSessions((s) => s.hydrated);
   const now = useNowMinute();
 
+  const [view, setView] = useState<CalendarViewMode>("agenda");
   const [monthOffset, setMonthOffset] = useState(0);
   const [selectedDay, setSelectedDay] = useState<IsoDate | null>(null);
 
@@ -161,6 +178,75 @@ export function CalendarView() {
     return { lessons, exams, tasks: dayTasks, focus, empty };
   }, [selectedDay, lessonsByDate, examsByDate, tasksByDate, focusByDate]);
 
+  // Agenda: walk today … today+AGENDA_DAYS, pulling each day's events from the
+  // same four by-date maps. Days with nothing are skipped; rows inside a day are
+  // sorted by time (timed first, all-day tasks last). `hasAny` drives the empty
+  // state when the whole window is free.
+  const agenda = useMemo(() => {
+    if (!now) return { days: [] as AgendaDay[], hasAny: false };
+    const days: AgendaDay[] = [];
+    let hasAny = false;
+    for (let offset = 0; offset <= AGENDA_DAYS; offset += 1) {
+      const date = localToday(addDays(now, offset));
+      const rows: AgendaRow[] = [];
+
+      for (const e of lessonsByDate.get(date) ?? []) {
+        rows.push({
+          key: e.id,
+          type: TYPES[0],
+          sortKey: fmtTime(e.start),
+          allDay: false,
+          primary: e.courseName,
+          meta: lessonMeta(e),
+        });
+      }
+      for (const e of examsByDate.get(date) ?? []) {
+        rows.push({
+          key: e.id,
+          type: TYPES[1],
+          // Timed appelli sort with the lessons; undated ones sit after the
+          // timed block but before the all-day tasks.
+          sortKey: e.time ?? "99:99",
+          allDay: false,
+          primary: e.courseName,
+          meta: examMeta(e),
+        });
+      }
+      for (const t of tasksByDate.get(date) ?? []) {
+        rows.push({
+          key: t.id,
+          type: TYPES[2],
+          sortKey: "",
+          allDay: true,
+          primary: t.title,
+          meta: t.courseName,
+        });
+      }
+      for (const f of focusByDate.get(date) ?? []) {
+        rows.push({
+          key: f.id,
+          type: TYPES[3],
+          sortKey: fmtTime(f.startedAt),
+          allDay: false,
+          primary: f.courseName ?? "Sessione di studio",
+          meta: `${fmtMinutes(f.minutes)} studiati`,
+        });
+      }
+
+      // All-day tasks last; otherwise chronological by time-of-day.
+      rows.sort((a, b) => {
+        if (a.allDay !== b.allDay) return a.allDay ? 1 : -1;
+        return a.sortKey.localeCompare(b.sortKey);
+      });
+
+      if (rows.length > 0) {
+        hasAny = true;
+        days.push({ date, label: agendaDayLabel(offset, date), rows });
+      }
+    }
+    return { days, hasAny };
+  }, [now, lessonsByDate, examsByDate, tasksByDate, focusByDate]);
+
   function selectDay(date: IsoDate) {
     setSelectedDay((cur) => (cur === date ? null : date));
   }
@@ -176,6 +262,38 @@ export function CalendarView() {
             </p>
           )}
         </div>
+        {ready && (
+          <div
+            role="group"
+            aria-label="Vista calendario"
+            className="flex gap-1.5"
+          >
+            <button
+              type="button"
+              onClick={() => setView("agenda")}
+              aria-pressed={view === "agenda"}
+              className={
+                view === "agenda"
+                  ? "grad-fill rounded-full px-3 py-1 text-xs font-semibold text-white shadow-soft"
+                  : "chip transition-colors hover:border-line-strong"
+              }
+            >
+              Agenda
+            </button>
+            <button
+              type="button"
+              onClick={() => setView("mese")}
+              aria-pressed={view === "mese"}
+              className={
+                view === "mese"
+                  ? "grad-fill rounded-full px-3 py-1 text-xs font-semibold text-white shadow-soft"
+                  : "chip transition-colors hover:border-line-strong"
+              }
+            >
+              Mese
+            </button>
+          </div>
+        )}
       </header>
 
       {!ready ? (
@@ -183,6 +301,65 @@ export function CalendarView() {
           <span className="sr-only">Caricamento dei dati locali…</span>
           <PanelSkeleton />
         </div>
+      ) : view === "agenda" ? (
+        <Panel
+          title="Prossimi 7 giorni"
+          icon={<CalendarDays />}
+          className="accent-top"
+        >
+          {agenda.hasAny ? (
+            <div className="flex flex-col gap-6">
+              {agenda.days.map((day) => (
+                <section key={day.date} aria-label={day.label}>
+                  <h3 className="mb-2 text-sm font-semibold capitalize text-ink">
+                    {day.label}
+                  </h3>
+                  <ul className="flex flex-col gap-1.5">
+                    {day.rows.map((row) => (
+                      <li
+                        key={row.key}
+                        className="flex items-center gap-2 rounded-sm border border-line glass-2 px-3 py-2"
+                      >
+                        <span
+                          aria-hidden="true"
+                          className="size-2 shrink-0 rounded-full"
+                          style={{ background: row.type.color }}
+                        />
+                        <span className="sr-only">{row.type.label}: </span>
+                        <span className="min-w-0 flex-1 truncate text-sm text-ink">
+                          {row.primary}
+                        </span>
+                        {row.meta && (
+                          <span className="shrink-0 font-mono text-xs text-ink-mute">
+                            {row.meta}
+                          </span>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              ))}
+            </div>
+          ) : (
+            <p className="muted text-sm">
+              Nessun evento nei prossimi 7 giorni — settimana libera 🎉
+            </p>
+          )}
+
+          {/* Colour legend — type ↔ colour mapping, never colour alone. */}
+          <ul className="mt-6 flex flex-wrap gap-x-4 gap-y-1.5 text-xs text-ink-mute">
+            {TYPES.map((t) => (
+              <li key={t.id} className="flex items-center gap-1.5">
+                <span
+                  aria-hidden="true"
+                  className="size-2.5 rounded-full"
+                  style={{ background: t.color }}
+                />
+                {t.label}
+              </li>
+            ))}
+          </ul>
+        </Panel>
       ) : (
         <>
           <Panel title="Mese" icon={<CalendarDays />} className="accent-top">
@@ -389,6 +566,31 @@ export function CalendarView() {
       )}
     </div>
   );
+}
+
+/** A single row in the Agenda list, already resolved to label + colour. */
+interface AgendaRow {
+  key: string;
+  type: (typeof TYPES)[number];
+  /** "HH:MM" for timed rows; "" for all-day. Drives within-day ordering. */
+  sortKey: string;
+  /** All-day rows (tasks) sort after every timed row. */
+  allDay: boolean;
+  primary: string;
+  meta?: string;
+}
+
+interface AgendaDay {
+  date: IsoDate;
+  label: string;
+  rows: AgendaRow[];
+}
+
+/** "Oggi" / "Domani" for the first two days, else "venerdì 12 giugno". */
+function agendaDayLabel(offset: number, date: IsoDate): string {
+  if (offset === 0) return "Oggi";
+  if (offset === 1) return "Domani";
+  return fmtLongDay(new Date(`${date}T00:00:00`));
 }
 
 /** "09:30–11:00 · Aula B1" for a lesson row. */
