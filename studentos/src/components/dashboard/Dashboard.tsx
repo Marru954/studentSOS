@@ -26,6 +26,7 @@ import { useLibretto } from "@/lib/state/manual";
 import { useSettings } from "@/lib/state/settings";
 import { useSynced } from "@/lib/state/synced";
 import { BackupCard } from "@/components/backup/BackupCard";
+import { CruscottoTour } from "@/components/onboarding/CruscottoTour";
 import { BookingReminders } from "./BookingReminders";
 import { CfuPanel, MediaPanel } from "./CareerPanels";
 import { ChangeNotices } from "./ChangeNotices";
@@ -116,6 +117,9 @@ export function Dashboard() {
 
   return (
     <div className="flex flex-col gap-5">
+      {/* Tour guidato al primo accesso (si auto-gestisce: gating + localStorage). */}
+      <CruscottoTour />
+
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <h1 className="text-[clamp(2rem,5vw,3rem)] font-bold">Cruscotto</h1>
