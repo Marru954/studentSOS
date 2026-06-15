@@ -6,8 +6,10 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/primitives/Button";
 import { PanelSkeleton } from "@/components/primitives/Skeleton";
+import { YearFilter } from "@/components/YearFilter";
 import type { ClassEvent } from "@/lib/domain/types";
 import { extractCourseNames } from "@/lib/domain/notes";
+import { matchesYear } from "@/lib/domain/sources";
 import { addDays, fmtTime, localDayOf, localToday, mondayOf } from "@/lib/format";
 import { useNowMinute } from "@/lib/hooks/useNowMinute";
 import { useSettings } from "@/lib/state/settings";
@@ -121,13 +123,11 @@ export function WeekView() {
   const effectiveYear: number | "all" =
     yearFilter === "auto" ? (yearOfStudy ?? "all") : yearFilter;
 
-  // gli eventi del solo anno selezionato (il sourceId include "anno-N")
-  const yearFilteredEvents = useMemo(() => {
-    if (effectiveYear === "all") return classEvents;
-    return classEvents.filter((e) =>
-      e.sourceId.includes(`anno-${effectiveYear}`),
-    );
-  }, [classEvents, effectiveYear]);
+  // gli eventi del solo anno selezionato (l'anno è codificato nel sourceId)
+  const yearFilteredEvents = useMemo(
+    () => classEvents.filter((e) => matchesYear(e.sourceId, effectiveYear)),
+    [classEvents, effectiveYear],
+  );
 
   // every course in the selected year's feed, for the picker
   const allCourses = useMemo(
@@ -219,24 +219,7 @@ export function WeekView() {
         </div>
       ) : (
         <>
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="eyebrow text-ink-mute">Anno:</span>
-            {(["all", 1, 2, 3] as const).map((y) => (
-              <button
-                key={y}
-                type="button"
-                onClick={() => setYearFilter(y)}
-                aria-pressed={effectiveYear === y}
-                className={
-                  effectiveYear === y
-                    ? "grad-fill rounded-full px-3 py-1 text-xs font-semibold text-white shadow-soft"
-                    : "chip transition-colors hover:border-line-strong"
-                }
-              >
-                {y === "all" ? "Tutti" : `${y}° anno`}
-              </button>
-            ))}
-          </div>
+          <YearFilter value={effectiveYear} onChange={setYearFilter} />
           <CoursePicker
             courses={allCourses}
             pinned={pinnedCourses}

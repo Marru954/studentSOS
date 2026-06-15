@@ -20,11 +20,15 @@ import Link from "next/link";
 import { CountUp } from "@/components/primitives/CountUp";
 import { Panel } from "@/components/primitives/Panel";
 import { PanelSkeleton } from "@/components/primitives/Skeleton";
+import { CoursePicker } from "@/components/timetable/CoursePicker";
+import { YearFilter } from "@/components/YearFilter";
 import { bookingState } from "@/lib/domain/booking";
 import {
   type ExamFilter,
   filterExams,
 } from "@/lib/domain/calendar";
+import { extractCourseNames } from "@/lib/domain/notes";
+import { matchesYear } from "@/lib/domain/sources";
 import type { ExamCall } from "@/lib/domain/types";
 import { daysBetweenIso, localToday } from "@/lib/format";
 import { useNowMinute } from "@/lib/hooks/useNowMinute";
@@ -67,13 +71,38 @@ export function ExamList() {
   const hydrated = useSynced((s) => s.hydrated);
   const settingsHydrated = useSettings((s) => s.hydrated);
   const hasSources = useSettings((s) => s.enabledSourceIds.length > 0);
+  const pinnedCourses = useSettings((s) => s.pinnedCourses);
+  const updateSettings = useSettings((s) => s.update);
   const now = useNowMinute();
 
   const [filter, setFilter] = useState<ExamFilter>("futuri");
+  // Default "all" on purpose: a 1st-year sees every year's appelli and can
+  // anticipate later exams. Year first, then optional per-course refinement.
+  const [yearFilter, setYearFilter] = useState<number | "all">("all");
   const [monthOffset, setMonthOffset] = useState(0);
 
   const ready = now !== null && hydrated && settingsHydrated;
   const today = ready ? localToday(now) : undefined;
+
+  // Year-only scope feeds the course picker (so it lists the chosen year's
+  // courses); full scope (year + pinned courses) drives the cards, counts and
+  // summary. The month calendar above stays unfiltered by design.
+  const yearScopedCalls = useMemo(
+    () => examCalls.filter((e) => matchesYear(e.sourceId, yearFilter)),
+    [examCalls, yearFilter],
+  );
+  const courseOptions = useMemo(
+    () => extractCourseNames([], yearScopedCalls),
+    [yearScopedCalls],
+  );
+  const scopedCalls = useMemo(
+    () =>
+      yearScopedCalls.filter(
+        (e) =>
+          pinnedCourses.length === 0 || pinnedCourses.includes(e.courseName),
+      ),
+    [yearScopedCalls, pinnedCourses],
+  );
 
   // displayed month derives from now + offset, so it needs no init-time clock
   const displayed = useMemo(() => {
@@ -83,21 +112,21 @@ export function ExamList() {
 
   const cards = useMemo(() => {
     if (!today) return [];
-    const list = filterExams(examCalls, filter, today);
+    const list = filterExams(scopedCalls, filter, today);
     // upcoming ascending (soonest first); past descending (most recent first)
     return [...list].sort((a, b) =>
       filter === "passati"
         ? b.date.localeCompare(a.date)
         : a.date.localeCompare(b.date),
     );
-  }, [examCalls, filter, today]);
+  }, [scopedCalls, filter, today]);
 
   const counts = useMemo(() => {
     if (!today) return {} as Record<ExamFilter, number>;
     return Object.fromEntries(
-      FILTERS.map((f) => [f.id, filterExams(examCalls, f.id, today).length]),
+      FILTERS.map((f) => [f.id, filterExams(scopedCalls, f.id, today).length]),
     ) as Record<ExamFilter, number>;
-  }, [examCalls, today]);
+  }, [scopedCalls, today]);
 
   // the filtered cards, bucketed into the accordion groups (empty groups drop)
   const grouped = useMemo(() => {
@@ -179,6 +208,15 @@ export function ExamList() {
               onNext={() => setMonthOffset((o) => o + 1)}
             />
           </Panel>
+
+          <div className="flex flex-col gap-3">
+            <YearFilter value={yearFilter} onChange={setYearFilter} />
+            <CoursePicker
+              courses={courseOptions}
+              pinned={pinnedCourses}
+              onChange={(p) => void updateSettings({ pinnedCourses: p })}
+            />
+          </div>
 
           <section className="flex flex-col gap-3">
             {/* Sticky filter tabs — stay reachable while the list scrolls. */}
@@ -293,7 +331,7 @@ export function ExamList() {
               </div>
               <div className="text-center">
                 <div className="font-display text-2xl font-bold text-ink">
-                  <CountUp value={examCalls.length} />
+                  <CountUp value={scopedCalls.length} />
                 </div>
                 <div className="eyebrow text-ink-mute">Totali</div>
               </div>
