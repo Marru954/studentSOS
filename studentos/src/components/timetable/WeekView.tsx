@@ -248,6 +248,58 @@ function ManualLessonsManager({
   );
 }
 
+/** Agenda alternative to the week grid: lessons grouped by day and sorted by
+ *  time. Easier to read through (and on mobile) than the time-grid. */
+function WeekAgenda({ events }: { events: ClassEvent[] }) {
+  if (events.length === 0) return null;
+  const byDay = new Map<string, ClassEvent[]>();
+  for (const e of [...events].sort((a, b) => a.start.localeCompare(b.start))) {
+    const day = localDayOf(e.start);
+    const list = byDay.get(day);
+    if (list) list.push(e);
+    else byDay.set(day, [e]);
+  }
+  return (
+    <div className="glass gradient-ring reveal flex flex-col gap-5 p-5">
+      {[...byDay.entries()].map(([day, evs]) => (
+        <section
+          key={day}
+          aria-label={lessonDay.format(new Date(`${day}T00:00:00`))}
+        >
+          <h3 className="mb-2 text-sm font-semibold capitalize text-ink">
+            {lessonDay.format(new Date(`${day}T00:00:00`))}
+          </h3>
+          <ul className="flex flex-col gap-1.5">
+            {evs.map((e) => (
+              <li
+                key={e.id}
+                className="flex items-center gap-3 rounded-sm border border-line glass-2 px-3 py-2"
+              >
+                <span
+                  aria-hidden="true"
+                  className="size-2.5 shrink-0 rounded-full"
+                  style={{ background: `oklch(0.68 0.2 ${hueOf(e.courseName)})` }}
+                />
+                <span className="w-[104px] shrink-0 font-mono text-xs text-ink-mute">
+                  {fmtTime(e.start)}–{fmtTime(e.end)}
+                </span>
+                <span className="min-w-0 flex-1 truncate text-sm text-ink">
+                  {e.courseName}
+                </span>
+                {e.room && (
+                  <span className="shrink-0 truncate text-xs text-ink-mute">
+                    {e.room}
+                  </span>
+                )}
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))}
+    </div>
+  );
+}
+
 export function WeekView() {
   const classEvents = useSynced((s) => s.classEvents);
   const hydrated = useSynced((s) => s.hydrated);
@@ -260,6 +312,7 @@ export function WeekView() {
   const [weekOffset, setWeekOffset] = useState(0);
   // "auto" = mostra l'anno impostato nelle settings finché l'utente non sceglie.
   const [yearFilter, setYearFilter] = useState<number | "all" | "auto">("auto");
+  const [view, setView] = useState<"grid" | "list">("grid");
 
   const ready = now !== null && hydrated && settingsHydrated;
   const weekStart = ready ? addDays(mondayOf(now), weekOffset * 7) : null;
@@ -322,7 +375,39 @@ export function WeekView() {
             </p>
           )}
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
+          {ready && (
+            <div
+              role="group"
+              aria-label="Vista orario"
+              className="mr-1 flex gap-1.5"
+            >
+              <button
+                type="button"
+                onClick={() => setView("grid")}
+                aria-pressed={view === "grid"}
+                className={
+                  view === "grid"
+                    ? "grad-fill rounded-full px-3 py-1 text-xs font-semibold text-white shadow-soft"
+                    : "chip transition-colors hover:border-line-strong"
+                }
+              >
+                Griglia
+              </button>
+              <button
+                type="button"
+                onClick={() => setView("list")}
+                aria-pressed={view === "list"}
+                className={
+                  view === "list"
+                    ? "grad-fill rounded-full px-3 py-1 text-xs font-semibold text-white shadow-soft"
+                    : "chip transition-colors hover:border-line-strong"
+                }
+              >
+                Lista
+              </button>
+            </div>
+          )}
           <Button
             size="sm"
             aria-label="Settimana precedente"
@@ -413,9 +498,13 @@ export function WeekView() {
               )}
             </EmptyState>
           )}
-          <div className="glass gradient-ring reveal overflow-x-auto p-5">
-            <WeekGrid events={weekEvents} weekStart={weekStart!} now={now} />
-          </div>
+          {view === "grid" ? (
+            <div className="glass gradient-ring reveal overflow-x-auto p-5">
+              <WeekGrid events={weekEvents} weekStart={weekStart!} now={now} />
+            </div>
+          ) : (
+            <WeekAgenda events={weekEvents} />
+          )}
           <ManualLessonsManager classEvents={classEvents} courses={allCourses} />
         </>
       )}

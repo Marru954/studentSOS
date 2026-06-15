@@ -10,7 +10,7 @@ Mentalità: "un nuovo utente con zero dati direbbe wow?" + "questa pagina è col
 | 3 | Collegare le pagine (note↔esame, focus↔esame, cruscotto→studia, appelli azioni) | ✅ fatto | (P3) |
 | 4 | Fastidi utente (login persist, cache-first, freschezza, conferma del, manuale/sync, date IT, offline, override locale) | ✅ fatto* | (P4) |
 | 5 | Gerarchia visiva cruscotto (hero asimmetrico, CFU 0% motivante) | ✅ fatto | (P5) |
-| 6 | Consolida ridondanze (libretto obiettivo/proiezioni, ruolo calendario, orario vista lista) | ⏳ todo | — |
+| 6 | Consolida ridondanze (libretto obiettivo/proiezioni, ruolo calendario, orario vista lista) | ✅ fatto | (P6) |
 | 7 | Focus verifica suoni/modalità/zen/combinabili | ⏳ todo | — |
 | 8 | Impostazioni complete (notifiche, obiettivi, formato, inizio settimana, export/import, info) | ⏳ todo | — |
 | T | Test multi-ateneo via script (Firenze, Cagliari sync; Bologna manuale; cambio ateneo reset) | ⏳ todo | — |

@@ -285,7 +285,8 @@ export function CalendarView() {
           <h1 className="text-[clamp(2rem,5vw,3rem)]">Calendario</h1>
           {ready && (
             <p className="muted mt-1.5">
-              Lezioni, appelli, scadenze e focus in un&rsquo;unica vista
+              La tua vista d&rsquo;insieme: lezioni, appelli, scadenze e studio
+              in un&rsquo;unica timeline. Per il dettaglio usa Orario e Appelli.
             </p>
           )}
         </div>
