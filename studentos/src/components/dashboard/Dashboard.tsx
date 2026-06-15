@@ -6,13 +6,13 @@
  * waits for the first client tick (`now !== null`), so the SSR skeleton and
  * the first client render always match.
  */
-import { CalendarClock, Settings2 } from "lucide-react";
+import { CalendarClock, CheckCircle2, Settings2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useMemo } from "react";
 import { Button } from "@/components/primitives/Button";
+import { cn } from "@/lib/cn";
 import { PanelSkeleton } from "@/components/primitives/Skeleton";
 import type { ExamCall } from "@/lib/domain/types";
-import { weightedAverage } from "@/lib/domain/libretto";
 import {
   daysFromToday,
   fmtDayOfMonth,
@@ -33,34 +33,89 @@ import { ChangeNotices } from "./ChangeNotices";
 import { ExamTimeline } from "./ExamTimeline";
 import { LinksPanel } from "./LinksPanel";
 import { QuickActions } from "./QuickActions";
-import { SummaryBar } from "./SummaryBar";
 import { WeeklyGoalCard } from "./WeeklyGoalCard";
 import { SyncStatus } from "./SyncStatus";
 import { TodayTimeline } from "./TodayTimeline";
 
-/** Compact banner for the soonest upcoming exam, tone-graded by how close it is
- *  (rosso < 7 giorni, arancione < 14, neutro oltre). Hidden when none ahead. */
-function NextExamBanner({ exam, days }: { exam: ExamCall; days: number }) {
-  const tone =
-    days < 7
-      ? { border: "var(--danger)", text: "text-danger" }
-      : days < 14
-        ? { border: "var(--warn)", text: "text-warn" }
-        : { border: "var(--signal-2)", text: "text-ink-mute" };
-  const rel = days === 0 ? "oggi" : days === 1 ? "domani" : `tra ${days} giorni`;
+/** Bento hero: the soonest exam with a big countdown, tone-graded by proximity
+ *  (rosso < 7 giorni, arancione < 14). */
+function NextExamHero({
+  exam,
+  days,
+  examsThisWeek,
+  className,
+}: {
+  exam: ExamCall;
+  days: number;
+  examsThisWeek: number;
+  className?: string;
+}) {
+  const accent =
+    days < 7 ? "var(--danger)" : days < 14 ? "var(--warn)" : "var(--signal)";
   return (
-    <div
-      className="glass flex flex-wrap items-center gap-x-2 gap-y-1 rounded-lg px-4 py-2.5 text-sm lg:col-span-12"
-      style={{ borderLeft: `3px solid ${tone.border}` }}
+    <section
+      className={cn(
+        "glass panel-hero accent-top relative flex flex-col justify-between gap-5 overflow-hidden rounded-lg p-6",
+        className,
+      )}
     >
-      <CalendarClock aria-hidden="true" className={`size-4 shrink-0 ${tone.text}`} />
-      <span className="text-ink-mute">Prossimo esame:</span>
-      <span className="font-medium text-ink">{exam.courseName}</span>
-      <span className="text-ink-faint">
-        — {fmtDayOfMonth(exam.date)} {fmtMonthAbbr(exam.date)}
-        {exam.time ? ` · ore ${exam.time}` : ""} · {rel}
-      </span>
-    </div>
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background: `radial-gradient(70% 60% at 85% 0%, ${accent}, transparent 60%)`,
+          opacity: 0.12,
+        }}
+      />
+      <div className="relative flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-ink-mute">
+        <CalendarClock aria-hidden="true" className="size-4" />
+        Prossimo esame
+      </div>
+      <div className="relative">
+        <div className="flex items-baseline gap-3">
+          <span
+            className="font-num text-[clamp(3rem,9vw,5.2rem)] font-extrabold leading-none [font-family:var(--font-display)]"
+            style={{ color: accent }}
+          >
+            {days === 0 ? "Oggi" : days}
+          </span>
+          {days > 0 && (
+            <span className="muted text-xl font-semibold">
+              {days === 1 ? "giorno" : "giorni"}
+            </span>
+          )}
+        </div>
+        <h2 className="mt-3 text-xl font-semibold text-ink">{exam.courseName}</h2>
+        <p className="muted mt-1 text-sm">
+          {fmtDayOfMonth(exam.date)} {fmtMonthAbbr(exam.date)}
+          {exam.time ? ` · ore ${exam.time}` : ""}
+          {exam.room ? ` · ${exam.room}` : ""}
+        </p>
+      </div>
+      <p className="muted relative text-sm">
+        {examsThisWeek > 0
+          ? `${examsThisWeek} ${examsThisWeek === 1 ? "appello" : "appelli"} questa settimana`
+          : "Nessun altro appello nei prossimi 7 giorni"}
+      </p>
+    </section>
+  );
+}
+
+/** Hero fallback when no exam is ahead. */
+function NoExamHero({ className }: { className?: string }) {
+  return (
+    <section
+      className={cn(
+        "glass panel-hero flex flex-col items-center justify-center gap-3 rounded-lg p-6 text-center",
+        className,
+      )}
+    >
+      <CheckCircle2 aria-hidden="true" className="size-10 text-ok" />
+      <p className="text-lg font-semibold text-ink">Nessun esame in programma</p>
+      <p className="muted text-sm">
+        Nessun appello in vista — un buon momento per portarti avanti.
+      </p>
+    </section>
   );
 }
 
@@ -84,24 +139,14 @@ export function Dashboard() {
       .filter((e) => pinned.length === 0 || pinned.includes(e.courseName));
   }, [ready, synced.classEvents, settings.pinnedCourses, now]);
 
-  // summary-bar figures: next exam, exams within 7 days, weighted average
-  const summary = useMemo(() => {
-    if (!ready)
-      return { nextExamDays: null as number | null, examsThisWeek: 0 };
-    const upcoming = synced.examCalls
-      .map((e) => daysFromToday(e.date, now))
-      .filter((d) => d >= 0)
-      .sort((a, b) => a - b);
-    return {
-      nextExamDays: upcoming.length ? upcoming[0] : null,
-      examsThisWeek: upcoming.filter((d) => d <= 7).length,
-    };
+  // exams within the next 7 days, for the hero sub-stat
+  const examsThisWeek = useMemo(() => {
+    if (!ready) return 0;
+    return synced.examCalls.filter((e) => {
+      const d = daysFromToday(e.date, now);
+      return d >= 0 && d <= 7;
+    }).length;
   }, [ready, synced.examCalls, now]);
-
-  const average = useMemo(
-    () => (ready ? weightedAverage(libretto.items) : undefined),
-    [ready, libretto.items],
-  );
 
   // soonest upcoming exam, for the header banner
   const nextExam = useMemo<{ exam: ExamCall; days: number } | null>(() => {
@@ -164,61 +209,55 @@ export function Dashboard() {
           <PanelSkeleton className="lg:col-span-4" />
         </div>
       ) : (
-        <div className="stagger-children grid grid-cols-1 gap-4 lg:grid-cols-12">
-          {/* Promemoria chiusura iscrizione (notifiche + banner di fallback). */}
-          <BookingReminders className="lg:col-span-12" />
+        <div className="stagger-children grid grid-cols-1 gap-4 lg:grid-cols-6">
+          {/* Banner a tutta larghezza (condizionali) + scorciatoie. */}
+          <BookingReminders className="lg:col-span-6" />
+          <QuickActions className="lg:col-span-6" />
 
-          {/* One-line recap of what matters now. */}
-          <SummaryBar
-            nextExamDays={summary.nextExamDays}
-            examsThisWeek={summary.examsThisWeek}
-            average={average}
-            className="lg:col-span-12"
-          />
-
-          {/* One-tap shortcuts. */}
-          <QuickActions className="lg:col-span-12" />
-
-          {/* The next exam, front and centre. */}
-          {nextExam && (
-            <NextExamBanner exam={nextExam.exam} days={nextExam.days} />
+          {/* HERO bento: prossimo esame + countdown (2/3, alto due righe) con
+              media e CFU impilati accanto (1/3). */}
+          {nextExam ? (
+            <NextExamHero
+              exam={nextExam.exam}
+              days={nextExam.days}
+              examsThisWeek={examsThisWeek}
+              className="lg:col-span-4 lg:row-span-2"
+            />
+          ) : (
+            <NoExamHero className="lg:col-span-4 lg:row-span-2" />
           )}
-
-          {/* Today's lessons. */}
-          <TodayTimeline events={todayEvents} className="lg:col-span-12" />
-
-          {/* Header stats: the two career instruments, front and centre. */}
           <MediaPanel
             entries={libretto.items}
             targetAverage={settings.degreePlan.targetAverage}
-            className="accent-top lg:col-span-7"
+            className="accent-top lg:col-span-2"
           />
           <CfuPanel
             entries={libretto.items}
             totalCfu={settings.degreePlan.totalCfu}
             now={now}
-            className="lg:col-span-5"
+            className="lg:col-span-2"
           />
 
-          {/* Unified, colour-tiered exam timeline (urgenze + appelli merged). */}
+          {/* Riga media: oggi + appelli in arrivo. */}
+          <TodayTimeline events={todayEvents} className="lg:col-span-3" />
           <ExamTimeline
             exams={synced.examCalls}
             now={now}
-            className="panel-hero accent-top lg:col-span-8"
+            className="panel-hero accent-top lg:col-span-3"
           />
-          <LinksPanel className="h-full lg:col-span-4" />
 
           {synced.notices.length > 0 && (
             <ChangeNotices
               notices={synced.notices}
               onDismiss={(ids) => void synced.dismissNotices(ids)}
-              className="lg:col-span-12"
+              className="lg:col-span-6"
             />
           )}
 
-          {/* Obiettivo di studio settimanale + scadenze di prenotazione. */}
-          <WeeklyGoalCard className="lg:col-span-6" />
-          <BookingDeadlines className="lg:col-span-6" />
+          {/* Riga piccola: obiettivo settimana, scadenze, link utili. */}
+          <WeeklyGoalCard className="lg:col-span-2" />
+          <BookingDeadlines className="lg:col-span-2" />
+          <LinksPanel className="h-full lg:col-span-2" />
         </div>
       )}
     </div>
