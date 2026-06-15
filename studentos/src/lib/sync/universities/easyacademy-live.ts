@@ -18,6 +18,7 @@
  */
 import type { UniversityPreset } from "../provider";
 import { easyAcademyPreset } from "./easystaff";
+import { unisa } from "./unisa";
 import { unife } from "./unife";
 import { unitn } from "./unitn";
 import { unina } from "./unina";
@@ -68,41 +69,6 @@ const unipr = easyAcademyPreset({
   ],
 });
 
-// Salerno — Informatica. y1 NF121 (4 partizioni alfabetiche), y2/3 05121.
-// Verified 44/37/30 lessons, 30/43/56 appelli. NB: the "PDS0-2017- N|y" anno2
-// values contain a literal space — keep it exactly.
-const unisa = easyAcademyPreset({
-  id: "unisa-informatica",
-  name: "Università degli Studi di Salerno",
-  shortName: "Università di Salerno",
-  city: "Salerno",
-  programme: "Informatica",
-  baseUrl: "https://easycourse.unisa.it/AgendaStudenti",
-  scuola: "300392",
-  anno: "2025",
-  years: [
-    {
-      year: 1,
-      corso: "NF121",
-      anno2: [
-        "PDS0-2025-A-C|1",
-        "PDS0-2025-D-G|1",
-        "PDS0-2025-H-PET|1",
-        "PDS0-2025-PEU-Z|1",
-      ],
-    },
-    {
-      year: 2,
-      corso: "05121",
-      anno2: ["PDS0-2017- 0|2", "PDS0-2017- 1|2", "PDS0-2017- 2|2"],
-    },
-    {
-      year: 3,
-      corso: "05121",
-      anno2: ["PDS0-2017- 0|3", "PDS0-2017- 1|3", "PDS0-2017- 2|3"],
-    },
-  ],
-});
 
 
 // Firenze — Informatica (curriculum GEN). y1 B324, y2/3 B032. Verified 10/18/23
