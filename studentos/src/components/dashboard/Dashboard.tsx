@@ -25,16 +25,16 @@ import { useNowMinute } from "@/lib/hooks/useNowMinute";
 import { useLibretto } from "@/lib/state/manual";
 import { useSettings } from "@/lib/state/settings";
 import { useSynced } from "@/lib/state/synced";
-import { BackupCard } from "@/components/backup/BackupCard";
 import { CruscottoTour } from "@/components/onboarding/CruscottoTour";
+import { BookingDeadlines } from "./BookingDeadlines";
 import { BookingReminders } from "./BookingReminders";
 import { CfuPanel, MediaPanel } from "./CareerPanels";
 import { ChangeNotices } from "./ChangeNotices";
 import { ExamTimeline } from "./ExamTimeline";
 import { LinksPanel } from "./LinksPanel";
 import { QuickActions } from "./QuickActions";
-import { ReminderCard } from "./ReminderCard";
 import { SummaryBar } from "./SummaryBar";
+import { WeeklyGoalCard } from "./WeeklyGoalCard";
 import { SyncStatus } from "./SyncStatus";
 import { TodayTimeline } from "./TodayTimeline";
 
@@ -215,9 +215,9 @@ export function Dashboard() {
             />
           )}
 
-          {/* Promemoria locali + backup dei dati. */}
-          <ReminderCard className="lg:col-span-6" />
-          <BackupCard className="lg:col-span-6" />
+          {/* Obiettivo di studio settimanale + scadenze di prenotazione. */}
+          <WeeklyGoalCard className="lg:col-span-6" />
+          <BookingDeadlines className="lg:col-span-6" />
         </div>
       )}
     </div>
