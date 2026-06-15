@@ -6,6 +6,7 @@ import {
   CalendarRange,
   GraduationCap,
   LayoutDashboard,
+  MessageSquare,
   NotebookPen,
   Search,
   Settings,
@@ -32,6 +33,7 @@ const LINKS = [
   { href: "/libretto", label: "Libretto", short: "Voti", icon: GraduationCap },
   { href: "/note", label: "Note", short: "Note", icon: NotebookPen },
   { href: "/focus", label: "Focus", short: "Focus", icon: Timer },
+  { href: "/assistente", label: "Assistente", short: "AI", icon: MessageSquare },
   { href: "/impostazioni", label: "Impostazioni", short: "Impost.", icon: Settings },
 ];
 
