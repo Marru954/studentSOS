@@ -1,11 +1,12 @@
 /**
- * Server-side proxy to the Groq chat API for /assistente. Keeps GROQ_API_KEY on
- * the server (never shipped to the client). Accepts POST { messages, context },
- * prepends the locale system prompt built from the student context, and streams
- * Groq's SSE back to the client as a plain-text token stream.
+ * Server-side proxy to the Google Gemini API for /assistente. Keeps
+ * GEMINI_API_KEY on the server (never shipped to the client). Accepts POST
+ * { messages, context }, builds the locale system prompt from the student
+ * context, and streams Gemini's SSE back to the client as a plain-text token
+ * stream (so the client stays provider-agnostic — it still sends/receives
+ * OpenAI-style user/assistant turns; the mapping to Gemini lives here).
  *
- * Model: llama-3.3-70b-versatile (the live successor to the decommissioned
- * llama-3.1-70b-versatile), overridable with GROQ_MODEL.
+ * Model: gemini-2.0-flash (override with GEMINI_MODEL).
  */
 import {
   buildSystemPrompt,
@@ -13,8 +14,8 @@ import {
   type ChatMessage,
 } from "@/lib/assistente";
 
-const GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
-const MODEL = process.env.GROQ_MODEL ?? "llama-3.3-70b-versatile";
+const MODEL = process.env.GEMINI_MODEL ?? "gemini-2.0-flash";
+const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:streamGenerateContent?alt=sse`;
 
 const MAX_MESSAGES = 20;
 const MAX_CONTENT = 4000;
@@ -44,10 +45,10 @@ function sanitizeMessages(input: unknown): ChatMessage[] {
 }
 
 export async function POST(req: Request): Promise<Response> {
-  const apiKey = process.env.GROQ_API_KEY;
+  const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
     return jsonError(
-      "Assistente non configurato: manca GROQ_API_KEY sul server.",
+      "Assistente non configurato: manca GEMINI_API_KEY sul server.",
       503,
     );
   }
@@ -70,40 +71,45 @@ export async function POST(req: Request): Promise<Response> {
     focusMinutesThisWeek: 0,
   }) as AssistantContext;
 
-  let groqRes: Response;
+  let geminiRes: Response;
   try {
-    groqRes = await fetch(GROQ_URL, {
+    geminiRes = await fetch(GEMINI_URL, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${apiKey}`,
         "Content-Type": "application/json",
+        "x-goog-api-key": apiKey,
       },
       body: JSON.stringify({
-        model: MODEL,
-        messages: [
-          { role: "system", content: buildSystemPrompt(context) },
-          ...messages,
-        ],
-        stream: true,
-        temperature: 0.5,
-        max_tokens: 800,
+        system_instruction: { parts: [{ text: buildSystemPrompt(context) }] },
+        contents: messages.map((m) => ({
+          role: m.role === "assistant" ? "model" : "user",
+          parts: [{ text: m.content }],
+        })),
+        generationConfig: { temperature: 0.5, maxOutputTokens: 800 },
       }),
     });
   } catch {
     return jsonError("Impossibile contattare l'assistente. Riprova.", 502);
   }
 
-  if (!groqRes.ok || !groqRes.body) {
-    const detail = await groqRes.text().catch(() => "");
+  if (!geminiRes.ok || !geminiRes.body) {
+    if (geminiRes.status === 429) {
+      return jsonError(
+        "Limite di richieste Gemini raggiunto (quota). Riprova più tardi.",
+        429,
+      );
+    }
+    const detail = await geminiRes.text().catch(() => "");
     return jsonError(
-      `Errore dall'assistente (${groqRes.status}). ${detail.slice(0, 200)}`,
+      `Errore dall'assistente (${geminiRes.status}). ${detail.slice(0, 200)}`,
       502,
     );
   }
 
-  // Transform Groq's SSE ("data: {json}\n\n", terminated by "data: [DONE]") into
-  // a plain-text stream of just the content deltas, so the client stays simple.
-  const upstream = groqRes.body;
+  // Gemini SSE (alt=sse): "data: {json}\n\n" per chunk, each with
+  // candidates[0].content.parts[].text. No "[DONE]" sentinel — the stream
+  // simply closes. Emit just the text deltas as a plain-text stream.
+  const upstream = geminiRes.body;
   const stream = new ReadableStream<Uint8Array>({
     async start(controller) {
       const reader = upstream.getReader();
@@ -121,14 +127,15 @@ export async function POST(req: Request): Promise<Response> {
             const trimmed = line.trim();
             if (!trimmed.startsWith("data:")) continue;
             const data = trimmed.slice(5).trim();
-            if (data === "[DONE]") {
-              controller.close();
-              return;
-            }
+            if (!data) continue;
             try {
-              const delta = JSON.parse(data)?.choices?.[0]?.delta?.content;
-              if (typeof delta === "string" && delta) {
-                controller.enqueue(encoder.encode(delta));
+              const parts = JSON.parse(data)?.candidates?.[0]?.content?.parts;
+              if (Array.isArray(parts)) {
+                for (const part of parts) {
+                  if (typeof part?.text === "string" && part.text) {
+                    controller.enqueue(encoder.encode(part.text));
+                  }
+                }
               }
             } catch {
               // partial/non-JSON keepalive line — ignore
