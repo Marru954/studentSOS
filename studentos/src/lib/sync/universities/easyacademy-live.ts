@@ -18,6 +18,7 @@
  */
 import type { UniversityPreset } from "../provider";
 import { easyAcademyPreset } from "./easystaff";
+import { unife } from "./unife";
 import { unitn } from "./unitn";
 import { unina } from "./unina";
 import { uniupo } from "./uniupo";
@@ -48,23 +49,6 @@ const unica = easyAcademyPreset({
 
 
 
-// Ferrara — Informatica. y1 3252, y2/3 1233. Verified 11/13/15 lessons,
-// 13/21/13 appelli.
-const unife = easyAcademyPreset({
-  id: "unife-informatica",
-  name: "Università degli Studi di Ferrara",
-  shortName: "Università di Ferrara",
-  city: "Ferrara",
-  programme: "Informatica",
-  baseUrl: "https://aule.unife.it/AgendaStudenti",
-  scuola: "",
-  anno: "2025",
-  years: [
-    { year: 1, corso: "3252", anno2: ["PDS0|1"] },
-    { year: 2, corso: "1233", anno2: ["PDS0|2"] },
-    { year: 3, corso: "1233", anno2: ["PDS0|3"] },
-  ],
-});
 
 // Parma — Informatica (curriculum GEN). y1 3127, y2/3 3027. Verified 17/7/12
 // lessons, 18/32/51 appelli.
