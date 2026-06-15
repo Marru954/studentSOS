@@ -18,6 +18,7 @@
  */
 import type { UniversityPreset } from "../provider";
 import { easyAcademyPreset } from "./easystaff";
+import { unipr } from "./unipr";
 import { unica } from "./unica";
 import { unisa } from "./unisa";
 import { unife } from "./unife";
@@ -35,23 +36,6 @@ import { units } from "./units";
 
 
 
-// Parma — Informatica (curriculum GEN). y1 3127, y2/3 3027. Verified 17/7/12
-// lessons, 18/32/51 appelli.
-const unipr = easyAcademyPreset({
-  id: "unipr-informatica",
-  name: "Università degli Studi di Parma",
-  shortName: "Università di Parma",
-  city: "Parma",
-  programme: "Informatica",
-  baseUrl: "https://agendastudenti.unipr.it",
-  scuola: "",
-  anno: "2025",
-  years: [
-    { year: 1, corso: "3127", anno2: ["GEN|1"] },
-    { year: 2, corso: "3027", anno2: ["GEN|2"] },
-    { year: 3, corso: "3027", anno2: ["GEN|3"] },
-  ],
-});
 
 
 
