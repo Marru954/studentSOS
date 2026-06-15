@@ -18,6 +18,7 @@
  */
 import type { UniversityPreset } from "../provider";
 import { easyAcademyPreset } from "./easystaff";
+import { unige } from "./unige";
 import { unipr } from "./unipr";
 import { unica } from "./unica";
 import { unisa } from "./unisa";
@@ -57,23 +58,6 @@ const unifi = easyAcademyPreset({
   ],
 });
 
-// Genova — Informatica. y1 11896 (2 curricula), y2/3 8759. Verified 22/10/27
-// lessons, 29/11/27 appelli. (base path is /portalestudenti here.)
-const unige = easyAcademyPreset({
-  id: "unige-informatica",
-  name: "Università degli Studi di Genova",
-  shortName: "Università di Genova",
-  city: "Genova",
-  programme: "Informatica",
-  baseUrl: "https://easyacademy.unige.it/portalestudenti",
-  scuola: "ScuoladiScienzeMat-Fis-Nat",
-  anno: "2025",
-  years: [
-    { year: 1, corso: "11896", anno2: ["1|1", "2|1"] },
-    { year: 2, corso: "8759", anno2: ["4|2", "5|2"] },
-    { year: 3, corso: "8759", anno2: ["4|3", "5|3"] },
-  ],
-});
 
 
 
