@@ -139,19 +139,29 @@ export function Dashboard() {
       .filter((e) => pinned.length === 0 || pinned.includes(e.courseName));
   }, [ready, synced.classEvents, settings.pinnedCourses, now]);
 
+  // the student's own exams: the merged feed narrowed to the pinned courses
+  // ("I miei esami"), so the hero + timeline match /appelli and /calendario.
+  const myExamCalls = useMemo(() => {
+    if (!ready) return [];
+    const pinned = settings.pinnedCourses;
+    return synced.examCalls.filter(
+      (e) => pinned.length === 0 || pinned.includes(e.courseName),
+    );
+  }, [ready, synced.examCalls, settings.pinnedCourses]);
+
   // exams within the next 7 days, for the hero sub-stat
   const examsThisWeek = useMemo(() => {
     if (!ready) return 0;
-    return synced.examCalls.filter((e) => {
+    return myExamCalls.filter((e) => {
       const d = daysFromToday(e.date, now);
       return d >= 0 && d <= 7;
     }).length;
-  }, [ready, synced.examCalls, now]);
+  }, [ready, myExamCalls, now]);
 
   // soonest upcoming exam, for the header banner
   const nextExam = useMemo<{ exam: ExamCall; days: number } | null>(() => {
     if (!ready || now === null) return null;
-    const exam = synced.examCalls
+    const exam = myExamCalls
       .filter((e) => daysFromToday(e.date, now) >= 0)
       .sort(
         (a, b) =>
@@ -159,7 +169,7 @@ export function Dashboard() {
           (a.time ?? "").localeCompare(b.time ?? ""),
       )[0];
     return exam ? { exam, days: daysFromToday(exam.date, now) } : null;
-  }, [ready, synced.examCalls, now]);
+  }, [ready, myExamCalls, now]);
 
   return (
     <div className="flex flex-col gap-5">
@@ -241,7 +251,7 @@ export function Dashboard() {
           {/* Riga media: oggi + appelli in arrivo. */}
           <TodayTimeline events={todayEvents} className="lg:col-span-3" />
           <ExamTimeline
-            exams={synced.examCalls}
+            exams={myExamCalls}
             now={now}
             className="panel-hero accent-top lg:col-span-3"
           />

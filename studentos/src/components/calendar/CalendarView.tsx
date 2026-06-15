@@ -37,7 +37,10 @@ import {
 } from "@/lib/format";
 import { useNowMinute } from "@/lib/hooks/useNowMinute";
 import { useFocusSessions, useTasks } from "@/lib/state/manual";
+import { useSettings } from "@/lib/state/settings";
 import { useSynced } from "@/lib/state/synced";
+import { CoursePicker } from "@/components/CoursePicker";
+import { extractCourseNames } from "@/lib/domain/notes";
 
 const WEEKDAYS = ["Lun", "Mar", "Mer", "Gio", "Ven", "Sab", "Dom"];
 const monthFmt = new Intl.DateTimeFormat("it-IT", {
@@ -100,14 +103,38 @@ function binByDate<T>(items: T[], dateOf: (item: T) => IsoDate): Map<IsoDate, T[
 }
 
 export function CalendarView() {
-  const classEvents = useSynced((s) => s.classEvents);
-  const examCalls = useSynced((s) => s.examCalls);
+  const allClassEvents = useSynced((s) => s.classEvents);
+  const allExamCalls = useSynced((s) => s.examCalls);
+  const pinnedCourses = useSettings((s) => s.pinnedCourses);
+  const updateSettings = useSettings((s) => s.update);
   const syncedHydrated = useSynced((s) => s.hydrated);
   const tasks = useTasks((s) => s.items);
   const tasksHydrated = useTasks((s) => s.hydrated);
   const focusSessions = useFocusSessions((s) => s.items);
   const focusHydrated = useFocusSessions((s) => s.hydrated);
   const now = useNowMinute();
+
+  // "I miei esami" filter: the same persisted `pinnedCourses` that drives /orario
+  // and /appelli also narrows this unified view, so the selection is coherent
+  // across the whole app. No pins → everything shows (never hide data by surprise).
+  const courseOptions = useMemo(
+    () => extractCourseNames(allClassEvents, allExamCalls),
+    [allClassEvents, allExamCalls],
+  );
+  const classEvents = useMemo(
+    () =>
+      allClassEvents.filter(
+        (e) => pinnedCourses.length === 0 || pinnedCourses.includes(e.courseName),
+      ),
+    [allClassEvents, pinnedCourses],
+  );
+  const examCalls = useMemo(
+    () =>
+      allExamCalls.filter(
+        (e) => pinnedCourses.length === 0 || pinnedCourses.includes(e.courseName),
+      ),
+    [allExamCalls, pinnedCourses],
+  );
 
   const [view, setView] = useState<CalendarViewMode>("agenda");
   const [monthOffset, setMonthOffset] = useState(0);
@@ -295,6 +322,14 @@ export function CalendarView() {
           </div>
         )}
       </header>
+
+      {ready && (
+        <CoursePicker
+          courses={courseOptions}
+          pinned={pinnedCourses}
+          onChange={(p) => void updateSettings({ pinnedCourses: p })}
+        />
+      )}
 
       {!ready ? (
         <div role="status" aria-busy="true" className="flex flex-col gap-4">

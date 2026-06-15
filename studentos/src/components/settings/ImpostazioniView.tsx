@@ -7,6 +7,7 @@ import {
   Database,
   Download,
   Info,
+  ListChecks,
   LogOut,
   MessageSquare,
   Palette,
@@ -17,11 +18,13 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/primitives/Button";
 import { ConfirmButton } from "@/components/primitives/ConfirmButton";
+import { CoursePicker } from "@/components/CoursePicker";
 import { Field, inputClass } from "@/components/primitives/Field";
 import { Panel } from "@/components/primitives/Panel";
 import { PanelSkeleton } from "@/components/primitives/Skeleton";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { exportBackup } from "@/lib/backup";
+import { extractCourseNames } from "@/lib/domain/notes";
 import {
   useFocusSessions,
   useLibretto,
@@ -46,7 +49,10 @@ export function ImpostazioniView() {
   const notesCount = useNotes((s) => s.items.length);
   const tasksCount = useTasks((s) => s.items.length);
   const focusCount = useFocusSessions((s) => s.items.length);
-  const examCount = useSynced((s) => s.examCalls.length);
+  const classEvents = useSynced((s) => s.classEvents);
+  const examCalls = useSynced((s) => s.examCalls);
+  const examCount = examCalls.length;
+  const courseOptions = extractCourseNames(classEvents, examCalls);
 
   if (!settings.hydrated) {
     return (
@@ -167,7 +173,30 @@ export function ImpostazioniView() {
         </div>
       </Panel>
 
-      {/* ── 2. Aspetto ── */}
+      {/* ── 2. I miei esami ── */}
+      <Panel title="I miei esami" icon={<ListChecks />}>
+        <div className="flex flex-col gap-3">
+          <p className="muted text-sm">
+            Scegli i corsi che segui davvero: la selezione filtra in modo coerente
+            appelli, calendario e cruscotto. Lasciali tutti per vedere l&apos;intero
+            corso di laurea.
+          </p>
+          {courseOptions.length > 0 ? (
+            <CoursePicker
+              courses={courseOptions}
+              pinned={settings.pinnedCourses}
+              onChange={(p) => void settings.update({ pinnedCourses: p })}
+            />
+          ) : (
+            <p className="muted text-xs">
+              Gli esami compariranno qui dopo la prima sincronizzazione del tuo
+              corso.
+            </p>
+          )}
+        </div>
+      </Panel>
+
+      {/* ── 3. Aspetto ── */}
       <Panel title="Aspetto" icon={<Palette />}>
         {/* Lo stesso ThemeToggle resta anche nella barra di navigazione (AppNav)
             per l'accesso rapido: qui lo mostriamo solo con un'etichetta. */}
