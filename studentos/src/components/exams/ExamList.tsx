@@ -415,29 +415,35 @@ export function ExamList() {
             )}
           </section>
 
-          <div className="glass card-glow reveal rounded-xl p-5">
-            <p className="eyebrow mb-3 text-ink-mute">Riepilogo sessione</p>
-            <div className="grid grid-cols-3 gap-4">
-              <div className="text-center">
-                <div className="font-display text-2xl font-bold text-ink">
-                  <CountUp value={counts.urgenti ?? 0} />
+          {/* Hide the summary entirely when there's nothing in scope: three
+              zeros are noise, not information. */}
+          {((counts.urgenti ?? 0) > 0 ||
+            (counts.futuri ?? 0) > 0 ||
+            scopedCalls.length > 0) && (
+            <div className="glass card-glow reveal rounded-xl p-5">
+              <p className="eyebrow mb-3 text-ink-mute">Riepilogo sessione</p>
+              <div className="grid grid-cols-3 gap-4">
+                <div className="text-center">
+                  <div className="font-display text-2xl font-bold text-ink">
+                    <CountUp value={counts.urgenti ?? 0} />
+                  </div>
+                  <div className="eyebrow text-danger">Urgenti</div>
                 </div>
-                <div className="eyebrow text-danger">Urgenti</div>
-              </div>
-              <div className="text-center">
-                <div className="font-display text-2xl font-bold text-ink">
-                  <CountUp value={counts.futuri ?? 0} />
+                <div className="text-center">
+                  <div className="font-display text-2xl font-bold text-ink">
+                    <CountUp value={counts.futuri ?? 0} />
+                  </div>
+                  <div className="eyebrow text-ink-mute">Futuri</div>
                 </div>
-                <div className="eyebrow text-ink-mute">Futuri</div>
-              </div>
-              <div className="text-center">
-                <div className="font-display text-2xl font-bold text-ink">
-                  <CountUp value={scopedCalls.length} />
+                <div className="text-center">
+                  <div className="font-display text-2xl font-bold text-ink">
+                    <CountUp value={scopedCalls.length} />
+                  </div>
+                  <div className="eyebrow text-ink-mute">Totali</div>
                 </div>
-                <div className="eyebrow text-ink-mute">Totali</div>
               </div>
             </div>
-          </div>
+          )}
         </>
       )}
     </div>
