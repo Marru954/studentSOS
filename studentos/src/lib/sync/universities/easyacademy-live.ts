@@ -18,27 +18,11 @@
  */
 import type { UniversityPreset } from "../provider";
 import { easyAcademyPreset } from "./easystaff";
+import { unipg } from "./unipg";
 import { unistrasi } from "./unistrasi";
 import { units } from "./units";
 
 
-// Perugia — Informatica (curriculum GEN). y1 L0921, y2/3 L062.
-// Verified: y1 10 lessons/7 appelli, y2 6, y3 10.
-const unipg = easyAcademyPreset({
-  id: "unipg-informatica",
-  name: "Università degli Studi di Perugia",
-  shortName: "Università di Perugia",
-  city: "Perugia",
-  programme: "Informatica",
-  baseUrl: "https://easyacademy.unipg.it/agendaweb",
-  scuola: "DipartimentodiMatematicaeInformatica",
-  anno: "2025",
-  years: [
-    { year: 1, corso: "L0921", anno2: ["GEN|1"] },
-    { year: 2, corso: "L062", anno2: ["GEN|2"] },
-    { year: 3, corso: "L062", anno2: ["GEN|3"] },
-  ],
-});
 
 // Cagliari — Informatica (L-31). y1 60/84, y2/3 60/61. Verified 9/11/10 lessons,
 // 6/14/15 appelli.
