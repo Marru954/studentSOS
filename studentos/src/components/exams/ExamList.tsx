@@ -109,9 +109,10 @@ export function ExamList() {
   const ready = now !== null && hydrated && settingsHydrated;
   const today = ready ? localToday(now) : undefined;
 
-  // Year-only scope feeds both the month calendar and the course picker (so the
-  // picker lists the chosen year's courses); full scope (year + pinned courses)
-  // drives the cards, counts and summary.
+  // One filter pipeline. Year scope (yearScopedCalls) feeds the course picker
+  // so it lists the chosen year's courses; the full year+course scope
+  // (scopedCalls) is the SINGLE set passed to BOTH the calendar and the cards/
+  // counts/summary, so the two always show exactly the same exams.
   const yearScopedCalls = useMemo(
     () => examCalls.filter((e) => matchesYear(e.sourceId, yearFilter)),
     [examCalls, yearFilter],
@@ -295,7 +296,7 @@ export function ExamList() {
             <MonthCalendar
               year={displayed.getFullYear()}
               month0={displayed.getMonth()}
-              exams={yearScopedCalls}
+              exams={scopedCalls}
               today={today!}
               onPrev={() => setMonthOffset((o) => o - 1)}
               onNext={() => setMonthOffset((o) => o + 1)}
