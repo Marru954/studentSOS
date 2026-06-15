@@ -6,6 +6,7 @@ import {
   GraduationCap,
   LayoutDashboard,
   NotebookPen,
+  Settings,
   Timer,
 } from "lucide-react";
 import { useMemo } from "react";
@@ -27,6 +28,7 @@ const LINKS = [
   { href: "/libretto", label: "Libretto", short: "Voti", icon: GraduationCap },
   { href: "/note", label: "Note", short: "Note", icon: NotebookPen },
   { href: "/focus", label: "Focus", short: "Focus", icon: Timer },
+  { href: "/impostazioni", label: "Impostazioni", short: "Impost.", icon: Settings },
 ];
 
 /** Floating top bar (sm+) plus a fixed bottom tab bar on mobile. The active page
