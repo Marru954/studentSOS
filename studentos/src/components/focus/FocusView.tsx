@@ -2,7 +2,9 @@
 
 /** /focus: pomodoro + studio stats + kanban. Sessions and tasks are manual
  *  territory; synced courses and exams only feed selects and countdowns. */
+import { CalendarCheck } from "lucide-react";
 import { useMemo } from "react";
+import { Panel } from "@/components/primitives/Panel";
 import { PanelSkeleton } from "@/components/primitives/Skeleton";
 import { extractCourseNames } from "@/lib/domain/notes";
 import type { FocusSession } from "@/lib/domain/types";
@@ -12,6 +14,7 @@ import { useFocusSessions, useLibretto, useTasks } from "@/lib/state/manual";
 import { useSynced } from "@/lib/state/synced";
 import { AmbientSounds } from "./AmbientSounds";
 import { BackgroundPicker } from "./BackgroundPicker";
+import { FocusHeatmap } from "./FocusHeatmap";
 import { FocusStats } from "./FocusStats";
 import { PomodoroTimer } from "./PomodoroTimer";
 import { TaskBoard } from "./TaskBoard";
@@ -69,6 +72,14 @@ export function FocusView() {
             <AmbientSounds />
             <BackgroundPicker />
           </div>
+          <Panel
+            title="Costanza"
+            icon={<CalendarCheck aria-hidden="true" />}
+            headingLevel={2}
+            className="reveal"
+          >
+            <FocusHeatmap sessions={focus.items} now={now} />
+          </Panel>
           <div className="grid grid-cols-1 gap-5 lg:grid-cols-12">
             <PomodoroTimer
               courses={courses}

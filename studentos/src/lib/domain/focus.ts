@@ -3,8 +3,15 @@
  * Course matching is accent/case-insensitive so user-typed libretto names
  * meet the ALL-CAPS synced names ("Basi di dati" ↔ "BASI DI DATI").
  */
-import type { FocusSession, Grade, IsoDateTime, LibrettoEntry } from "./types";
+import type { FocusSession, Grade, IsoDate, IsoDateTime, LibrettoEntry } from "./types";
 import { normalize } from "./notes";
+
+/** Local calendar day (YYYY-MM-DD) of an ISO datetime — same zone the UI renders in. */
+const isoDay = new Intl.DateTimeFormat("en-CA", {
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+});
 
 /** Bucket label for sessions without a linked course. */
 export const NO_COURSE = "Senza corso";
@@ -44,4 +51,17 @@ export function focusByCourse(
     if (row) row.grade = entry.grade;
   }
   return [...byCourse.values()].sort((a, b) => b.minutes - a.minutes);
+}
+
+/**
+ * Total focused minutes per local calendar day (YYYY-MM-DD → minutes).
+ * Drives the study heatmap; days with no session are simply absent from the map.
+ */
+export function dailyMinutes(sessions: FocusSession[]): Map<IsoDate, number> {
+  const byDay = new Map<IsoDate, number>();
+  for (const s of sessions) {
+    const day = isoDay.format(new Date(s.startedAt));
+    byDay.set(day, (byDay.get(day) ?? 0) + s.minutes);
+  }
+  return byDay;
 }
