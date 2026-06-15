@@ -18,6 +18,7 @@
  */
 import type { UniversityPreset } from "../provider";
 import { easyAcademyPreset } from "./easystaff";
+import { unitn } from "./unitn";
 import { unina } from "./unina";
 import { uniupo } from "./uniupo";
 import { uniss } from "./uniss";
@@ -45,23 +46,6 @@ const unica = easyAcademyPreset({
   ],
 });
 
-// Trento — Informatica (Scienze e Tecnologie Informatiche). y1 0532G, y2/3 0514G.
-// Verified 16/19/21 lessons, 22/52/45 appelli. (scuola not used by this instance.)
-const unitn = easyAcademyPreset({
-  id: "unitn-informatica",
-  name: "Università degli Studi di Trento",
-  shortName: "Università di Trento",
-  city: "Trento",
-  programme: "Informatica",
-  baseUrl: "https://easyacademy.unitn.it/AgendaStudentiUnitn",
-  scuola: "",
-  anno: "2025",
-  years: [
-    { year: 1, corso: "0532G", anno2: ["P0405|1"] },
-    { year: 2, corso: "0514G", anno2: ["P0405|2"] },
-    { year: 3, corso: "0514G", anno2: ["P0405|3"] },
-  ],
-});
 
 
 // Ferrara — Informatica. y1 3252, y2/3 1233. Verified 11/13/15 lessons,
