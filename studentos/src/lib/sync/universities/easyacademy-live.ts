@@ -18,6 +18,7 @@
  */
 import type { UniversityPreset } from "../provider";
 import { easyAcademyPreset } from "./easystaff";
+import { unistrasi } from "./unistrasi";
 import { units } from "./units";
 
 
@@ -243,25 +244,6 @@ const uniupo = easyAcademyPreset({
   ],
 });
 
-// Stranieri di Siena — language/humanities only (no STEM in the catalogue).
-// Mediazione Linguistica e Culturale. Timetable verified 106/94/52 lessons;
-// exams not published via easytest → timetable-only.
-const unistrasi = easyAcademyPreset({
-  id: "unistrasi-mediazione",
-  name: "Università per Stranieri di Siena",
-  shortName: "Stranieri Siena",
-  city: "Siena",
-  programme: "Mediazione Linguistica e Culturale",
-  baseUrl: "https://gd.unistrasi.it/agendaweb",
-  scuola: "",
-  anno: "2025",
-  exams: false,
-  years: [
-    { year: 1, corso: "L2_MC", anno2: ["TURIM|1", "MIGR|1"] },
-    { year: 2, corso: "L2_ML", anno2: ["TURIM|2", "MIGR|2"] },
-    { year: 3, corso: "L2_ML", anno2: ["MICS|3", "TRAD|3"] },
-  ],
-});
 
 /** All verified live EasyAcademy presets, registered in `index.ts`. */
 export const easyAcademyLivePresets: UniversityPreset[] = [
