@@ -6,7 +6,8 @@
  * waits for the first client tick (`now !== null`), so the SSR skeleton and
  * the first client render always match.
  */
-import { CalendarClock, CheckCircle2, Settings2 } from "lucide-react";
+import { CalendarClock, CheckCircle2, Settings2, Timer } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMemo } from "react";
 import { Button } from "@/components/primitives/Button";
@@ -92,11 +93,20 @@ function NextExamHero({
           {exam.room ? ` · ${exam.room}` : ""}
         </p>
       </div>
-      <p className="muted relative text-sm">
-        {examsThisWeek > 0
-          ? `${examsThisWeek} ${examsThisWeek === 1 ? "appello" : "appelli"} questa settimana`
-          : "Nessun altro appello nei prossimi 7 giorni"}
-      </p>
+      <div className="relative flex flex-wrap items-center justify-between gap-3">
+        <p className="muted text-sm">
+          {examsThisWeek > 0
+            ? `${examsThisWeek} ${examsThisWeek === 1 ? "appello" : "appelli"} questa settimana`
+            : "Nessun altro appello nei prossimi 7 giorni"}
+        </p>
+        <Link
+          href={`/focus?course=${encodeURIComponent(exam.courseName)}`}
+          className="btn btn-primary shrink-0"
+        >
+          <Timer aria-hidden="true" className="size-4" />
+          Studia per questo esame
+        </Link>
+      </div>
     </section>
   );
 }

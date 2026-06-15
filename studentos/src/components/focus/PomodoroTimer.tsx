@@ -6,7 +6,8 @@
  * Count-up mode (Flow) ticks elapsed upward until the user stops. A soft chime
  * plays on completion; a beforeunload guard warns on tab-close while running.
  */
-import { Pause, Play, RotateCcw } from "lucide-react";
+import { NotebookPen, Pause, Play, RotateCcw } from "lucide-react";
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { inputClass } from "@/components/primitives/Field";
 import { ProgressRing } from "@/components/primitives/ProgressRing";
@@ -66,6 +67,7 @@ export function PomodoroTimer({
   courses,
   examCalls,
   now,
+  initialCourse,
   onRecord,
   onStatusChange,
   className,
@@ -74,6 +76,8 @@ export function PomodoroTimer({
   courses: string[];
   examCalls: ExamCall[];
   now: Date;
+  /** Preselected course (deep link /focus?course=…), if it's a known course. */
+  initialCourse?: string;
   onRecord: (session: Omit<FocusSession, "id">) => void;
   onStatusChange?: (active: boolean) => void;
   className?: string;
@@ -85,7 +89,9 @@ export function PomodoroTimer({
   const [status, setStatus] = useState<Status>("idle");
   const [remainingMs, setRemainingMs] = useState(FOCUS_MS);
   const [elapsedMs, setElapsedMs] = useState(0);
-  const [course, setCourse] = useState("");
+  const [course, setCourse] = useState(() =>
+    initialCourse && courses.includes(initialCourse) ? initialCourse : "",
+  );
   const [announce, setAnnounce] = useState("");
 
   const deadline = useRef(0);
@@ -274,6 +280,15 @@ export function PomodoroTimer({
               ? "(oggi)"
               : `(tra ${daysFromToday(nextExam.date, now)} giorni)`}
           </p>
+        )}
+        {course && (
+          <Link
+            href={`/note?course=${encodeURIComponent(course)}`}
+            className="inline-flex items-center gap-1.5 self-center text-xs font-medium text-signal transition-colors hover:underline"
+          >
+            <NotebookPen aria-hidden="true" className="size-3.5" />
+            Apri le note di «{course}»
+          </Link>
         )}
       </div>
 

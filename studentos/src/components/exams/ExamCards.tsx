@@ -5,7 +5,8 @@
  * "tra N giorni" line. Pure — exams (already filtered/sorted) and `today`
  * come from the caller.
  */
-import { Clock, Hourglass, MapPin } from "lucide-react";
+import { Clock, Hourglass, MapPin, Timer } from "lucide-react";
+import Link from "next/link";
 import { Badge } from "@/components/primitives/Badge";
 import { ConfirmButton } from "@/components/primitives/ConfirmButton";
 import { cn } from "@/lib/cn";
@@ -135,16 +136,23 @@ function ExamCard({
         </Badge>
       )}
 
-      {deletable && (
-        <div className="mt-auto flex justify-end pt-1">
+      <div className="mt-auto flex items-center justify-between gap-2 pt-1">
+        <Link
+          href={`/focus?course=${encodeURIComponent(exam.courseName)}`}
+          className="inline-flex items-center gap-1.5 rounded-full px-2 py-1 text-xs font-medium text-signal transition-colors hover:bg-[color:var(--signal)]/10"
+        >
+          <Timer aria-hidden="true" className="size-3.5" />
+          Studia per questo esame
+        </Link>
+        {deletable && (
           <ConfirmButton
             onConfirm={() => onDelete!(exam.id)}
             armedLabel="Elimina davvero?"
           >
             Elimina
           </ConfirmButton>
-        </div>
-      )}
+        )}
+      </div>
     </article>
   );
 }

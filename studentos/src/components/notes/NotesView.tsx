@@ -79,13 +79,13 @@ function NoteSearch({
   );
 }
 
-export function NotesView() {
+export function NotesView({ initialQuery }: { initialQuery?: string }) {
   const notes = useNotes();
   const classEvents = useSynced((s) => s.classEvents);
   const examCalls = useSynced((s) => s.examCalls);
   const syncedHydrated = useSynced((s) => s.hydrated);
 
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState(initialQuery ?? "");
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const ready = notes.hydrated && syncedHydrated;

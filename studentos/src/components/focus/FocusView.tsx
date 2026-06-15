@@ -38,7 +38,7 @@ function ddmm(iso: string): string {
   return `${d}/${mo}`;
 }
 
-export function FocusView() {
+export function FocusView({ initialCourse }: { initialCourse?: string }) {
   const tasks = useTasks();
   const focus = useFocusSessions();
   const libretto = useLibretto();
@@ -148,6 +148,7 @@ export function FocusView() {
               courses={courses}
               examCalls={examCalls}
               now={now}
+              initialCourse={initialCourse}
               onRecord={recordSession}
               onStatusChange={setSessionActive}
               className={
