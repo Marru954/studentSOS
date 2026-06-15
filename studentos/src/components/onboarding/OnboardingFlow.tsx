@@ -17,6 +17,7 @@ import { useSettings } from "@/lib/state/settings";
 import { useSynced } from "@/lib/state/synced";
 import { useAuth } from "@/lib/supabase/auth";
 import { pushProfile } from "@/lib/supabase/remote";
+import { clearSyncedCaches } from "@/lib/supabase/sync";
 import type { UniversityPreset } from "@/lib/sync/provider";
 import { UNIVERSITY_PRESETS, getPreset } from "@/lib/sync/universities";
 
@@ -118,6 +119,10 @@ export function OnboardingFlow() {
         degreePlan: s.degreePlan,
       });
     }
+    // Drop any previous ateneo's cached lessons/exams (the source ids are reused
+    // across presets) so the chosen preset's data replaces them cleanly, then
+    // sync now → orario e appelli compaiono senza refresh manuale.
+    await clearSyncedCaches();
     void useSynced.getState().sync();
     router.replace("/cruscotto");
   }

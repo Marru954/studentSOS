@@ -188,24 +188,10 @@ export async function resetLocalData(): Promise<void> {
       useFocusSessions.getState().clear(),
     ]);
 
-    // Synced caches are public ateneo data, but they belong to the previous
-    // account's university — drop them so nothing stale flashes for the next.
-    const db = await getDb();
-    await Promise.all([
-      db.clear("classEvents"),
-      db.clear("examCalls"),
-      db.clear("news"),
-      db.clear("syncMeta"),
-      db.clear("changeNotices"),
-      db.clear("secrets"),
-    ]);
-    useSynced.setState({
-      classEvents: [],
-      examCalls: [],
-      news: [],
-      syncMeta: [],
-      notices: [],
-    });
+    // Synced caches belong to the previous account's ateneo — drop them too,
+    // along with the saved portal-credential blob.
+    await clearSyncedCaches();
+    await (await getDb()).clear("secrets");
 
     // Settings back to defaults → the next user gets a fresh onboarding and we
     // never carry the previous preset/profile into their account. setState is a
@@ -220,4 +206,29 @@ export async function resetLocalData(): Promise<void> {
   } finally {
     applying = false;
   }
+}
+
+/**
+ * Clear ONLY the synced public-data caches (lessons, exams, news + their sync
+ * bookkeeping). Used by resetLocalData, and at onboarding when the active preset
+ * changes — so no previous ateneo's lessons/exams/news linger under the reused
+ * source ids. Manual territories (libretto/notes/tasks/focus) and the user's
+ * settings are left untouched.
+ */
+export async function clearSyncedCaches(): Promise<void> {
+  const db = await getDb();
+  await Promise.all([
+    db.clear("classEvents"),
+    db.clear("examCalls"),
+    db.clear("news"),
+    db.clear("syncMeta"),
+    db.clear("changeNotices"),
+  ]);
+  useSynced.setState({
+    classEvents: [],
+    examCalls: [],
+    news: [],
+    syncMeta: [],
+    notices: [],
+  });
 }

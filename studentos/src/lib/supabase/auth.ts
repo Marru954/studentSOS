@@ -17,11 +17,19 @@ import { resetLocalData } from "./sync";
 
 type AuthStatus = "loading" | "signedIn" | "signedOut" | "offline";
 
+/** localStorage key holding the id of the account whose data is in IndexedDB,
+ *  so a sign-in with a different id is detected as an account switch. */
+export const UID_STORAGE_KEY = "studentos-uid";
+
 interface AuthState {
   status: AuthStatus;
   user: User | null;
   email: string | null;
   hydrated: boolean;
+  /** True once auth+cloud have settled so local settings can be trusted by the
+   *  onboarding gate. False while a signed-in reconcile is still in flight —
+   *  set by StoreProvider around startCloudSync. */
+  reconciled: boolean;
   hydrate(): void;
   signOut(): Promise<void>;
 }
@@ -31,6 +39,7 @@ export const useAuth = create<AuthState>()((set, get) => ({
   user: null,
   email: null,
   hydrated: false,
+  reconciled: false,
 
   hydrate() {
     if (get().hydrated) return;
@@ -57,7 +66,14 @@ export const useAuth = create<AuthState>()((set, get) => ({
       });
       // Account changed → wipe the previous user's local data so nothing leaks
       // into the next session, and the next sign-in can't migrate it upward.
-      if (event === "SIGNED_OUT") void resetLocalData();
+      // (Switching to a *different* account without an explicit sign-out is
+      // handled in StoreProvider via the stored uid.)
+      if (event === "SIGNED_OUT") {
+        if (typeof window !== "undefined") {
+          localStorage.removeItem(UID_STORAGE_KEY);
+        }
+        void resetLocalData();
+      }
     });
   },
 
