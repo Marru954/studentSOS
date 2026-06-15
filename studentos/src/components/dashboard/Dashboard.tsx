@@ -57,7 +57,8 @@ function NextExamBanner({ exam, days }: { exam: ExamCall; days: number }) {
       <span className="text-ink-mute">Prossimo esame:</span>
       <span className="font-medium text-ink">{exam.courseName}</span>
       <span className="text-ink-faint">
-        — {fmtDayOfMonth(exam.date)} {fmtMonthAbbr(exam.date)} · {rel}
+        — {fmtDayOfMonth(exam.date)} {fmtMonthAbbr(exam.date)}
+        {exam.time ? ` · ore ${exam.time}` : ""} · {rel}
       </span>
     </div>
   );
