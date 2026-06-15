@@ -18,6 +18,7 @@
  */
 import type { UniversityPreset } from "../provider";
 import { easyAcademyPreset } from "./easystaff";
+import { uniss } from "./uniss";
 import { unipg } from "./unipg";
 import { unistrasi } from "./unistrasi";
 import { units } from "./units";
@@ -155,23 +156,6 @@ const unisa = easyAcademyPreset({
   ],
 });
 
-// Sassari — Ingegneria Informatica. y1 A195, y2/3 A106. Verified 14/11/13
-// lessons, 10/15/15 appelli.
-const uniss = easyAcademyPreset({
-  id: "uniss-ingegneria-informatica",
-  name: "Università degli Studi di Sassari",
-  shortName: "Università di Sassari",
-  city: "Sassari",
-  programme: "Ingegneria Informatica",
-  baseUrl: "https://orario.uniss.it/AgendaStudenti",
-  scuola: "",
-  anno: "2025",
-  years: [
-    { year: 1, corso: "A195", anno2: ["100|1"] },
-    { year: 2, corso: "A106", anno2: ["100|2"] },
-    { year: 3, corso: "A106", anno2: ["100|3"] },
-  ],
-});
 
 // Firenze — Informatica (curriculum GEN). y1 B324, y2/3 B032. Verified 10/18/23
 // lessons, 9/26/19 appelli. (Firenze brands agendaweb as "Kairos".)
