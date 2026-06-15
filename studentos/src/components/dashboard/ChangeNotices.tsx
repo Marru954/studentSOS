@@ -22,6 +22,11 @@ export function ChangeNotices({
   className?: string;
 }) {
   const unseen = notices.filter((n) => !n.seen);
+  // Keep the dashboard hierarchy intact: a re-sync can surface dozens of room
+  // changes; show only the first few so this panel never dwarfs the hero.
+  const MAX_VISIBLE = 4;
+  const visible = unseen.slice(0, MAX_VISIBLE);
+  const hidden = unseen.length - visible.length;
 
   return (
     <Panel
@@ -41,22 +46,31 @@ export function ChangeNotices({
           Nessuna modifica dall&rsquo;ultima sincronizzazione.
         </p>
       ) : (
-        <ul className="flex flex-col divide-y divide-line">
-          {unseen.map((n) => (
-            <li
-              key={n.id}
-              className="flex items-start gap-3 py-2.5 first:pt-0 last:pb-0"
-            >
-              <Badge tone={KIND[n.kind].tone} className="mt-px shrink-0">
-                {KIND[n.kind].label}
-              </Badge>
-              <div className="min-w-0">
-                <p className="truncate text-sm text-ink">{n.courseName}</p>
-                <p className="font-mono text-xs text-ink-mute">{n.detail}</p>
-              </div>
-            </li>
-          ))}
-        </ul>
+        <>
+          <ul className="flex flex-col divide-y divide-line">
+            {visible.map((n) => (
+              <li
+                key={n.id}
+                className="flex items-start gap-3 py-2.5 first:pt-0 last:pb-0"
+              >
+                <Badge tone={KIND[n.kind].tone} className="mt-px shrink-0">
+                  {KIND[n.kind].label}
+                </Badge>
+                <div className="min-w-0">
+                  <p className="truncate text-sm text-ink">{n.courseName}</p>
+                  <p className="font-mono text-xs text-ink-mute">{n.detail}</p>
+                </div>
+              </li>
+            ))}
+          </ul>
+          {hidden > 0 && (
+            <p className="muted pt-2.5 text-xs">
+              e altre {hidden}{" "}
+              {hidden === 1 ? "modifica" : "modifiche"} — usa «Segna lette» per
+              azzerarle.
+            </p>
+          )}
+        </>
       )}
     </Panel>
   );
