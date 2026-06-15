@@ -70,7 +70,7 @@ export function ManualExamForm({ courses }: { courses: string[] }) {
   }
 
   return (
-    <details className="glass rounded-lg border border-line shadow-soft">
+    <details id="aggiungi-appello" className="glass rounded-lg border border-line shadow-soft">
       <summary className="flex cursor-pointer list-none items-center gap-2 rounded-md px-4 py-3 text-sm font-semibold text-ink transition-colors hover:bg-night-900 [&::-webkit-details-marker]:hidden">
         <CalendarPlus aria-hidden="true" className="size-4 text-signal" />
         Aggiungi un appello

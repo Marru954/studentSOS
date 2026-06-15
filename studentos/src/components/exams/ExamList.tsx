@@ -258,7 +258,20 @@ export function ExamList() {
           </button>
           <button
             type="button"
-            className="btn btn-primary"
+            onClick={() => {
+              const el = document.getElementById(
+                "aggiungi-appello",
+              ) as HTMLDetailsElement | null;
+              if (!el) return;
+              el.open = true;
+              el.scrollIntoView({ behavior: "smooth", block: "start" });
+              el.querySelector<HTMLInputElement>("input")?.focus({
+                preventScroll: true,
+              });
+            }}
+            disabled={!ready}
+            aria-label="Aggiungi un appello manualmente"
+            className="btn btn-primary disabled:pointer-events-none disabled:opacity-45"
             style={{ padding: "0.6rem 1.1rem", fontSize: "0.85rem" }}
           >
             <Plus aria-hidden="true" className="size-4" />
