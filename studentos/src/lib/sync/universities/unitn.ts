@@ -15,26 +15,16 @@ const ANNO = "2025";
 
 const livePrograms: LiveProgram[] = [
   {
-    programme: "Agrifood Innovation Management (1° Anno - A.a. 2025/26)",
-    sources: degreeSources(BASE, ANNO, "agrifood-innovation-management-1-anno-a-a-2025-26", "", [
+    programme: "Agrifood Innovation Management",
+    sources: degreeSources(BASE, ANNO, "agrifood-innovation-management", "", [
       { year: 1, corso: "0914H", anno2: ["P0109|1"] },
-    ]),
-  },
-  {
-    programme: "Agrifood Innovation Management (2° Anno - A.a. 2025/26)",
-    sources: degreeSources(BASE, ANNO, "agrifood-innovation-management-2-anno-a-a-2025-26", "", [
       { year: 2, corso: "0912H", anno2: ["P0109|2"] },
     ]),
   },
   {
-    programme: "Amministrazione Aziendale e Diritto - (1° Anno - A.a. 2025/26)",
-    sources: degreeSources(BASE, ANNO, "amministrazione-aziendale-e-diritto-1-anno-a-a-2025-26", "", [
+    programme: "Amministrazione Aziendale e Diritto",
+    sources: degreeSources(BASE, ANNO, "amministrazione-aziendale-e-diritto", "", [
       { year: 1, corso: "0128G", anno2: ["P0201|1", "P0101|1"] },
-    ]),
-  },
-  {
-    programme: "Amministrazione Aziendale e Diritto - (2° e 3° Anno - A.a. 2025/26)",
-    sources: degreeSources(BASE, ANNO, "amministrazione-aziendale-e-diritto-2-e-3-anno-a-a-2025-26", "", [
       { year: 2, corso: "0115G", anno2: ["P0301|2", "P0101|2"] },
       { year: 3, corso: "0115G", anno2: ["P0301|3", "P0101|3"] },
     ]),
@@ -47,14 +37,9 @@ const livePrograms: LiveProgram[] = [
     ]),
   },
   {
-    programme: "Behavioural and Applied Economics - Economia Comportamentale e Applicata (1° Anno - A.a. 2025/26)",
-    sources: degreeSources(BASE, ANNO, "behavioural-and-applied-economics-economia-comportamentale-e-applicata-1-anno-a-a-2025-26", "", [
+    programme: "Behavioural and Applied Economics - Economia Comportamentale e Applicata",
+    sources: degreeSources(BASE, ANNO, "behavioural-and-applied-economics-economia-comportamentale-e-applicata", "", [
       { year: 1, corso: "0137H", anno2: ["P0001|1"] },
-    ]),
-  },
-  {
-    programme: "Behavioural and Applied Economics - Economia Comportamentale e Applicata - (2° Anno - A.a. 2025/26)",
-    sources: degreeSources(BASE, ANNO, "behavioural-and-applied-economics-economia-comportamentale-e-applicata-2-anno-a-a-2025-26", "", [
       { year: 2, corso: "0127H", anno2: ["P0001|2"] },
     ]),
   },
@@ -138,26 +123,16 @@ const livePrograms: LiveProgram[] = [
     ]),
   },
   {
-    programme: "Economia e Legislazione D'impresa - (1° Anno - A.a. 2025/26)",
-    sources: degreeSources(BASE, ANNO, "economia-e-legislazione-d-impresa-1-anno-a-a-2025-26", "", [
+    programme: "Economia e Legislazione D'impresa",
+    sources: degreeSources(BASE, ANNO, "economia-e-legislazione-d-impresa", "", [
       { year: 1, corso: "0133H", anno2: ["P0001|1"] },
-    ]),
-  },
-  {
-    programme: "Economia e Legislazione D'impresa - (2° Anno - A.a. 2025/26)",
-    sources: degreeSources(BASE, ANNO, "economia-e-legislazione-d-impresa-2-anno-a-a-2025-26", "", [
       { year: 2, corso: "0125H", anno2: ["P0001|2"] },
     ]),
   },
   {
-    programme: "Economia e Management - (1° Anno - A.a. 2025/26)",
-    sources: degreeSources(BASE, ANNO, "economia-e-management-1-anno-a-a-2025-26", "", [
+    programme: "Economia e Management",
+    sources: degreeSources(BASE, ANNO, "economia-e-management", "", [
       { year: 1, corso: "0130G", anno2: ["P0201|1", "P0101|1"] },
-    ]),
-  },
-  {
-    programme: "Economia e Management - (2° e 3° Anno - A.a. 2025/26)",
-    sources: degreeSources(BASE, ANNO, "economia-e-management-2-e-3-anno-a-a-2025-26", "", [
       { year: 2, corso: "0117G", anno2: ["P0201|2", "P0101|2"] },
       { year: 3, corso: "0117G", anno2: ["P0201|3", "P0101|3"] },
     ]),
@@ -206,14 +181,9 @@ const livePrograms: LiveProgram[] = [
     ]),
   },
   {
-    programme: "Finanza - (1° Anno - A.a. 2025/26)",
-    sources: degreeSources(BASE, ANNO, "finanza-1-anno-a-a-2025-26", "", [
+    programme: "Finanza",
+    sources: degreeSources(BASE, ANNO, "finanza", "", [
       { year: 1, corso: "0131H", anno2: ["P0001|1"] },
-    ]),
-  },
-  {
-    programme: "Finanza - (2° Anno - A.a. 2025/26)",
-    sources: degreeSources(BASE, ANNO, "finanza-2-anno-a-a-2025-26", "", [
       { year: 2, corso: "0122H", anno2: ["P0001|2"] },
     ]),
   },
@@ -232,14 +202,9 @@ const livePrograms: LiveProgram[] = [
     ]),
   },
   {
-    programme: "Gestione Aziendale - (1° Anno - A.a. 2025/26)",
-    sources: degreeSources(BASE, ANNO, "gestione-aziendale-1-anno-a-a-2025-26", "", [
+    programme: "Gestione Aziendale",
+    sources: degreeSources(BASE, ANNO, "gestione-aziendale", "", [
       { year: 1, corso: "0129G", anno2: ["P0101|1", "P0201|1"] },
-    ]),
-  },
-  {
-    programme: "Gestione Aziendale - (2° e 3° Anno - A.a. 2025/26)",
-    sources: degreeSources(BASE, ANNO, "gestione-aziendale-2-e-3-anno-a-a-2025-26", "", [
       { year: 2, corso: "0116G", anno2: ["P0001|2"] },
       { year: 3, corso: "0116G", anno2: ["P0001|3"] },
     ]),
@@ -401,14 +366,9 @@ const livePrograms: LiveProgram[] = [
     ]),
   },
   {
-    programme: "International Management - Management Internazionale - (1° Anno - A.a. 2025/26)",
-    sources: degreeSources(BASE, ANNO, "international-management-management-internazionale-1-anno-a-a-2025-26", "", [
+    programme: "International Management - Management Internazionale",
+    sources: degreeSources(BASE, ANNO, "international-management-management-internazionale", "", [
       { year: 1, corso: "0135H", anno2: ["P0001|1"] },
-    ]),
-  },
-  {
-    programme: "International Management - Management Internazionale - (2° Anno - A.a. 2025/26)",
-    sources: degreeSources(BASE, ANNO, "international-management-management-internazionale-2-anno-a-a-2025-26", "", [
       { year: 2, corso: "0119H", anno2: ["P0001|2"] },
     ]),
   },
@@ -446,14 +406,9 @@ const livePrograms: LiveProgram[] = [
     ]),
   },
   {
-    programme: "Management - (1° Anno - A.a. 2025/26)",
-    sources: degreeSources(BASE, ANNO, "management-1-anno-a-a-2025-26", "", [
+    programme: "Management",
+    sources: degreeSources(BASE, ANNO, "management", "", [
       { year: 1, corso: "0132H", anno2: ["P0401|1", "P0101|1", "P0501|1"] },
-    ]),
-  },
-  {
-    programme: "Management - (2° Anno - A.a. 2025/26)",
-    sources: degreeSources(BASE, ANNO, "management-2-anno-a-a-2025-26", "", [
       { year: 2, corso: "0123H", anno2: ["P0401|2", "P0101|2", "P0501|2"] },
     ]),
   },
@@ -471,14 +426,9 @@ const livePrograms: LiveProgram[] = [
     ]),
   },
   {
-    programme: "Management della Sostenibilità e del Turismo (1° Anno - A.a. 2025/26)",
-    sources: degreeSources(BASE, ANNO, "management-della-sostenibilita-e-del-turismo-1-anno-a-a-2025-26", "", [
+    programme: "Management della Sostenibilità e del Turismo",
+    sources: degreeSources(BASE, ANNO, "management-della-sostenibilita-e-del-turismo", "", [
       { year: 1, corso: "0134H", anno2: ["P0001|1"] },
-    ]),
-  },
-  {
-    programme: "Management della Sostenibilità e del Turismo - (2° Anno - A.a. 2025/26)",
-    sources: degreeSources(BASE, ANNO, "management-della-sostenibilita-e-del-turismo-2-anno-a-a-2025-26", "", [
       { year: 2, corso: "0126H", anno2: ["P0001|2"] },
     ]),
   },
@@ -657,14 +607,9 @@ const livePrograms: LiveProgram[] = [
     ]),
   },
   {
-    programme: "Viticoltura ed Enologia (1° Anno - A.a. 2025/26)",
-    sources: degreeSources(BASE, ANNO, "viticoltura-ed-enologia-1-anno-a-a-2025-26", "", [
+    programme: "Viticoltura ed Enologia",
+    sources: degreeSources(BASE, ANNO, "viticoltura-ed-enologia", "", [
       { year: 1, corso: "0913G", anno2: ["P0009|1"] },
-    ]),
-  },
-  {
-    programme: "Viticoltura ed Enologia (2° e 3° Anno - A.a. 2025/26)",
-    sources: degreeSources(BASE, ANNO, "viticoltura-ed-enologia-2-e-3-anno-a-a-2025-26", "", [
       { year: 2, corso: "0911G", anno2: ["P0009|2"] },
       { year: 3, corso: "0911G", anno2: ["P0009|3"] },
     ]),

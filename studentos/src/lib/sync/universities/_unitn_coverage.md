@@ -8,14 +8,14 @@ Codici (`scuola`/`corso`/`anno2`) dal portale, mai inventati.
 
 | Corso | corso | Anni | celle | appelli | Stato |
 |---|---|---|---|---|---|
-| Agrifood Innovation Management (1° Anno - A.a. 2025/26) | `0914H` | 1 | 10 | 39 | ✅ live orari+esami |
-| Agrifood Innovation Management (2° Anno - A.a. 2025/26) | `0912H` | 2 | 8 | 20 | ✅ live orari+esami |
-| Amministrazione Aziendale e Diritto - (1° Anno - A.a. 2025/26) | `0128G` | 1 | 20 | 55 | ✅ live orari+esami |
-| Amministrazione Aziendale e Diritto - (2° e 3° Anno - A.a. 2025/26) | `0115G` | 2,3 | 45 | 144 | ✅ live orari+esami |
+| Agrifood Innovation Management | `0914H` | 1 | 10 | 39 | ✅ live orari+esami |
+| Agrifood Innovation Management | `0912H` | 2 | 8 | 20 | ✅ live orari+esami |
+| Amministrazione Aziendale e Diritto | `0128G` | 1 | 20 | 55 | ✅ live orari+esami |
+| Amministrazione Aziendale e Diritto | `0115G` | 2,3 | 45 | 144 | ✅ live orari+esami |
 | Artificial Intelligence Systems | `0342H` | 2 | 59 | 143 | ✅ live orari+esami |
 | Artificial Intelligence Systems | `0536H` | 1 | 15 | 82 | ✅ live orari+esami |
-| Behavioural and Applied Economics - Economia Comportamentale e Applicata (1° Anno - A.a. 2025/26) | `0137H` | 1 | 10 | 35 | ✅ live orari+esami |
-| Behavioural and Applied Economics - Economia Comportamentale e Applicata - (2° Anno - A.a. 2025/26) | `0127H` | 2 | 24 | 67 | ✅ live orari+esami |
+| Behavioural and Applied Economics - Economia Comportamentale e Applicata | `0137H` | 1 | 10 | 35 | ✅ live orari+esami |
+| Behavioural and Applied Economics - Economia Comportamentale e Applicata | `0127H` | 2 | 24 | 67 | ✅ live orari+esami |
 | Beni Culturali | `0433G` | 1 | 18 | 74 | ✅ live orari+esami |
 | Beni Culturali | `0417G` | 2,3 | 35 | 238 | ✅ live orari+esami |
 | Bioengineering for Personalized Medicine | `0347H` | 1,2 | 19 | 76 | ✅ live orari+esami |
@@ -29,23 +29,23 @@ Codici (`scuola`/`corso`/`anno2`) dal portale, mai inventati.
 | Computer Science | `0534H` | 1 | 62 | 280 | ✅ live orari+esami |
 | Culture e Beni Musicali | `0441H` | 1,2 | 3 | 25 | ✅ live orari+esami |
 | Data Science | `0625H` | 1,2 | 39 | 83 | ✅ live orari+esami |
-| Economia e Legislazione D'impresa - (1° Anno - A.a. 2025/26) | `0133H` | 1 | 8 | 32 | ✅ live orari+esami |
-| Economia e Legislazione D'impresa - (2° Anno - A.a. 2025/26) | `0125H` | 2 | 32 | 101 | ✅ live orari+esami |
-| Economia e Management - (1° Anno - A.a. 2025/26) | `0130G` | 1 | 23 | 51 | ✅ live orari+esami |
-| Economia e Management - (2° e 3° Anno - A.a. 2025/26) | `0117G` | 2,3 | 58 | 201 | ✅ live orari+esami |
+| Economia e Legislazione D'impresa | `0133H` | 1 | 8 | 32 | ✅ live orari+esami |
+| Economia e Legislazione D'impresa | `0125H` | 2 | 32 | 101 | ✅ live orari+esami |
+| Economia e Management | `0130G` | 1 | 23 | 51 | ✅ live orari+esami |
+| Economia e Management | `0117G` | 2,3 | 58 | 201 | ✅ live orari+esami |
 | Educazione Professionale | `0710G` | 1,2,3 | 21 | 156 | ✅ live orari+esami |
 | Environmental Meteorology and Climate Physics | `0348H` | 1 | 17 | 39 | ✅ live orari+esami |
 | European and International Studies - Studi Europei e Internazionali | `0806H` | 1,2 | 24 | 92 | ✅ live orari+esami |
 | Filologia e Critica Letteraria | `0424H` | 1,2 | 27 | 122 | ✅ live orari+esami |
 | Filosofia | `0416G` | 1,2,3 | 48 | 183 | ✅ live orari+esami |
 | Filosofia e Linguaggi della Modernità | `0420H` | 1,2 | 34 | 96 | ✅ live orari+esami |
-| Finanza - (1° Anno - A.a. 2025/26) | `0131H` | 1 | 8 | 23 | ✅ live orari+esami |
-| Finanza - (2° Anno - A.a. 2025/26) | `0122H` | 2 | 32 | 100 | ✅ live orari+esami |
+| Finanza | `0131H` | 1 | 8 | 23 | ✅ live orari+esami |
+| Finanza | `0122H` | 2 | 32 | 100 | ✅ live orari+esami |
 | Fisica | `0526G` | 1 | 15 | 56 | ✅ live orari+esami |
 | Fisica | `0518H` | 2 | 43 | 120 | ✅ live orari+esami |
 | Fisica | `0513G` | 2,3 | 32 | 197 | ✅ live orari+esami |
-| Gestione Aziendale - (1° Anno - A.a. 2025/26) | `0129G` | 1 | 22 | 51 | ✅ live orari+esami |
-| Gestione Aziendale - (2° e 3° Anno - A.a. 2025/26) | `0116G` | 2,3 | 39 | 125 | ✅ live orari+esami |
+| Gestione Aziendale | `0129G` | 1 | 22 | 51 | ✅ live orari+esami |
+| Gestione Aziendale | `0116G` | 2,3 | 39 | 125 | ✅ live orari+esami |
 | Gestione Aziendale Part-time | `0116GPT` | 2,3,4 | 11 | 75 | ✅ live orari+esami |
 | Giurisprudenza | `0205F` | 1,2,3,4,5 | 230 | 802 | ✅ live orari+esami |
 | Global Affairs: Geopolitics and Sustainability | `0631H` | 1 | 8 | 24 | ✅ live orari+esami |
@@ -77,20 +77,20 @@ Codici (`scuola`/`corso`/`anno2`) dal portale, mai inventati.
 | Innovation Management - Management Dell'innovazione | `0136H` | 1 | 23 | 64 | ✅ live orari+esami |
 | Interfacce e Tecnologie della Comunicazione 0704G | `0704G` | 2,3 | 17 | 82 | ✅ live orari+esami |
 | Interfacce e Tecnologie della Comunicazione 0713G | `0713G` | 1 | 8 | 30 | ✅ live orari+esami |
-| International Management - Management Internazionale - (1° Anno - A.a. 2025/26) | `0135H` | 1 | 13 | 44 | ✅ live orari+esami |
-| International Management - Management Internazionale - (2° Anno - A.a. 2025/26) | `0119H` | 2 | 16 | 54 | ✅ live orari+esami |
+| International Management - Management Internazionale | `0135H` | 1 | 13 | 44 | ✅ live orari+esami |
+| International Management - Management Internazionale | `0119H` | 2 | 16 | 54 | ✅ live orari+esami |
 | International Security Studies | `0807H` | 1 | 18 | 43 | ✅ live orari+esami |
 | Letterature Euroamericane, Traduzione e Critica Letteraria | `0422H` | 1,2 | 44 | 118 | ✅ live orari+esami |
 | Lettere e Storia | `0434G` | 1 | 27 | 97 | ✅ live orari+esami |
 | Lingue Moderne | `0427G` | 1,2,3 | 140 | 333 | ✅ live orari+esami |
 | Lingue Moderne nel Turismo e nella Cooperazione Internazionale | `0431H` | 1 | 29 | 48 | ✅ live orari+esami |
-| Management - (1° Anno - A.a. 2025/26) | `0132H` | 1 | 10 | 34 | ✅ live orari+esami |
-| Management - (2° Anno - A.a. 2025/26) | `0123H` | 2 | 35 | 107 | ✅ live orari+esami |
+| Management | `0132H` | 1 | 10 | 34 | ✅ live orari+esami |
+| Management | `0123H` | 2 | 35 | 107 | ✅ live orari+esami |
 | Management - EMBS | `0138H` | 1 | 12 | 9 | ✅ live orari+esami |
 | Management and Industrial Systems Engineering | `0529H` | 1 | 12 | 28 | ✅ live orari+esami |
 | Management and Industrial Systems Engineering | `0343H` | 2 | 19 | 94 | ✅ live orari+esami |
-| Management della Sostenibilità e del Turismo (1° Anno - A.a. 2025/26) | `0134H` | 1 | 9 | 31 | ✅ live orari+esami |
-| Management della Sostenibilità e del Turismo - (2° Anno - A.a. 2025/26) | `0126H` | 2 | 33 | 91 | ✅ live orari+esami |
+| Management della Sostenibilità e del Turismo | `0134H` | 1 | 9 | 31 | ✅ live orari+esami |
+| Management della Sostenibilità e del Turismo | `0126H` | 2 | 33 | 91 | ✅ live orari+esami |
 | Matematica | `0537G` | 1 | 19 | 73 | ✅ live orari+esami |
 | Matematica | `0515G` | 2,3 | 50 | 267 | ✅ live orari+esami |
 | Matematica | `0519H` | 2 | 22 | 55 | ✅ live orari+esami |
@@ -122,5 +122,5 @@ Codici (`scuola`/`corso`/`anno2`) dal portale, mai inventati.
 | Storia Dell'arte e Studi Museali | `0429H` | 1,2 | 11 | 87 | ✅ live orari+esami |
 | Studi Internazionali | `0620G` | 1,2,3 | 37 | 157 | ✅ live orari+esami |
 | Studi Storici e Filologico-letterari | `0419G` | 2,3 | 46 | 194 | ✅ live orari+esami |
-| Viticoltura ed Enologia (1° Anno - A.a. 2025/26) | `0913G` | 1 | 18 | 40 | ✅ live orari+esami |
-| Viticoltura ed Enologia (2° e 3° Anno - A.a. 2025/26) | `0911G` | 2,3 | 25 | 113 | ✅ live orari+esami |
+| Viticoltura ed Enologia | `0913G` | 1 | 18 | 40 | ✅ live orari+esami |
+| Viticoltura ed Enologia | `0911G` | 2,3 | 25 | 113 | ✅ live orari+esami |

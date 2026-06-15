@@ -64,8 +64,8 @@ const livePrograms: LiveProgram[] = [
     ]),
   },
   {
-    programme: "Chimica e Tecnologia Farmaceutiche (ciclo unico)",
-    sources: degreeSources(BASE, ANNO, "chimica-e-tecnologia-farmaceutiche-ciclo-unico-2", "DipartimentodiScienzeChimicheeFarmaceutiche", [
+    programme: "Chimica e Tecnologia Farmaceutiche (ciclo unico) (FA02)",
+    sources: degreeSources(BASE, ANNO, "chimica-e-tecnologia-farmaceutiche-ciclo-unico-fa02", "DipartimentodiScienzeChimicheeFarmaceutiche", [
       { year: 4, corso: "FA02", anno2: ["PDS0-2019|4"] },
       { year: 5, corso: "FA02", anno2: ["PDS0-2019|5"] },
     ]),
@@ -207,8 +207,8 @@ const livePrograms: LiveProgram[] = [
     ]),
   },
   {
-    programme: "Farmacia (ciclo unico)",
-    sources: degreeSources(BASE, ANNO, "farmacia-ciclo-unico-2", "DipartimentodiScienzeChimicheeFarmaceutiche", [
+    programme: "Farmacia (ciclo unico) (FA01)",
+    sources: degreeSources(BASE, ANNO, "farmacia-ciclo-unico-fa01", "DipartimentodiScienzeChimicheeFarmaceutiche", [
       { year: 4, corso: "FA01", anno2: ["PDS0-2015|4"] },
       { year: 5, corso: "FA01", anno2: ["PDS0-2015|5"] },
     ]),
@@ -242,8 +242,8 @@ const livePrograms: LiveProgram[] = [
     ]),
   },
   {
-    programme: "Fisica (magistrale)",
-    sources: degreeSources(BASE, ANNO, "fisica-magistrale-2", "DipartimentodiFisica", [
+    programme: "Fisica (magistrale) (SM23A)",
+    sources: degreeSources(BASE, ANNO, "fisica-magistrale-sm23a", "DipartimentodiFisica", [
       { year: 1, corso: "SM23A", anno2: ["SM23A+7+|1", "SM23A+12+|1", "SM23A+4+|1", "SM23A+5+|1", "SM23A+1+|1", "SM23A+11+|1"] },
     ]),
   },
