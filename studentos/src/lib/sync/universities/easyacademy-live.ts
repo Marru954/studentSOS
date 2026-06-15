@@ -18,6 +18,7 @@
  */
 import type { UniversityPreset } from "../provider";
 import { easyAcademyPreset } from "./easystaff";
+import { unina } from "./unina";
 import { uniupo } from "./uniupo";
 import { uniss } from "./uniss";
 import { unipg } from "./unipg";
@@ -62,28 +63,6 @@ const unitn = easyAcademyPreset({
   ],
 });
 
-// Napoli Federico II — Informatica. y1 DE1, y2/3 N86 (Collegio di Scienze).
-// Timetable verified 27/21/17 lessons; exams live in Esse3 → timetable-only.
-const unina = easyAcademyPreset({
-  id: "unina-informatica",
-  name: "Università degli Studi di Napoli Federico II",
-  shortName: "Federico II",
-  city: "Napoli",
-  programme: "Informatica",
-  baseUrl: "https://easyacademy.unina.it/agendastudenti",
-  scuola: "CollegiodiScienze",
-  anno: "2025",
-  exams: false,
-  years: [
-    { year: 1, corso: "DE1", anno2: ["C1_A-DE|1", "C2_DF-M|1", "C3_N-Z|1", "GEN|1"] },
-    { year: 2, corso: "N86", anno2: ["C1_A-G|2", "C2_H-Z|2", "GEN|2"] },
-    {
-      year: 3,
-      corso: "N86",
-      anno2: ["GEN|3", "GEN_FGA-G|3", "GEN_FGH-Z|3", "MSA_H-Z|3"],
-    },
-  ],
-});
 
 // Ferrara — Informatica. y1 3252, y2/3 1233. Verified 11/13/15 lessons,
 // 13/21/13 appelli.
