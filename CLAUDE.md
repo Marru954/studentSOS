@@ -29,6 +29,9 @@ Run all commands **inside `studentos/`**, not from this root.
 - **Accessibility on every new component:** `aria-label`, `sr-only`, keyboard-reachable.
 - **UI copy is always Italian.**
 - **`"use client"` only where strictly needed** (state/effects/browser APIs) — components stay server by default.
+- **UI bug? Root cause is mandatory, in this order:** (1) reproduce it in the browser as a real signed-in user, (2) write down the root cause explicitly — not the symptoms, (3) only then implement the fix, (4) reopen Chrome signed-in and verify visually, (5) commit only after the visual check. Never accept "fixed" without having watched the correction work on real data in the browser.
+- **Never fix symptoms.** If a bug is reported more than once, the previous fix treated symptoms, not the cause. Before every fix ask: "what single root cause explains ALL the reported cases?" — fix only that.
+- **Multi-ateneo QA via script, not repeated onboarding.** To check data across atenei, read IndexedDB/Supabase directly with a JS snippet in the browser console or a Node script. Do manual onboarding only for the first test ateneo.
 
 ## Commands (studentos)
 
@@ -50,6 +53,8 @@ Tests use `node:test` + `tsx` + `fake-indexeddb` (no Jest/Vitest). There is **no
 - `main` is the production branch and this repo's working branch — commits land directly on `main` (the established flow here).
 - Commit subject: `<ateneo|feature|fix|docs>: <short description in Italian>` (e.g. `fix: calendario appelli filtrato per anno`).
 - Push to GitHub after each significant work session.
+- **Auto-push after every objective:** the cycle is build+test green → commit → push. The push is **automatic** — never wait for user confirmation, never need a separate "carica su github" prompt.
+- **Tight sessions:** max 5–6 objectives per session. When a big block is done, commit+push then start a fresh session. Don't compact — a clean restart beats a compacted context.
 
 ## StudentOS architecture (the big picture)
 
