@@ -34,16 +34,16 @@ Codici (`scuola`/`corso`/`anno2`) dal portale, mai inventati.
 | Assistenza Sanitaria (abilitante alla Professione Sanitaria di Assistente Sanitario) | `ME19` | 1,2,3 | 23 | 42 | ✅ live orari+esami |
 | Dietistica (abilitante alla Professione Sanitaria di Dietista) | `ME22` | 1,2 | 8 | 4 | ✅ live orari+esami |
 | Fisioterapia (abilitante alla Professione Sanitaria di Fisioterapista) | `ME12` | 1,2,3 | 26 | 6 | ✅ live orari+esami |
-| IGIENE DENTALE (ABILITANTE ALLA PROFESSIONE SANITARIA DI IGIENISTA DENTALE) Sede di Pordenone | `ME25` | 1 | 8 | 4 | ✅ live orari+esami |
-| IGIENE DENTALE (ABILITANTE ALLA PROFESSIONE SANITARIA DI IGIENISTA DENTALE) Sede di Trieste | `ME15` | 1,2,3 | 21 | 62 | ✅ live orari+esami |
+| Igiene Dentale (abilitante alla Professione Sanitaria di Igienista Dentale) Sede di Pordenone | `ME25` | 1 | 8 | 4 | ✅ live orari+esami |
+| Igiene Dentale (abilitante alla Professione Sanitaria di Igienista Dentale) Sede di Trieste | `ME15` | 1,2,3 | 21 | 62 | ✅ live orari+esami |
 | Infermieristica (abilitante alla Professione Sanitaria di Infermiere) | `ME10` | 1,2,3 | 63 | 145 | ✅ live orari+esami |
 | Logopedia (abilitante alla Professione Sanitaria di Logopedista) | `ME18` | 1,2,3 | 27 | 67 | ✅ live orari+esami |
-| MEDICINA e CHIRURGIA Anni 3°, 4°, 5° e 6° | `ME03_OSP` | 3,4,5,6 | 34 | 29 | ✅ live orari+esami |
-| MEDICINA e CHIRURGIA Anno 1° | `ME03A` | 1 | 12 | 13 | ✅ live orari+esami |
-| MEDICINA e CHIRURGIA Anno 2° | `ME03` | 2 | 8 | 23 | ✅ live orari+esami |
-| ODONTOIATRIA e PROTESI DENTARIA Anni 3°, 4°, 5° e 6° | `ME04_OSP` | 3,4,5,6 | 31 | 29 | ✅ live orari+esami |
-| ODONTOIATRIA e PROTESI DENTARIA Anno 1° | `ME04A` | 1 | 12 | 13 | ✅ live orari+esami |
-| ODONTOIATRIA e PROTESI DENTARIA Anno 2° | `ME04` | 2 | 13 | 19 | ✅ live orari+esami |
+| Medicina e Chirurgia | `ME03_OSP` | 3,4,5,6 | 34 | 29 | ✅ live orari+esami |
+| Medicina e Chirurgia | `ME03A` | 1 | 12 | 13 | ✅ live orari+esami |
+| Medicina e Chirurgia | `ME03` | 2 | 8 | 23 | ✅ live orari+esami |
+| Odontoiatria e Protesi Dentaria | `ME04_OSP` | 3,4,5,6 | 31 | 29 | ✅ live orari+esami |
+| Odontoiatria e Protesi Dentaria | `ME04A` | 1 | 12 | 13 | ✅ live orari+esami |
+| Odontoiatria e Protesi Dentaria | `ME04` | 2 | 13 | 19 | ✅ live orari+esami |
 | Ostetricia (abilitante alla Professione Sanitaria di Ostetrica/o) | `ME11` | 1,3 | 28 | 50 | ✅ live orari+esami |
 | Scienze Infermieristiche e Ostetriche | `ME05` | 1 | 5 | 22 | ✅ live orari+esami |
 | Scienze Riabilitative delle Professioni Sanitarie | `ME06` | 1 | 3 | 7 | ✅ live orari+esami |

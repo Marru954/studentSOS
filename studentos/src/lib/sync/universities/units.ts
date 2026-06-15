@@ -301,13 +301,13 @@ const livePrograms: LiveProgram[] = [
     ]),
   },
   {
-    programme: "IGIENE DENTALE (ABILITANTE ALLA PROFESSIONE SANITARIA DI IGIENISTA DENTALE) Sede di Pordenone",
+    programme: "Igiene Dentale (abilitante alla Professione Sanitaria di Igienista Dentale) Sede di Pordenone",
     sources: degreeSources(BASE, ANNO, "igiene-dentale-abilitante-alla-professione-sanitaria-di-igienista-dentale-sede-di-pordenone", "DipartimentoUniversitarioClinicodiScienzemediche-chirurgicheedellasalute", [
       { year: 1, corso: "ME25", anno2: ["PDS0-2025|1"] },
     ]),
   },
   {
-    programme: "IGIENE DENTALE (ABILITANTE ALLA PROFESSIONE SANITARIA DI IGIENISTA DENTALE) Sede di Trieste",
+    programme: "Igiene Dentale (abilitante alla Professione Sanitaria di Igienista Dentale) Sede di Trieste",
     sources: degreeSources(BASE, ANNO, "igiene-dentale-abilitante-alla-professione-sanitaria-di-igienista-dentale-sede-di-trieste", "DipartimentoUniversitarioClinicodiScienzemediche-chirurgicheedellasalute", [
       { year: 1, corso: "ME15", anno2: ["PDS0-2017|1"] },
       { year: 2, corso: "ME15", anno2: ["PDS0-2017|2"] },
@@ -494,24 +494,14 @@ const livePrograms: LiveProgram[] = [
     ]),
   },
   {
-    programme: "MEDICINA e CHIRURGIA Anni 3°, 4°, 5° e 6°",
-    sources: degreeSources(BASE, ANNO, "medicina-e-chirurgia-anni-3-4-5-e-6", "DipartimentoUniversitarioClinicodiScienzemediche-chirurgicheedellasalute", [
+    programme: "Medicina e Chirurgia",
+    sources: degreeSources(BASE, ANNO, "medicina-e-chirurgia", "DipartimentoUniversitarioClinicodiScienzemediche-chirurgicheedellasalute", [
+      { year: 1, corso: "ME03A", anno2: ["PDS0-2025|1"] },
+      { year: 2, corso: "ME03", anno2: ["PDS0-2024|2"] },
       { year: 3, corso: "ME03_OSP", anno2: ["PDS0-2015|3"] },
       { year: 4, corso: "ME03_OSP", anno2: ["PDS0-2015|4"] },
       { year: 5, corso: "ME03_OSP", anno2: ["PDS0-2015|5"] },
       { year: 6, corso: "ME03_OSP", anno2: ["PDS0-2015|6"] },
-    ]),
-  },
-  {
-    programme: "MEDICINA e CHIRURGIA Anno 1°",
-    sources: degreeSources(BASE, ANNO, "medicina-e-chirurgia-anno-1", "DipartimentoUniversitarioClinicodiScienzemediche-chirurgicheedellasalute", [
-      { year: 1, corso: "ME03A", anno2: ["PDS0-2025|1"] },
-    ]),
-  },
-  {
-    programme: "MEDICINA e CHIRURGIA Anno 2°",
-    sources: degreeSources(BASE, ANNO, "medicina-e-chirurgia-anno-2", "DipartimentoUniversitarioClinicodiScienzemediche-chirurgicheedellasalute", [
-      { year: 2, corso: "ME03", anno2: ["PDS0-2024|2"] },
     ]),
   },
   {
@@ -522,24 +512,14 @@ const livePrograms: LiveProgram[] = [
     ]),
   },
   {
-    programme: "ODONTOIATRIA e PROTESI DENTARIA Anni 3°, 4°, 5° e 6°",
-    sources: degreeSources(BASE, ANNO, "odontoiatria-e-protesi-dentaria-anni-3-4-5-e-6", "DipartimentoUniversitarioClinicodiScienzemediche-chirurgicheedellasalute", [
+    programme: "Odontoiatria e Protesi Dentaria",
+    sources: degreeSources(BASE, ANNO, "odontoiatria-e-protesi-dentaria", "DipartimentoUniversitarioClinicodiScienzemediche-chirurgicheedellasalute", [
+      { year: 1, corso: "ME04A", anno2: ["PDS0-2025|1"] },
+      { year: 2, corso: "ME04", anno2: ["PDS0-2023|2"] },
       { year: 3, corso: "ME04_OSP", anno2: ["PDS0-2023|3"] },
       { year: 4, corso: "ME04_OSP", anno2: ["PDS0-2017|4"] },
       { year: 5, corso: "ME04_OSP", anno2: ["PDS0-2017|5"] },
       { year: 6, corso: "ME04_OSP", anno2: ["PDS0-2017|6"] },
-    ]),
-  },
-  {
-    programme: "ODONTOIATRIA e PROTESI DENTARIA Anno 1°",
-    sources: degreeSources(BASE, ANNO, "odontoiatria-e-protesi-dentaria-anno-1", "DipartimentoUniversitarioClinicodiScienzemediche-chirurgicheedellasalute", [
-      { year: 1, corso: "ME04A", anno2: ["PDS0-2025|1"] },
-    ]),
-  },
-  {
-    programme: "ODONTOIATRIA e PROTESI DENTARIA Anno 2°",
-    sources: degreeSources(BASE, ANNO, "odontoiatria-e-protesi-dentaria-anno-2", "DipartimentoUniversitarioClinicodiScienzemediche-chirurgicheedellasalute", [
-      { year: 2, corso: "ME04", anno2: ["PDS0-2023|2"] },
     ]),
   },
   {
