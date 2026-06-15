@@ -17,7 +17,7 @@
  * config, not code — see easystaff.ts `easyAcademyPreset`.
  */
 import type { UniversityPreset } from "../provider";
-import { easyAcademyPreset } from "./easystaff";
+import { unifi } from "./unifi";
 import { unige } from "./unige";
 import { unipr } from "./unipr";
 import { unica } from "./unica";
@@ -40,23 +40,6 @@ import { units } from "./units";
 
 
 
-// Firenze — Informatica (curriculum GEN). y1 B324, y2/3 B032. Verified 10/18/23
-// lessons, 9/26/19 appelli. (Firenze brands agendaweb as "Kairos".)
-const unifi = easyAcademyPreset({
-  id: "unifi-informatica",
-  name: "Università degli Studi di Firenze",
-  shortName: "Università di Firenze",
-  city: "Firenze",
-  programme: "Informatica",
-  baseUrl: "https://kairos.unifi.it/agendaweb",
-  scuola: "ScuoladiScienzeMatematiche-FisicheeNaturali",
-  anno: "2025",
-  years: [
-    { year: 1, corso: "B324", anno2: ["GEN|1"] },
-    { year: 2, corso: "B032", anno2: ["GEN|2"] },
-    { year: 3, corso: "B032", anno2: ["GEN|3"] },
-  ],
-});
 
 
 
