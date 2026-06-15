@@ -1,6 +1,6 @@
 import { Badge } from "@/components/primitives/Badge";
 import { Button } from "@/components/primitives/Button";
-import { fmtTime } from "@/lib/format";
+import { fmtPlainDayMonth, fmtTime } from "@/lib/format";
 import type { SyncMeta } from "@/lib/storage/types";
 
 /** Header instrument cluster: sync health at a glance plus manual trigger. */
@@ -37,7 +37,11 @@ export function SyncStatus({
           {failing} {failing === 1 ? "fonte in errore" : "fonti in errore"}
         </Badge>
       ) : lastSuccess ? (
-        <Badge tone="neutral">agg. {fmtTime(lastSuccess)}</Badge>
+        <Badge tone="neutral">
+          <span title={`Ultimo aggiornamento: ${fmtPlainDayMonth(lastSuccess.slice(0, 10))} alle ${fmtTime(lastSuccess)}`}>
+            agg. {fmtPlainDayMonth(lastSuccess.slice(0, 10))} · {fmtTime(lastSuccess)}
+          </span>
+        </Badge>
       ) : null}
       <Button size="sm" loading={syncing} disabled={!canSync} onClick={onSync}>
         Sincronizza

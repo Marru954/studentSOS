@@ -63,7 +63,8 @@ function ExamCard({
   const barWidth = days < 0 ? 100 : Math.max(8, 100 - days * 2.5);
   // Manually-added appelli carry a `manual-…` sentinel sourceId; only these
   // are deletable. Synced exams expose no delete control.
-  const deletable = Boolean(onDelete) && exam.sourceId.startsWith("manual");
+  const manual = exam.sourceId.startsWith("manual");
+  const deletable = Boolean(onDelete) && manual;
 
   return (
     <article
@@ -77,7 +78,10 @@ function ExamCard({
         <h3 className="text-[1.05rem] font-semibold tracking-normal text-ink [font-family:var(--font-sans)]">
           {exam.courseName}
         </h3>
-        <span className={`${chip.cls} shrink-0`}>{chip.label}</span>
+        <div className="flex shrink-0 items-center gap-1.5">
+          {manual && <Badge tone="neutral">manuale</Badge>}
+          <span className={chip.cls}>{chip.label}</span>
+        </div>
       </div>
 
       <div className="flex items-baseline gap-2">
