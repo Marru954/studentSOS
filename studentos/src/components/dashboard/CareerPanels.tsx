@@ -168,19 +168,22 @@ export function CfuPanel({
   );
 }
 
-/** "Obiettivo laurea": editable target average, current average, and the
- *  average still needed on the remaining CFU to reach it. */
+/** "Obiettivo laurea" (unificato): media obiettivo + CFU del piano editabili,
+ *  media attuale, media ancora necessaria sui CFU rimanenti, CFU mancanti.
+ *  Sostituisce il vecchio pannello "Proiezioni" (stesso calcolo, ridondante). */
 export function GoalPanel({
   entries,
   totalCfu,
   targetAverage,
+  onPlanChange,
   onTargetChange,
   className,
 }: {
   entries: LibrettoEntry[];
   totalCfu: number;
   targetAverage?: number;
-  onTargetChange: (value: number | undefined) => void;
+  onPlanChange?: (patch: { totalCfu?: number; targetAverage?: number }) => void;
+  onTargetChange?: (value: number | undefined) => void;
   className?: string;
 }) {
   const current = weightedAverage(entries);
@@ -188,56 +191,73 @@ export function GoalPanel({
 
   return (
     <Panel title="Obiettivo laurea" icon={<Target />} className={className}>
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <Field label="Media obiettivo" htmlFor="goal-target">
-          <input
-            id="goal-target"
-            type="number"
-            min={18}
-            max={30}
-            step={0.5}
-            value={targetAverage ?? ""}
-            placeholder="es. 28"
-            onChange={(e) => {
-              const v = Number(e.target.value);
-              onTargetChange(
-                e.target.value === "" || Number.isNaN(v) ? undefined : v,
-              );
-            }}
-            className={inputClass}
-          />
-        </Field>
-
-        <div className="flex flex-col gap-1">
-          <span className="text-label font-medium text-ink-mute">
-            Media attuale
-          </span>
-          <span className="font-mono text-2xl font-medium leading-none text-ink">
-            {current === undefined ? "—" : fmtNum(current, 2)}
-          </span>
+      <div className="flex flex-col gap-5">
+        <div className="grid grid-cols-2 gap-3">
+          <Field label="Media obiettivo" htmlFor="goal-target">
+            <input
+              id="goal-target"
+              type="number"
+              min={18}
+              max={30}
+              step={0.5}
+              value={targetAverage ?? ""}
+              placeholder="es. 28"
+              onChange={(e) => {
+                const v = Number(e.target.value);
+                const next =
+                  e.target.value === "" || Number.isNaN(v) ? undefined : v;
+                onPlanChange?.({ targetAverage: next });
+                onTargetChange?.(next);
+              }}
+              className={inputClass}
+            />
+          </Field>
+          <Field label="CFU del piano" htmlFor="goal-cfu">
+            <input
+              id="goal-cfu"
+              type="number"
+              min={1}
+              max={600}
+              value={totalCfu}
+              onChange={(e) => {
+                const v = Number(e.target.value);
+                if (Number.isInteger(v) && v >= 1) onPlanChange?.({ totalCfu: v });
+              }}
+              className={inputClass}
+            />
+          </Field>
         </div>
 
-        <div className="flex flex-col gap-1">
-          <span className="text-label font-medium text-ink-mute">
-            Serve nei prossimi
-          </span>
-          <RequiredReadout
-            entries={entries}
-            remaining={remaining}
-            targetAverage={targetAverage}
-          />
-        </div>
-
-        <div className="flex flex-col gap-1">
-          <span className="text-label font-medium text-ink-mute">
-            CFU mancanti
-          </span>
-          <span className="font-mono text-2xl font-medium leading-none text-ink">
-            {remaining}
-            <span className="ml-1 font-sans text-xs font-normal text-ink-mute">
-              su {totalCfu}
+        <div className="grid grid-cols-1 gap-4 border-t border-line pt-4 sm:grid-cols-3">
+          <div className="flex flex-col gap-1">
+            <span className="text-label font-medium text-ink-mute">
+              Media attuale
             </span>
-          </span>
+            <span className="font-mono text-2xl font-medium leading-none text-ink">
+              {current === undefined ? "—" : fmtNum(current, 2)}
+            </span>
+          </div>
+          <div className="flex flex-col gap-1">
+            <span className="text-label font-medium text-ink-mute">
+              Serve nei prossimi
+            </span>
+            <RequiredReadout
+              entries={entries}
+              remaining={remaining}
+              targetAverage={targetAverage}
+            />
+          </div>
+          <div className="flex flex-col gap-1">
+            <span className="text-label font-medium text-ink-mute">
+              CFU mancanti
+            </span>
+            <span className="font-mono text-2xl font-medium leading-none text-ink">
+              {remaining}
+              <span className="ml-1 font-sans text-xs font-normal text-ink-mute">
+                su {totalCfu}
+              </span>
+            </span>
+          </div>
         </div>
       </div>
     </Panel>
