@@ -3,6 +3,7 @@
 import {
   CalendarClock,
   CalendarDays,
+  CalendarRange,
   GraduationCap,
   LayoutDashboard,
   NotebookPen,
@@ -25,6 +26,7 @@ const LINKS = [
   { href: "/cruscotto", label: "Cruscotto", short: "Crusc.", icon: LayoutDashboard },
   { href: "/orario", label: "Orario", short: "Orario", icon: CalendarDays },
   { href: "/appelli", label: "Appelli", short: "Esami", icon: CalendarClock },
+  { href: "/calendario", label: "Calendario", short: "Cal.", icon: CalendarRange },
   { href: "/libretto", label: "Libretto", short: "Voti", icon: GraduationCap },
   { href: "/note", label: "Note", short: "Note", icon: NotebookPen },
   { href: "/focus", label: "Focus", short: "Focus", icon: Timer },
@@ -114,7 +116,7 @@ export function AppNav() {
       {/* Mobile bottom tab bar — replaces the inline link overflow under sm. */}
       <nav
         aria-label="Navigazione"
-        className="no-print fixed bottom-0 left-0 right-0 z-40 flex justify-around border-t border-line bg-night-800/90 py-2 backdrop-blur-md sm:hidden"
+        className="no-print fixed bottom-0 left-0 right-0 z-40 flex justify-around gap-1 overflow-x-auto border-t border-line bg-night-800/90 px-1 py-2 backdrop-blur-md sm:hidden"
       >
         {LINKS.map(({ href, short, icon: Icon }) => {
           const active = pathname.startsWith(href);
@@ -125,7 +127,7 @@ export function AppNav() {
               href={href}
               aria-current={active ? "page" : undefined}
               className={cn(
-                "flex flex-col items-center gap-0.5 px-2 text-[0.62rem] font-medium transition-colors",
+                "flex shrink-0 flex-col items-center gap-0.5 px-2 text-[0.62rem] font-medium transition-colors",
                 active ? "text-signal" : "text-ink-mute",
               )}
             >
