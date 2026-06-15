@@ -41,13 +41,23 @@ export const useSettings = create<SettingsState>()((set, get) => ({
   },
 
   enabledSources() {
-    const { presetId, enabledSourceIds } = get();
+    const { presetId, programme, enabledSourceIds } = get();
     if (!presetId) return [];
     const preset = getPreset(presetId);
-    if (!preset) return [];
+    if (!preset || preset.sources.length === 0) return [];
+    // A live preset's sources cover ONLY its verified live programme. If the
+    // student picked a different course at the same ateneo (onboarding now lists
+    // the full catalogue), there are no live sources for it → manual mode.
+    if (
+      preset.programme &&
+      programme &&
+      programme.trim().toLowerCase() !== preset.programme.trim().toLowerCase()
+    ) {
+      return [];
+    }
     // The merged all-years timetable is a V2 invariant: every year's lessons
-    // always sync once a preset is chosen (the student narrows them later via
-    // pinnedCourses, never by disabling a year). This also self-heals legacy
+    // always sync once the live course is chosen (the student narrows them later
+    // via pinnedCourses, never by disabling a year). This also self-heals legacy
     // setups that only enabled a single year's `orario` source. Exams and news
     // still follow the explicit enabledSourceIds picked at onboarding.
     return preset.sources.filter(

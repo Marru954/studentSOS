@@ -59,7 +59,7 @@ function ExamCard({
 
   return (
     <article
-      className="glass lift reveal flex flex-col gap-4 rounded-lg p-[1.4rem]"
+      className="glass lift flex flex-col gap-4 rounded-lg p-[1.4rem]"
       style={{ ["--d" as string]: `${index * 0.06}s` }}
     >
       <div className="flex items-start justify-between gap-2.5">

@@ -20,6 +20,7 @@ import { pushProfile } from "@/lib/supabase/remote";
 import { clearSyncedCaches } from "@/lib/supabase/sync";
 import type { UniversityPreset } from "@/lib/sync/provider";
 import { UNIVERSITY_PRESETS, getPreset } from "@/lib/sync/universities";
+import { ATENEO_COURSES, coursesFor } from "@/lib/sync/universities/ateneo-courses";
 
 const YEARS = [1, 2, 3, 4, 5, 6];
 const CFU_PRESETS = [
@@ -31,7 +32,23 @@ const STEP_TITLES = ["Ateneo", "Corso", "Anno e CFU", "Conferma"];
 
 function programmesOf(p: UniversityPreset | undefined): string[] {
   if (!p) return [];
+  // Live atenei show their FULL real course catalogue (captured via combo.php),
+  // with the one verified live course first so onboarding can mark it. Every
+  // other course in the list is manual. Manual atenei fall back to their
+  // generic programme list (COMMON_PROGRAMMES).
+  if (p.liveSources && p.programme && ATENEO_COURSES[p.id]?.length) {
+    return coursesFor(p.id, p.programme);
+  }
   return p.programmes ?? (p.programme ? [p.programme] : []);
+}
+
+/** True when this exact course is the ateneo's verified live programme. */
+function isLiveCourse(p: UniversityPreset | undefined, course: string): boolean {
+  return (
+    Boolean(p?.liveSources) &&
+    !!p?.programme &&
+    course.trim().toLowerCase() === p.programme.trim().toLowerCase()
+  );
 }
 
 export function OnboardingFlow() {
@@ -45,6 +62,7 @@ export function OnboardingFlow() {
   const [emailInput, setEmailInput] = useState<string | null>(null);
   const [chosenPreset, setChosenPreset] = useState<string | null>(null);
   const [chosenCorso, setChosenCorso] = useState<string | null>(null);
+  const [corsoQuery, setCorsoQuery] = useState("");
 
   // Ensure the optional auth session is loaded even on a direct /onboarding
   // visit. This only nudges the external store — no React setState in the effect.
@@ -62,6 +80,11 @@ export function OnboardingFlow() {
   const preset = presetId ? getPreset(presetId) : undefined;
   const corsi = programmesOf(preset);
   const corso = chosenCorso ?? corsi[0] ?? "";
+  const corsoLive = isLiveCourse(preset, corso);
+  const filteredCorsi = (() => {
+    const q = corsoQuery.trim().toLowerCase();
+    return q ? corsi.filter((c) => c.toLowerCase().includes(q)) : corsi;
+  })();
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -77,6 +100,7 @@ export function OnboardingFlow() {
   function chooseAteneo(id: string) {
     setChosenPreset(id);
     setChosenCorso(null);
+    setCorsoQuery("");
   }
 
   const canNext =
@@ -86,14 +110,19 @@ export function OnboardingFlow() {
     if (!preset) return;
     setSaving(true);
     await useSettings.getState().hydrate();
-    const enabledSourceIds = preset.sources
-      .filter(
-        (s) =>
-          s.capability === "timetable" ||
-          s.capability === "news" ||
-          s.id.endsWith(`-anno-${year}`),
-      )
-      .map((s) => s.id);
+    // Only the verified live course activates the live sources; any other course
+    // at this ateneo is manual (no sources → enabledSources() stays empty and
+    // the sync is a no-op for it).
+    const enabledSourceIds = corsoLive
+      ? preset.sources
+          .filter(
+            (s) =>
+              s.capability === "timetable" ||
+              s.capability === "news" ||
+              s.id.endsWith(`-anno-${year}`),
+          )
+          .map((s) => s.id)
+      : [];
     await useSettings.getState().update({
       presetId: preset.id,
       programme: corso || undefined,
@@ -245,25 +274,62 @@ export function OnboardingFlow() {
               {preset?.city ? ` · ${preset.city}` : ""}
             </p>
             {corsi.length > 0 ? (
-              <div className="no-scrollbar flex max-h-72 flex-col gap-1.5 overflow-y-auto">
-                {corsi.map((c) => (
-                  <button
-                    key={c}
-                    type="button"
-                    onClick={() => setChosenCorso(c)}
-                    className={`flex items-center justify-between rounded-xl border px-3 py-2.5 text-left text-sm transition-colors ${
-                      corso === c
-                        ? "border-signal/60 bg-signal-dim text-ink"
-                        : "border-line bg-night-800 text-ink-mute hover:border-line-strong"
-                    }`}
-                  >
-                    {c}
-                    {corso === c && (
-                      <Check aria-hidden="true" className="size-4 text-signal" />
-                    )}
-                  </button>
-                ))}
-              </div>
+              <>
+                {corsi.length > 8 && (
+                  <div className="relative">
+                    <Search
+                      aria-hidden="true"
+                      className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-ink-faint"
+                    />
+                    <input
+                      type="text"
+                      value={corsoQuery}
+                      onChange={(e) => setCorsoQuery(e.target.value)}
+                      placeholder="Cerca il tuo corso…"
+                      aria-label="Cerca corso di laurea"
+                      className="h-10 w-full rounded-xl border border-line bg-night-800 pl-9 pr-3 text-sm text-ink placeholder:text-ink-faint hover:border-line-strong focus:border-signal focus:outline-none"
+                    />
+                  </div>
+                )}
+                <div className="no-scrollbar flex max-h-72 flex-col gap-1.5 overflow-y-auto">
+                  {filteredCorsi.map((c) => {
+                    const live = isLiveCourse(preset, c);
+                    return (
+                      <button
+                        key={c}
+                        type="button"
+                        onClick={() => setChosenCorso(c)}
+                        className={`flex items-center justify-between gap-2 rounded-xl border px-3 py-2.5 text-left text-sm transition-colors ${
+                          corso === c
+                            ? "border-signal/60 bg-signal-dim text-ink"
+                            : "border-line bg-night-800 text-ink-mute hover:border-line-strong"
+                        }`}
+                      >
+                        <span className="min-w-0 truncate">{c}</span>
+                        <span className="flex shrink-0 items-center gap-1.5">
+                          <span
+                            className={`rounded-full px-2 py-0.5 text-[0.6rem] font-medium ${
+                              live
+                                ? "bg-signal-dim text-signal"
+                                : "bg-night-900 text-ink-faint"
+                            }`}
+                          >
+                            {live ? "sync live" : "manuale"}
+                          </span>
+                          {corso === c && (
+                            <Check aria-hidden="true" className="size-4 text-signal" />
+                          )}
+                        </span>
+                      </button>
+                    );
+                  })}
+                  {filteredCorsi.length === 0 && (
+                    <p className="px-1 py-3 text-xs text-ink-mute">
+                      Nessun corso trovato. Prova con un altro nome.
+                    </p>
+                  )}
+                </div>
+              </>
             ) : (
               <input
                 type="text"
@@ -340,17 +406,17 @@ export function OnboardingFlow() {
               <Row label="CFU piano" value={String(totalCfu)} />
             </dl>
             <p className="rounded-lg border border-line bg-night-800 px-3 py-2 text-xs text-ink-mute">
-              {preset?.liveSources ? (
+              {corsoLive ? (
                 <>
                   <GraduationCap aria-hidden="true" className="mr-1 inline size-3.5 text-signal" />
-                  Sincronizzeremo orario, appelli e avvisi. Nessun accesso al
-                  portale richiesto.
+                  Sincronizzeremo orario, appelli e avvisi per {corso}. Nessun
+                  accesso al portale richiesto.
                 </>
               ) : (
                 <>
-                  Sync automatica non ancora disponibile per il tuo ateneo. Puoi
-                  inserire libretto e voti a mano o importare il PDF della
-                  carriera — tutto il resto di StudentOS funziona. I tuoi dati
+                  La sincronizzazione automatica non è ancora disponibile per
+                  questo corso — puoi inserire libretto, orari e appelli
+                  manualmente. Tutto il resto di StudentOS funziona e i tuoi dati
                   restano tuoi.
                 </>
               )}
