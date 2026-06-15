@@ -15,6 +15,7 @@ import { useSynced } from "@/lib/state/synced";
 import { AmbientSounds } from "./AmbientSounds";
 import { BackgroundPicker } from "./BackgroundPicker";
 import { FocusHeatmap } from "./FocusHeatmap";
+import { FocusInsights } from "./FocusInsights";
 import { FocusStats } from "./FocusStats";
 import { PomodoroTimer } from "./PomodoroTimer";
 import { TaskBoard } from "./TaskBoard";
@@ -88,12 +89,17 @@ export function FocusView() {
               onRecord={recordSession}
               className="panel-hero lg:col-span-5"
             />
-            <FocusStats
-              sessions={focus.items}
-              libretto={libretto.items}
-              now={now}
-              className="lg:col-span-7"
-            />
+            <div className="flex flex-col gap-5 lg:col-span-7">
+              <FocusStats
+                sessions={focus.items}
+                libretto={libretto.items}
+                now={now}
+              />
+              <FocusInsights
+                sessions={focus.items}
+                libretto={libretto.items}
+              />
+            </div>
           </div>
           <TaskBoard
             tasks={tasks.items}

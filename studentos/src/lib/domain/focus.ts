@@ -54,6 +54,21 @@ export function focusByCourse(
 }
 
 /**
+ * Total focused minutes per weekday, as a length-7 array, **Monday-first**
+ * (index 0 = lunedì … 6 = domenica). Local zone, since study habits are felt
+ * in local time. Drives the per-weekday bar chart.
+ */
+export function minutesByWeekday(sessions: FocusSession[]): number[] {
+  const totals = [0, 0, 0, 0, 0, 0, 0];
+  for (const s of sessions) {
+    // getDay(): 0=domenica … 6=sabato → shift so lunedì is 0.
+    const idx = (new Date(s.startedAt).getDay() + 6) % 7;
+    totals[idx] += s.minutes;
+  }
+  return totals;
+}
+
+/**
  * Total focused minutes per local calendar day (YYYY-MM-DD → minutes).
  * Drives the study heatmap; days with no session are simply absent from the map.
  */
