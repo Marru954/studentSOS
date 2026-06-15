@@ -104,9 +104,11 @@ Differenze tra atenei: nessuna a livello funzionale — il motore di sync è ide
 2. `feat(focus)` — ambiente di studio: 4 modalità (Pomodoro/Deep Work/Flow count-up/Sprint), sessione immersiva (la pagina collassa sul timer), widget motivazionale, record, chime, beforeunload. **Verificato live** (Flow conta in su, immersivo collassa/riapre, timer non si resetta).
 3. `feat(impostazioni)` — Privacy e dati (contatori + export JSON + cancellazione granulare) + Info app. **Verificato live** (9 esami, 56 appelli).
 4. `feat(appelli)` — card urgenti con bordo pulsante. **Verificato live**.
+5. `feat(cruscotto)` — **layout bento asimmetrico**: hero prossimo esame + countdown (2/3) con Carriera/CFU impilati accanto, riga media Oggi/Appelli, riga piccola. Rimossi SummaryBar + banner ridondanti. **Verificato live**.
+6. `feat(libretto)` — **split verticale** (esami a sx, analisi a dx, tab su mobile) + **unione Obiettivo laurea/Proiezioni** in un pannello (ridondanza eliminata, ProjectionPanel rimosso). **Verificato live**.
 
 ## ⏳ RIMANENZE (non completate — budget sessione)
-- **FASE 3 redesign** non fatti: Cruscotto bento asimmetrico (grid-template-areas), Libretto split verticale + **unione Obiettivo laurea/Proiezioni** (ridondanza), Orario barra "Oggi" in cima, Impostazioni a colonne tematiche.
+- **FASE 3 redesign** restanti: Orario barra "Oggi" in cima (pill lezioni di oggi), Impostazioni a colonne tematiche. (Cruscotto bento e Libretto split ✅ fatti.)
 - **FASE 4 Focus** scope rimandato: **sopravvivenza sessione cross-route** (richiede lift del timer in uno store globale — escluso per non rompere il timer funzionante) + indicatore "In sessione" in navbar + dialog "stai studiando, esci?"; **suoni combinabili** (ora uno alla volta) + più suoni/sfondi; **confetti** su task completato; **avvia timer da un task** (StudyTask.examId è già nel tipo ma inutilizzato — gancio pronto).
 - **FASE 5 Impostazioni** rimandate: Studio&obiettivi (ore settimanali → unificare l'orfano localStorage `studentos-weekly-goal-hours`, CFU/semestre, inizio settimana, pausa lunga dopo N), Notifiche (4 toggle), Accessibilità (dimensione testo, riduci animazioni, alto contrasto → richiedono nuovi campi `AppSettings` + applier globale su `<html>` + CSS; `db.ts` NON va toccato, i campi opzionali sono schema-safe).
 - **Backlog UX** (da [[studentos-ux-backlog]]): appelli doppia etichetta Urgenti/Futuri, deep-link da Cmd+K/FAB/calendario.
