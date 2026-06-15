@@ -80,3 +80,25 @@ export function dailyMinutes(sessions: FocusSession[]): Map<IsoDate, number> {
   }
   return byDay;
 }
+
+/** The single longest session (minutes + its day), or null if none. */
+export function longestSession(
+  sessions: FocusSession[],
+): { minutes: number; date: IsoDateTime } | null {
+  let best: FocusSession | null = null;
+  for (const s of sessions) {
+    if (!best || s.minutes > best.minutes) best = s;
+  }
+  return best ? { minutes: best.minutes, date: best.startedAt } : null;
+}
+
+/** The most-studied calendar day (local), or null if none. */
+export function bestDay(
+  sessions: FocusSession[],
+): { day: IsoDate; minutes: number } | null {
+  let best: { day: IsoDate; minutes: number } | null = null;
+  for (const [day, minutes] of dailyMinutes(sessions)) {
+    if (!best || minutes > best.minutes) best = { day, minutes };
+  }
+  return best;
+}
