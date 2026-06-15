@@ -86,6 +86,29 @@ export async function getClassEvents(): Promise<ClassEvent[]> {
   return (await getDb()).getAllFromIndex("classEvents", "by-start");
 }
 
+/** Bulk-upsert class events in one transaction. Used for manually-added
+ *  lessons, which live in the same store as synced ones under a
+ *  `manual-anno-N` sourceId — `replaceSourceData` only deletes rows whose
+ *  sourceId matches an *enabled* sync source, so these survive every sync. */
+export async function putClassEvents(events: ClassEvent[]): Promise<void> {
+  const db = await getDb();
+  const tx = db.transaction("classEvents", "readwrite");
+  for (const event of events) await tx.store.put(event);
+  await tx.done;
+}
+
+/** Delete every class event of a manual weekly series. Each instance id is
+ *  `manual:${seriesId}:${isoDate}`, so we drop all rows with that prefix. */
+export async function deleteClassEventSeries(seriesId: string): Promise<void> {
+  const db = await getDb();
+  const prefix = `manual:${seriesId}:`;
+  const tx = db.transaction("classEvents", "readwrite");
+  for (const event of await tx.store.getAll()) {
+    if (event.id.startsWith(prefix)) await tx.store.delete(event.id);
+  }
+  await tx.done;
+}
+
 export async function getExamCalls(): Promise<ExamCall[]> {
   return (await getDb()).getAllFromIndex("examCalls", "by-date");
 }

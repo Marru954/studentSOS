@@ -1,10 +1,11 @@
 "use client";
 
 /** /orario: week navigation state + store wiring around the pure WeekGrid. */
-import { CalendarClock, ChevronLeft, ChevronRight, MapPin } from "lucide-react";
+import { CalendarClock, CalendarCog, ChevronLeft, ChevronRight, MapPin, Pencil } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/primitives/Button";
+import { ConfirmButton } from "@/components/primitives/ConfirmButton";
 import { PanelSkeleton } from "@/components/primitives/Skeleton";
 import { YearFilter } from "@/components/YearFilter";
 import type { ClassEvent } from "@/lib/domain/types";
@@ -14,7 +15,13 @@ import { addDays, fmtTime, localDayOf, localToday, mondayOf } from "@/lib/format
 import { useNowMinute } from "@/lib/hooks/useNowMinute";
 import { useSettings } from "@/lib/state/settings";
 import { useSynced } from "@/lib/state/synced";
+import { useToast } from "@/lib/state/toast";
+import { deleteClassEventSeries } from "@/lib/storage/repo";
 import { CoursePicker } from "@/components/CoursePicker";
+import {
+  ManualLessonForm,
+  type ManualLessonDraft,
+} from "./ManualLessonForm";
 import { hueOf, WeekGrid } from "./WeekGrid";
 
 const lessonDay = new Intl.DateTimeFormat("it-IT", {
@@ -102,6 +109,142 @@ const weekRange = new Intl.DateTimeFormat("it-IT", {
   month: "long",
   year: "numeric",
 });
+
+const weekdayName = new Intl.DateTimeFormat("it-IT", { weekday: "long" });
+
+// ── Manual lessons: derive editable series from the classEvents store ───────
+
+/** One manual weekly series, reconstructed from its materialized rows. */
+interface ManualSeries {
+  seriesId: string;
+  draft: ManualLessonDraft;
+  /** Human label: e.g. "lunedì · 09:00–11:00". */
+  schedule: string;
+}
+
+/** ISO weekday (1=Mon..7=Sun) of a Date in the local zone. */
+function isoWeekday(date: Date): number {
+  return ((date.getDay() + 6) % 7) + 1;
+}
+
+/** "HH:MM" local wall-clock time of an ISO datetime. */
+function localHm(iso: string): string {
+  const d = new Date(iso);
+  return `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
+}
+
+/** Group the manual rows (sourceId starting "manual") by their seriesId —
+ *  parsed from the id `manual:<seriesId>:<date>` — into one editable entry
+ *  each. We reconstruct the draft (weekday + start/end) from any one
+ *  occurrence, since every row of a series shares the same weekly slot. */
+function deriveManualSeries(classEvents: ClassEvent[]): ManualSeries[] {
+  const firstById = new Map<string, ClassEvent>();
+  for (const e of classEvents) {
+    if (!e.sourceId.startsWith("manual")) continue;
+    const parts = e.id.split(":"); // ["manual", seriesId, date]
+    if (parts[0] !== "manual" || parts.length < 3) continue;
+    const seriesId = parts[1];
+    if (!firstById.has(seriesId)) firstById.set(seriesId, e);
+  }
+  return [...firstById.entries()]
+    .map(([seriesId, e]) => {
+      const start = new Date(e.start);
+      const weekday = isoWeekday(start);
+      const startTime = localHm(e.start);
+      const endTime = localHm(e.end);
+      return {
+        seriesId,
+        draft: {
+          seriesId,
+          courseName: e.courseName,
+          weekday,
+          startTime,
+          endTime,
+          room: e.room,
+          kind: e.kind,
+        } satisfies ManualLessonDraft,
+        schedule: `${weekdayName.format(start)} · ${startTime}–${endTime}`,
+      };
+    })
+    .sort(
+      (a, b) =>
+        a.draft.weekday - b.draft.weekday ||
+        a.draft.startTime.localeCompare(b.draft.startTime),
+    );
+}
+
+/** Editable list of the student's manual weekly lessons. Each row offers
+ *  "Modifica" (opens an inline prefilled ManualLessonForm — submit deletes the
+ *  old series and writes a fresh one) and "Elimina" (drops the whole series).
+ *  Renders nothing when there are no manual lessons. */
+function ManualLessonsManager({
+  classEvents,
+  courses,
+}: {
+  classEvents: ClassEvent[];
+  courses: string[];
+}) {
+  const [editing, setEditing] = useState<string | null>(null);
+  const series = useMemo(() => deriveManualSeries(classEvents), [classEvents]);
+
+  if (series.length === 0) return null;
+
+  async function remove(seriesId: string) {
+    await deleteClassEventSeries(seriesId);
+    useSynced.getState().refresh();
+    useToast.getState().show("Lezione eliminata.", "ok");
+  }
+
+  return (
+    <section className="glass reveal rounded-lg p-5" aria-label="Lezioni manuali">
+      <h2 className="flex items-center gap-2 font-sans text-[0.95rem] font-semibold tracking-normal text-ink">
+        <CalendarCog aria-hidden="true" className="size-[1.125rem] text-[var(--signal-2)]" />
+        Lezioni manuali
+      </h2>
+      <ul className="mt-3 flex flex-col gap-2">
+        {series.map((s) => (
+          <li
+            key={s.seriesId}
+            className="rounded-md border border-line bg-night-800 p-3"
+          >
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <p className="text-sm font-medium text-ink">{s.draft.courseName}</p>
+                <p className="muted font-num mt-0.5 text-xs first-letter:uppercase">
+                  {s.schedule}
+                  {s.draft.room ? ` · ${s.draft.room}` : ""}
+                </p>
+              </div>
+              <div className="flex items-center gap-2">
+                <Button
+                  size="sm"
+                  aria-label={`Modifica la lezione di ${s.draft.courseName}`}
+                  aria-expanded={editing === s.seriesId}
+                  onClick={() =>
+                    setEditing((cur) => (cur === s.seriesId ? null : s.seriesId))
+                  }
+                >
+                  <Pencil aria-hidden="true" className="size-3.5" />
+                  Modifica
+                </Button>
+                <ConfirmButton onConfirm={() => void remove(s.seriesId)}>
+                  Elimina
+                </ConfirmButton>
+              </div>
+            </div>
+            {editing === s.seriesId && (
+              <ManualLessonForm
+                courses={courses}
+                initial={s.draft}
+                onDone={() => setEditing(null)}
+              />
+            )}
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
 
 export function WeekView() {
   const classEvents = useSynced((s) => s.classEvents);
@@ -207,24 +350,30 @@ export function WeekView() {
           <span className="sr-only">Caricamento dei dati locali…</span>
           <PanelSkeleton className="h-64" />
         </div>
-      ) : !hasSources ? (
-        <div className="glass reveal p-5">
-          <p className="muted text-sm">
-            Nessuna fonte attiva.{" "}
-            <Link href="/" className="text-signal underline underline-offset-2">
-              Configura il tuo ateneo dal cruscotto
-            </Link>{" "}
-            per sincronizzare l&rsquo;orario delle lezioni.
-          </p>
-        </div>
       ) : (
         <>
-          <YearFilter value={effectiveYear} onChange={setYearFilter} />
+          {/* No live sources → keep the configure hint, but still let the
+              student build their week by hand (the manual form below writes
+              into the same classEvents store the grid reads). */}
+          {!hasSources && (
+            <div className="glass reveal p-5">
+              <p className="muted text-sm">
+                Nessuna fonte attiva.{" "}
+                <Link href="/" className="text-signal underline underline-offset-2">
+                  Configura il tuo ateneo dal cruscotto
+                </Link>{" "}
+                per sincronizzare l&rsquo;orario, oppure inserisci le lezioni
+                manualmente qui sotto.
+              </p>
+            </div>
+          )}
+          {hasSources && <YearFilter value={effectiveYear} onChange={setYearFilter} />}
           <CoursePicker
             courses={allCourses}
             pinned={pinnedCourses}
             onChange={(pinned) => void updateSettings({ pinnedCourses: pinned })}
           />
+          <ManualLessonForm courses={allCourses} />
           {weekEvents.length === 0 && (
             <p className="muted text-sm">
               Nessuna lezione in questa settimana
@@ -234,6 +383,7 @@ export function WeekView() {
           <div className="glass gradient-ring reveal overflow-x-auto p-5">
             <WeekGrid events={weekEvents} weekStart={weekStart!} now={now} />
           </div>
+          <ManualLessonsManager classEvents={classEvents} courses={allCourses} />
         </>
       )}
 
