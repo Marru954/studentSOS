@@ -2,8 +2,9 @@
 
 /**
  * /appelli: a month calendar overview on top, then the "Prossimi appelli"
- * exam cards with filter chips. The calendar always shows the whole visible
- * month; the chips filter only the card list below.
+ * exam cards with filter chips. The year filter scopes both the calendar and
+ * the cards (applied once, upstream); the tab chips then filter only the card
+ * list below.
  */
 import {
   Archive,
@@ -84,9 +85,9 @@ export function ExamList() {
   const ready = now !== null && hydrated && settingsHydrated;
   const today = ready ? localToday(now) : undefined;
 
-  // Year-only scope feeds the course picker (so it lists the chosen year's
-  // courses); full scope (year + pinned courses) drives the cards, counts and
-  // summary. The month calendar above stays unfiltered by design.
+  // Year-only scope feeds both the month calendar and the course picker (so the
+  // picker lists the chosen year's courses); full scope (year + pinned courses)
+  // drives the cards, counts and summary.
   const yearScopedCalls = useMemo(
     () => examCalls.filter((e) => matchesYear(e.sourceId, yearFilter)),
     [examCalls, yearFilter],
@@ -202,7 +203,7 @@ export function ExamList() {
             <MonthCalendar
               year={displayed.getFullYear()}
               month0={displayed.getMonth()}
-              exams={examCalls}
+              exams={yearScopedCalls}
               today={today!}
               onPrev={() => setMonthOffset((o) => o - 1)}
               onNext={() => setMonthOffset((o) => o + 1)}
