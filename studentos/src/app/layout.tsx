@@ -4,6 +4,7 @@ import { AppFooter } from "@/components/AppFooter";
 import { AppNav } from "@/components/AppNav";
 import { FirstRunGate } from "@/components/onboarding/FirstRunGate";
 import { RevealManager } from "@/components/RevealManager";
+import { SearchPalette } from "@/components/search/SearchPalette";
 import { ServiceWorkerRegister } from "@/components/ServiceWorkerRegister";
 import { StoreProvider } from "@/components/StoreProvider";
 import { ToastHost } from "@/components/primitives/Toast";
@@ -68,6 +69,7 @@ export default function RootLayout({
           {children}
           <AppFooter />
           <FirstRunGate />
+          <SearchPalette />
         </StoreProvider>
         <ToastHost />
         <RevealManager />

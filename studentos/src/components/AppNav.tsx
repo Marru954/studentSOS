@@ -7,6 +7,7 @@ import {
   GraduationCap,
   LayoutDashboard,
   NotebookPen,
+  Search,
   Settings,
   Timer,
 } from "lucide-react";
@@ -20,6 +21,7 @@ import { cn } from "@/lib/cn";
 import { computeUrgencies } from "@/lib/domain/urgency";
 import { useNowMinute } from "@/lib/hooks/useNowMinute";
 import { useScrolled } from "@/lib/hooks/useScrolled";
+import { useSearchPalette } from "@/lib/state/searchPalette";
 import { useSynced } from "@/lib/state/synced";
 
 const LINKS = [
@@ -39,6 +41,7 @@ const LINKS = [
 export function AppNav() {
   const pathname = usePathname();
   const scrolled = useScrolled();
+  const openSearch = useSearchPalette((s) => s.openPalette);
 
   // critical-urgency count drives the dashboard alert dot; recomputed from the
   // synced caches on each clock tick. Skipped until hydrated/first client tick.
@@ -107,6 +110,15 @@ export function AppNav() {
             })}
           </div>
           <div className="ml-auto flex items-center gap-2 pl-1">
+            <button
+              type="button"
+              onClick={openSearch}
+              aria-label="Cerca (Cmd+K)"
+              title="Cerca"
+              className="flex size-8 shrink-0 items-center justify-center rounded-full text-ink-mute transition-colors hover:bg-night-700 hover:text-ink"
+            >
+              <Search aria-hidden="true" className="size-4" />
+            </button>
             <AccountButton />
             <ThemeToggle />
           </div>
