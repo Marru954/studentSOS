@@ -7,7 +7,6 @@
  * list below.
  */
 import {
-  Archive,
   CalendarArrowDown,
   CalendarClock,
   CalendarDays,
@@ -48,16 +47,16 @@ const FILTERS: { id: ExamFilter; label: string }[] = [
   { id: "tutti", label: "Tutti" },
   { id: "urgenti", label: "Urgenti" },
   { id: "futuri", label: "Futuri" },
-  { id: "passati", label: "Passati" },
 ];
 
 type GroupId = "urgenti" | "prenotabili" | "futuri" | "passati";
 
+// "passati" is intentionally absent: past appelli are never shown on /appelli
+// (groupOf still buckets them, but with no GROUPS entry they drop from view).
 const GROUPS: { id: GroupId; label: string; icon: LucideIcon }[] = [
   { id: "urgenti", label: "Urgenti", icon: TriangleAlert },
   { id: "prenotabili", label: "Prenotabili", icon: Ticket },
   { id: "futuri", label: "Futuri", icon: CalendarClock },
-  { id: "passati", label: "Passati", icon: Archive },
 ];
 
 /** Bucket an exam by its own date/booking state — drives the accordion. */
@@ -418,7 +417,7 @@ export function ExamList() {
 
           <div className="glass card-glow reveal rounded-xl p-5">
             <p className="eyebrow mb-3 text-ink-mute">Riepilogo sessione</p>
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+            <div className="grid grid-cols-3 gap-4">
               <div className="text-center">
                 <div className="font-display text-2xl font-bold text-ink">
                   <CountUp value={counts.urgenti ?? 0} />
@@ -436,12 +435,6 @@ export function ExamList() {
                   <CountUp value={scopedCalls.length} />
                 </div>
                 <div className="eyebrow text-ink-mute">Totali</div>
-              </div>
-              <div className="text-center">
-                <div className="font-display text-2xl font-bold text-ink">
-                  <CountUp value={counts.passati ?? 0} />
-                </div>
-                <div className="eyebrow text-ink-mute">Superati</div>
               </div>
             </div>
           </div>
