@@ -65,7 +65,7 @@ export function ReminderCard({ className }: { className?: string }) {
         <div className="flex flex-col items-start gap-3">
           <p className="text-sm text-ink-mute">
             Ricevi un avviso quando un appello si avvicina o un&rsquo;iscrizione
-            sta per chiudere. Tutto in locale, nessun account.
+            sta per chiudere. I promemoria restano sul tuo dispositivo.
           </p>
           <button
             type="button"

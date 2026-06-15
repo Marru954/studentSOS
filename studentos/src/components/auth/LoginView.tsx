@@ -123,8 +123,7 @@ export function LoginView() {
 
             {!configured && (
               <p className="rounded-lg border border-warn/40 bg-warn-dim px-3 py-2 text-xs text-warn">
-                Accesso online non configurato qui. Puoi comunque usare StudentOS
-                in locale —{" "}
+                Accesso online non configurato su questa installazione.{" "}
                 <Link href="/cruscotto" className="underline">
                   vai al cruscotto
                 </Link>
@@ -182,9 +181,9 @@ export function LoginView() {
       )}
 
       <p className="mt-6 text-center text-xs text-ink-mute">
-        Preferisci senza account?{" "}
+        Vuoi prima dare un&rsquo;occhiata?{" "}
         <Link href="/cruscotto" className="underline hover:text-ink">
-          Continua in locale
+          Esplora StudentOS
         </Link>
       </p>
     </main>

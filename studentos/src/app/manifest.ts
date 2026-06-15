@@ -7,7 +7,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: "StudentOS — il tuo sistema operativo universitario",
     short_name: "StudentOS",
     description:
-      "Orari, appelli, libretto, note e focus in un unico strumento. Offline, senza account.",
+      "Orari, appelli, libretto, note e focus in un unico strumento, sincronizzati sul tuo account universitario.",
     start_url: "/",
     scope: "/",
     display: "standalone",

@@ -128,7 +128,7 @@ export async function sendMagicLink(emailRaw: string): Promise<MagicLinkResult> 
     return {
       ok: false,
       message:
-        "Accesso online non configurato su questa installazione. StudentOS funziona comunque in locale.",
+        "Accesso online non configurato su questa installazione.",
     };
   }
   const { error } = await sb.auth.signInWithOtp({
