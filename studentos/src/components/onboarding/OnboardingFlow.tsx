@@ -100,14 +100,22 @@ export function OnboardingFlow() {
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    if (!q) return UNIVERSITY_PRESETS;
+    if (!q) {
+      // Before the user searches, float the ateneo detected from the email (or
+      // already chosen) to the top, so detection is visibly successful instead
+      // of being buried mid-list and looking like it failed.
+      if (!presetId) return UNIVERSITY_PRESETS;
+      return [...UNIVERSITY_PRESETS].sort((a, b) =>
+        a.id === presetId ? -1 : b.id === presetId ? 1 : 0,
+      );
+    }
     return UNIVERSITY_PRESETS.filter(
       (p) =>
         p.shortName.toLowerCase().includes(q) ||
         p.name.toLowerCase().includes(q) ||
         (p.city ?? "").toLowerCase().includes(q),
     );
-  }, [query]);
+  }, [query, presetId]);
 
   function chooseAteneo(id: string) {
     setChosenPreset(id);
