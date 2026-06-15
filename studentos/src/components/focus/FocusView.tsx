@@ -73,14 +73,6 @@ export function FocusView() {
             <AmbientSounds />
             <BackgroundPicker />
           </div>
-          <Panel
-            title="Costanza"
-            icon={<CalendarCheck aria-hidden="true" />}
-            headingLevel={2}
-            className="reveal"
-          >
-            <FocusHeatmap sessions={focus.items} now={now} />
-          </Panel>
           <div className="grid grid-cols-1 gap-5 lg:grid-cols-12">
             <PomodoroTimer
               courses={courses}
@@ -101,6 +93,14 @@ export function FocusView() {
               />
             </div>
           </div>
+          <Panel
+            title="Costanza"
+            icon={<CalendarCheck aria-hidden="true" />}
+            headingLevel={2}
+            className="reveal"
+          >
+            <FocusHeatmap sessions={focus.items} now={now} />
+          </Panel>
           <TaskBoard
             tasks={tasks.items}
             courses={courses}
