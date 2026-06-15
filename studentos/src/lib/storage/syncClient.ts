@@ -67,9 +67,19 @@ export async function runSync(sources: SyncSource[], range: DateRange): Promise<
   return summary;
 }
 
-/** The window the app keeps warm: from last Monday to the sync horizon. */
+/** How far back the warm window reaches — roughly one teaching semester. The
+ *  timetable must show lessons already HELD this term, not only ones ahead of
+ *  today: in summer / the exam session there are no upcoming lessons, so a
+ *  forward-only window left the grid empty even though the term's lessons exist
+ *  in the portal. The EasyAcademy adapter caps the timetable at ~20 weeks from
+ *  `from`, so this lands the slice on the current/just-finished semester; exams
+ *  (one call, uncapped) still span all the way out to the forward horizon. */
+const LOOKBACK_DAYS = 105;
+
+/** The window the app keeps warm: from ~a semester back to the sync horizon. */
 export function defaultSyncRange(horizonDays: number, today = new Date()): DateRange {
   const from = new Date(today);
+  from.setDate(from.getDate() - LOOKBACK_DAYS);
   from.setDate(from.getDate() - ((from.getDay() + 6) % 7)); // back to Monday
   const to = new Date(today);
   to.setDate(to.getDate() + horizonDays);
