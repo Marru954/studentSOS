@@ -86,19 +86,30 @@ Differenze tra atenei: nessuna a livello funzionale — il motore di sync è ide
 ---
 
 ## 🐞 BUG TROVATI
-1. **Cambio ateneo non azzera i dati del precedente** (Fase 2D). Passando da Parma a Bologna (manuale) le 342 lezioni + 168 esami di Parma **restano**. Causa radice: il cambio ateneo aggiorna solo le settings; `replaceSourceData` sostituisce solo le sorgenti *abilitate*, e un ateneo manuale non ne ha → le cache vecchie sopravvivono (`resetLocalData` gira solo al cambio utente, non al cambio ateneo). **Fix (Fase 6)**: in `OnboardingFlow.finish`, quando presetId/programme cambiano, svuotare le cache sincronizzate (classEvents/examCalls/news/syncMeta/changeNotices).
-2. (altri fix minori già chiusi in sessioni precedenti: bottone "+ Aggiungi" appelli morto, media "0,0" libretto, timer focus sotto la piega, settimana orario vuota — tutti committati.)
+1. ~~Cambio ateneo non azzera i dati del precedente~~ → **FALSO POSITIVO** (riverificato sul codice). `OnboardingFlow.finish` chiama **già** `clearSyncedCaches()` (riga 177) + `sync()` prima del redirect, quindi il cambio ateneo *reale* (Impostazioni → "Cambia ateneo o corso" → onboarding) azzera e ricarica correttamente. Il lingering visto in Fase 2D nasceva dal mio test che scriveva le settings **direttamente in IndexedDB bypassando `finish()`** → artefatto del metodo di test, non un bug dell'app. Nessun fix necessario.
+2. (fix minori già chiusi in sessioni precedenti: bottone "+ Aggiungi" appelli morto, media "0,0" libretto, timer focus sotto la piega, settimana orario vuota — tutti committati.)
+3. Nessun nuovo bug funzionale trovato nelle fasi 1-2. Le voci aperte restano UX/ridondanza (Urgenti/Futuri doppia etichetta, Obiettivo/Proiezioni), affrontate nei redesign.
 
 ---
 
-## 💡 IDEE AGGIUNTE (oltre lo spec)
-- Focus: chime di completamento sessione, record personali (sessione più lunga, giorno migliore), insight orario, confetti su task completato.
-- Impostazioni: contatori dati reali + export JSON, sezione "Studio e obiettivi" che assorbe l'orfano `studentos-weekly-goal-hours`.
-- (aggiornato man mano che implemento)
+## 💡 IDEE AGGIUNTE (oltre lo spec, implementate)
+- Focus: **chime di completamento** (Web Audio), **record personali** (sessione più lunga + giorno migliore), citazioni di studio del giorno (deterministiche, no random), **guardia beforeunload** durante la sessione.
+- Impostazioni: **contatori dati reali**, **export JSON** completo (riusa `exportBackup`), changelog "Novità recenti".
+- Appelli: bordo **pulsante** danger sulle card urgenti (rispetta reduced-motion).
 
 ---
 
-## ✅ STATO LAVORI / RIMANENZE
-- ✅ FASE 1 audit + ✅ FASE 2 multi-uni → documentati qui.
-- ⏳ FASE 3 redesign, FASE 4 Focus, FASE 5 Impostazioni, FASE 6 fix → in corso, un commit per area. Le voci non completate alla fine della sessione sono elencate qui sotto man mano.
+## ✅ FATTO QUESTA SESSIONE (commit su main)
+1. `docs(audit)` — audit fasi 1-2 (questo file).
+2. `feat(focus)` — ambiente di studio: 4 modalità (Pomodoro/Deep Work/Flow count-up/Sprint), sessione immersiva (la pagina collassa sul timer), widget motivazionale, record, chime, beforeunload. **Verificato live** (Flow conta in su, immersivo collassa/riapre, timer non si resetta).
+3. `feat(impostazioni)` — Privacy e dati (contatori + export JSON + cancellazione granulare) + Info app. **Verificato live** (9 esami, 56 appelli).
+4. `feat(appelli)` — card urgenti con bordo pulsante. **Verificato live**.
+
+## ⏳ RIMANENZE (non completate — budget sessione)
+- **FASE 3 redesign** non fatti: Cruscotto bento asimmetrico (grid-template-areas), Libretto split verticale + **unione Obiettivo laurea/Proiezioni** (ridondanza), Orario barra "Oggi" in cima, Impostazioni a colonne tematiche.
+- **FASE 4 Focus** scope rimandato: **sopravvivenza sessione cross-route** (richiede lift del timer in uno store globale — escluso per non rompere il timer funzionante) + indicatore "In sessione" in navbar + dialog "stai studiando, esci?"; **suoni combinabili** (ora uno alla volta) + più suoni/sfondi; **confetti** su task completato; **avvia timer da un task** (StudyTask.examId è già nel tipo ma inutilizzato — gancio pronto).
+- **FASE 5 Impostazioni** rimandate: Studio&obiettivi (ore settimanali → unificare l'orfano localStorage `studentos-weekly-goal-hours`, CFU/semestre, inizio settimana, pausa lunga dopo N), Notifiche (4 toggle), Accessibilità (dimensione testo, riduci animazioni, alto contrasto → richiedono nuovi campi `AppSettings` + applier globale su `<html>` + CSS; `db.ts` NON va toccato, i campi opzionali sono schema-safe).
+- **Backlog UX** (da [[studentos-ux-backlog]]): appelli doppia etichetta Urgenti/Futuri, deep-link da Cmd+K/FAB/calendario.
+
+Punto di ripartenza consigliato: Cruscotto bento → Libretto split+merge → Focus cross-route session → Impostazioni Studio/Notifiche/Accessibilità.
 
