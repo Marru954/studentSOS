@@ -3,7 +3,16 @@
 /** /impostazioni: profilo universitario, aspetto, account, dati locali.
  *  Tutto è già persistente altrove — questa pagina è solo una vista unificata
  *  sui controlli sparsi (settings store, tema, auth). */
-import { LogOut, Palette, ShieldAlert, University, UserRound } from "lucide-react";
+import {
+  Database,
+  Download,
+  Info,
+  LogOut,
+  MessageSquare,
+  Palette,
+  University,
+  UserRound,
+} from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/primitives/Button";
@@ -12,7 +21,15 @@ import { Field, inputClass } from "@/components/primitives/Field";
 import { Panel } from "@/components/primitives/Panel";
 import { PanelSkeleton } from "@/components/primitives/Skeleton";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { exportBackup } from "@/lib/backup";
+import {
+  useFocusSessions,
+  useLibretto,
+  useNotes,
+  useTasks,
+} from "@/lib/state/manual";
 import { useSettings } from "@/lib/state/settings";
+import { useSynced } from "@/lib/state/synced";
 import { useToast } from "@/lib/state/toast";
 import { getPreset } from "@/lib/sync/universities";
 import { useAuth } from "@/lib/supabase/auth";
@@ -25,6 +42,11 @@ export function ImpostazioniView() {
   const settings = useSettings();
   const status = useAuth((s) => s.status);
   const email = useAuth((s) => s.email);
+  const librettoCount = useLibretto((s) => s.items.length);
+  const notesCount = useNotes((s) => s.items.length);
+  const tasksCount = useTasks((s) => s.items.length);
+  const focusCount = useFocusSessions((s) => s.items.length);
+  const examCount = useSynced((s) => s.examCalls.length);
 
   if (!settings.hydrated) {
     return (
@@ -184,26 +206,128 @@ export function ImpostazioniView() {
         </div>
       </Panel>
 
-      {/* ── 4. Dati ── */}
-      <Panel title="Dati" icon={<ShieldAlert />}>
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <p className="text-sm text-ink">Reimposta dati locali</p>
-            <p className="muted mt-0.5 text-xs">
-              Cancella libretto, note, attività, sessioni e impostazioni salvati su
-              questo dispositivo. I dati nel cloud non vengono toccati.
-            </p>
+      {/* ── 4. Privacy e dati ── */}
+      <Panel title="Privacy e dati" icon={<Database />}>
+        <div className="flex flex-col gap-5">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+            {[
+              { label: "Esami libretto", n: librettoCount },
+              { label: "Appelli", n: examCount },
+              { label: "Note", n: notesCount },
+              { label: "Attività", n: tasksCount },
+              { label: "Sessioni studio", n: focusCount },
+            ].map((c) => (
+              <div
+                key={c.label}
+                className="rounded-xl border border-line bg-night-900/30 p-3 text-center"
+              >
+                <div className="font-num text-2xl font-bold text-ink">{c.n}</div>
+                <div className="muted text-xs">{c.label}</div>
+              </div>
+            ))}
           </div>
-          <ConfirmButton
-            size="md"
-            onConfirm={async () => {
-              await resetLocalData();
-              useToast.getState().show("Dati locali reimpostati.", "ok");
-              router.replace("/onboarding");
-            }}
-          >
-            Reimposta dati locali
-          </ConfirmButton>
+          <p className="muted text-xs">
+            Tutti i tuoi dati restano su questo dispositivo (IndexedDB). Niente
+            lascia il browser senza il tuo consenso.
+          </p>
+
+          <div className="flex flex-wrap items-center justify-between gap-3 border-t border-line pt-4">
+            <div>
+              <p className="text-sm text-ink">Esporta i tuoi dati</p>
+              <p className="muted mt-0.5 text-xs">
+                Scarica libretto, note, attività, sessioni e impostazioni in un
+                file JSON.
+              </p>
+            </div>
+            <Button variant="ghost" onClick={() => void exportBackup()}>
+              <Download aria-hidden="true" className="size-4" />
+              Esporta JSON
+            </Button>
+          </div>
+
+          <div className="flex flex-col gap-3 border-t border-line pt-4">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <p className="text-sm text-ink">Cancella solo le sessioni di studio</p>
+              <ConfirmButton
+                size="sm"
+                onConfirm={async () => {
+                  await useFocusSessions.getState().clear();
+                  useToast.getState().show("Sessioni di studio cancellate.", "ok");
+                }}
+              >
+                Cancella sessioni
+              </ConfirmButton>
+            </div>
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <p className="text-sm text-ink">Cancella solo le note</p>
+              <ConfirmButton
+                size="sm"
+                onConfirm={async () => {
+                  await useNotes.getState().clear();
+                  useToast.getState().show("Note cancellate.", "ok");
+                }}
+              >
+                Cancella note
+              </ConfirmButton>
+            </div>
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <p className="text-sm text-ink">Reimposta tutti i dati locali</p>
+                <p className="muted mt-0.5 text-xs">
+                  Cancella tutto (libretto, note, attività, sessioni,
+                  impostazioni). I dati nel cloud non vengono toccati.
+                </p>
+              </div>
+              <ConfirmButton
+                size="md"
+                onConfirm={async () => {
+                  await resetLocalData();
+                  useToast.getState().show("Dati locali reimpostati.", "ok");
+                  router.replace("/onboarding");
+                }}
+              >
+                Reimposta tutto
+              </ConfirmButton>
+            </div>
+          </div>
+        </div>
+      </Panel>
+
+      {/* ── 5. Info app ── */}
+      <Panel title="Info app" icon={<Info />}>
+        <div className="flex flex-col gap-4">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <p className="text-sm text-ink">Hai un suggerimento o un bug?</p>
+              <p className="muted mt-0.5 text-xs">
+                Il tuo feedback ci aiuta a migliorare StudentOS.
+              </p>
+            </div>
+            <a
+              href="mailto:support@studentos.app?subject=Feedback%20StudentOS"
+              className="inline-flex h-9 items-center gap-2 rounded-xl border border-line bg-night-800 px-4 text-sm text-ink transition-colors hover:border-line-strong hover:bg-night-700"
+            >
+              <MessageSquare aria-hidden="true" className="size-4" />
+              Invia feedback
+            </a>
+          </div>
+          <div className="border-t border-line pt-4">
+            <div className="flex items-center justify-between">
+              <p className="text-sm text-ink">Versione</p>
+              <span className="font-num text-sm text-ink-mute">v0.1.0</span>
+            </div>
+            <details className="mt-2">
+              <summary className="cursor-pointer text-sm text-ink-mute transition-colors hover:text-ink">
+                Novità recenti
+              </summary>
+              <ul className="muted mt-2 list-disc space-y-1 pl-5 text-xs">
+                <li>Assistente AI per la tua carriera universitaria</li>
+                <li>Focus: modalità di studio + sessione immersiva</li>
+                <li>Calendario unificato (lezioni, appelli, attività)</li>
+                <li>Import del libretto da PDF Delphi e CSV</li>
+              </ul>
+            </details>
+          </div>
         </div>
       </Panel>
     </div>
