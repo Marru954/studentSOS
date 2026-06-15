@@ -8,6 +8,7 @@
  */
 import {
   Archive,
+  CalendarArrowDown,
   CalendarClock,
   CalendarDays,
   ChevronDown,
@@ -28,9 +29,10 @@ import {
   type ExamFilter,
   filterExams,
 } from "@/lib/domain/calendar";
+import { eventsToIcs, type IcsEvent } from "@/lib/domain/ical";
 import { extractCourseNames } from "@/lib/domain/notes";
 import { matchesYear } from "@/lib/domain/sources";
-import type { ExamCall } from "@/lib/domain/types";
+import type { ExamCall, ExamKind } from "@/lib/domain/types";
 import { daysBetweenIso, localToday } from "@/lib/format";
 import { useNowMinute } from "@/lib/hooks/useNowMinute";
 import { useLibretto } from "@/lib/state/manual";
@@ -70,6 +72,22 @@ function groupOf(exam: ExamCall, today: string): GroupId {
 
 /** Cards shown collapsed before "Mostra altri". */
 const COLLAPSED_COUNT = 6;
+
+/** Italian label for an exam kind — used in the exported .ics description. */
+function kindLabel(kind: ExamKind): string {
+  switch (kind) {
+    case "written":
+      return "Scritto";
+    case "oral":
+      return "Orale";
+    case "written+oral":
+      return "Scritto e orale";
+    case "practical":
+      return "Pratica";
+    default:
+      return "Esame";
+  }
+}
 
 export function ExamList() {
   const examCalls = useSynced((s) => s.examCalls);
@@ -126,6 +144,42 @@ export function ExamList() {
     await deleteExamCall(id);
     useSynced.getState().refresh();
     useToast.getState().show("Appello eliminato.", "ok");
+  }
+
+  // Export the visible future appelli to an .ics file that opens in
+  // Google/Apple/Outlook. Uses the full examCalls (not the year-scoped subset)
+  // on purpose, so a future exam is never silently dropped by an active filter.
+  function exportIcs() {
+    if (!today) return;
+    const future = examCalls.filter((e) => e.date >= today);
+    if (future.length === 0) {
+      useToast.getState().show("Nessun appello futuro da esportare.", "warn");
+      return;
+    }
+    const events: IcsEvent[] = future.map((exam) => {
+      const start = new Date(`${exam.date}T${exam.time ?? "09:00"}:00`);
+      return {
+        uid: `${exam.id}@studentos`,
+        summary: exam.courseName,
+        start: start.toISOString(),
+        end: new Date(start.getTime() + 3_600_000).toISOString(),
+        location: exam.room,
+        description: [exam.teacher, kindLabel(exam.kind)]
+          .filter(Boolean)
+          .join(" · "),
+      };
+    });
+    const ics = eventsToIcs(events, { calName: "Appelli — StudentOS" });
+    const blob = new Blob([ics], { type: "text/calendar;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "appelli-studentos.ics";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+    useToast.getState().show(`${events.length} appelli esportati.`, "ok");
   }
 
   // displayed month derives from now + offset, so it needs no init-time clock
@@ -190,14 +244,27 @@ export function ExamList() {
             </p>
           )}
         </div>
-        <button
-          type="button"
-          className="btn btn-primary"
-          style={{ padding: "0.6rem 1.1rem", fontSize: "0.85rem" }}
-        >
-          <Plus aria-hidden="true" className="size-4" />
-          Aggiungi
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={exportIcs}
+            disabled={!ready}
+            aria-label="Esporta gli appelli futuri in un file per il calendario"
+            className="btn disabled:pointer-events-none disabled:opacity-45"
+            style={{ padding: "0.6rem 1.1rem", fontSize: "0.85rem" }}
+          >
+            <CalendarArrowDown aria-hidden="true" className="size-4" />
+            Esporta in Calendario
+          </button>
+          <button
+            type="button"
+            className="btn btn-primary"
+            style={{ padding: "0.6rem 1.1rem", fontSize: "0.85rem" }}
+          >
+            <Plus aria-hidden="true" className="size-4" />
+            Aggiungi
+          </button>
+        </div>
       </header>
 
       {!ready ? (
