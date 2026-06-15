@@ -210,18 +210,20 @@ export function ExamList() {
             <PanelSkeleton />
           </div>
         </div>
-      ) : !hasSources ? (
-        <Panel>
-          <p className="text-sm text-ink-mute">
-            Nessuna fonte attiva.{" "}
-            <Link href="/" className="text-signal underline underline-offset-2">
-              Configura il tuo ateneo dal cruscotto
-            </Link>{" "}
-            per sincronizzare gli appelli d&rsquo;esame.
-          </p>
-        </Panel>
       ) : (
         <>
+          {!hasSources && (
+            <Panel>
+              <p className="text-sm text-ink-mute">
+                Nessuna fonte attiva.{" "}
+                <Link href="/" className="text-signal underline underline-offset-2">
+                  Configura il tuo ateneo dal cruscotto
+                </Link>{" "}
+                per sincronizzare gli appelli d&rsquo;esame, oppure aggiungine
+                uno manualmente qui sotto.
+              </p>
+            </Panel>
+          )}
           <Panel title="Calendario" icon={<CalendarDays />} className="accent-top">
             <MonthCalendar
               year={displayed.getFullYear()}
