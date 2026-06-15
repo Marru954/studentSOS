@@ -18,6 +18,7 @@
  */
 import type { UniversityPreset } from "../provider";
 import { easyAcademyPreset } from "./easystaff";
+import { unica } from "./unica";
 import { unisa } from "./unisa";
 import { unife } from "./unife";
 import { unitn } from "./unitn";
@@ -30,23 +31,6 @@ import { units } from "./units";
 
 
 
-// Cagliari — Informatica (L-31). y1 60/84, y2/3 60/61. Verified 9/11/10 lessons,
-// 6/14/15 appelli.
-const unica = easyAcademyPreset({
-  id: "unica-informatica",
-  name: "Università degli Studi di Cagliari",
-  shortName: "Università di Cagliari",
-  city: "Cagliari",
-  programme: "Informatica",
-  baseUrl: "https://unica.easystaff.it/AgendaWeb",
-  scuola: "FacoltadiScienze",
-  anno: "2025",
-  years: [
-    { year: 1, corso: "60/84", anno2: ["84/00|1"] },
-    { year: 2, corso: "60/61", anno2: ["61/00|2"] },
-    { year: 3, corso: "60/61", anno2: ["61/00|3"] },
-  ],
-});
 
 
 
