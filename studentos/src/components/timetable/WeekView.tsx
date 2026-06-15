@@ -228,7 +228,7 @@ export function WeekView() {
           {weekEvents.length === 0 && (
             <p className="muted text-sm">
               Nessuna lezione in questa settimana
-              {pinnedCourses.length > 0 ? " per i corsi selezionati" : ""}.
+              {pinnedCourses.length > 0 ? " per i corsi selezionati" : ""} 🎉
             </p>
           )}
           <div className="glass gradient-ring reveal overflow-x-auto p-5">

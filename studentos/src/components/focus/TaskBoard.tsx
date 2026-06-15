@@ -134,7 +134,13 @@ export function TaskBoard({
         </button>
       </form>
 
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      {tasks.length === 0 ? (
+        <div className="glass reveal rounded-lg p-8 text-center text-sm text-ink-mute">
+          Nessun obiettivo ancora. Aggiungi la prima attività dal modulo qui
+          sopra per organizzare lo studio 🎯
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {STATUS_ORDER.map((status) => {
           const column = tasks.filter((t) => t.status === status).sort(byUrgency);
           return (
@@ -202,7 +208,8 @@ export function TaskBoard({
             </section>
           );
         })}
-      </div>
+        </div>
+      )}
     </section>
   );
 }

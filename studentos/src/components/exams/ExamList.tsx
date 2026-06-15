@@ -255,7 +255,9 @@ export function ExamList() {
             </div>
 
             {grouped.length === 0 ? (
-              <p className="muted text-sm">Nessun appello in questa vista.</p>
+              <p className="muted text-sm">
+                Nessun appello in questa vista — tutto sotto controllo 🎉
+              </p>
             ) : (
               <div className="flex flex-col gap-3">
                 {grouped.map((g) => {
