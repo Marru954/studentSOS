@@ -14,7 +14,7 @@ import { addDays, fmtTime, localDayOf, localToday, mondayOf } from "@/lib/format
 import { useNowMinute } from "@/lib/hooks/useNowMinute";
 import { useSettings } from "@/lib/state/settings";
 import { useSynced } from "@/lib/state/synced";
-import { CoursePicker } from "./CoursePicker";
+import { CoursePicker } from "@/components/CoursePicker";
 import { hueOf, WeekGrid } from "./WeekGrid";
 
 const lessonDay = new Intl.DateTimeFormat("it-IT", {

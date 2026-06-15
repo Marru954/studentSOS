@@ -21,7 +21,7 @@ import Link from "next/link";
 import { CountUp } from "@/components/primitives/CountUp";
 import { Panel } from "@/components/primitives/Panel";
 import { PanelSkeleton } from "@/components/primitives/Skeleton";
-import { CoursePicker } from "@/components/timetable/CoursePicker";
+import { CoursePicker } from "@/components/CoursePicker";
 import { YearFilter } from "@/components/YearFilter";
 import { bookingState } from "@/lib/domain/booking";
 import {
