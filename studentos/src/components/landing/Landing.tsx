@@ -7,9 +7,12 @@ import {
   GraduationCap,
   LayoutDashboard,
   LifeBuoy,
-  Lock,
   NotebookPen,
+  Sparkles,
+  Star,
+  Target,
   Timer,
+  Trophy,
   type LucideIcon,
 } from "lucide-react";
 import Link from "next/link";
@@ -68,14 +71,52 @@ const STATS: { value: number; suffix?: string; unit: string; desc: string }[] = 
 ];
 
 /** Traguardi ancora da sbloccare: la sezione è una PROMESSA, non uno stato
- *  pieno finto. Slot vuoti (lucchetto) che si accendono man mano che registri
- *  i voti — mostriamo il valore futuro, non dati di qualcun altro. */
-const MILESTONES: { label: string; hint: string }[] = [
-  { label: "Primo voto", hint: "la media parte" },
-  { label: "Primo 30", hint: "trofeo d'oro" },
-  { label: "Prima lode", hint: "⭐ extra" },
-  { label: "Metà CFU", hint: "sei a metà" },
-  { label: "Laurea", hint: "il traguardo" },
+ *  pieno finto — niente voti di qualcun altro. Ogni slot è un trofeo acceso e
+ *  invitante (icona colorata che brilla), ma marcato "Da sbloccare": mostra il
+ *  valore futuro, qualcosa che vuoi raggiungere, non qualcosa che possiedi già.
+ *  `grad`/`glow` sono accenti di contenuto per-trofeo, brand-coherent. */
+const MILESTONES: {
+  icon: LucideIcon;
+  label: string;
+  hint: string;
+  grad: string;
+  glow: string;
+}[] = [
+  {
+    icon: Sparkles,
+    label: "Primo voto",
+    hint: "la media inizia a correre",
+    grad: "linear-gradient(135deg, #6d6bff, #38bdf8)",
+    glow: "rgba(109, 107, 255, 0.5)",
+  },
+  {
+    icon: Trophy,
+    label: "Primo 30",
+    hint: "il trofeo d'oro che brilla",
+    grad: "linear-gradient(135deg, #f0a500, #ffd874)",
+    glow: "rgba(240, 165, 0, 0.5)",
+  },
+  {
+    icon: Star,
+    label: "Prima lode",
+    hint: "la stella in più",
+    grad: "linear-gradient(135deg, #f97316, #fbbf24)",
+    glow: "rgba(249, 115, 22, 0.5)",
+  },
+  {
+    icon: Target,
+    label: "Metà CFU",
+    hint: "sei a metà strada",
+    grad: "linear-gradient(135deg, #06b6d4, #22d3ee)",
+    glow: "rgba(6, 182, 212, 0.5)",
+  },
+  {
+    icon: GraduationCap,
+    label: "Laurea",
+    hint: "il traguardo che conta",
+    grad: "linear-gradient(135deg, #7c3aed, #a78bfa)",
+    glow: "rgba(124, 58, 237, 0.5)",
+  },
 ];
 
 const ALL: { icon: LucideIcon; title: string; desc: string }[] = [
@@ -259,21 +300,29 @@ export function Landing() {
           </h2>
           <p className="reveal mx-auto mt-3 max-w-[46ch] text-center text-sm text-ink-mute">
             Registra i tuoi voti: ogni esame diventa un trofeo e la media cresce
-            a ogni voto. Questi traguardi ti aspettano — partono spenti e si
-            accendono man mano.
+            a ogni passo. Ecco i traguardi che ti aspettano — pronti a sbloccarsi
+            uno dopo l&apos;altro.
           </p>
           <ul className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-            {MILESTONES.map((m, i) => (
+            {MILESTONES.map(({ icon: Icon, label, hint, grad, glow }, i) => (
               <li
-                key={m.label}
-                className="glass reveal flex flex-col items-center gap-1.5 rounded-xl border-2 border-dashed border-line p-4 text-center"
+                key={label}
+                className="glass lift reveal flex flex-col items-center gap-2.5 rounded-xl p-5 text-center"
                 style={{ ["--d" as string]: `${(i % 5) * 0.06}s` }}
               >
-                <Lock aria-hidden="true" className="size-5 text-ink-faint" />
+                <span
+                  className="inline-flex size-14 items-center justify-center rounded-2xl text-white"
+                  style={{ background: grad, boxShadow: `0 10px 28px -8px ${glow}` }}
+                >
+                  <Icon className="size-7" aria-hidden="true" />
+                </span>
                 <div className="font-display text-[1.1rem] font-bold leading-tight text-ink">
-                  {m.label}
+                  {label}
                 </div>
-                <div className="text-xs font-medium text-ink-faint">{m.hint}</div>
+                <div className="text-xs font-medium text-ink-mute">{hint}</div>
+                <span className="mt-auto rounded-full bg-[var(--surface)] px-2.5 py-0.5 text-[0.68rem] font-semibold uppercase tracking-wide text-ink-faint">
+                  Da sbloccare
+                </span>
               </li>
             ))}
           </ul>
