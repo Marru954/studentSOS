@@ -2,7 +2,7 @@
  * Add/edit form for a libretto entry. Mount with key={entry.id} (or "new")
  * so editing a different entry remounts with fresh initial state.
  */
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { PenLine } from "lucide-react";
 import { Button } from "@/components/primitives/Button";
 import { DateField } from "@/components/primitives/DateField";
@@ -12,9 +12,13 @@ import {
   academicYearOptions,
   currentAcademicYear,
 } from "@/lib/domain/academicYear";
+import { localToday } from "@/lib/format";
 import type { LibrettoEntry } from "@/lib/domain/types";
 
 const YEAR_OPTIONS = academicYearOptions();
+
+/** Which field a validation error belongs to, so it renders inline by it. */
+type FieldError = { field: "courseName" | "cfu" | "value" | "date"; message: string };
 
 export function EntryForm({
   initial,
@@ -36,39 +40,59 @@ export function EntryForm({
   const [laude, setLaude] = useState(
     initial?.grade.kind === "numeric" ? initial.grade.laude : false,
   );
-  const [date, setDate] = useState(initial?.date ?? "");
+  // Precompila la data a oggi: il caso comune (esame appena dato) non richiede
+  // di compilarla, e l'azione non può più fallire in silenzio per data vuota.
+  const [date, setDate] = useState(initial?.date ?? localToday(new Date()));
   const [academicYear, setAcademicYear] = useState(
     initial?.academicYear ?? currentAcademicYear(),
   );
   const [teacher, setTeacher] = useState(initial?.teacher ?? "");
   const [exclude, setExclude] = useState(initial?.excludeFromAverage ?? false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<FieldError | null>(null);
   const [saved, setSaved] = useState(false);
+
+  const courseRef = useRef<HTMLInputElement>(null);
+  const cfuRef = useRef<HTMLInputElement>(null);
+  const valueRef = useRef<HTMLInputElement>(null);
+  const dateRef = useRef<HTMLInputElement>(null);
 
   // l'anno selezionato potrebbe non essere fra le opzioni recenti (esami vecchi)
   const yearOptions = YEAR_OPTIONS.includes(academicYear)
     ? YEAR_OPTIONS
     : [academicYear, ...YEAR_OPTIONS];
 
-  function validate(): string | null {
-    if (!courseName.trim()) return "Indica il nome del corso.";
+  function validate(): FieldError | null {
+    if (!courseName.trim())
+      return { field: "courseName", message: "Indica il nome del corso." };
     const cfuNum = Number(cfu);
     if (!Number.isInteger(cfuNum) || cfuNum < 1 || cfuNum > 60)
-      return "I CFU devono essere un intero tra 1 e 60.";
+      return { field: "cfu", message: "I CFU devono essere un intero tra 1 e 60." };
     if (!isPass) {
       const v = Number(value);
       if (!Number.isInteger(v) || v < 18 || v > 30)
-        return "Il voto deve essere un intero tra 18 e 30.";
+        return { field: "value", message: "Il voto deve essere un intero tra 18 e 30." };
     }
-    if (!date) return "Indica la data dell'esame.";
+    if (!date) return { field: "date", message: "Indica la data dell'esame." };
     return null;
   }
+
+  const fieldRefs: Record<FieldError["field"], React.RefObject<HTMLInputElement | null>> = {
+    courseName: courseRef,
+    cfu: cfuRef,
+    value: valueRef,
+    date: dateRef,
+  };
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     const problem = validate();
     setError(problem);
-    if (problem) return;
+    if (problem) {
+      // porta il fuoco sul campo errato: l'errore inline è subito visibile
+      // e annunciato, mai nascosto a fondo form sotto la piega
+      fieldRefs[problem.field].current?.focus();
+      return;
+    }
     setSaved(!initial);
     onSave({
       id: initial?.id ?? crypto.randomUUID(),
@@ -86,7 +110,7 @@ export function EntryForm({
       // l'anno accademico resta selezionato: di solito si aggiungono più esami
       // dello stesso anno di seguito
       setCourseName("");
-      setDate("");
+      setDate(localToday(new Date()));
       setTeacher("");
       setExclude(false);
     }
@@ -99,8 +123,14 @@ export function EntryForm({
       className={className}
     >
       <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4">
-        <Field label="Corso" htmlFor="lib-corso">
+        <Field
+          label="Corso"
+          htmlFor="lib-corso"
+          required
+          error={error?.field === "courseName" ? error.message : undefined}
+        >
           <input
+            ref={courseRef}
             id="lib-corso"
             data-quickadd
             type="text"
@@ -111,13 +141,21 @@ export function EntryForm({
             }}
             placeholder="es. Basi di dati"
             required
+            aria-invalid={error?.field === "courseName" || undefined}
+            aria-describedby={error?.field === "courseName" ? "lib-corso-error" : undefined}
             className={inputClass}
           />
         </Field>
 
         <div className="grid grid-cols-2 gap-3">
-          <Field label="CFU" htmlFor="lib-cfu">
+          <Field
+            label="CFU"
+            htmlFor="lib-cfu"
+            required
+            error={error?.field === "cfu" ? error.message : undefined}
+          >
             <input
+              ref={cfuRef}
               id="lib-cfu"
               type="number"
               min={1}
@@ -125,11 +163,26 @@ export function EntryForm({
               value={cfu}
               onChange={(e) => setCfu(e.target.value)}
               required
+              aria-invalid={error?.field === "cfu" || undefined}
+              aria-describedby={error?.field === "cfu" ? "lib-cfu-error" : undefined}
               className={inputClass}
             />
           </Field>
-          <Field label="Data" htmlFor="lib-data">
-            <DateField id="lib-data" value={date} onChange={setDate} required />
+          <Field
+            label="Data"
+            htmlFor="lib-data"
+            required
+            error={error?.field === "date" ? error.message : undefined}
+          >
+            <DateField
+              id="lib-data"
+              value={date}
+              onChange={setDate}
+              required
+              inputRef={dateRef}
+              ariaInvalid={error?.field === "date" || undefined}
+              ariaDescribedBy={error?.field === "date" ? "lib-data-error" : undefined}
+            />
           </Field>
         </div>
 
@@ -187,30 +240,40 @@ export function EntryForm({
             </label>
           </div>
           {!isPass && (
-            <div className="flex items-center gap-3">
-              <label htmlFor="lib-voto" className="sr-only">
-                Voto (18–30)
-              </label>
-              <input
-                id="lib-voto"
-                type="number"
-                min={18}
-                max={30}
-                value={value}
-                onChange={(e) => setValue(e.target.value)}
-                className={`${inputClass} w-24`}
-              />
-              <label className="flex items-center gap-2 text-sm">
+            <>
+              <div className="flex items-center gap-3">
+                <label htmlFor="lib-voto" className="sr-only">
+                  Voto (18–30)
+                </label>
                 <input
-                  type="checkbox"
-                  checked={laude && value === "30"}
-                  disabled={value !== "30"}
-                  onChange={(e) => setLaude(e.target.checked)}
-                  className="accent-signal"
+                  ref={valueRef}
+                  id="lib-voto"
+                  type="number"
+                  min={18}
+                  max={30}
+                  value={value}
+                  onChange={(e) => setValue(e.target.value)}
+                  aria-invalid={error?.field === "value" || undefined}
+                  aria-describedby={error?.field === "value" ? "lib-voto-error" : undefined}
+                  className={`${inputClass} w-24`}
                 />
-                e lode
-              </label>
-            </div>
+                <label className="flex items-center gap-2 text-sm">
+                  <input
+                    type="checkbox"
+                    checked={laude && value === "30"}
+                    disabled={value !== "30"}
+                    onChange={(e) => setLaude(e.target.checked)}
+                    className="accent-signal"
+                  />
+                  e lode
+                </label>
+              </div>
+              {error?.field === "value" && (
+                <p id="lib-voto-error" role="alert" className="text-xs text-danger">
+                  {error.message}
+                </p>
+              )}
+            </>
           )}
         </fieldset>
 
@@ -224,11 +287,6 @@ export function EntryForm({
           Escludi dalla media (es. CFU extracurriculari)
         </label>
 
-        {error && (
-          <p role="alert" className="text-xs text-danger">
-            {error}
-          </p>
-        )}
         {saved && !error && (
           <p role="status" className="text-xs font-medium text-ok">
             Esame aggiunto al libretto. Media e CFU aggiornati.

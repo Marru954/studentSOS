@@ -10,11 +10,17 @@ export const inputClass = cn(
 export function Field({
   label,
   htmlFor,
+  required,
+  error,
   className,
   children,
 }: {
   label: string;
   htmlFor: string;
+  /** Adds a visible "*" and an sr-only "obbligatorio" to the label. */
+  required?: boolean;
+  /** Inline validation message rendered under the control (id `${htmlFor}-error`). */
+  error?: string;
   className?: string;
   children: React.ReactNode;
 }) {
@@ -25,8 +31,21 @@ export function Field({
         className="text-label font-medium text-ink-mute"
       >
         {label}
+        {required && (
+          <>
+            <span aria-hidden="true" className="ml-0.5 text-danger">
+              *
+            </span>
+            <span className="sr-only"> (obbligatorio)</span>
+          </>
+        )}
       </label>
       {children}
+      {error && (
+        <p id={`${htmlFor}-error`} role="alert" className="text-xs text-danger">
+          {error}
+        </p>
+      )}
     </div>
   );
 }

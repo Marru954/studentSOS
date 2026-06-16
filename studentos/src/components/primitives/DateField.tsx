@@ -27,6 +27,9 @@ export function DateField({
   required,
   className,
   ariaLabel,
+  ariaInvalid,
+  ariaDescribedBy,
+  inputRef,
 }: {
   id?: string;
   /** ISO date "YYYY-MM-DD", or "" when empty. */
@@ -37,6 +40,9 @@ export function DateField({
   className?: string;
   /** Accessible name when there's no associated <label> (e.g. compact grids). */
   ariaLabel?: string;
+  ariaInvalid?: boolean;
+  ariaDescribedBy?: string;
+  inputRef?: React.Ref<HTMLInputElement>;
 }) {
   const [display, setDisplay] = useState(() => formatItDate(value));
   const [lastValue, setLastValue] = useState(value);
@@ -47,11 +53,14 @@ export function DateField({
 
   return (
     <input
+      ref={inputRef}
       id={id}
       type="text"
       inputMode="numeric"
       autoComplete="off"
       aria-label={ariaLabel}
+      aria-invalid={ariaInvalid}
+      aria-describedby={ariaDescribedBy}
       placeholder="gg/mm/aaaa"
       maxLength={10}
       value={display}
