@@ -19,22 +19,28 @@ import { HeroDemo } from "./HeroDemo";
 
 const FEATURES: { icon: LucideIcon; href: string; title: string; desc: string }[] = [
   {
-    icon: GraduationCap,
-    href: "/libretto",
-    title: "Libretto digitale",
-    desc: "Importa i voti dal portale del tuo ateneo o inseriscili a mano: media ponderata e CFU sempre aggiornati.",
-  },
-  {
     icon: CalendarClock,
     href: "/appelli",
     title: "Appelli",
-    desc: "Ogni data che conta in un posto solo. Avvisi sui conflitti, scadenze di prenotazione.",
+    desc: "Ogni data che conta in un posto solo. Avvisi sui conflitti e sulle scadenze di prenotazione.",
   },
   {
-    icon: Timer,
-    href: "/focus",
-    title: "Focus",
-    desc: "Timer Pomodoro e board obiettivi. Le sessioni diventano statistiche di costanza.",
+    icon: GraduationCap,
+    href: "/libretto",
+    title: "Libretto",
+    desc: "Voti dal portale del tuo ateneo o a mano: media ponderata e CFU sempre aggiornati.",
+  },
+  {
+    icon: LayoutDashboard,
+    href: "/cruscotto",
+    title: "Cruscotto",
+    desc: "Come sei messo a colpo d'occhio: media, CFU e proiezione di laurea.",
+  },
+  {
+    icon: CalendarDays,
+    href: "/orario",
+    title: "Orario",
+    desc: "La tua settimana di lezioni, sempre aggiornata e a portata di sguardo.",
   },
 ];
 
@@ -157,12 +163,12 @@ export function Landing() {
 
         {/* FEATURE CARDS */}
         <section className="wrap section">
-          <div className="grid gap-4 [grid-template-columns:repeat(auto-fit,minmax(260px,1fr))]">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {FEATURES.map(({ icon: Icon, href, title, desc }, i) => (
               <Link
                 key={title}
                 href={href}
-                className={`glass gradient-ring lift reveal flex flex-col gap-[0.9rem] rounded-xl p-[1.6rem] text-left ${["", "lg:mt-6", "lg:mt-12"][i] ?? ""}`}
+                className="glass gradient-ring lift reveal flex flex-col gap-[0.9rem] rounded-xl p-[1.6rem] text-left"
                 style={{ ["--d" as string]: `${i * 0.08}s` }}
               >
                 <span className="grad-fill inline-flex size-[46px] items-center justify-center rounded-[14px] text-white">
