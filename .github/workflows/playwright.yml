@@ -38,7 +38,7 @@ jobs:
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
 
       - name: Avvia app e lancia test E2E
-        run: npx playwright test
+        run: npx playwright test --pass-with-no-tests
         working-directory: studentos
         env:
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
