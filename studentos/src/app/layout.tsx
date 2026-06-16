@@ -10,6 +10,7 @@ import { RevealManager } from "@/components/RevealManager";
 import { SearchPalette } from "@/components/search/SearchPalette";
 import { ServiceWorkerRegister } from "@/components/ServiceWorkerRegister";
 import { StoreProvider } from "@/components/StoreProvider";
+import { CelebrationHost } from "@/components/celebration/CelebrationHost";
 import { ToastHost } from "@/components/primitives/Toast";
 import "./globals.css";
 
@@ -77,6 +78,7 @@ export default function RootLayout({
           <QuickAddFab />
         </StoreProvider>
         <ToastHost />
+        <CelebrationHost />
         <OfflineBanner />
         <RevealManager />
         <ServiceWorkerRegister />

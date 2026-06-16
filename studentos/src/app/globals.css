@@ -711,12 +711,51 @@ html[data-density="compact"] { font-size: 93.75%; } /* 15px from a 16px base */
   50% { box-shadow: 0 0 0 4px color-mix(in srgb, var(--danger) 16%, transparent); }
 }
 
+/* ── Trophy unlock celebration (scenic overlay) ────────────────────────────── */
+.trophy-card { animation: trophy-pop 0.45s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.trophy-buoy {
+  position: relative;
+  display: grid;
+  place-items: center;
+  padding: 1.25rem;
+  border-radius: 9999px;
+  background: radial-gradient(circle at center, var(--glow-1), transparent 70%);
+  animation: trophy-glow 2.4s ease-in-out infinite;
+}
+.celebrate-spark {
+  position: absolute;
+  top: 50%;
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  background: var(--signal-2);
+  box-shadow: 0 0 10px var(--glow-2);
+  animation: spark-rise 1.1s ease-out forwards;
+}
+@keyframes trophy-pop {
+  0% { opacity: 0; transform: scale(0.7) translateY(12px); }
+  60% { transform: scale(1.06); }
+  100% { opacity: 1; transform: none; }
+}
+@keyframes trophy-glow {
+  0%, 100% { box-shadow: 0 0 24px -6px var(--glow-1); }
+  50% { box-shadow: 0 0 48px 4px var(--glow-1); }
+}
+@keyframes spark-rise {
+  0% { opacity: 0; transform: translateY(10px) scale(0.4); }
+  25% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-72px) scale(1); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .aurora { animation: none !important; }
   .float, .float-slow, .buoy-spin { animation: none !important; }
   .anim-ready .word .mid { animation: none !important; }
   .urgent-card { animation: none !important; }
   .reveal { opacity: 1 !important; transform: none !important; transition: none; }
+  /* scenic stays as a static appearance: no glow pulse, no sparks */
+  .trophy-buoy { animation: none !important; }
+  .celebrate-spark { display: none !important; }
 }
 
 /* print: strip the immersive chrome so an export (e.g. the libretto PDF) is a

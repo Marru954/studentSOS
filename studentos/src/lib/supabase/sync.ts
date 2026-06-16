@@ -19,6 +19,7 @@ import {
 } from "@/lib/state/manual";
 import { useSettings } from "@/lib/state/settings";
 import { useSynced } from "@/lib/state/synced";
+import { useTrophies } from "@/lib/state/trophies";
 import { getDb } from "@/lib/storage/db";
 import { saveSettings } from "@/lib/storage/repo";
 import { DEFAULT_SETTINGS } from "@/lib/storage/types";
@@ -33,6 +34,13 @@ import {
 
 /** Set while we apply remote data locally, so mirrors don't echo it back. */
 let applying = false;
+
+/** True while remote data is being written into local stores (bootstrap reconcile
+ *  or account switch). Celebration triggers read this to stay silent — replaying
+ *  the cloud's already-earned trophies on sign-in would be a barrage. */
+export function isApplyingRemote(): boolean {
+  return applying;
+}
 
 interface ItemStore {
   items: { id: string }[];
@@ -187,6 +195,12 @@ export async function resetLocalData(): Promise<void> {
       useTasks.getState().clear(),
       useFocusSessions.getState().clear(),
     ]);
+
+    // The trophy ledger is per-user (when each trophy was first earned) — drop
+    // it so the next account starts from a blank record. Local IndexedDB only;
+    // the libretto subscription re-derives trophies for the new account once
+    // its data lands.
+    await useTrophies.getState().clear();
 
     // Synced caches belong to the previous account's ateneo — drop them too,
     // along with the saved portal-credential blob.

@@ -12,6 +12,7 @@ import type {
   Note,
   StudyTask,
 } from "@/lib/domain/types";
+import type { TrophyLedger } from "@/lib/domain/achievements";
 import type { SyncCapability } from "@/lib/sync/provider";
 import { getDb } from "./db";
 import { diffClassEvents, diffExamCalls } from "./diff";
@@ -202,4 +203,35 @@ export async function getSettings(): Promise<AppSettings> {
 
 export async function saveSettings(settings: AppSettings): Promise<void> {
   await (await getDb()).put("settings", settings, SETTINGS_KEY);
+}
+
+// ── trophy ledger ─────────────────────────────────────────────────────────────
+// The append-only record of when each trophy was first earned. Lives under its
+// own key in the generic `settings` bucket (no schema change), kept apart from
+// AppSettings so it never rides the profile/settings cloud push — trophies are
+// local-first and re-derive from the libretto on any device.
+
+const TROPHIES_KEY = "trophies";
+
+export async function getTrophyLedger(): Promise<TrophyLedger> {
+  const stored = await (await getDb()).get("settings", TROPHIES_KEY);
+  return (stored as TrophyLedger) ?? {};
+}
+
+export async function saveTrophyLedger(ledger: TrophyLedger): Promise<void> {
+  await (await getDb()).put("settings", ledger, TROPHIES_KEY);
+}
+
+// The relock log governs only whether a scenic unlock animation replays (the
+// 1h anti-repeat window); it is not the trophy data. Separate key, same bucket.
+
+const RELOCK_KEY = "trophy-relock";
+
+export async function getRelockLog(): Promise<Record<string, string>> {
+  const stored = await (await getDb()).get("settings", RELOCK_KEY);
+  return (stored as Record<string, string>) ?? {};
+}
+
+export async function saveRelockLog(log: Record<string, string>): Promise<void> {
+  await (await getDb()).put("settings", log, RELOCK_KEY);
 }

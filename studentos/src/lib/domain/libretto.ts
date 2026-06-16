@@ -20,6 +20,13 @@ function averageable(entries: LibrettoEntry[]): LibrettoEntry[] {
   );
 }
 
+/** How many exams actually feed the weighted average (numeric, not excluded).
+ *  Average-based trophies use this to demand consistency over several exams
+ *  rather than firing on a single lucky grade. */
+export function gradedCount(entries: LibrettoEntry[]): number {
+  return averageable(entries).length;
+}
+
 /** CFU and grade-points of the entries that count toward the average. */
 export function gradedTotals(entries: LibrettoEntry[]): {
   cfu: number;
