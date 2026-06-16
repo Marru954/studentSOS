@@ -51,8 +51,9 @@ function NextExamHero({
   examsThisWeek: number;
   className?: string;
 }) {
-  const accent =
-    days < 7 ? "var(--danger)" : days < 14 ? "var(--warn)" : "var(--signal)";
+  // Viola = primario; ambra = imminente (≤2 gg). Mai rosso: il rosso resta
+  // riservato al pericolo reale (conflitto / iscrizione che scade oggi).
+  const accent = days <= 2 ? "var(--warn)" : "var(--signal)";
   const barWidth = days < 0 ? 100 : Math.max(8, 100 - days * 2.5);
   return (
     <section
@@ -77,7 +78,7 @@ function NextExamHero({
         <div className="flex items-baseline gap-3">
           <span
             className="font-num text-[clamp(3rem,9vw,5.2rem)] font-extrabold leading-none [font-family:var(--font-display)]"
-            style={{ color: accent }}
+            style={{ color: "var(--signal-2)" }}
           >
             {days === 0 ? "Oggi" : days}
           </span>
@@ -85,6 +86,13 @@ function NextExamHero({
             <span className="muted text-xl font-semibold">
               {days === 1 ? "giorno" : "giorni"}
             </span>
+          )}
+          {days <= 2 && (
+            <span
+              aria-hidden="true"
+              className="pulse-soft size-2.5 self-center rounded-full"
+              style={{ background: accent }}
+            />
           )}
         </div>
         <h2 className="mt-3 text-xl font-semibold text-ink">{exam.courseName}</h2>

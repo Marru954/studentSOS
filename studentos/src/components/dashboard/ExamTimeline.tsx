@@ -1,6 +1,6 @@
 "use client";
 
-import { CalendarClock, TriangleAlert } from "lucide-react";
+import { CalendarClock, ChevronDown, TriangleAlert } from "lucide-react";
 import { useState } from "react";
 import { Badge } from "@/components/primitives/Badge";
 import { Panel } from "@/components/primitives/Panel";
@@ -33,7 +33,9 @@ const SOFT_SCROLL =
 
 /** Reference chip class per urgency tier. */
 const CHIP: Record<Tier, string> = {
-  today: "chip chip-danger",
+  // Oggi/settimana = ambra (presto), non rosso: il rosso resta per i conflitti
+  // e per l'iscrizione che scade oggi. Il pulse su days<=2 segnala l'urgenza.
+  today: "chip chip-warn",
   week: "chip chip-warn",
   later: "chip",
 };
@@ -111,6 +113,7 @@ export function ExamTimeline({
   className?: string;
 }) {
   const [openDates, setOpenDates] = useState<Set<string>>(new Set());
+  const [clashesOpen, setClashesOpen] = useState(false);
 
   const upcoming = exams
     .filter((e) => daysFromToday(e.date, now) >= 0)
@@ -146,22 +149,39 @@ export function ExamTimeline({
         </p>
       ) : (
         <div className="flex flex-col gap-3">
-          {/* Conflitti di orario, sempre in cima ed evidenziati. */}
+          {/* Conflitti di orario: rosso (pericolo reale) ma collassati in UNA
+              riga espandibile, così non impilano N banner rossi in cima. */}
           {clashes.length > 0 && (
-            <ul className="flex flex-col gap-1.5">
-              {clashes.map((c) => (
-                <li
-                  key={c.when}
-                  className="flex items-center gap-2 rounded-md border border-danger/35 bg-danger-dim px-3 py-1.5 text-xs font-medium text-danger"
-                >
-                  <TriangleAlert aria-hidden="true" className="size-3.5 shrink-0" />
-                  <span className="truncate">
-                    <span className="font-mono">{c.when}</span> ·{" "}
-                    {c.courses.join(" vs ")}
-                  </span>
-                </li>
-              ))}
-            </ul>
+            <div className="rounded-md border border-danger/35 bg-danger-dim text-danger">
+              <button
+                type="button"
+                onClick={() => setClashesOpen((o) => !o)}
+                aria-expanded={clashesOpen}
+                className="flex w-full items-center gap-2 px-3 py-1.5 text-xs font-medium"
+              >
+                <TriangleAlert aria-hidden="true" className="size-3.5 shrink-0" />
+                <span className="flex-1 text-left">
+                  {clashes.length}{" "}
+                  {clashes.length === 1
+                    ? "conflitto di orario rilevato"
+                    : "conflitti di orario rilevati"}
+                </span>
+                <ChevronDown
+                  aria-hidden="true"
+                  className={`size-3.5 shrink-0 transition-transform ${clashesOpen ? "rotate-180" : ""}`}
+                />
+              </button>
+              {clashesOpen && (
+                <ul className="flex flex-col gap-1 border-t border-danger/25 px-3 py-1.5">
+                  {clashes.map((c) => (
+                    <li key={c.when} className="truncate text-xs">
+                      <span className="font-mono">{c.when}</span> ·{" "}
+                      {c.courses.join(" vs ")}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
           )}
 
           <ul className={`no-scrollbar stagger-children flex max-h-[360px] flex-col divide-y divide-line overflow-y-auto ${SOFT_SCROLL}`}>
