@@ -73,10 +73,10 @@ const SAMPLE_TROPHIES: {
   iconColor: string;
   grad?: boolean;
 }[] = [
-  { grade: "30", laude: true, course: "Algoritmi", border: "border-yellow-400/60", Icon: Trophy, iconColor: "text-yellow-400", grad: true },
-  { grade: "29", course: "Basi di dati", border: "border-[color:var(--signal)]/50", Icon: Trophy, iconColor: "text-[var(--signal-2)]", grad: true },
-  { grade: "28", course: "Reti", border: "border-[color:var(--signal)]/50", Icon: Trophy, iconColor: "text-[var(--signal-2)]", grad: true },
-  { grade: "26", course: "Fisica", border: "border-line", Icon: Award, iconColor: "text-ink-mute" },
+  { grade: "30", laude: true, course: "Diritto costituzionale", border: "border-yellow-400/60", Icon: Trophy, iconColor: "text-yellow-400", grad: true },
+  { grade: "29", course: "Microbiologia", border: "border-[color:var(--signal)]/50", Icon: Trophy, iconColor: "text-[var(--signal-2)]", grad: true },
+  { grade: "28", course: "Macroeconomia", border: "border-[color:var(--signal)]/50", Icon: Trophy, iconColor: "text-[var(--signal-2)]", grad: true },
+  { grade: "26", course: "Storia dell'arte", border: "border-line", Icon: Award, iconColor: "text-ink-mute" },
   { grade: "Idoneo", course: "Inglese B2", border: "border-line/60", Icon: GraduationCap, iconColor: "text-ink-mute" },
 ];
 

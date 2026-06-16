@@ -15,14 +15,16 @@ import type { LibrettoEntry } from "@/lib/domain/types";
 import { fmtNum } from "@/lib/format";
 import { UNIVERSITY_PRESETS } from "@/lib/sync/universities";
 
+// Mix multi-disciplina (giuridico, umanistico, economico, scientifico) così uno
+// studente di qualsiasi corso si riconosce — la landing è multi-ateneo.
 const SEED = [
-  { name: "Analisi I", cfu: 9, vote: 27 },
-  { name: "Programmazione", cfu: 12, vote: 30 },
-  { name: "Fisica", cfu: 6, vote: 24 },
-  { name: "Architetture", cfu: 9, vote: 28 },
+  { name: "Diritto privato", cfu: 9, vote: 28 },
+  { name: "Storia contemporanea", cfu: 6, vote: 27 },
+  { name: "Economia aziendale", cfu: 9, vote: 25 },
+  { name: "Statistica", cfu: 6, vote: 30 },
 ];
 const TOTAL_CFU = 180;
-const NEXT_EXAM = { course: "Basi di dati", dateLabel: "18 giu", daysAway: 2 };
+const NEXT_EXAM = { course: "Letteratura italiana", dateLabel: "18 giu", daysAway: 2 };
 
 export function HeroDemo() {
   const atenei = useMemo(() => UNIVERSITY_PRESETS.map((p) => p.shortName), []);
