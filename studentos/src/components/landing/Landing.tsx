@@ -113,7 +113,7 @@ export function Landing() {
     <>
       <main id="contenuto" className="relative z-[2] flex-1">
         {/* HERO */}
-        <section className="wrap relative overflow-hidden py-12 text-center sm:py-16">
+        <section className="wrap relative overflow-hidden py-10 text-center sm:py-12">
           <div className="reveal in mb-6 inline-flex">
             <span className="chip chip-signal">
               <LifeBuoy className="size-[0.85rem]" aria-hidden="true" />
@@ -157,7 +157,7 @@ export function Landing() {
               </Link>
             </p>
           </div>
-          <div className="mt-12">
+          <div className="mt-8">
             <HeroDemo />
           </div>
         </section>
