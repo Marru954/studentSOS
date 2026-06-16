@@ -21,7 +21,8 @@ export type WordPressNewsParams = z.infer<typeof paramsSchema>;
 const wpPost = z.object({
   id: z.number(),
   date_gmt: z.string(),
-  link: z.string(),
+  // `.url()` scarta post con link non valido/ostile (es. `javascript:`) a monte.
+  link: z.string().url(),
   title: z.object({ rendered: z.string() }),
   excerpt: z.object({ rendered: z.string() }).optional(),
 });

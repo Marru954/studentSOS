@@ -22,6 +22,9 @@ export function NotePreview({ content }: { content: string }) {
   }
   return (
     <div className="note-prose">
+      {/* SICUREZZA: MAI aggiungere `rehype-raw`. react-markdown non renderizza
+          HTML grezzo e KaTeX usa `trust:false` di default → le note sono
+          safe-by-construction. `rehype-raw` aprirebbe un buco XSS. */}
       <ReactMarkdown
         remarkPlugins={[remarkGfm, remarkMath]}
         rehypePlugins={[rehypeKatex, rehypeHighlight]}

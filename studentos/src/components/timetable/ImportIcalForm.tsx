@@ -74,10 +74,21 @@ export function ImportIcalForm({ onImported }: { onImported?: () => void }) {
   async function handleUrl() {
     const trimmed = url.trim();
     if (!trimmed || loading) return;
+    // Solo http/https: blocca file:/javascript:/data: ecc. da URL utente.
+    if (!/^https?:\/\//i.test(trimmed)) {
+      useToast.getState().show("Inserisci un indirizzo http(s) valido.", "warn");
+      return;
+    }
     setLoading(true);
     try {
       const res = await fetch(trimmed);
-      const text = await res.text();
+      // Cap a ~2 MB: un calendario reale è ben sotto; oltre è un download ostile.
+      const blob = await res.blob();
+      if (blob.size > 2_000_000) {
+        useToast.getState().show("File iCal troppo grande (max 2 MB).", "warn");
+        return;
+      }
+      const text = await blob.text();
       await importText(text, trimmed);
       setUrl("");
     } catch {

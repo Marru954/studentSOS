@@ -3,6 +3,7 @@ import { Panel } from "@/components/primitives/Panel";
 import { cn } from "@/lib/cn";
 import type { NewsItem } from "@/lib/domain/types";
 import { fmtDayMonth } from "@/lib/format";
+import { safeHref } from "@/lib/url";
 
 /** Thin, neutral, hover-revealed scrollbar — no resting groove or line. */
 const SOFT_SCROLL =
@@ -38,7 +39,10 @@ export function NewsList({
         </p>
       ) : (
         <ul className={`no-scrollbar flex flex-1 flex-col divide-y divide-line overflow-y-auto ${SOFT_SCROLL}`}>
-          {sorted.map((n) => (
+          {sorted.map((n) => {
+            // href fidato solo se http/https: un link ostile diventa testo inerte.
+            const href = safeHref(n.url);
+            return (
             <li key={n.id} className="flex gap-3 py-2.5 first:pt-0 last:pb-0">
               <span
                 aria-hidden="true"
@@ -46,15 +50,19 @@ export function NewsList({
               />
               <div className="min-w-0 flex-1">
                 <div className="flex items-baseline gap-2">
+                  {href ? (
                   <a
-                    href={n.url}
+                    href={href}
                     target="_blank"
-                    rel="noreferrer"
+                    rel="noopener noreferrer"
                     className="link-underline text-sm font-medium text-ink transition-colors hover:text-signal"
                   >
                     {n.title}
                     <span className="sr-only"> (si apre in una nuova scheda)</span>
                   </a>
+                  ) : (
+                    <span className="text-sm font-medium text-ink">{n.title}</span>
+                  )}
                   {n.publishedAt && (
                     <span className="ml-auto shrink-0 font-num text-xs text-ink-faint">
                       {fmtDayMonth(n.publishedAt)}
@@ -68,7 +76,8 @@ export function NewsList({
                 )}
               </div>
             </li>
-          ))}
+            );
+          })}
         </ul>
       )}
     </Panel>
