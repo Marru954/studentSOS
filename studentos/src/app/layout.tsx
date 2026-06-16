@@ -52,7 +52,7 @@ export default function RootLayout({
       <head>
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT }} />
       </head>
-      <body className="min-h-full flex flex-col pb-[68px] sm:pb-0">
+      <body className="min-h-full flex flex-col pb-[68px] xl:pb-0">
         {/* drifting aurora behind the glass UI */}
         <div className="atmosphere" aria-hidden="true">
           <div className="aurora a1" />

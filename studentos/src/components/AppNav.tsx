@@ -77,8 +77,10 @@ export function AppNav() {
           >
             <Wordmark />
           </Link>
-          {/* Inline links: desktop only. Mobile uses the bottom tab bar. */}
-          <div className="hidden items-center gap-1 sm:flex">
+          {/* Inline links: wide screens only — below `xl` the 9 links plus the
+              search/account/theme cluster overflow the pill, so tablet/laptop
+              widths use the bottom tab bar instead. */}
+          <div className="hidden items-center gap-1 xl:flex">
             {LINKS.map(({ href, label, icon: Icon }) => {
               const active = pathname.startsWith(href);
               const alert = href === "/cruscotto" && criticalCount > 0;
@@ -130,7 +132,7 @@ export function AppNav() {
       {/* Mobile bottom tab bar — replaces the inline link overflow under sm. */}
       <nav
         aria-label="Navigazione"
-        className="no-print fixed bottom-0 left-0 right-0 z-40 flex justify-around gap-1 overflow-x-auto border-t border-line bg-night-800/90 px-1 py-2 backdrop-blur-md sm:hidden"
+        className="no-print fixed bottom-0 left-0 right-0 z-40 flex justify-around gap-1 overflow-x-auto border-t border-line bg-night-800/90 px-1 py-2 backdrop-blur-md xl:hidden"
       >
         {LINKS.map(({ href, short, icon: Icon }) => {
           const active = pathname.startsWith(href);
