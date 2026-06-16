@@ -113,6 +113,17 @@ export function FocusHeatmap({
       ? "Nessuna sessione di studio negli ultimi sei mesi."
       : `${fmtMinutes(totalMinutes)} di studio in ${activeDays} ${activeDays === 1 ? "giorno" : "giorni"} negli ultimi sei mesi.`;
 
+  // Vuoto = compatto: niente griglia 26 settimane full-width finché non c'è
+  // studio — solo una riga attenuata.
+  if (activeDays === 0) {
+    return (
+      <p className="text-sm text-ink-mute">
+        Nessuna sessione di studio negli ultimi sei mesi. Avvia un timer per
+        iniziare a riempire la mappa.
+      </p>
+    );
+  }
+
   return (
     <div className="reveal flex flex-col gap-3">
       <svg

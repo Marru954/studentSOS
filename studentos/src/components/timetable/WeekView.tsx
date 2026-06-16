@@ -364,6 +364,46 @@ export function WeekView() {
     );
   }, [ready, yearFilteredEvents, pinnedCourses, now]);
 
+  // Vuoto = compatto: un solo vuoto (questo), riusato in griglia e in lista.
+  // In griglia sostituisce la WeekGrid alta invece di sommarsi ad essa.
+  const emptyState =
+    weekEvents.length === 0 ? (
+      <EmptyState
+        compact
+        icon={<CalendarOff />}
+        title={
+          pinnedCourses.length > 0
+            ? "Nessuna lezione per i corsi scelti"
+            : "Settimana senza lezioni"
+        }
+        description={
+          nextLesson && now
+            ? "Niente in calendario questa settimana — probabilmente sei in sessione d'esami o in pausa. Salta direttamente alla prossima lezione in programma."
+            : "Niente lezioni questa settimana: goditi la pausa. Quando ne aggiungi o sincronizzi, compaiono qui nella griglia."
+        }
+      >
+        {nextLesson && now && (
+          <button
+            type="button"
+            className="btn btn-primary"
+            onClick={() =>
+              setWeekOffset(
+                Math.round(
+                  (mondayOf(new Date(nextLesson.start)).getTime() -
+                    mondayOf(now).getTime()) /
+                    (7 * 86_400_000),
+                ),
+              )
+            }
+          >
+            <CalendarClock aria-hidden="true" className="size-4" />
+            Prossima lezione: {nextLesson.courseName},{" "}
+            {lessonDay.format(new Date(nextLesson.start))}
+          </button>
+        )}
+      </EmptyState>
+    ) : null;
+
   return (
     <div className="flex flex-col gap-5">
       <header className="flex flex-wrap items-end justify-between gap-4">
@@ -464,46 +504,16 @@ export function WeekView() {
           />
           <ManualLessonForm courses={allCourses} />
           <ImportIcalForm />
-          {weekEvents.length === 0 && (
-            <EmptyState
-              compact
-              icon={<CalendarOff />}
-              title={
-                pinnedCourses.length > 0
-                  ? "Nessuna lezione per i corsi scelti"
-                  : "Settimana senza lezioni"
-              }
-              description={
-                nextLesson && now
-                  ? "Niente in calendario questa settimana — probabilmente sei in sessione d'esami o in pausa. Salta direttamente alla prossima lezione in programma."
-                  : "Niente lezioni questa settimana: goditi la pausa. Quando ne aggiungi o sincronizzi, compaiono qui nella griglia."
-              }
-            >
-              {nextLesson && now && (
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                  onClick={() =>
-                    setWeekOffset(
-                      Math.round(
-                        (mondayOf(new Date(nextLesson.start)).getTime() -
-                          mondayOf(now).getTime()) /
-                          (7 * 86_400_000),
-                      ),
-                    )
-                  }
-                >
-                  <CalendarClock aria-hidden="true" className="size-4" />
-                  Prossima lezione: {nextLesson.courseName},{" "}
-                  {lessonDay.format(new Date(nextLesson.start))}
-                </button>
-              )}
-            </EmptyState>
-          )}
           {view === "grid" ? (
-            <div className="glass gradient-ring reveal overflow-x-auto p-5">
-              <WeekGrid events={weekEvents} weekStart={weekStart!} now={now} />
-            </div>
+            weekEvents.length === 0 ? (
+              emptyState
+            ) : (
+              <div className="glass gradient-ring reveal overflow-x-auto p-5">
+                <WeekGrid events={weekEvents} weekStart={weekStart!} now={now} />
+              </div>
+            )
+          ) : weekEvents.length === 0 ? (
+            emptyState
           ) : (
             <WeekAgenda events={weekEvents} />
           )}

@@ -53,10 +53,11 @@ function NextExamHero({
 }) {
   const accent =
     days < 7 ? "var(--danger)" : days < 14 ? "var(--warn)" : "var(--signal)";
+  const barWidth = days < 0 ? 100 : Math.max(8, 100 - days * 2.5);
   return (
     <section
       className={cn(
-        "glass panel-hero accent-top relative flex flex-col justify-between gap-5 overflow-hidden rounded-lg p-6",
+        "glass panel-hero accent-top relative flex flex-col gap-5 overflow-hidden rounded-lg p-6",
         className,
       )}
     >
@@ -72,7 +73,7 @@ function NextExamHero({
         <CalendarClock aria-hidden="true" className="size-4" />
         Prossimo esame
       </div>
-      <div className="relative">
+      <div className="relative flex flex-1 flex-col justify-center">
         <div className="flex items-baseline gap-3">
           <span
             className="font-num text-[clamp(3rem,9vw,5.2rem)] font-extrabold leading-none [font-family:var(--font-display)]"
@@ -92,20 +93,34 @@ function NextExamHero({
           {exam.time ? ` · ore ${exam.time}` : ""}
           {exam.room ? ` · ${exam.room}` : ""}
         </p>
+        {exam.teacher && (
+          <p className="muted mt-1 text-sm">{exam.teacher}</p>
+        )}
       </div>
-      <div className="relative flex flex-wrap items-center justify-between gap-3">
-        <p className="muted text-sm">
-          {examsThisWeek > 0
-            ? `${examsThisWeek} ${examsThisWeek === 1 ? "appello" : "appelli"} questa settimana`
-            : "Nessun altro appello nei prossimi 7 giorni"}
-        </p>
-        <Link
-          href={`/focus?course=${encodeURIComponent(exam.courseName)}`}
-          className="btn btn-primary shrink-0"
+      <div className="relative flex flex-col gap-3">
+        <div
+          className="h-1.5 overflow-hidden rounded-full"
+          style={{ background: "var(--hairline)" }}
         >
-          <Timer aria-hidden="true" className="size-4" />
-          Studia per questo esame
-        </Link>
+          <div
+            className="h-full rounded-full"
+            style={{ width: `${barWidth}%`, background: accent }}
+          />
+        </div>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <p className="muted text-sm">
+            {examsThisWeek > 0
+              ? `${examsThisWeek} ${examsThisWeek === 1 ? "appello" : "appelli"} questa settimana`
+              : "Nessun altro appello nei prossimi 7 giorni"}
+          </p>
+          <Link
+            href={`/focus?course=${encodeURIComponent(exam.courseName)}`}
+            className="btn btn-primary shrink-0"
+          >
+            <Timer aria-hidden="true" className="size-4" />
+            Studia per questo esame
+          </Link>
+        </div>
       </div>
     </section>
   );
