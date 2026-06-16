@@ -5,11 +5,9 @@ import {
   Award,
   CalendarClock,
   CalendarDays,
-  Check,
   GraduationCap,
   LayoutDashboard,
   LifeBuoy,
-  Minus,
   NotebookPen,
   Timer,
   Trophy,
@@ -81,19 +79,6 @@ const SAMPLE_TROPHIES: {
   { grade: "Idoneo", course: "Inglese B2", border: "border-line/60", Icon: GraduationCap, iconColor: "text-ink-mute" },
 ];
 
-/** Feature comparison: StudentOS vs the usual alternatives. */
-const COMPARE_COLS = ["StudentOS", "Excel", "Portale ateneo", "Altre app"];
-type Cell = "yes" | "no" | "partial";
-const COMPARE_ROWS: { feature: string; cells: Cell[] }[] = [
-  { feature: "Accesso da qualsiasi dispositivo", cells: ["yes", "yes", "no", "no"] },
-  { feature: "Nessun abbonamento", cells: ["yes", "yes", "no", "no"] },
-  { feature: "Media e proiezione laurea live", cells: ["yes", "partial", "no", "partial"] },
-  { feature: "Appelli + avvisi sui conflitti", cells: ["yes", "no", "partial", "partial"] },
-  { feature: "Focus / Pomodoro integrato", cells: ["yes", "no", "no", "partial"] },
-  { feature: "Import del PDF carriera", cells: ["yes", "no", "no", "no"] },
-  { feature: "Privacy: i tuoi dati restano tuoi", cells: ["yes", "yes", "no", "no"] },
-];
-
 const UNIVERSITY_NAMES = [
   "Tor Vergata",
   "La Sapienza",
@@ -107,24 +92,6 @@ const UNIVERSITY_NAMES = [
   "Firenze",
   "Statale di Milano",
   "Ca' Foscari",
-];
-
-const TESTIMONIALS = [
-  {
-    name: "Giulia M.",
-    uni: "Bologna",
-    text: "Ho smesso di usare 4 app diverse. Tutto qui, sincronizzato, veloce.",
-  },
-  {
-    name: "Lorenzo B.",
-    uni: "Politecnico MI",
-    text: "Il simulatore di media mi ha aiutato a capire su quali esami puntare di più.",
-  },
-  {
-    name: "Sara P.",
-    uni: "La Sapienza",
-    text: "Il Pomodoro integrato con gli esami è geniale. Finalmente studio con un piano.",
-  },
 ];
 
 const ALL: { icon: LucideIcon; title: string; desc: string }[] = [
@@ -153,24 +120,6 @@ const fadeIn =
       { duration: 700, delay, fill: "forwards", easing: "cubic-bezier(.22,1,.36,1)" },
     );
   };
-
-/** A single comparison-table cell. */
-function CompareCell({ value, highlight }: { value: Cell; highlight: boolean }) {
-  if (value === "yes")
-    return (
-      <Check
-        aria-label="sì"
-        className={`mx-auto size-[1.1rem] ${highlight ? "text-[var(--signal-2)]" : "text-ok"}`}
-      />
-    );
-  if (value === "partial")
-    return (
-      <span aria-label="parziale" className="text-ink-faint">
-        ~
-      </span>
-    );
-  return <Minus aria-label="no" className="mx-auto size-[1.1rem] text-ink-faint" />;
-}
 
 /** Public landing — no login required. The global AppNav sits above it as the
  *  top bar; "Inizia ora" drops the visitor into the Cruscotto. */
@@ -332,51 +281,6 @@ export function Landing() {
           </div>
         </section>
 
-        {/* PERCHÉ STUDENTOS — comparativa */}
-        <section className="wrap section">
-          <div className="section-lead section-lead--left">
-            <p className="reveal eyebrow">Perché StudentOS</p>
-            <h2 className="reveal display-md mt-3 max-w-[20ch]">
-              Non è un altro <span className="grad-text">foglio Excel</span>.
-            </h2>
-          </div>
-          <div className="reveal mt-8 overflow-x-auto">
-            <table className="glass mx-auto w-full min-w-[34rem] overflow-hidden rounded-2xl text-sm shadow-soft">
-              <thead>
-                <tr className="border-b border-line">
-                  <th className="px-4 py-3.5 text-left font-medium text-ink-mute" />
-                  {COMPARE_COLS.map((c, i) => (
-                    <th
-                      key={c}
-                      scope="col"
-                      className="px-4 py-3.5 text-center font-semibold"
-                    >
-                      {i === 0 ? <span className="grad-text">{c}</span> : <span className="text-ink-mute">{c}</span>}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {COMPARE_ROWS.map((row) => (
-                  <tr key={row.feature} className="border-b border-line/50 last:border-0">
-                    <th scope="row" className="px-4 py-3 text-left font-normal text-ink">
-                      {row.feature}
-                    </th>
-                    {row.cells.map((cell, i) => (
-                      <td
-                        key={i}
-                        className={`px-4 py-3 text-center ${i === 0 ? "bg-[color-mix(in_oklch,var(--signal)_9%,transparent)]" : ""}`}
-                      >
-                        <CompareCell value={cell} highlight={i === 0} />
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </section>
-
         {/* RESTA IN PISTA — gamification teaser */}
         <section className="wrap section">
           <p className="reveal eyebrow text-center">Resta in pista</p>
@@ -413,30 +317,6 @@ export function Landing() {
                 </div>
               );
             })}
-          </div>
-        </section>
-
-        {/* DICONO DI NOI */}
-        <section className="wrap section">
-          <p className="reveal eyebrow text-center">Dicono di noi</p>
-          <h2 className="reveal display-md mx-auto mt-2.5 max-w-[18ch] text-center">
-            Studenti come <span className="grad-text">te</span>.
-          </h2>
-          <div className="mt-8 grid gap-4 [grid-template-columns:repeat(auto-fit,minmax(260px,1fr))]">
-            {TESTIMONIALS.map((t, i) => (
-              <figure
-                key={t.name}
-                className={`glass reveal flex flex-col gap-4 rounded-lg p-[1.6rem] ${["lg:mt-12", "lg:mt-6", ""][i] ?? ""}`}
-                style={{ ["--d" as string]: `${i * 0.1}s` }}
-              >
-                <blockquote className="text-[0.98rem] italic text-ink">
-                  “{t.text}”
-                </blockquote>
-                <figcaption className="eyebrow mt-auto text-ink-faint">
-                  {t.name} · {t.uni}
-                </figcaption>
-              </figure>
-            ))}
           </div>
         </section>
 

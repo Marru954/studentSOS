@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { Wordmark } from "@/components/Wordmark";
 
-/** Global footer for the internal pages. Minimal: brand, the privacy promise,
- *  and the build version. Hidden when printing (FEAT export). */
+/** Global footer for the internal pages. Minimal: brand + the privacy promise.
+ *  Hidden when printing (FEAT export). */
 export function AppFooter() {
   return (
     <footer className="no-print mt-8 border-t border-[var(--hairline)]">
@@ -16,7 +16,6 @@ export function AppFooter() {
         <span className="text-ink-mute">
           I tuoi dati restano su questo dispositivo
         </span>
-        <span className="font-num text-ink-faint">v0.1.0</span>
       </div>
     </footer>
   );
