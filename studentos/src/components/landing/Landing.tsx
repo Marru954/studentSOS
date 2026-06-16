@@ -358,34 +358,6 @@ export function Landing() {
             ))}
           </div>
         </section>
-
-        {/* CTA */}
-        <section className="wrap section">
-          <div
-            className="glass reveal relative overflow-hidden rounded-xl text-center"
-            style={{ padding: "clamp(2rem, 6vw, 4rem)" }}
-          >
-            <div
-              aria-hidden="true"
-              className="absolute inset-0 opacity-50"
-              style={{ background: "radial-gradient(60% 80% at 50% 0%, var(--glow-1), transparent 70%)" }}
-            />
-            <div className="relative">
-              <h2 className="display-lg mx-auto max-w-[18ch]">
-                Prendi il largo senza affogare negli appelli.
-              </h2>
-              <p className="mx-auto mt-4 max-w-[36ch] text-ink-mute">
-                Scegli ateneo e corso, apri il cruscotto e parti. Nessun account richiesto.
-              </p>
-              <div className="mt-7 flex justify-center">
-                <Link href="/cruscotto" className="btn btn-primary">
-                  Apri il Cruscotto
-                  <ArrowRight className="size-[1.05rem]" aria-hidden="true" />
-                </Link>
-              </div>
-            </div>
-          </div>
-        </section>
       </main>
     </>
   );
