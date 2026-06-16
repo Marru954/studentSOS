@@ -206,7 +206,7 @@ export function Landing() {
             style={{ fontSize: "clamp(1.05rem, 2.4vw, 1.35rem)" }}
           >
             Esami, appelli, libretto e carriera in un unico posto.{" "}
-            <span className="text-ink">Calmo, immersivo, sempre sincronizzato.</span>
+            <span className="text-ink">Calmo, immersivo, sempre con te.</span>
           </p>
           <div ref={fadeIn(2000)} className="mt-9 flex flex-col items-center gap-3">
             <div className="flex flex-wrap justify-center gap-3">
