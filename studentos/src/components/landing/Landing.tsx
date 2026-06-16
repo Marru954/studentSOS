@@ -143,17 +143,18 @@ export function Landing() {
             <span className="text-ink">Calmo, immersivo, sempre con te.</span>
           </p>
           <div ref={fadeIn(2000)} className="mt-9 flex flex-col items-center gap-3">
-            <div className="flex flex-wrap justify-center gap-3">
-              <Link href="/cruscotto" className="btn btn-primary">
-                Inizia ora
-                <ArrowRight className="size-[1.05rem]" aria-hidden="true" />
-              </Link>
-              <Link href="/focus" className="btn">
-                Prova il Focus
-              </Link>
-            </div>
+            <Link href="/cruscotto" className="btn btn-primary px-7 py-3 text-base">
+              Inizia ora
+              <ArrowRight className="size-[1.15rem]" aria-hidden="true" />
+            </Link>
             <p className="eyebrow text-ink-faint">
               Gratis · i tuoi dati restano sul dispositivo
+            </p>
+            <p className="text-sm text-ink-mute">
+              oppure{" "}
+              <Link href="/focus" className="underline hover:text-ink">
+                prova subito il Focus
+              </Link>
             </p>
           </div>
           <div className="mt-12">
