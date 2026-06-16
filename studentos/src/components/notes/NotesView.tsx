@@ -140,6 +140,7 @@ export function NotesView({ initialQuery }: { initialQuery?: string }) {
         </div>
         <button
           type="button"
+          data-quickadd
           onClick={createNote}
           className="btn btn-primary"
           style={{ padding: "0.6rem 1.1rem", fontSize: "0.85rem" }}

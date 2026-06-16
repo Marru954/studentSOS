@@ -272,6 +272,7 @@ export function ExamList() {
                 preventScroll: true,
               });
             }}
+            data-quickadd
             disabled={!ready}
             aria-label="Aggiungi un appello manualmente"
             className="btn btn-primary disabled:pointer-events-none disabled:opacity-45"

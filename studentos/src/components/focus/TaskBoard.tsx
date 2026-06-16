@@ -97,6 +97,7 @@ export function TaskBoard({
         <Field label="Nuova attività" htmlFor="task-titolo" className="min-w-56 flex-1">
           <input
             id="task-titolo"
+            data-quickadd
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}

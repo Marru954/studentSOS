@@ -102,6 +102,7 @@ export function EntryForm({
         <Field label="Corso" htmlFor="lib-corso">
           <input
             id="lib-corso"
+            data-quickadd
             type="text"
             value={courseName}
             onChange={(e) => {

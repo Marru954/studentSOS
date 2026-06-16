@@ -58,7 +58,7 @@
   --bg-2: #110f1d;
   --ink: #f3f2fb;
   --ink-mute: #a9a7c4;
-  --ink-faint: #6f6d8c;
+  --ink-faint: #7c7a98; /* WCAG AA (4.74:1) su --bg; era #6f6d8c (3.95, sotto soglia) */
   --surface: rgba(255, 255, 255, 0.07);
   --hover: rgba(255, 255, 255, 0.12);
   --hairline: rgba(255, 255, 255, 0.09);
@@ -82,7 +82,7 @@
   --bg-2: #eceaf9;
   --ink: #15131f;
   --ink-mute: #5c596f;
-  --ink-faint: #9794ac;
+  --ink-faint: #6e6b84; /* WCAG AA (4.65:1) su --bg; era #9794ac (2.67, sotto soglia) */
   --surface: rgba(255, 255, 255, 0.9);
   --hover: rgba(20, 16, 45, 0.05);
   --hairline: rgba(20, 16, 45, 0.08);

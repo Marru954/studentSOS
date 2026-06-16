@@ -295,7 +295,10 @@ export function ManualLessonForm({
 
   return (
     <details className="glass rounded-lg border border-line shadow-soft">
-      <summary className="flex cursor-pointer list-none items-center gap-2 rounded-md px-4 py-3 text-sm font-semibold text-ink transition-colors hover:bg-night-900 [&::-webkit-details-marker]:hidden">
+      <summary
+        data-quickadd
+        className="flex cursor-pointer list-none items-center gap-2 rounded-md px-4 py-3 text-sm font-semibold text-ink transition-colors hover:bg-night-900 [&::-webkit-details-marker]:hidden"
+      >
         <CalendarPlus aria-hidden="true" className="size-4 text-signal" />
         Aggiungi una lezione
         <span className="ml-auto text-xs font-normal text-ink-mute">
