@@ -228,7 +228,7 @@ export function Landing() {
         </section>
 
         {/* FEATURE CARDS */}
-        <section className="wrap py-12">
+        <section className="wrap section">
           <div className="grid gap-4 [grid-template-columns:repeat(auto-fit,minmax(260px,1fr))]">
             {FEATURES.map(({ icon: Icon, href, title, desc }, i) => (
               <Link
@@ -252,7 +252,7 @@ export function Landing() {
         </section>
 
         {/* ATENEI SUPPORTATI */}
-        <section className="wrap py-12">
+        <section className="wrap section">
           <p className="reveal eyebrow text-center">Atenei supportati</p>
           <h2
             className="reveal mx-auto mt-2.5 max-w-[20ch] text-center"
@@ -280,14 +280,19 @@ export function Landing() {
         </section>
 
         {/* COME FUNZIONA */}
-        <section className="wrap py-16">
-          <p className="reveal eyebrow text-center">Come funziona</p>
-          <h2
-            className="reveal mx-auto mt-2.5 max-w-[16ch] text-center"
-            style={{ ["--d" as string]: "0.05s", fontSize: "clamp(2rem, 5vw, 3.2rem)" }}
-          >
-            Dal tuo ateneo al <span className="grad-text">cruscotto</span> in tre passi.
-          </h2>
+        <section className="wrap section">
+          <div className="section-lead section-lead--left">
+            <p className="reveal eyebrow">Come funziona</p>
+            <h2
+              className="reveal mt-3 max-w-[16ch]"
+              style={{ ["--d" as string]: "0.05s", fontSize: "clamp(2rem, 5vw, 3.2rem)" }}
+            >
+              Dal tuo ateneo al <span className="grad-text">cruscotto</span> in tre passi.
+            </h2>
+            <p className="reveal mt-3 text-ink-mute" style={{ ["--d" as string]: "0.1s" }}>
+              Tre passaggi, una volta sola. Dopo si aggiorna tutto da sé.
+            </p>
+          </div>
           <div className="mt-10 grid gap-4 [grid-template-columns:repeat(auto-fit,minmax(240px,1fr))]">
             {STEPS.map((s, i) => (
               <div
@@ -306,7 +311,7 @@ export function Landing() {
         </section>
 
         {/* STATS BAND */}
-        <section className="py-16">
+        <section className="section">
           <div className="wrap grid gap-4 [grid-template-columns:repeat(auto-fit,minmax(220px,1fr))]">
             {STATS.map(({ value, suffix, unit, desc }, i) => (
               <div
@@ -329,14 +334,16 @@ export function Landing() {
         </section>
 
         {/* PERCHÉ STUDENTOS — comparativa */}
-        <section className="wrap py-12">
-          <p className="reveal eyebrow text-center">Perché StudentOS</p>
-          <h2
-            className="reveal mx-auto mt-2.5 max-w-[20ch] text-center"
-            style={{ fontSize: "clamp(1.8rem, 4vw, 2.6rem)" }}
-          >
-            Non è un altro <span className="grad-text">foglio Excel</span>.
-          </h2>
+        <section className="wrap section">
+          <div className="section-lead section-lead--left">
+            <p className="reveal eyebrow">Perché StudentOS</p>
+            <h2
+              className="reveal mt-3 max-w-[20ch]"
+              style={{ fontSize: "clamp(1.8rem, 4vw, 2.6rem)" }}
+            >
+              Non è un altro <span className="grad-text">foglio Excel</span>.
+            </h2>
+          </div>
           <div className="reveal mt-8 overflow-x-auto">
             <table className="glass mx-auto w-full min-w-[34rem] overflow-hidden rounded-2xl text-sm shadow-soft">
               <thead>
@@ -375,7 +382,7 @@ export function Landing() {
         </section>
 
         {/* RESTA IN PISTA — gamification teaser */}
-        <section className="wrap py-12">
+        <section className="wrap section">
           <p className="reveal eyebrow text-center">Resta in pista</p>
           <h2
             className="reveal mx-auto mt-2.5 max-w-[20ch] text-center"
@@ -417,7 +424,7 @@ export function Landing() {
         </section>
 
         {/* DICONO DI NOI */}
-        <section className="wrap py-12">
+        <section className="wrap section">
           <p className="reveal eyebrow text-center">Dicono di noi</p>
           <h2
             className="reveal mx-auto mt-2.5 max-w-[18ch] text-center"
@@ -444,10 +451,17 @@ export function Landing() {
         </section>
 
         {/* TUTTO IN UN POSTO */}
-        <section className="wrap py-12">
-          <h2 className="reveal text-center" style={{ fontSize: "clamp(1.8rem, 4vw, 2.6rem)" }}>
-            Tutto in un posto
-          </h2>
+        <section className="wrap section">
+          <div className="section-lead section-lead--left">
+            <p className="reveal eyebrow">Una sola app</p>
+            <h2 className="reveal mt-3" style={{ fontSize: "clamp(1.8rem, 4vw, 2.6rem)" }}>
+              Tutto in un posto
+            </h2>
+            <p className="reveal mt-3 text-ink-mute">
+              Libretto, appelli, note, focus, cruscotto e orario — senza saltare
+              tra app diverse.
+            </p>
+          </div>
           <div className="mt-8 grid gap-3 [grid-template-columns:repeat(auto-fit,minmax(240px,1fr))]">
             {ALL.map(({ icon: Icon, title, desc }, i) => (
               <div
@@ -468,7 +482,7 @@ export function Landing() {
         </section>
 
         {/* CTA */}
-        <section className="wrap py-16">
+        <section className="wrap section">
           <div
             className="glass reveal relative overflow-hidden rounded-lg text-center"
             style={{ padding: "clamp(2rem, 6vw, 4rem)" }}

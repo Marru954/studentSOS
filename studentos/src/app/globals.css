@@ -569,6 +569,21 @@ input[type="radio"]:active {
 /* reference uses `.font-num`; alias to the same tabular figures as `.font-mono` */
 .font-num { font-variant-numeric: tabular-nums; font-feature-settings: "tnum"; }
 
+/* ── Section rhythm + editorial header lead ──────────────────────────────────
+   One vertical cadence for landing sections (replaces ad-hoc py-12/py-16) and a
+   header `lead` that breaks the all-centered monotony: either left-aligned and
+   offset with a gradient "kicker" rule before the eyebrow, or explicitly
+   centered. Static styles only — reduced-motion safe. */
+.section { padding-block: clamp(3rem, 6.5vw, 5.5rem); }
+.section-lead { max-width: 50ch; }
+.section-lead--center { margin-inline: auto; text-align: center; }
+.section-lead .eyebrow { display: inline-flex; align-items: center; gap: 0.6em; }
+.section-lead--center .eyebrow { justify-content: center; }
+.section-lead--left .eyebrow::before {
+  content: ""; flex: none; width: 1.75rem; height: 2px; border-radius: 2px;
+  background: linear-gradient(90deg, var(--signal), var(--signal-2));
+}
+
 /* gradient fill surface (icon tiles, etc.) — alias of the primary gradient */
 .grad-fill { background: linear-gradient(125deg, var(--signal) 0%, var(--signal-2) 100%); }
 
