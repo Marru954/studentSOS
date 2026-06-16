@@ -59,7 +59,7 @@ const STEPS = [
 ];
 
 const STATS: { value: number; suffix?: string; unit: string; desc: string }[] = [
-  { value: 100, suffix: "%", unit: "sincronizzato", desc: "i tuoi dati vivono qui; con l'accesso li ritrovi su ogni dispositivo" },
+  { value: 100, suffix: "%", unit: "in locale", desc: "i tuoi dati vivono sul dispositivo; l'accesso per ritrovarli altrove è opzionale" },
   { value: 1, unit: "PDF", desc: "tutta la carriera importata in un colpo solo" },
   { value: 5, suffix: " min", unit: "setup", desc: "per essere operativo dal primo avvio" },
 ];
@@ -211,7 +211,7 @@ export function Landing() {
           <div ref={fadeIn(2000)} className="mt-9 flex flex-col items-center gap-3">
             <div className="flex flex-wrap justify-center gap-3">
               <Link href="/cruscotto" className="btn btn-primary">
-                Inizia ora — con la tua email
+                Inizia ora
                 <ArrowRight className="size-[1.05rem]" aria-hidden="true" />
               </Link>
               <Link href="/focus" className="btn">
