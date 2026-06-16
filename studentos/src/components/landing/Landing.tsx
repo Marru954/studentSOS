@@ -254,10 +254,7 @@ export function Landing() {
         {/* ATENEI SUPPORTATI */}
         <section className="wrap section">
           <p className="reveal eyebrow text-center">Atenei supportati</p>
-          <h2
-            className="reveal mx-auto mt-2.5 max-w-[20ch] text-center"
-            style={{ fontSize: "clamp(1.8rem, 4vw, 2.6rem)" }}
-          >
+          <h2 className="reveal display-md mx-auto mt-2.5 max-w-[20ch] text-center">
             Funziona per il <span className="grad-text">tuo ateneo</span>.
           </h2>
           <div className="mt-8 grid gap-3 [grid-template-columns:repeat(auto-fit,minmax(200px,1fr))]">
@@ -284,8 +281,8 @@ export function Landing() {
           <div className="section-lead section-lead--left">
             <p className="reveal eyebrow">Come funziona</p>
             <h2
-              className="reveal mt-3 max-w-[16ch]"
-              style={{ ["--d" as string]: "0.05s", fontSize: "clamp(2rem, 5vw, 3.2rem)" }}
+              className="reveal display-lg mt-3 max-w-[16ch]"
+              style={{ ["--d" as string]: "0.05s" }}
             >
               Dal tuo ateneo al <span className="grad-text">cruscotto</span> in tre passi.
             </h2>
@@ -337,10 +334,7 @@ export function Landing() {
         <section className="wrap section">
           <div className="section-lead section-lead--left">
             <p className="reveal eyebrow">Perché StudentOS</p>
-            <h2
-              className="reveal mt-3 max-w-[20ch]"
-              style={{ fontSize: "clamp(1.8rem, 4vw, 2.6rem)" }}
-            >
+            <h2 className="reveal display-md mt-3 max-w-[20ch]">
               Non è un altro <span className="grad-text">foglio Excel</span>.
             </h2>
           </div>
@@ -384,10 +378,7 @@ export function Landing() {
         {/* RESTA IN PISTA — gamification teaser */}
         <section className="wrap section">
           <p className="reveal eyebrow text-center">Resta in pista</p>
-          <h2
-            className="reveal mx-auto mt-2.5 max-w-[20ch] text-center"
-            style={{ fontSize: "clamp(1.8rem, 4vw, 2.6rem)" }}
-          >
+          <h2 className="reveal display-md mx-auto mt-2.5 max-w-[20ch] text-center">
             Ogni esame è un <span className="grad-text">trofeo</span> sbloccato.
           </h2>
           <p className="reveal mx-auto mt-3 max-w-[46ch] text-center text-sm text-ink-mute">
@@ -426,10 +417,7 @@ export function Landing() {
         {/* DICONO DI NOI */}
         <section className="wrap section">
           <p className="reveal eyebrow text-center">Dicono di noi</p>
-          <h2
-            className="reveal mx-auto mt-2.5 max-w-[18ch] text-center"
-            style={{ fontSize: "clamp(1.8rem, 4vw, 2.6rem)" }}
-          >
+          <h2 className="reveal display-md mx-auto mt-2.5 max-w-[18ch] text-center">
             Studenti come <span className="grad-text">te</span>.
           </h2>
           <div className="mt-8 grid gap-4 [grid-template-columns:repeat(auto-fit,minmax(260px,1fr))]">
@@ -454,7 +442,7 @@ export function Landing() {
         <section className="wrap section">
           <div className="section-lead section-lead--left">
             <p className="reveal eyebrow">Una sola app</p>
-            <h2 className="reveal mt-3" style={{ fontSize: "clamp(1.8rem, 4vw, 2.6rem)" }}>
+            <h2 className="reveal display-md mt-3">
               Tutto in un posto
             </h2>
             <p className="reveal mt-3 text-ink-mute">
@@ -493,7 +481,7 @@ export function Landing() {
               style={{ background: "radial-gradient(60% 80% at 50% 0%, var(--glow-1), transparent 70%)" }}
             />
             <div className="relative">
-              <h2 className="mx-auto max-w-[18ch]" style={{ fontSize: "clamp(2rem, 5vw, 3.4rem)" }}>
+              <h2 className="display-lg mx-auto max-w-[18ch]">
                 Prendi il largo senza affogare negli appelli.
               </h2>
               <p className="mx-auto mt-4 max-w-[36ch] text-ink-mute">

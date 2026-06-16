@@ -584,6 +584,12 @@ input[type="radio"]:active {
   background: linear-gradient(90deg, var(--signal), var(--signal-2));
 }
 
+/* Display heading tiers — pillar sections (display-lg) out-rank the rest
+   (display-md); tracking tightens as size grows. Replaces the per-heading
+   inline clamp() that left nearly every h2 the same size. */
+.display-lg { font-size: clamp(2.3rem, 5.6vw, 3.7rem); letter-spacing: -0.035em; line-height: 1.05; }
+.display-md { font-size: clamp(1.85rem, 4.2vw, 2.7rem); letter-spacing: -0.025em; }
+
 /* gradient fill surface (icon tiles, etc.) — alias of the primary gradient */
 .grad-fill { background: linear-gradient(125deg, var(--signal) 0%, var(--signal-2) 100%); }
 
