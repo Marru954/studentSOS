@@ -1,0 +1,370 @@
+- generic [ref=e1]:
+  - link "Salta al contenuto" [ref=e2] [cursor=pointer]:
+    - /url: "#contenuto"
+  - banner [ref=e3]:
+    - navigation "Principale" [ref=e4]:
+      - link "StudentOS" [ref=e5] [cursor=pointer]:
+        - /url: /
+        - generic "StudentOS" [ref=e6]:
+          - generic [ref=e7]:
+            - text: Student
+            - img [ref=e8]
+            - text: S
+      - generic [ref=e15]:
+        - link "Cruscotto" [ref=e16] [cursor=pointer]:
+          - /url: /cruscotto
+          - img [ref=e18]
+          - text: Cruscotto
+        - link "Orario" [ref=e23] [cursor=pointer]:
+          - /url: /orario
+          - img [ref=e25]
+          - text: Orario
+        - link "Appelli" [ref=e27] [cursor=pointer]:
+          - /url: /appelli
+          - img [ref=e29]
+          - text: Appelli
+        - link "Calendario" [ref=e33] [cursor=pointer]:
+          - /url: /calendario
+          - img [ref=e35]
+          - text: Calendario
+        - link "Libretto" [ref=e37] [cursor=pointer]:
+          - /url: /libretto
+          - img [ref=e39]
+          - text: Libretto
+        - link "Note" [ref=e42] [cursor=pointer]:
+          - /url: /note
+          - img [ref=e44]
+          - text: Note
+        - link "Focus" [ref=e47] [cursor=pointer]:
+          - /url: /focus
+          - img [ref=e49]
+          - text: Focus
+        - link "Assistente" [ref=e52] [cursor=pointer]:
+          - /url: /assistente
+          - img [ref=e54]
+          - text: Assistente
+        - link "Impostazioni" [ref=e56] [cursor=pointer]:
+          - /url: /impostazioni
+          - img [ref=e58]
+          - text: Impostazioni
+      - generic [ref=e61]:
+        - button "Cerca (Cmd+K)" [ref=e62]:
+          - img [ref=e63]
+        - link "Accedi" [ref=e136] [cursor=pointer]:
+          - /url: /login
+          - img [ref=e137]
+          - text: Accedi
+        - button "Passa al tema chiaro" [ref=e66]:
+          - img [ref=e67]
+  - main [ref=e141]:
+    - generic [ref=e142]:
+      - generic "StudentOS" [ref=e143]:
+        - generic [ref=e144]:
+          - text: Student
+          - img [ref=e145]
+          - text: S
+      - paragraph [ref=e152]: Tre domande e il cruscotto si adatta a te.
+    - generic [ref=e153]:
+      - generic [ref=e156]: 1. Ateneo
+      - generic [ref=e159]: 2. Corso
+      - generic [ref=e162]: 3. Anno e CFU
+      - generic [ref=e165]: 4. Conferma
+    - generic [ref=e166]:
+      - generic [ref=e289]:
+        - heading "Quale corso di laurea?" [level=1] [ref=e290]
+        - paragraph [ref=e291]: Tor Vergata · Roma
+        - generic [ref=e292]:
+          - img
+          - textbox "Cerca corso di laurea" [ref=e293]:
+            - /placeholder: Cerca il tuo corso…
+        - generic [ref=e294]:
+          - button "Informatica (triennale) sync live" [active] [ref=e295]:
+            - generic [ref=e296]: Informatica (triennale)
+            - generic [ref=e297]:
+              - generic [ref=e298]: sync live
+              - img [ref=e299]
+          - button "Archeologia, Filologia, Letterature e Storia dell'Antichità sync live" [ref=e301]:
+            - generic [ref=e302]: Archeologia, Filologia, Letterature e Storia dell'Antichità
+            - generic [ref=e304]: sync live
+          - button "Art History in Rome, From Late Antiquity to the Present sync live" [ref=e305]:
+            - generic [ref=e306]: Art History in Rome, From Late Antiquity to the Present
+            - generic [ref=e308]: sync live
+          - button "Astrophysics and Space Science sync live" [ref=e309]:
+            - generic [ref=e310]: Astrophysics and Space Science
+            - generic [ref=e312]: sync live
+          - button "Beni Culturali (archeologici, Artistici, Musicali e dello Spettacolo) sync live" [ref=e313]:
+            - generic [ref=e314]: Beni Culturali (archeologici, Artistici, Musicali e dello Spettacolo)
+            - generic [ref=e316]: sync live
+          - button "Bioinformatica sync live" [ref=e317]:
+            - generic [ref=e318]: Bioinformatica
+            - generic [ref=e320]: sync live
+          - button "Biologia Cellulare, Molecolare e Ricerca Biomedica sync live" [ref=e321]:
+            - generic [ref=e322]: Biologia Cellulare, Molecolare e Ricerca Biomedica
+            - generic [ref=e324]: sync live
+          - button "Biotechnology - Biotecnologie sync live" [ref=e325]:
+            - generic [ref=e326]: Biotechnology - Biotecnologie
+            - generic [ref=e328]: sync live
+          - button "Biotechnology for Industry and Health sync live" [ref=e329]:
+            - generic [ref=e330]: Biotechnology for Industry and Health
+            - generic [ref=e332]: sync live
+          - button "Biotecnologie sync live" [ref=e333]:
+            - generic [ref=e334]: Biotecnologie
+            - generic [ref=e336]: sync live
+          - button "Biotecnologie Agrarie sync live" [ref=e337]:
+            - generic [ref=e338]: Biotecnologie Agrarie
+            - generic [ref=e340]: sync live
+          - button "Chemical Nano-Engineering sync live" [ref=e341]:
+            - generic [ref=e342]: Chemical Nano-Engineering
+            - generic [ref=e344]: sync live
+          - button "Chimica (magistrale) sync live" [ref=e345]:
+            - generic [ref=e346]: Chimica (magistrale)
+            - generic [ref=e348]: sync live
+          - button "Chimica (triennale) sync live" [ref=e349]:
+            - generic [ref=e350]: Chimica (triennale)
+            - generic [ref=e352]: sync live
+          - button "Chimica Applicata sync live" [ref=e353]:
+            - generic [ref=e354]: Chimica Applicata
+            - generic [ref=e356]: sync live
+          - button "Comunicazione e Intelligenza Artificiale sync live" [ref=e357]:
+            - generic [ref=e358]: Comunicazione e Intelligenza Artificiale
+            - generic [ref=e360]: sync live
+          - button "Conservazione e Restauro dei Beni Culturali (abilitante Ai Sensi del D.Lgs N.42/2004) sync live" [ref=e361]:
+            - generic [ref=e362]: Conservazione e Restauro dei Beni Culturali (abilitante Ai Sensi del D.Lgs N.42/2004)
+            - generic [ref=e364]: sync live
+          - 'button "Digital Humanities: Comunicazione, Lingue, Patrimonio Culturale sync live" [ref=e365]':
+            - generic [ref=e366]: "Digital Humanities: Comunicazione, Lingue, Patrimonio Culturale"
+            - generic [ref=e368]: sync live
+          - button "Engineering Sciences sync live" [ref=e369]:
+            - generic [ref=e370]: Engineering Sciences
+            - generic [ref=e372]: sync live
+          - button "Filologia Moderna sync live" [ref=e373]:
+            - generic [ref=e374]: Filologia Moderna
+            - generic [ref=e376]: sync live
+          - button "Filosofia (magistrale) sync live" [ref=e377]:
+            - generic [ref=e378]: Filosofia (magistrale)
+            - generic [ref=e380]: sync live
+          - button "Filosofia (triennale) sync live" [ref=e381]:
+            - generic [ref=e382]: Filosofia (triennale)
+            - generic [ref=e384]: sync live
+          - button "Fisica (magistrale) sync live" [ref=e385]:
+            - generic [ref=e386]: Fisica (magistrale)
+            - generic [ref=e388]: sync live
+          - button "Fisica (triennale) sync live" [ref=e389]:
+            - generic [ref=e390]: Fisica (triennale)
+            - generic [ref=e392]: sync live
+          - button "ICT and Internet Engineering - Ingegneria di Internet e delle Tecnologie per l'Informazione e la Comunicazione sync live" [ref=e393]:
+            - generic [ref=e394]: ICT and Internet Engineering - Ingegneria di Internet e delle Tecnologie per l'Informazione e la Comunicazione
+            - generic [ref=e396]: sync live
+          - button "Informatica (magistrale) sync live" [ref=e397]:
+            - generic [ref=e398]: Informatica (magistrale)
+            - generic [ref=e400]: sync live
+          - button "Ingegneria Civile sync live" [ref=e401]:
+            - generic [ref=e402]: Ingegneria Civile
+            - generic [ref=e404]: sync live
+          - button "Ingegneria Civile e Ambientale sync live" [ref=e405]:
+            - generic [ref=e406]: Ingegneria Civile e Ambientale
+            - generic [ref=e408]: sync live
+          - button "Ingegneria dell'Automazione sync live" [ref=e409]:
+            - generic [ref=e410]: Ingegneria dell'Automazione
+            - generic [ref=e412]: sync live
+          - button "Ingegneria dell'Edilizia sync live" [ref=e413]:
+            - generic [ref=e414]: Ingegneria dell'Edilizia
+            - generic [ref=e416]: sync live
+          - button "Ingegneria di Internet sync live" [ref=e417]:
+            - generic [ref=e418]: Ingegneria di Internet
+            - generic [ref=e420]: sync live
+          - button "Ingegneria e Tecniche del Costruire sync live" [ref=e421]:
+            - generic [ref=e422]: Ingegneria e Tecniche del Costruire
+            - generic [ref=e424]: sync live
+          - button "Ingegneria Edile-architettura sync live" [ref=e425]:
+            - generic [ref=e426]: Ingegneria Edile-architettura
+            - generic [ref=e428]: sync live
+          - button "Ingegneria Elettronica (magistrale) sync live" [ref=e429]:
+            - generic [ref=e430]: Ingegneria Elettronica (magistrale)
+            - generic [ref=e432]: sync live
+          - button "Ingegneria Elettronica (triennale) sync live" [ref=e433]:
+            - generic [ref=e434]: Ingegneria Elettronica (triennale)
+            - generic [ref=e436]: sync live
+          - button "Ingegneria Energetica sync live" [ref=e437]:
+            - generic [ref=e438]: Ingegneria Energetica
+            - generic [ref=e440]: sync live
+          - button "Ingegneria Gestionale (in Modalità Prevalentemente a Distanza) sync live" [ref=e441]:
+            - generic [ref=e442]: Ingegneria Gestionale (in Modalità Prevalentemente a Distanza)
+            - generic [ref=e444]: sync live
+          - button "Ingegneria Gestionale (magistrale) sync live" [ref=e445]:
+            - generic [ref=e446]: Ingegneria Gestionale (magistrale)
+            - generic [ref=e448]: sync live
+          - button "Ingegneria Gestionale (triennale) sync live" [ref=e449]:
+            - generic [ref=e450]: Ingegneria Gestionale (triennale)
+            - generic [ref=e452]: sync live
+          - button "Ingegneria Informatica (magistrale) sync live" [ref=e453]:
+            - generic [ref=e454]: Ingegneria Informatica (magistrale)
+            - generic [ref=e456]: sync live
+          - button "Ingegneria Informatica (triennale) sync live" [ref=e457]:
+            - generic [ref=e458]: Ingegneria Informatica (triennale)
+            - generic [ref=e460]: sync live
+          - button "Ingegneria Meccanica (magistrale) sync live" [ref=e461]:
+            - generic [ref=e462]: Ingegneria Meccanica (magistrale)
+            - generic [ref=e464]: sync live
+          - button "Ingegneria Meccanica (triennale) sync live" [ref=e465]:
+            - generic [ref=e466]: Ingegneria Meccanica (triennale)
+            - generic [ref=e468]: sync live
+          - button "Ingegneria Medica (magistrale) sync live" [ref=e469]:
+            - generic [ref=e470]: Ingegneria Medica (magistrale)
+            - generic [ref=e472]: sync live
+          - button "Ingegneria Medica (triennale) sync live" [ref=e473]:
+            - generic [ref=e474]: Ingegneria Medica (triennale)
+            - generic [ref=e476]: sync live
+          - button "Ingegneria per l'Ambiente e il Territorio sync live" [ref=e477]:
+            - generic [ref=e478]: Ingegneria per l'Ambiente e il Territorio
+            - generic [ref=e480]: sync live
+          - button "Ingegneria per l'Energia e l'Ambiente sync live" [ref=e481]:
+            - generic [ref=e482]: Ingegneria per l'Energia e l'Ambiente
+            - generic [ref=e484]: sync live
+          - button "Letteratura Italiana, Filologia Moderna e Linguistica sync live" [ref=e485]:
+            - generic [ref=e486]: Letteratura Italiana, Filologia Moderna e Linguistica
+            - generic [ref=e488]: sync live
+          - button "Lingua e Cultura Italiana a Stranieri per l'Accoglienza e l'Internazionalizzazione sync live" [ref=e489]:
+            - generic [ref=e490]: Lingua e Cultura Italiana a Stranieri per l'Accoglienza e l'Internazionalizzazione
+            - generic [ref=e492]: sync live
+          - button "Lingue e Letterature Europee e Americane sync live" [ref=e493]:
+            - generic [ref=e494]: Lingue e Letterature Europee e Americane
+            - generic [ref=e496]: sync live
+          - button "Lingue e Letterature Moderne sync live" [ref=e497]:
+            - generic [ref=e498]: Lingue e Letterature Moderne
+            - generic [ref=e500]: sync live
+          - button "Lingue nella Società dell'Informazione sync live" [ref=e501]:
+            - generic [ref=e502]: Lingue nella Società dell'Informazione
+            - generic [ref=e504]: sync live
+          - button "Matematica sync live" [ref=e505]:
+            - generic [ref=e506]: Matematica
+            - generic [ref=e508]: sync live
+          - button "Mechatronics Engineering sync live" [ref=e509]:
+            - generic [ref=e510]: Mechatronics Engineering
+            - generic [ref=e512]: sync live
+          - button "Metodi e Modelli per Data Science sync live" [ref=e513]:
+            - generic [ref=e514]: Metodi e Modelli per Data Science
+            - generic [ref=e516]: sync live
+          - button "Musica e Spettacolo sync live" [ref=e517]:
+            - generic [ref=e518]: Musica e Spettacolo
+            - generic [ref=e520]: sync live
+          - button "Pharmacy sync live" [ref=e521]:
+            - generic [ref=e522]: Pharmacy
+            - generic [ref=e524]: sync live
+          - button "Psicologia e Salute Mentale nel Ciclo di Vita sync live" [ref=e525]:
+            - generic [ref=e526]: Psicologia e Salute Mentale nel Ciclo di Vita
+            - generic [ref=e528]: sync live
+          - button "Psicologia Generale, dello Sviluppo, del Genere e del Comportamento Sociale sync live" [ref=e529]:
+            - generic [ref=e530]: Psicologia Generale, dello Sviluppo, del Genere e del Comportamento Sociale
+            - generic [ref=e532]: sync live
+          - button "Scienza dei Materiali sync live" [ref=e533]:
+            - generic [ref=e534]: Scienza dei Materiali
+            - generic [ref=e536]: sync live
+          - button "Scienza e Tecnologia dei Materiali sync live" [ref=e537]:
+            - generic [ref=e538]: Scienza e Tecnologia dei Materiali
+            - generic [ref=e540]: sync live
+          - button "Scienze Biologiche sync live" [ref=e541]:
+            - generic [ref=e542]: Scienze Biologiche
+            - generic [ref=e544]: sync live
+          - button "Scienze del Turismo sync live" [ref=e545]:
+            - generic [ref=e546]: Scienze del Turismo
+            - generic [ref=e548]: sync live
+          - button "Scienze dell'Educazione e della Formazione sync live" [ref=e549]:
+            - generic [ref=e550]: Scienze dell'Educazione e della Formazione
+            - generic [ref=e552]: sync live
+          - button "Scienze dell'Informazione, della Comunicazione e dell'Editoria sync live" [ref=e553]:
+            - generic [ref=e554]: Scienze dell'Informazione, della Comunicazione e dell'Editoria
+            - generic [ref=e556]: sync live
+          - button "Scienze della Comunicazione sync live" [ref=e557]:
+            - generic [ref=e558]: Scienze della Comunicazione
+            - generic [ref=e560]: sync live
+          - button "Scienze della Storia e del Documento sync live" [ref=e561]:
+            - generic [ref=e562]: Scienze della Storia e del Documento
+            - generic [ref=e564]: sync live
+          - button "Scienze Pedagogiche sync live" [ref=e565]:
+            - generic [ref=e566]: Scienze Pedagogiche
+            - generic [ref=e568]: sync live
+          - button "Storia dell'Arte sync live" [ref=e569]:
+            - generic [ref=e570]: Storia dell'Arte
+            - generic [ref=e572]: sync live
+          - button "Tourism Strategy, Cultural Heritage and Made in Italy sync live" [ref=e573]:
+            - generic [ref=e574]: Tourism Strategy, Cultural Heritage and Made in Italy
+            - generic [ref=e576]: sync live
+          - button "Biologia Ambientale manuale" [ref=e577]:
+            - generic [ref=e578]: Biologia Ambientale
+            - generic [ref=e580]: manuale
+          - button "Biologia Cellulare e Molecolare e Scienze Biomediche manuale" [ref=e581]:
+            - generic [ref=e582]: Biologia Cellulare e Molecolare e Scienze Biomediche
+            - generic [ref=e584]: manuale
+          - button "Business Administration and Economics manuale" [ref=e585]:
+            - generic [ref=e586]: Business Administration and Economics
+            - generic [ref=e588]: manuale
+          - button "Business Administration-Gestione D'impresa manuale" [ref=e589]:
+            - generic [ref=e590]: Business Administration-Gestione D'impresa
+            - generic [ref=e592]: manuale
+          - button "Diritto, Innovazione Tecnologica e Sostenibilità manuale" [ref=e593]:
+            - generic [ref=e594]: Diritto, Innovazione Tecnologica e Sostenibilità
+            - generic [ref=e596]: manuale
+          - button "Economia dei Mercati e degli Intermediari Finanziari manuale" [ref=e597]:
+            - generic [ref=e598]: Economia dei Mercati e degli Intermediari Finanziari
+            - generic [ref=e600]: manuale
+          - button "Economia e Finanza manuale" [ref=e601]:
+            - generic [ref=e602]: Economia e Finanza
+            - generic [ref=e604]: manuale
+          - button "Economia e Management manuale" [ref=e605]:
+            - generic [ref=e606]: Economia e Management
+            - generic [ref=e608]: manuale
+          - button "Economics - Economia manuale" [ref=e609]:
+            - generic [ref=e610]: Economics - Economia
+            - generic [ref=e612]: manuale
+          - button "European Economy and Business Law manuale" [ref=e613]:
+            - generic [ref=e614]: European Economy and Business Law
+            - generic [ref=e616]: manuale
+          - button "Finance and Banking - Finanza e Banca manuale" [ref=e617]:
+            - generic [ref=e618]: Finance and Banking - Finanza e Banca
+            - generic [ref=e620]: manuale
+          - button "Giurisprudenza manuale" [ref=e621]:
+            - generic [ref=e622]: Giurisprudenza
+            - generic [ref=e624]: manuale
+          - button "Global Governance manuale" [ref=e625]:
+            - generic [ref=e626]: Global Governance
+            - generic [ref=e628]: manuale
+          - button "Scienze dell'Amministrazione e delle Relazioni Internazionali manuale" [ref=e629]:
+            - generic [ref=e630]: Scienze dell'Amministrazione e delle Relazioni Internazionali
+            - generic [ref=e632]: manuale
+          - button "Specializzazione per Sostegno Infanzia manuale" [ref=e633]:
+            - generic [ref=e634]: Specializzazione per Sostegno Infanzia
+            - generic [ref=e636]: manuale
+          - button "Specializzazione per Sostegno Primaria manuale" [ref=e637]:
+            - generic [ref=e638]: Specializzazione per Sostegno Primaria
+            - generic [ref=e640]: manuale
+          - button "Specializzazione per Sostegno Secondaria Primo Grado manuale" [ref=e641]:
+            - generic [ref=e642]: Specializzazione per Sostegno Secondaria Primo Grado
+            - generic [ref=e644]: manuale
+          - button "Specializzazione per Sostegno Secondaria Secondo Grado manuale" [ref=e645]:
+            - generic [ref=e646]: Specializzazione per Sostegno Secondaria Secondo Grado
+            - generic [ref=e648]: manuale
+      - generic [ref=e281]:
+        - button "Indietro" [ref=e649]:
+          - img [ref=e650]
+          - text: Indietro
+        - button "Continua" [ref=e286]:
+          - text: Continua
+          - img [ref=e287]
+    - paragraph [ref=e282]: Puoi cambiare questi dati quando vuoi dal cruscotto.
+  - contentinfo [ref=e111]:
+    - generic [ref=e112]:
+      - link "StudentOS" [ref=e113] [cursor=pointer]:
+        - /url: /
+        - generic "StudentOS" [ref=e114]:
+          - generic [ref=e115]:
+            - text: Student
+            - img [ref=e116]
+            - text: S
+      - generic [ref=e123]: Dati sincronizzati sul tuo account · accesso con email universitaria
+      - generic [ref=e124]: v0.1.0
+  - button "Azioni rapide" [ref=e125]:
+    - img [ref=e126]
+  - button "Open Next.js Dev Tools" [ref=e132] [cursor=pointer]:
+    - img [ref=e133]
+  - alert [ref=e283]: Configura — StudentOS

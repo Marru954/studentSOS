@@ -1,0 +1,390 @@
+- generic [active] [ref=e1]:
+  - link "Salta al contenuto" [ref=e2] [cursor=pointer]:
+    - /url: "#contenuto"
+  - banner [ref=e3]:
+    - navigation "Principale" [ref=e4]:
+      - link "StudentOS" [ref=e5] [cursor=pointer]:
+        - /url: /
+        - generic "StudentOS" [ref=e6]:
+          - generic [ref=e7]:
+            - text: Student
+            - img [ref=e8]
+            - text: S
+      - generic [ref=e15]:
+        - link "Cruscotto" [ref=e16] [cursor=pointer]:
+          - /url: /cruscotto
+          - img [ref=e18]
+          - text: Cruscotto
+        - link "Orario" [ref=e23] [cursor=pointer]:
+          - /url: /orario
+          - img [ref=e25]
+          - text: Orario
+        - link "Appelli" [ref=e27] [cursor=pointer]:
+          - /url: /appelli
+          - img [ref=e29]
+          - text: Appelli
+        - link "Calendario" [ref=e33] [cursor=pointer]:
+          - /url: /calendario
+          - img [ref=e35]
+          - text: Calendario
+        - link "Libretto" [ref=e37] [cursor=pointer]:
+          - /url: /libretto
+          - img [ref=e39]
+          - text: Libretto
+        - link "Note" [ref=e42] [cursor=pointer]:
+          - /url: /note
+          - img [ref=e44]
+          - text: Note
+        - link "Focus" [ref=e47] [cursor=pointer]:
+          - /url: /focus
+          - img [ref=e49]
+          - text: Focus
+        - link "Assistente" [ref=e52] [cursor=pointer]:
+          - /url: /assistente
+          - img [ref=e54]
+          - text: Assistente
+        - link "Impostazioni" [ref=e56] [cursor=pointer]:
+          - /url: /impostazioni
+          - img [ref=e58]
+          - text: Impostazioni
+      - generic [ref=e61]:
+        - button "Cerca (Cmd+K)" [ref=e62]:
+          - img [ref=e63]
+        - button "Passa al tema chiaro" [ref=e66]:
+          - img [ref=e67]
+  - main [ref=e74]:
+    - generic [ref=e75]:
+      - generic [ref=e77]:
+        - img [ref=e78]
+        - text: Il tuo sistema operativo universitario
+      - heading "StudentOS" [level=1] [ref=e85]:
+        - generic [ref=e86]:
+          - generic [ref=e87]: S
+          - generic [ref=e89]: tudent
+          - img [ref=e90]
+          - generic [ref=e97]: S
+      - paragraph [ref=e98]: Esami, appelli, libretto e carriera in un unico posto. Calmo, immersivo, sempre sincronizzato.
+      - generic [ref=e99]:
+        - generic [ref=e100]:
+          - link "Inizia ora — con la tua email" [ref=e101] [cursor=pointer]:
+            - /url: /cruscotto
+            - text: Inizia ora — con la tua email
+            - img [ref=e102]
+          - link "Prova il Focus" [ref=e104] [cursor=pointer]:
+            - /url: /focus
+        - paragraph [ref=e105]: Email universitaria · dati sincronizzati · gratis
+      - generic [ref=e107]:
+        - generic [ref=e108]:
+          - generic [ref=e109]:
+            - generic [ref=e110]: Provalo adesso
+            - generic [ref=e111]:
+              - generic [ref=e112]: Scegli il tuo ateneo
+              - combobox "Scegli il tuo ateneo" [ref=e113]:
+                - option "Tor Vergata" [selected]
+                - option "Università di Trieste"
+                - option "Università di Perugia"
+                - option "Università di Cagliari"
+                - option "Università di Trento"
+                - option "Federico II"
+                - option "Università di Ferrara"
+                - option "Università di Parma"
+                - option "Università di Salerno"
+                - option "Università di Sassari"
+                - option "Università di Firenze"
+                - option "Università di Genova"
+                - option "Piemonte Orientale"
+                - option "Stranieri Siena"
+                - option "La Sapienza"
+                - option "Università di Bologna"
+                - option "Politecnico di Milano"
+                - option "Politecnico di Torino"
+                - option "Università di Padova"
+                - option "Università di Siena"
+                - option "Università di Pisa"
+                - option "Statale di Milano"
+                - option "Università di Torino"
+                - option "Ca' Foscari"
+                - option "Bocconi"
+                - option "Università di Pavia"
+          - paragraph [ref=e114]: Trascina i voti — media, base di laurea e andamento si aggiornano dal vivo.
+          - generic [ref=e115]:
+            - generic [ref=e116]:
+              - generic [ref=e117]: Analisi I
+              - slider "Voto di Analisi I" [ref=e118]: "27"
+              - generic [ref=e119]: "27"
+            - generic [ref=e120]:
+              - generic [ref=e121]: Programmazione
+              - slider "Voto di Programmazione" [ref=e122]: "30"
+              - generic [ref=e123]: "30"
+            - generic [ref=e124]:
+              - generic [ref=e125]: Fisica
+              - slider "Voto di Fisica" [ref=e126]: "24"
+              - generic [ref=e127]: "24"
+            - generic [ref=e128]:
+              - generic [ref=e129]: Architetture
+              - slider "Voto di Architetture" [ref=e130]: "28"
+              - generic [ref=e131]: "28"
+        - generic [ref=e132]:
+          - generic [ref=e133]:
+            - generic [ref=e134]: Cruscotto · Tor Vergata
+            - generic [ref=e135]:
+              - img [ref=e136]
+              - text: live
+          - generic [ref=e139]:
+            - img "36 CFU su 180" [ref=e140]:
+              - img [ref=e141]
+              - generic [ref=e144]:
+                - generic [ref=e145]: "36"
+                - generic [ref=e146]: /180
+            - generic [ref=e147]:
+              - generic [ref=e148]: Media
+              - generic [ref=e149]: 27,75
+              - generic [ref=e150]: base 101,8/110
+          - img "Andamento dei voti inseriti" [ref=e151]
+    - generic [ref=e155]:
+      - 'link "Libretto digitale Importa i voti dal portale del tuo ateneo o inseriscili a mano: media ponderata e CFU sempre aggiornati. Apri" [ref=e156] [cursor=pointer]':
+        - /url: /libretto
+        - img [ref=e158]
+        - heading "Libretto digitale" [level=3] [ref=e161]
+        - paragraph [ref=e162]: "Importa i voti dal portale del tuo ateneo o inseriscili a mano: media ponderata e CFU sempre aggiornati."
+        - generic [ref=e163]:
+          - text: Apri
+          - img [ref=e164]
+      - link "Appelli Ogni data che conta in un posto solo. Avvisi sui conflitti, scadenze di prenotazione. Apri" [ref=e166] [cursor=pointer]:
+        - /url: /appelli
+        - img [ref=e168]
+        - heading "Appelli" [level=3] [ref=e172]
+        - paragraph [ref=e173]: Ogni data che conta in un posto solo. Avvisi sui conflitti, scadenze di prenotazione.
+        - generic [ref=e174]:
+          - text: Apri
+          - img [ref=e175]
+      - link "Focus Timer Pomodoro e board obiettivi. Le sessioni diventano statistiche di costanza. Apri" [ref=e177] [cursor=pointer]:
+        - /url: /focus
+        - img [ref=e179]
+        - heading "Focus" [level=3] [ref=e182]
+        - paragraph [ref=e183]: Timer Pomodoro e board obiettivi. Le sessioni diventano statistiche di costanza.
+        - generic [ref=e184]:
+          - text: Apri
+          - img [ref=e185]
+    - generic [ref=e187]:
+      - paragraph [ref=e188]: Atenei supportati
+      - heading "Funziona per il tuo ateneo." [level=2] [ref=e189]
+      - generic [ref=e190]:
+        - generic [ref=e191]: Tor Vergata
+        - generic [ref=e192]: La Sapienza
+        - generic [ref=e193]: Politecnico di Milano
+        - generic [ref=e194]: Università di Bologna
+        - generic [ref=e195]: Federico II
+        - generic [ref=e196]: Politecnico di Torino
+        - generic [ref=e197]: Università di Padova
+        - generic [ref=e198]: Bocconi
+        - generic [ref=e199]: Trento
+        - generic [ref=e200]: Firenze
+        - generic [ref=e201]: Statale di Milano
+        - generic [ref=e202]: Ca' Foscari
+      - paragraph [ref=e203]:
+        - text: Il tuo ateneo non è in lista?
+        - link "Segnalacelo →" [ref=e204] [cursor=pointer]:
+          - /url: mailto:support@studentos.app
+    - generic [ref=e205]:
+      - paragraph [ref=e206]: Come funziona
+      - heading "Dal tuo ateneo al cruscotto in tre passi." [level=2] [ref=e207]
+      - generic [ref=e208]:
+        - generic [ref=e209]:
+          - generic [ref=e210]: "01"
+          - heading "Scegli il tuo ateneo" [level=3] [ref=e211]
+          - paragraph [ref=e212]: Cerca tra le università supportate e seleziona il tuo corso di laurea e anno. Accedi con la tua email universitaria.
+        - generic [ref=e213]:
+          - generic [ref=e214]: "02"
+          - heading "Seleziona i tuoi corsi" [level=3] [ref=e215]
+          - paragraph [ref=e216]: Scegli le materie che frequenti. StudentOS sincronizza orario, appelli e avvisi solo per te.
+        - generic [ref=e217]:
+          - generic [ref=e218]: "03"
+          - heading "Tutto aggiornato" [level=3] [ref=e219]
+          - paragraph [ref=e220]: Media ponderata, CFU acquisiti, prossimi appelli e orario settimanale — pronti ovunque, sempre sincronizzati.
+    - generic [ref=e222]:
+      - generic [ref=e223]:
+        - generic [ref=e224]:
+          - generic [ref=e225]: 100%
+          - text: sincronizzato
+        - paragraph [ref=e226]: i tuoi dati sul tuo account, accessibili da ogni dispositivo
+      - generic [ref=e227]:
+        - generic [ref=e228]:
+          - generic [ref=e229]: "1"
+          - text: PDF
+        - paragraph [ref=e230]: tutta la carriera importata in un colpo solo
+      - generic [ref=e231]:
+        - generic [ref=e232]:
+          - generic [ref=e233]: 5 min
+          - text: setup
+        - paragraph [ref=e234]: per essere operativo dal primo avvio
+    - generic [ref=e235]:
+      - paragraph [ref=e236]: Perché StudentOS
+      - heading "Non è un altro foglio Excel." [level=2] [ref=e237]
+      - table [ref=e239]:
+        - rowgroup [ref=e240]:
+          - row "StudentOS Excel Portale ateneo Altre app" [ref=e241]:
+            - columnheader [ref=e242]
+            - columnheader "StudentOS" [ref=e243]
+            - columnheader "Excel" [ref=e244]
+            - columnheader "Portale ateneo" [ref=e245]
+            - columnheader "Altre app" [ref=e246]
+        - rowgroup [ref=e247]:
+          - row "Accesso da qualsiasi dispositivo sì sì no no" [ref=e248]:
+            - rowheader "Accesso da qualsiasi dispositivo" [ref=e249]
+            - cell "sì" [ref=e250]:
+              - img "sì" [ref=e251]
+            - cell "sì" [ref=e253]:
+              - img "sì" [ref=e254]
+            - cell "no" [ref=e256]:
+              - img "no" [ref=e257]
+            - cell "no" [ref=e258]:
+              - img "no" [ref=e259]
+          - row "Nessun abbonamento sì sì no no" [ref=e260]:
+            - rowheader "Nessun abbonamento" [ref=e261]
+            - cell "sì" [ref=e262]:
+              - img "sì" [ref=e263]
+            - cell "sì" [ref=e265]:
+              - img "sì" [ref=e266]
+            - cell "no" [ref=e268]:
+              - img "no" [ref=e269]
+            - cell "no" [ref=e270]:
+              - img "no" [ref=e271]
+          - row "Media e proiezione laurea live sì parziale no parziale" [ref=e272]:
+            - rowheader "Media e proiezione laurea live" [ref=e273]
+            - cell "sì" [ref=e274]:
+              - img "sì" [ref=e275]
+            - cell "parziale" [ref=e277]: ~
+            - cell "no" [ref=e278]:
+              - img "no" [ref=e279]
+            - cell "parziale" [ref=e280]: ~
+          - row "Appelli + avvisi sui conflitti sì no parziale parziale" [ref=e281]:
+            - rowheader "Appelli + avvisi sui conflitti" [ref=e282]
+            - cell "sì" [ref=e283]:
+              - img "sì" [ref=e284]
+            - cell "no" [ref=e286]:
+              - img "no" [ref=e287]
+            - cell "parziale" [ref=e288]: ~
+            - cell "parziale" [ref=e289]: ~
+          - row "Focus / Pomodoro integrato sì no no parziale" [ref=e290]:
+            - rowheader "Focus / Pomodoro integrato" [ref=e291]
+            - cell "sì" [ref=e292]:
+              - img "sì" [ref=e293]
+            - cell "no" [ref=e295]:
+              - img "no" [ref=e296]
+            - cell "no" [ref=e297]:
+              - img "no" [ref=e298]
+            - cell "parziale" [ref=e299]: ~
+          - row "Import del PDF carriera sì no no no" [ref=e300]:
+            - rowheader "Import del PDF carriera" [ref=e301]
+            - cell "sì" [ref=e302]:
+              - img "sì" [ref=e303]
+            - cell "no" [ref=e305]:
+              - img "no" [ref=e306]
+            - cell "no" [ref=e307]:
+              - img "no" [ref=e308]
+            - cell "no" [ref=e309]:
+              - img "no" [ref=e310]
+          - 'row "Privacy: i tuoi dati restano tuoi sì sì no no" [ref=e311]':
+            - 'rowheader "Privacy: i tuoi dati restano tuoi" [ref=e312]'
+            - cell "sì" [ref=e313]:
+              - img "sì" [ref=e314]
+            - cell "sì" [ref=e316]:
+              - img "sì" [ref=e317]
+            - cell "no" [ref=e319]:
+              - img "no" [ref=e320]
+            - cell "no" [ref=e321]:
+              - img "no" [ref=e322]
+    - generic [ref=e323]:
+      - paragraph [ref=e324]: Resta in pista
+      - heading "Ogni esame è un trofeo sbloccato." [level=2] [ref=e325]
+      - paragraph [ref=e326]: Media, CFU e streak crescono a ogni voto registrato. Piccole vittorie che ti tengono sul pezzo fino alla laurea.
+      - generic [ref=e327]:
+        - generic [ref=e328]:
+          - img [ref=e329]
+          - generic [ref=e335]: 30⭐
+          - generic [ref=e336]: Algoritmi
+        - generic [ref=e337]:
+          - img [ref=e338]
+          - generic [ref=e344]: "29"
+          - generic [ref=e345]: Basi di dati
+        - generic [ref=e346]:
+          - img [ref=e347]
+          - generic [ref=e353]: "28"
+          - generic [ref=e354]: Reti
+        - generic [ref=e355]:
+          - img [ref=e356]
+          - generic [ref=e359]: "26"
+          - generic [ref=e360]: Fisica
+        - generic [ref=e361]:
+          - img [ref=e362]
+          - generic [ref=e365]: Idoneo
+          - generic [ref=e366]: Inglese B2
+    - generic [ref=e367]:
+      - paragraph [ref=e368]: Dicono di noi
+      - heading "Studenti come te." [level=2] [ref=e369]
+      - generic [ref=e370]:
+        - figure "Giulia M. · Bologna" [ref=e371]:
+          - blockquote [ref=e372]: “Ho smesso di usare 4 app diverse. Tutto qui, sincronizzato, veloce.”
+          - generic [ref=e373]: Giulia M. · Bologna
+        - figure "Lorenzo B. · Politecnico MI" [ref=e374]:
+          - blockquote [ref=e375]: “Il simulatore di media mi ha aiutato a capire su quali esami puntare di più.”
+          - generic [ref=e376]: Lorenzo B. · Politecnico MI
+        - figure "Sara P. · La Sapienza" [ref=e377]:
+          - blockquote [ref=e378]: “Il Pomodoro integrato con gli esami è geniale. Finalmente studio con un piano.”
+          - generic [ref=e379]: Sara P. · La Sapienza
+    - generic [ref=e380]:
+      - heading "Tutto in un posto" [level=2] [ref=e381]
+      - generic [ref=e382]:
+        - generic [ref=e383]:
+          - img [ref=e385]
+          - generic [ref=e388]:
+            - generic [ref=e389]: Libretto
+            - generic [ref=e390]: voti dal portale o manuali
+        - generic [ref=e391]:
+          - img [ref=e393]
+          - generic [ref=e397]:
+            - generic [ref=e398]: Appelli
+            - generic [ref=e399]: date, avvisi e conflitti
+        - generic [ref=e400]:
+          - img [ref=e402]
+          - generic [ref=e405]:
+            - generic [ref=e406]: Note
+            - generic [ref=e407]: appunti per materia
+        - generic [ref=e408]:
+          - img [ref=e410]
+          - generic [ref=e413]:
+            - generic [ref=e414]: Focus
+            - generic [ref=e415]: Pomodoro per studiare meglio
+        - generic [ref=e416]:
+          - img [ref=e418]
+          - generic [ref=e423]:
+            - generic [ref=e424]: Cruscotto
+            - generic [ref=e425]: panoramica della carriera
+        - generic [ref=e426]:
+          - img [ref=e428]
+          - generic [ref=e430]:
+            - generic [ref=e431]: Orario
+            - generic [ref=e432]: la settimana a colpo d'occhio
+    - generic [ref=e436]:
+      - heading "Prendi il largo senza affogare negli appelli." [level=2] [ref=e437]
+      - paragraph [ref=e438]: Accedi con la tua email universitaria. Apri il cruscotto e parti.
+      - link "Apri il Cruscotto" [ref=e440] [cursor=pointer]:
+        - /url: /cruscotto
+        - text: Apri il Cruscotto
+        - img [ref=e441]
+  - contentinfo [ref=e443]:
+    - generic [ref=e444]:
+      - link "StudentOS" [ref=e445] [cursor=pointer]:
+        - /url: /
+        - generic "StudentOS" [ref=e446]:
+          - generic [ref=e447]:
+            - text: Student
+            - img [ref=e448]
+            - text: S
+      - generic [ref=e455]: Dati sincronizzati sul tuo account · accesso con email universitaria
+      - generic [ref=e456]: v0.1.0
+  - button "Azioni rapide" [ref=e457]:
+    - img [ref=e458]
+  - button "Open Next.js Dev Tools" [ref=e464] [cursor=pointer]:
+    - img [ref=e465]

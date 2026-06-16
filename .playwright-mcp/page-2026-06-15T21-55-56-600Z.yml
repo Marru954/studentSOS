@@ -1,0 +1,214 @@
+- generic [ref=e1]:
+  - link "Salta al contenuto" [ref=e2] [cursor=pointer]:
+    - /url: "#contenuto"
+  - banner [ref=e3]:
+    - navigation "Principale" [ref=e4]:
+      - link "StudentOS" [ref=e5] [cursor=pointer]:
+        - /url: /
+        - generic "StudentOS" [ref=e6]:
+          - generic [ref=e7]:
+            - text: Student
+            - img [ref=e8]
+            - text: S
+      - generic [ref=e15]:
+        - link "Cruscotto" [ref=e16] [cursor=pointer]:
+          - /url: /cruscotto
+          - img [ref=e18]
+          - text: Cruscotto
+        - link "Orario" [ref=e23] [cursor=pointer]:
+          - /url: /orario
+          - img [ref=e25]
+          - text: Orario
+        - link "Appelli" [ref=e27] [cursor=pointer]:
+          - /url: /appelli
+          - img [ref=e29]
+          - text: Appelli
+        - link "Calendario" [ref=e33] [cursor=pointer]:
+          - /url: /calendario
+          - img [ref=e35]
+          - text: Calendario
+        - link "Libretto" [ref=e37] [cursor=pointer]:
+          - /url: /libretto
+          - img [ref=e39]
+          - text: Libretto
+        - link "Note" [ref=e42] [cursor=pointer]:
+          - /url: /note
+          - img [ref=e44]
+          - text: Note
+        - link "Focus" [ref=e47] [cursor=pointer]:
+          - /url: /focus
+          - img [ref=e49]
+          - text: Focus
+        - link "Assistente" [ref=e52] [cursor=pointer]:
+          - /url: /assistente
+          - img [ref=e54]
+          - text: Assistente
+        - link "Impostazioni" [ref=e56] [cursor=pointer]:
+          - /url: /impostazioni
+          - img [ref=e58]
+          - text: Impostazioni
+      - generic [ref=e61]:
+        - button "Cerca (Cmd+K)" [ref=e62]:
+          - img [ref=e63]
+        - link "Accedi" [ref=e136] [cursor=pointer]:
+          - /url: /login
+          - img [ref=e137]
+          - text: Accedi
+        - button "Passa al tema chiaro" [ref=e66]:
+          - img [ref=e67]
+  - main [ref=e141]:
+    - generic [ref=e142]:
+      - generic "StudentOS" [ref=e143]:
+        - generic [ref=e144]:
+          - text: Student
+          - img [ref=e145]
+          - text: S
+      - paragraph [ref=e152]: Tre domande e il cruscotto si adatta a te.
+    - generic [ref=e153]:
+      - generic [ref=e156]: 1. Ateneo
+      - generic [ref=e159]: 2. Corso
+      - generic [ref=e162]: 3. Anno e CFU
+      - generic [ref=e165]: 4. Conferma
+    - generic [ref=e166]:
+      - generic [ref=e167]:
+        - heading "In quale università studi?" [level=1] [ref=e168]
+        - generic [ref=e169]:
+          - generic [ref=e170]: Email universitaria (rileva l’ateneo)
+          - textbox "Email universitaria (rileva l’ateneo)" [ref=e171]:
+            - /placeholder: nome@studenti.uniroma2.it
+        - generic [ref=e172]:
+          - generic [ref=e173]: …oppure cerca il tuo ateneo
+          - generic [ref=e174]:
+            - img
+            - textbox "…oppure cerca il tuo ateneo" [ref=e175]:
+              - /placeholder: Cerca per nome o città…
+        - generic [ref=e176]:
+          - button "Tor Vergata Roma · sync live" [active] [ref=e177]:
+            - generic [ref=e178]:
+              - generic [ref=e179]: Tor Vergata
+              - generic [ref=e180]: Roma · sync live
+            - img [ref=e284]
+          - button "Università di Trieste Trieste · sync live" [ref=e181]:
+            - generic [ref=e182]:
+              - generic [ref=e183]: Università di Trieste
+              - generic [ref=e184]: Trieste · sync live
+          - button "Università di Perugia Perugia · sync live" [ref=e185]:
+            - generic [ref=e186]:
+              - generic [ref=e187]: Università di Perugia
+              - generic [ref=e188]: Perugia · sync live
+          - button "Università di Cagliari Cagliari · sync live" [ref=e189]:
+            - generic [ref=e190]:
+              - generic [ref=e191]: Università di Cagliari
+              - generic [ref=e192]: Cagliari · sync live
+          - button "Università di Trento Trento · sync live" [ref=e193]:
+            - generic [ref=e194]:
+              - generic [ref=e195]: Università di Trento
+              - generic [ref=e196]: Trento · sync live
+          - button "Federico II Napoli · sync live" [ref=e197]:
+            - generic [ref=e198]:
+              - generic [ref=e199]: Federico II
+              - generic [ref=e200]: Napoli · sync live
+          - button "Università di Ferrara Ferrara · sync live" [ref=e201]:
+            - generic [ref=e202]:
+              - generic [ref=e203]: Università di Ferrara
+              - generic [ref=e204]: Ferrara · sync live
+          - button "Università di Parma Parma · sync live" [ref=e205]:
+            - generic [ref=e206]:
+              - generic [ref=e207]: Università di Parma
+              - generic [ref=e208]: Parma · sync live
+          - button "Università di Salerno Salerno · sync live" [ref=e209]:
+            - generic [ref=e210]:
+              - generic [ref=e211]: Università di Salerno
+              - generic [ref=e212]: Salerno · sync live
+          - button "Università di Sassari Sassari · sync live" [ref=e213]:
+            - generic [ref=e214]:
+              - generic [ref=e215]: Università di Sassari
+              - generic [ref=e216]: Sassari · sync live
+          - button "Università di Firenze Firenze · sync live" [ref=e217]:
+            - generic [ref=e218]:
+              - generic [ref=e219]: Università di Firenze
+              - generic [ref=e220]: Firenze · sync live
+          - button "Università di Genova Genova · sync live" [ref=e221]:
+            - generic [ref=e222]:
+              - generic [ref=e223]: Università di Genova
+              - generic [ref=e224]: Genova · sync live
+          - button "Piemonte Orientale Vercelli · sync live" [ref=e225]:
+            - generic [ref=e226]:
+              - generic [ref=e227]: Piemonte Orientale
+              - generic [ref=e228]: Vercelli · sync live
+          - button "Stranieri Siena Siena · sync live" [ref=e229]:
+            - generic [ref=e230]:
+              - generic [ref=e231]: Stranieri Siena
+              - generic [ref=e232]: Siena · sync live
+          - button "La Sapienza Roma · inserimento manuale" [ref=e233]:
+            - generic [ref=e234]:
+              - generic [ref=e235]: La Sapienza
+              - generic [ref=e236]: Roma · inserimento manuale
+          - button "Università di Bologna Bologna · inserimento manuale" [ref=e237]:
+            - generic [ref=e238]:
+              - generic [ref=e239]: Università di Bologna
+              - generic [ref=e240]: Bologna · inserimento manuale
+          - button "Politecnico di Milano Milano · inserimento manuale" [ref=e241]:
+            - generic [ref=e242]:
+              - generic [ref=e243]: Politecnico di Milano
+              - generic [ref=e244]: Milano · inserimento manuale
+          - button "Politecnico di Torino Torino · inserimento manuale" [ref=e245]:
+            - generic [ref=e246]:
+              - generic [ref=e247]: Politecnico di Torino
+              - generic [ref=e248]: Torino · inserimento manuale
+          - button "Università di Padova Padova · inserimento manuale" [ref=e249]:
+            - generic [ref=e250]:
+              - generic [ref=e251]: Università di Padova
+              - generic [ref=e252]: Padova · inserimento manuale
+          - button "Università di Siena Siena · inserimento manuale" [ref=e253]:
+            - generic [ref=e254]:
+              - generic [ref=e255]: Università di Siena
+              - generic [ref=e256]: Siena · inserimento manuale
+          - button "Università di Pisa Pisa · inserimento manuale" [ref=e257]:
+            - generic [ref=e258]:
+              - generic [ref=e259]: Università di Pisa
+              - generic [ref=e260]: Pisa · inserimento manuale
+          - button "Statale di Milano Milano · inserimento manuale" [ref=e261]:
+            - generic [ref=e262]:
+              - generic [ref=e263]: Statale di Milano
+              - generic [ref=e264]: Milano · inserimento manuale
+          - button "Università di Torino Torino · inserimento manuale" [ref=e265]:
+            - generic [ref=e266]:
+              - generic [ref=e267]: Università di Torino
+              - generic [ref=e268]: Torino · inserimento manuale
+          - button "Ca' Foscari Venezia · inserimento manuale" [ref=e269]:
+            - generic [ref=e270]:
+              - generic [ref=e271]: Ca' Foscari
+              - generic [ref=e272]: Venezia · inserimento manuale
+          - button "Bocconi Milano · inserimento manuale" [ref=e273]:
+            - generic [ref=e274]:
+              - generic [ref=e275]: Bocconi
+              - generic [ref=e276]: Milano · inserimento manuale
+          - button "Università di Pavia Pavia · inserimento manuale" [ref=e277]:
+            - generic [ref=e278]:
+              - generic [ref=e279]: Università di Pavia
+              - generic [ref=e280]: Pavia · inserimento manuale
+      - generic [ref=e281]:
+        - button "Indietro" [disabled]:
+          - img
+          - text: Indietro
+        - button "Continua" [ref=e286]:
+          - text: Continua
+          - img [ref=e287]
+    - paragraph [ref=e282]: Puoi cambiare questi dati quando vuoi dal cruscotto.
+  - contentinfo [ref=e111]:
+    - generic [ref=e112]:
+      - link "StudentOS" [ref=e113] [cursor=pointer]:
+        - /url: /
+        - generic "StudentOS" [ref=e114]:
+          - generic [ref=e115]:
+            - text: Student
+            - img [ref=e116]
+            - text: S
+      - generic [ref=e123]: Dati sincronizzati sul tuo account · accesso con email universitaria
+      - generic [ref=e124]: v0.1.0
+  - button "Azioni rapide" [ref=e125]:
+    - img [ref=e126]
+  - button "Open Next.js Dev Tools" [ref=e132] [cursor=pointer]:
+    - img [ref=e133]
+  - alert [ref=e283]: Configura — StudentOS

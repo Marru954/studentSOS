@@ -9,6 +9,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { DelphiError, fetchDelphiLibretto } from "@/lib/sync/delphi/client";
+import { guardPost } from "@/lib/api/guard";
 
 export const runtime = "nodejs";
 /** Never cache a credentialed scrape. */
@@ -20,6 +21,9 @@ const requestSchema = z.object({
 });
 
 export async function POST(request: Request) {
+  const blocked = guardPost(request, "sync-delphi", { limit: 8, windowMs: 60_000 });
+  if (blocked) return blocked;
+
   let parsed: z.infer<typeof requestSchema>;
   try {
     parsed = requestSchema.parse(await request.json());

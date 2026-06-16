@@ -1,0 +1,113 @@
+- generic [active] [ref=e1]:
+  - link "Salta al contenuto" [ref=e2] [cursor=pointer]:
+    - /url: "#contenuto"
+  - banner [ref=e3]:
+    - navigation "Principale" [ref=e4]:
+      - link "StudentOS" [ref=e5] [cursor=pointer]:
+        - /url: /
+        - generic "StudentOS" [ref=e6]:
+          - generic [ref=e7]:
+            - text: Student
+            - img [ref=e8]
+            - text: S
+      - generic [ref=e15]:
+        - link "Cruscotto (7 avvisi critici)" [ref=e127] [cursor=pointer]:
+          - /url: /cruscotto
+          - img [ref=e18]
+          - text: Cruscotto
+          - generic [ref=e129]: (7 avvisi critici)
+        - link "Orario" [ref=e23] [cursor=pointer]:
+          - /url: /orario
+          - img [ref=e25]
+          - text: Orario
+        - link "Appelli" [ref=e27] [cursor=pointer]:
+          - /url: /appelli
+          - img [ref=e29]
+          - text: Appelli
+        - link "Calendario" [ref=e33] [cursor=pointer]:
+          - /url: /calendario
+          - img [ref=e35]
+          - text: Calendario
+        - link "Libretto" [ref=e37] [cursor=pointer]:
+          - /url: /libretto
+          - img [ref=e39]
+          - text: Libretto
+        - link "Note" [ref=e42] [cursor=pointer]:
+          - /url: /note
+          - img [ref=e44]
+          - text: Note
+        - link "Focus" [ref=e47] [cursor=pointer]:
+          - /url: /focus
+          - img [ref=e49]
+          - text: Focus
+        - link "Assistente" [ref=e52] [cursor=pointer]:
+          - /url: /assistente
+          - img [ref=e54]
+          - text: Assistente
+        - link "Impostazioni" [ref=e56] [cursor=pointer]:
+          - /url: /impostazioni
+          - img [ref=e58]
+          - text: Impostazioni
+      - generic [ref=e61]:
+        - button "Cerca (Cmd+K)" [ref=e62]:
+          - img [ref=e63]
+        - link "Accedi" [ref=e130] [cursor=pointer]:
+          - /url: /login
+          - img [ref=e131]
+          - text: Accedi
+        - button "Passa al tema scuro" [ref=e134]:
+          - img [ref=e135]
+  - main [ref=e74]:
+    - generic [ref=e75]:
+      - generic [ref=e76]:
+        - generic "StudentOS" [ref=e77]:
+          - generic [ref=e78]:
+            - text: Student
+            - img [ref=e79]
+            - text: S
+        - paragraph [ref=e86]: Accedi con la tua email universitaria.
+      - generic [ref=e87]:
+        - generic [ref=e88]:
+          - generic [ref=e89]: Email universitaria
+          - generic [ref=e90]:
+            - img
+            - textbox "Email universitaria" [ref=e91]:
+              - /placeholder: nome.cognome@studenti.uniroma2.it
+        - generic [ref=e92]:
+          - generic [ref=e93]: Password
+          - generic [ref=e94]:
+            - img
+            - textbox "Password" [ref=e95]:
+              - /placeholder: La tua password
+            - button "Mostra password" [ref=e96]:
+              - img [ref=e97]
+          - button "Password dimenticata?" [ref=e149]
+        - button "Accedi" [ref=e150]
+        - generic [ref=e102]:
+          - button "Non hai un account? Registrati" [ref=e151]
+          - generic [ref=e104]: Solo email istituzionali. I tuoi dati restano tuoi — RLS per utente.
+    - generic [ref=e105]:
+      - paragraph [ref=e106]: Dev · accesso di test (solo development)
+      - paragraph [ref=e107]: "Salta l’auth: entra con qualsiasi email per provare la UX loggata. Sessione finta, nessuna auth reale."
+      - generic [ref=e108]:
+        - textbox "Email utente di test" [ref=e109]:
+          - /placeholder: test@studenti.uniroma2.it
+        - button "Accedi come test" [ref=e110]
+    - paragraph [ref=e111]:
+      - text: Vuoi prima dare un’occhiata?
+      - link "Esplora StudentOS" [ref=e112] [cursor=pointer]:
+        - /url: /cruscotto
+  - contentinfo [ref=e113]:
+    - generic [ref=e114]:
+      - link "StudentOS" [ref=e115] [cursor=pointer]:
+        - /url: /
+        - generic "StudentOS" [ref=e116]:
+          - generic [ref=e117]:
+            - text: Student
+            - img [ref=e118]
+            - text: S
+      - generic [ref=e125]: I tuoi dati restano su questo dispositivo
+      - generic [ref=e126]: v0.1.0
+  - button "Open Next.js Dev Tools" [ref=e142] [cursor=pointer]:
+    - img [ref=e143]
+  - alert [ref=e146]

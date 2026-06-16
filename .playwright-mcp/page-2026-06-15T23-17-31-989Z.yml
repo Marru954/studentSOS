@@ -1,0 +1,343 @@
+- generic [ref=e1]:
+  - link "Salta al contenuto" [ref=e2] [cursor=pointer]:
+    - /url: "#contenuto"
+  - banner [ref=e3]:
+    - navigation "Principale" [ref=e4]:
+      - link "StudentOS" [ref=e5] [cursor=pointer]:
+        - /url: /
+        - generic "StudentOS" [ref=e6]:
+          - generic [ref=e7]:
+            - text: Student
+            - img [ref=e8]
+            - text: S
+      - generic [ref=e15]:
+        - link "Cruscotto (7 avvisi critici)" [ref=e136] [cursor=pointer]:
+          - /url: /cruscotto
+          - img [ref=e18]
+          - text: Cruscotto
+          - generic [ref=e138]: (7 avvisi critici)
+        - link "Orario" [ref=e23] [cursor=pointer]:
+          - /url: /orario
+          - img [ref=e25]
+          - text: Orario
+        - link "Appelli" [ref=e27] [cursor=pointer]:
+          - /url: /appelli
+          - img [ref=e29]
+          - text: Appelli
+        - link "Calendario" [ref=e33] [cursor=pointer]:
+          - /url: /calendario
+          - img [ref=e35]
+          - text: Calendario
+        - link "Libretto" [ref=e37] [cursor=pointer]:
+          - /url: /libretto
+          - img [ref=e39]
+          - text: Libretto
+        - link "Note" [ref=e42] [cursor=pointer]:
+          - /url: /note
+          - img [ref=e44]
+          - text: Note
+        - link "Focus" [ref=e47] [cursor=pointer]:
+          - /url: /focus
+          - img [ref=e49]
+          - text: Focus
+        - link "Assistente" [ref=e52] [cursor=pointer]:
+          - /url: /assistente
+          - img [ref=e54]
+          - text: Assistente
+        - link "Impostazioni" [ref=e56] [cursor=pointer]:
+          - /url: /impostazioni
+          - img [ref=e58]
+          - text: Impostazioni
+      - generic [ref=e61]:
+        - button "Cerca (Cmd+K)" [ref=e62]:
+          - img [ref=e63]
+        - link "Accedi" [ref=e139] [cursor=pointer]:
+          - /url: /login
+          - img [ref=e140]
+          - text: Accedi
+        - button "Passa al tema chiaro" [ref=e66]:
+          - img [ref=e67]
+  - main [ref=e74]:
+    - generic [ref=e75]:
+      - dialog "Tour del cruscotto" [ref=e144]:
+        - generic [ref=e145]:
+          - generic [ref=e146]:
+            - heading "Appelli urgenti" [level=2] [ref=e147]:
+              - img [ref=e148]
+              - text: Appelli urgenti
+            - button "Chiudi il tour" [active] [ref=e151]:
+              - img [ref=e152]
+          - paragraph [ref=e155]: In alto trovi gli appelli più vicini e le iscrizioni in scadenza, con un colore che cresce con l'urgenza. La timeline degli esami raccoglie tutte le date in arrivo.
+          - generic [ref=e156]:
+            - generic "Passo 1 di 4" [ref=e157]: 1/4
+            - button "Avanti" [ref=e159]:
+              - text: Avanti
+              - img [ref=e160]
+      - generic [ref=e76]:
+        - generic [ref=e77]:
+          - heading "Cruscotto" [level=1] [ref=e78]
+          - paragraph [ref=e162]: Buongiorno · martedì 16 giugno
+        - generic [ref=e79]:
+          - button "Configura" [ref=e80]:
+            - img [ref=e81]
+            - text: Configura
+          - generic [ref=e84]:
+            - 'generic "Ultimo aggiornamento: 15/06 alle 01:16" [ref=e164]': agg. 15/06 · 01:16
+            - button "Sincronizza" [ref=e165]
+      - generic [ref=e166]:
+        - generic [ref=e167]:
+          - link "Aggiungi voto" [ref=e168] [cursor=pointer]:
+            - /url: /libretto
+            - img [ref=e169]
+            - text: Aggiungi voto
+          - link "Vai al portale (si apre in una nuova scheda)" [ref=e170] [cursor=pointer]:
+            - /url: https://delphi.uniroma2.it
+            - img [ref=e171]
+            - text: Vai al portale
+            - generic [ref=e175]: (si apre in una nuova scheda)
+          - link "Nuova nota" [ref=e176] [cursor=pointer]:
+            - /url: /note
+            - img [ref=e177]
+            - text: Nuova nota
+        - generic [ref=e180]:
+          - generic [ref=e181]:
+            - img [ref=e182]
+            - text: Prossimo esame
+          - generic [ref=e186]:
+            - generic [ref=e188]: Oggi
+            - heading "PROGRAMMAZIONE DEI CALCOLATORI CON LABORATORIO" [level=2] [ref=e189]
+            - paragraph [ref=e190]: 16 giu · ore 09:00 · Aula 3 - PP2
+          - generic [ref=e191]:
+            - paragraph [ref=e192]: 6 appelli questa settimana
+            - link "Studia per questo esame" [ref=e193] [cursor=pointer]:
+              - /url: /focus?course=PROGRAMMAZIONE%20DEI%20CALCOLATORI%20CON%20LABORATORIO
+              - img [ref=e194]
+              - text: Studia per questo esame
+        - generic [ref=e197]:
+          - heading "Carriera" [level=2] [ref=e199]:
+            - img [ref=e201]
+            - text: Carriera
+          - generic [ref=e205]:
+            - paragraph [ref=e206]: Registra i voti nel libretto e qui vedrai media ponderata, andamento e base di laurea aggiornarsi a ogni esame. I dati restano solo su questo dispositivo.
+            - link "Aggiungi il primo voto" [ref=e207] [cursor=pointer]:
+              - /url: /libretto
+              - img [ref=e208]
+              - text: Aggiungi il primo voto
+        - generic [ref=e209]:
+          - heading "Avanzamento CFU" [level=2] [ref=e211]:
+            - img [ref=e213]
+            - text: Avanzamento CFU
+          - generic [ref=e217]:
+            - generic [ref=e218]:
+              - img "0 CFU su 180" [ref=e219]:
+                - img [ref=e220]
+                - generic [ref=e223]:
+                  - generic [ref=e224]: "0"
+                  - generic [ref=e225]: /180 CFU
+              - paragraph [ref=e226]:
+                - text: Il tuo percorso parte da qui. Registra gli esami già sostenuti e guarda la barra salire verso i
+                - strong [ref=e227]: 180 CFU
+                - text: della laurea.
+            - link "Aggiungi i tuoi esami" [ref=e228] [cursor=pointer]:
+              - /url: /libretto
+              - img [ref=e229]
+              - text: Aggiungi i tuoi esami
+        - generic [ref=e230]:
+          - heading "Oggi" [level=2] [ref=e232]:
+            - img [ref=e234]
+            - text: Oggi
+          - paragraph [ref=e238]: Nessuna lezione oggi 🎉
+        - generic [ref=e239]:
+          - generic [ref=e240]:
+            - heading "Appelli in arrivo" [level=2] [ref=e241]:
+              - img [ref=e243]
+              - text: Appelli in arrivo
+            - generic [ref=e248]: "50"
+          - generic [ref=e250]:
+            - list [ref=e251]:
+              - listitem [ref=e252]:
+                - img [ref=e253]
+                - generic [ref=e255]: 22/06 10:00 · CALCOLO DELLE PROBABILITA' E STATISTICA vs GEOMETRIA ED ALGEBRA
+              - listitem [ref=e256]:
+                - img [ref=e257]
+                - generic [ref=e259]: 30/06 09:00 · GEOMETRIA ED ALGEBRA vs ANALISI MATEMATICA vs ALGORITMI E STRUTTURE DATI - ALGORITMI E STRUTTURE DATI B
+              - listitem [ref=e260]:
+                - img [ref=e261]
+                - generic [ref=e263]: 01/07 10:00 · FONDAMENTI DI INFORMATICA vs LOGICA E RETI LOGICHE
+              - listitem [ref=e264]:
+                - img [ref=e265]
+                - generic [ref=e267]: 02/07 09:00 · ALGORITMI E STRUTTURE DATI - ALGORITMI E STRUTTURE DATI B vs GEOMETRIA ED ALGEBRA
+            - list [ref=e268]:
+              - listitem [ref=e269]:
+                - generic [ref=e270]:
+                  - generic [ref=e271]: "16"
+                  - generic [ref=e272]: giu
+                - generic [ref=e273]:
+                  - paragraph [ref=e274]: PROGRAMMAZIONE DEI CALCOLATORI CON LABORATORIO
+                  - paragraph [ref=e275]: ore 09:00 · Aula 3 - PP2
+                  - button "+1 altre date" [ref=e276]
+                - generic [ref=e277]: oggi
+              - listitem [ref=e278]:
+                - generic [ref=e279]:
+                  - generic [ref=e280]: "19"
+                  - generic [ref=e281]: giu
+                - generic [ref=e282]:
+                  - paragraph [ref=e283]: CALCOLO DELLE PROBABILITA' E STATISTICA
+                  - paragraph [ref=e284]: ore 10:00 · Aula 18
+                  - button "+3 altre date" [ref=e285]
+                - generic [ref=e286]: tra 3 giorni
+              - listitem [ref=e287]:
+                - generic [ref=e288]:
+                  - generic [ref=e289]: "22"
+                  - generic [ref=e290]: giu
+                - generic [ref=e291]:
+                  - paragraph [ref=e292]: GEOMETRIA ED ALGEBRA
+                  - paragraph [ref=e293]: ore 10:00 · Aula 11
+                  - button "+4 altre date" [ref=e294]
+                - generic [ref=e295]: tra 6 giorni
+              - listitem [ref=e296]:
+                - generic [ref=e297]:
+                  - generic [ref=e298]: "22"
+                  - generic [ref=e299]: giu
+                - generic [ref=e300]:
+                  - paragraph [ref=e301]: FISICA
+                  - paragraph [ref=e302]: ore 13:00 · Aula 3 - PP2
+                  - button "+4 altre date" [ref=e303]
+                - generic [ref=e304]: tra 6 giorni
+              - listitem [ref=e305]:
+                - generic [ref=e306]:
+                  - generic [ref=e307]: "23"
+                  - generic [ref=e308]: giu
+                - generic [ref=e309]:
+                  - paragraph [ref=e310]: ANALISI MATEMATICA
+                  - paragraph [ref=e311]: ore 09:00 · Aula 3 - PP2
+                  - button "+3 altre date" [ref=e312]
+                - generic [ref=e313]: tra 7 giorni
+              - listitem [ref=e314]:
+                - generic [ref=e315]:
+                  - generic [ref=e316]: "24"
+                  - generic [ref=e317]: giu
+                - generic [ref=e318]:
+                  - paragraph [ref=e319]: BASI DI DATI E DI CONOSCENZA
+                  - paragraph [ref=e320]: ore 09:00 · Aula 5 - PP2
+                  - button "+3 altre date" [ref=e321]
+                - generic [ref=e322]: tra 8 giorni
+              - listitem [ref=e323]:
+                - generic [ref=e324]:
+                  - generic [ref=e325]: "24"
+                  - generic [ref=e326]: giu
+                - generic [ref=e327]:
+                  - paragraph [ref=e328]: LOGICA E RETI LOGICHE
+                  - paragraph [ref=e329]: ore 10:00 · Aula 3 - PP2
+                  - button "+3 altre date" [ref=e330]
+                - generic [ref=e331]: tra 8 giorni
+              - listitem [ref=e332]:
+                - generic [ref=e333]:
+                  - generic [ref=e334]: "24"
+                  - generic [ref=e335]: giu
+                - generic [ref=e336]:
+                  - paragraph [ref=e337]: INFORMATION RETRIEVAL
+                  - paragraph [ref=e338]: ore 15:00 · Aula 13
+                  - button "+3 altre date" [ref=e339]
+                - generic [ref=e340]: tra 8 giorni
+              - listitem [ref=e341]:
+                - generic [ref=e342]:
+                  - generic [ref=e343]: "25"
+                  - generic [ref=e344]: giu
+                - generic [ref=e345]:
+                  - paragraph [ref=e346]: LINGUAGGI E METODOLOGIE DI PROGRAMMAZIONE - MODULO II
+                  - paragraph [ref=e347]: ore 08:00 · Aula 3 - PP2
+                  - button "+2 altre date" [ref=e348]
+                - generic [ref=e349]: tra 9 giorni
+              - listitem [ref=e350]:
+                - generic [ref=e351]:
+                  - generic [ref=e352]: "26"
+                  - generic [ref=e353]: giu
+                - generic [ref=e354]:
+                  - paragraph [ref=e355]: SISTEMI OPERATIVI E RETI
+                  - paragraph [ref=e356]: ore 14:00 · Aula 18
+                  - button "+3 altre date" [ref=e357]
+                - generic [ref=e358]: tra 10 giorni
+              - listitem [ref=e359]:
+                - generic [ref=e360]:
+                  - generic [ref=e361]: "30"
+                  - generic [ref=e362]: giu
+                - generic [ref=e363]:
+                  - paragraph [ref=e364]: ALGORITMI E STRUTTURE DATI - ALGORITMI E STRUTTURE DATI B
+                  - paragraph [ref=e365]: ore 09:00 · Aula T2
+                  - button "+3 altre date" [ref=e366]
+                - generic [ref=e367]: tra 14 giorni
+              - listitem [ref=e368]:
+                - generic [ref=e369]:
+                  - generic [ref=e370]: "1"
+                  - generic [ref=e371]: lug
+                - generic [ref=e372]:
+                  - paragraph [ref=e373]: FONDAMENTI DI INFORMATICA
+                  - paragraph [ref=e374]: ore 10:00 · Aula 18
+                  - button "+2 altre date" [ref=e375]
+                - generic [ref=e376]: tra 15 giorni
+              - listitem [ref=e377]:
+                - generic [ref=e378]:
+                  - generic [ref=e379]: "13"
+                  - generic [ref=e380]: lug
+                - generic [ref=e381]:
+                  - paragraph [ref=e382]: MATEMATICA DISCRETA
+                  - paragraph [ref=e383]: ore 15:30 · Aula 13
+                  - button "+3 altre date" [ref=e384]
+                - generic [ref=e385]: tra 27 giorni
+        - generic [ref=e386]:
+          - heading "Obiettivo settimana" [level=2] [ref=e388]:
+            - img [ref=e390]
+            - text: Obiettivo settimana
+          - generic [ref=e395]:
+            - img "0 ore su 10 questa settimana" [ref=e396]:
+              - img [ref=e397]
+              - generic [ref=e401]: 0%
+            - generic [ref=e402]:
+              - paragraph [ref=e403]:
+                - generic [ref=e404]: 0/10h
+                - text: questa settimana
+              - generic [ref=e405]:
+                - generic [ref=e406]: Obiettivo settimanale
+                - generic [ref=e407]:
+                  - button "Riduci obiettivo di un'ora" [ref=e408]
+                  - generic [ref=e409]: 10h
+                  - button "Aumenta obiettivo di un'ora" [ref=e410]
+        - generic [ref=e411]:
+          - heading "Scadenze prenotazione" [level=2] [ref=e413]:
+            - img [ref=e415]
+            - text: Scadenze prenotazione
+          - paragraph [ref=e419]: Nessuna scadenza imminente ✓
+        - generic [ref=e420]:
+          - heading "Link utili" [level=2] [ref=e422]:
+            - img [ref=e424]
+            - text: Link utili
+          - list [ref=e428]:
+            - listitem [ref=e429]:
+              - link "Delphi — Segreteria online (si apre in una nuova scheda)" [ref=e430] [cursor=pointer]:
+                - /url: https://delphi.uniroma2.it
+                - img [ref=e431]
+                - generic [ref=e435]: Delphi — Segreteria online
+                - generic [ref=e436]: (si apre in una nuova scheda)
+            - listitem [ref=e437]:
+              - link "Portale di Ateneo (si apre in una nuova scheda)" [ref=e438] [cursor=pointer]:
+                - /url: https://web.uniroma2.it
+                - img [ref=e439]
+                - generic [ref=e443]: Portale di Ateneo
+                - generic [ref=e444]: (si apre in una nuova scheda)
+  - contentinfo [ref=e111]:
+    - generic [ref=e112]:
+      - link "StudentOS" [ref=e113] [cursor=pointer]:
+        - /url: /
+        - generic "StudentOS" [ref=e114]:
+          - generic [ref=e115]:
+            - text: Student
+            - img [ref=e116]
+            - text: S
+      - generic [ref=e123]: Dati sincronizzati sul tuo account · accesso con email universitaria
+      - generic [ref=e124]: v0.1.0
+  - button "Azioni rapide" [ref=e125]:
+    - img [ref=e126]
+  - button "Open Next.js Dev Tools" [ref=e132] [cursor=pointer]:
+    - img [ref=e133]
+  - alert [ref=e445]

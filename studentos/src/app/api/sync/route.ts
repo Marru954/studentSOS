@@ -7,6 +7,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { runSources } from "@/lib/sync/engine";
+import { guardPost } from "@/lib/api/guard";
 
 const isoDate = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "data ISO YYYY-MM-DD richiesta");
 
@@ -27,6 +28,9 @@ const requestSchema = z.object({
 });
 
 export async function POST(request: Request) {
+  const blocked = guardPost(request, "sync", { limit: 20, windowMs: 60_000 });
+  if (blocked) return blocked;
+
   let body: unknown;
   try {
     body = await request.json();
