@@ -13,6 +13,13 @@ import { cn } from "@/lib/cn";
 import { formatItDate, parseItDate } from "@/lib/format";
 import { inputClass } from "./Field";
 
+/** Keep only digits and auto-insert the slashes → "20/06/2026". Lets the user
+ *  type digits only, so the numeric mobile keyboard (no "/") works. */
+function maskDate(raw: string): string {
+  const d = raw.replace(/\D/g, "").slice(0, 8);
+  return [d.slice(0, 2), d.slice(2, 4), d.slice(4, 8)].filter(Boolean).join("/");
+}
+
 export function DateField({
   id,
   value,
@@ -46,9 +53,9 @@ export function DateField({
       value={display}
       required={required}
       onChange={(e) => {
-        const raw = e.target.value;
-        setDisplay(raw);
-        onChange(parseItDate(raw) ?? "");
+        const masked = maskDate(e.target.value);
+        setDisplay(masked);
+        onChange(parseItDate(masked) ?? "");
       }}
       className={cn(inputClass, className)}
     />
