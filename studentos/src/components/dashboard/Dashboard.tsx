@@ -27,6 +27,7 @@ import { useLibretto } from "@/lib/state/manual";
 import { useSettings } from "@/lib/state/settings";
 import { useSynced } from "@/lib/state/synced";
 import { CruscottoTour } from "@/components/onboarding/CruscottoTour";
+import { BackupNudge } from "./BackupNudge";
 import { BookingDeadlines } from "./BookingDeadlines";
 import { BookingReminders } from "./BookingReminders";
 import { CareerStrip, CfuMini } from "./CareerSummary";
@@ -259,6 +260,7 @@ export function Dashboard() {
             <BookingReminders className="lg:col-span-6" />
           )}
           <QuickActions className="lg:col-span-6" />
+          <BackupNudge className="lg:col-span-6" />
 
           {/* HERO bento: prossimo esame + countdown (2/3, alto due righe) con
               media e CFU impilati accanto (1/3). */}

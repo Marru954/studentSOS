@@ -96,6 +96,12 @@ export function LoginView() {
         <div className="mb-6 flex flex-col items-center gap-3 text-center">
           <Wordmark className="text-2xl" />
           <p className="text-sm text-ink-mute">{COPY[mode].subtitle}</p>
+          {mode !== "reset" && (
+            <p className="text-xs text-ink-faint">
+              Metti al sicuro i tuoi dati e ritrovali su altri dispositivi. L&rsquo;app
+              funziona benissimo anche senza.
+            </p>
+          )}
         </div>
 
         {sent ? (
@@ -264,8 +270,8 @@ export function LoginView() {
                 </button>
               )}
               <span className="text-ink-faint">
-                Solo email istituzionali. I tuoi dati restano tuoi — RLS per
-                utente.
+                Solo email istituzionali. I tuoi dati restano privati: nessun
+                altro pu&ograve; vederli.
               </span>
             </div>
           </form>
