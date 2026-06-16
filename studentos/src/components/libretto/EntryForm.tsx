@@ -5,6 +5,7 @@
 import { useState } from "react";
 import { PenLine } from "lucide-react";
 import { Button } from "@/components/primitives/Button";
+import { DateField } from "@/components/primitives/DateField";
 import { Field, inputClass } from "@/components/primitives/Field";
 import { Panel } from "@/components/primitives/Panel";
 import {
@@ -127,14 +128,7 @@ export function EntryForm({
             />
           </Field>
           <Field label="Data" htmlFor="lib-data">
-            <input
-              id="lib-data"
-              type="date"
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
-              required
-              className={inputClass}
-            />
+            <DateField id="lib-data" value={date} onChange={setDate} required />
           </Field>
         </div>
 

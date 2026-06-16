@@ -23,7 +23,9 @@ export function TodayTimeline({
   if (events.length === 0) {
     return (
       <Panel title="Oggi" icon={<Clock />} className={className}>
-        <p className="text-sm text-ink-mute">Nessuna lezione oggi 🎉</p>
+        <p className="text-sm text-ink-mute">
+          Nessuna lezione oggi: goditi la pausa.
+        </p>
       </Panel>
     );
   }

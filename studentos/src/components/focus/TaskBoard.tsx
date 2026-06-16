@@ -8,6 +8,7 @@ import { useState } from "react";
 import { Badge } from "@/components/primitives/Badge";
 import { Button } from "@/components/primitives/Button";
 import { ConfirmButton } from "@/components/primitives/ConfirmButton";
+import { DateField } from "@/components/primitives/DateField";
 import { Field, inputClass } from "@/components/primitives/Field";
 import { cn } from "@/lib/cn";
 import type { IsoDate, StudyTask, TaskStatus } from "@/lib/domain/types";
@@ -120,13 +121,7 @@ export function TaskBoard({
           </select>
         </Field>
         <Field label="Scadenza" htmlFor="task-scadenza" className="w-40">
-          <input
-            id="task-scadenza"
-            type="date"
-            value={due}
-            onChange={(e) => setDue(e.target.value)}
-            className={inputClass}
-          />
+          <DateField id="task-scadenza" value={due} onChange={setDue} />
         </Field>
         <button type="submit" className="btn btn-primary">
           <Plus size={16} aria-hidden="true" />
@@ -137,7 +132,7 @@ export function TaskBoard({
       {tasks.length === 0 ? (
         <div className="glass reveal rounded-lg p-8 text-center text-sm text-ink-mute">
           Nessun obiettivo ancora. Aggiungi la prima attività dal modulo qui
-          sopra per organizzare lo studio 🎯
+          sopra per organizzare lo studio.
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">

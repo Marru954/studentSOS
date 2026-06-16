@@ -118,6 +118,31 @@ export function fmtNum(value: number, digits = 0): string {
   return value.toFixed(digits).replace(".", ",");
 }
 
+/** ISO date "2026-06-20" → "20/06/2026"; non-ISO/empty → "". */
+export function formatItDate(iso: string): string {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso);
+  return m ? `${m[3]}/${m[2]}/${m[1]}` : "";
+}
+
+/** "20/06/2026" (also "-"/"." separators) → ISO "2026-06-20"; invalid → null. */
+export function parseItDate(display: string): string | null {
+  const m = /^(\d{1,2})[/.\-](\d{1,2})[/.\-](\d{4})$/.exec(display.trim());
+  if (!m) return null;
+  const day = Number(m[1]);
+  const month = Number(m[2]);
+  const year = Number(m[3]);
+  if (month < 1 || month > 12 || day < 1 || day > 31) return null;
+  const d = new Date(Date.UTC(year, month - 1, day));
+  if (
+    d.getUTCFullYear() !== year ||
+    d.getUTCMonth() !== month - 1 ||
+    d.getUTCDate() !== day
+  ) {
+    return null;
+  }
+  return `${String(year).padStart(4, "0")}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+}
+
 /** "85" minutes → "1h 25m"; under an hour → "45m". */
 export function fmtMinutes(minutes: number): string {
   const h = Math.floor(minutes / 60);

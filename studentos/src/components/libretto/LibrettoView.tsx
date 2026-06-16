@@ -87,7 +87,7 @@ export function LibrettoView() {
           Media ponderata
         </div>
         <div className="grad-text font-num" style={statCardStyle}>
-          {average === undefined ? "—" : <CountUp value={average} decimals={1} />}
+          {average === undefined ? "—" : <CountUp value={average} decimals={2} />}
         </div>
       </div>
       <div className="glass" style={{ padding: "1.4rem", textAlign: "center" }}>

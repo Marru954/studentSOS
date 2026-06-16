@@ -219,7 +219,7 @@ export function Landing() {
               </Link>
             </div>
             <p className="eyebrow text-ink-faint">
-              Email universitaria · dati sincronizzati · gratis
+              Gratis · i tuoi dati restano sul dispositivo
             </p>
           </div>
           <div className="mt-12">

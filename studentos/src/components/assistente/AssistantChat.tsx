@@ -35,25 +35,28 @@ interface Turn {
 }
 
 const SUGGESTIONS: { label: string; prompt: string }[] = [
-  { label: "Quando è il mio prossimo esame? 📅", prompt: "Quando è il mio prossimo esame?" },
   {
-    label: "Pianifica le mie sessioni di studio 📚",
+    label: "Quando è il mio prossimo esame?",
+    prompt: "Quando è il mio prossimo esame?",
+  },
+  {
+    label: "Pianifica le mie sessioni di studio",
     prompt: "Pianifica le mie sessioni di studio per i prossimi esami.",
   },
   {
-    label: "Analizza la mia media e come migliorarla 📊",
+    label: "Analizza la mia media e come migliorarla",
     prompt: "Analizza la mia media e dimmi come posso migliorarla.",
   },
   {
-    label: "Cosa devo studiare questa settimana? 🎯",
+    label: "Cosa devo studiare questa settimana?",
     prompt: "Cosa mi conviene studiare questa settimana?",
   },
   {
-    label: "Quante ore mi mancano per laurearmi? 🎓",
+    label: "Quante ore mi mancano per laurearmi?",
     prompt: "Quanti CFU mi mancano per laurearmi e a che punto sono?",
   },
   {
-    label: "Crea un piano per il prossimo esame ✏️",
+    label: "Crea un piano per il prossimo esame",
     prompt: "Crea un piano di studio dettagliato per il mio prossimo esame.",
   },
 ];
