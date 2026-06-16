@@ -2,15 +2,14 @@
 
 import {
   ArrowRight,
-  Award,
   CalendarClock,
   CalendarDays,
   GraduationCap,
   LayoutDashboard,
   LifeBuoy,
+  Lock,
   NotebookPen,
   Timer,
-  Trophy,
   type LucideIcon,
 } from "lucide-react";
 import Link from "next/link";
@@ -63,21 +62,15 @@ const STATS: { value: number; suffix?: string; unit: string; desc: string }[] = 
   { value: 5, suffix: " min", unit: "setup", desc: "per essere operativo dal primo avvio" },
 ];
 
-/** Sample unlocked exams for the gamification teaser. */
-const SAMPLE_TROPHIES: {
-  grade: string;
-  laude?: boolean;
-  course: string;
-  border: string;
-  Icon: LucideIcon;
-  iconColor: string;
-  grad?: boolean;
-}[] = [
-  { grade: "30", laude: true, course: "Diritto costituzionale", border: "border-yellow-400/60", Icon: Trophy, iconColor: "text-yellow-400", grad: true },
-  { grade: "29", course: "Microbiologia", border: "border-[color:var(--signal)]/50", Icon: Trophy, iconColor: "text-[var(--signal-2)]", grad: true },
-  { grade: "28", course: "Macroeconomia", border: "border-[color:var(--signal)]/50", Icon: Trophy, iconColor: "text-[var(--signal-2)]", grad: true },
-  { grade: "26", course: "Storia dell'arte", border: "border-line", Icon: Award, iconColor: "text-ink-mute" },
-  { grade: "Idoneo", course: "Inglese B2", border: "border-line/60", Icon: GraduationCap, iconColor: "text-ink-mute" },
+/** Traguardi ancora da sbloccare: la sezione è una PROMESSA, non uno stato
+ *  pieno finto. Slot vuoti (lucchetto) che si accendono man mano che registri
+ *  i voti — mostriamo il valore futuro, non dati di qualcun altro. */
+const MILESTONES: { label: string; hint: string }[] = [
+  { label: "Primo voto", hint: "la media parte" },
+  { label: "Primo 30", hint: "trofeo d'oro" },
+  { label: "Prima lode", hint: "⭐ extra" },
+  { label: "Metà CFU", hint: "sei a metà" },
+  { label: "Laurea", hint: "il traguardo" },
 ];
 
 const ALL: { icon: LucideIcon; title: string; desc: string }[] = [
@@ -262,36 +255,25 @@ export function Landing() {
             Ogni esame è un <span className="grad-text">trofeo</span> sbloccato.
           </h2>
           <p className="reveal mx-auto mt-3 max-w-[46ch] text-center text-sm text-ink-mute">
-            Media, CFU e streak crescono a ogni voto registrato. Piccole
-            vittorie che ti tengono sul pezzo fino alla laurea.
+            Registra i tuoi voti: ogni esame diventa un trofeo e la media cresce
+            a ogni voto. Questi traguardi ti aspettano — partono spenti e si
+            accendono man mano.
           </p>
-          <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-            {SAMPLE_TROPHIES.map((t, i) => {
-              const Icon = t.Icon;
-              return (
-                <div
-                  key={t.course}
-                  className={`glass lift reveal flex flex-col items-center gap-1.5 rounded-xl border-2 ${t.border} p-4 text-center`}
-                  style={{ ["--d" as string]: `${(i % 5) * 0.06}s` }}
-                >
-                  <Icon aria-hidden="true" className={`size-5 ${t.iconColor}`} />
-                  <div
-                    className={`font-display text-[1.7rem] font-bold leading-none ${t.grad ? "grad-text" : "text-ink"}`}
-                  >
-                    {t.grade}
-                    {t.laude && (
-                      <span aria-hidden="true" className="ml-0.5 align-top text-sm">
-                        ⭐
-                      </span>
-                    )}
-                  </div>
-                  <div className="text-xs font-medium text-ink-mute">
-                    {t.course}
-                  </div>
+          <ul className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+            {MILESTONES.map((m, i) => (
+              <li
+                key={m.label}
+                className="glass reveal flex flex-col items-center gap-1.5 rounded-xl border-2 border-dashed border-line p-4 text-center"
+                style={{ ["--d" as string]: `${(i % 5) * 0.06}s` }}
+              >
+                <Lock aria-hidden="true" className="size-5 text-ink-faint" />
+                <div className="font-display text-[1.1rem] font-bold leading-tight text-ink">
+                  {m.label}
                 </div>
-              );
-            })}
-          </div>
+                <div className="text-xs font-medium text-ink-faint">{m.hint}</div>
+              </li>
+            ))}
+          </ul>
         </section>
 
         {/* TUTTO IN UN POSTO */}
