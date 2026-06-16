@@ -58,6 +58,43 @@ export function AppNav() {
     ).length;
   }, [hydrated, now, classEvents, examCalls]);
 
+  // Sulla landing pubblica il visitatore non deve avere vie di fuga: niente
+  // navbar app a 9 voci, solo logo + "Accedi" + il CTA principale. La navbar
+  // piena resta su tutte le altre route.
+  if (pathname === "/") {
+    return (
+      <header className="no-print sticky top-0 z-40 px-4 pt-4 sm:px-6">
+        <nav
+          aria-label="Principale"
+          className={cn(
+            "mx-auto flex w-full max-w-6xl items-center gap-2 rounded-full border border-line px-3 py-2",
+            "transition-[background-color,box-shadow,backdrop-filter] duration-200",
+            scrolled
+              ? "bg-night-800/70 shadow-soft backdrop-blur-lg"
+              : "glass shadow-soft",
+          )}
+        >
+          <Link
+            href="/"
+            className="mr-auto flex items-center pl-1 text-sm font-semibold text-ink transition-opacity hover:opacity-80"
+          >
+            <Wordmark />
+          </Link>
+          <Link
+            href="/login"
+            className="rounded-full px-3 py-1.5 text-xs font-medium text-ink-mute transition-colors hover:bg-night-700 hover:text-ink"
+          >
+            Accedi
+          </Link>
+          <Link href="/cruscotto" className="btn btn-primary px-4 py-1.5 text-xs">
+            Inizia ora
+          </Link>
+          <ThemeToggle />
+        </nav>
+      </header>
+    );
+  }
+
   return (
     <>
       <header className="no-print sticky top-0 z-40 px-4 pt-4 sm:px-6">
