@@ -295,7 +295,7 @@ export function Landing() {
               tra app diverse.
             </p>
           </div>
-          <div className="mt-8 grid gap-3 [grid-template-columns:repeat(auto-fit,minmax(240px,1fr))]">
+          <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3">
             {ALL.map(({ icon: Icon, title, desc }, i) => (
               <div
                 key={title}
