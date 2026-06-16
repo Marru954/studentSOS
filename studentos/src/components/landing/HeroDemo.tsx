@@ -59,7 +59,11 @@ export function HeroDemo() {
               className="max-w-[10rem] rounded-full border border-line bg-[var(--surface)] px-3 py-1 text-xs font-medium text-ink transition-colors hover:border-line-strong"
             >
               {atenei.map((a) => (
-                <option key={a} value={a}>
+                <option
+                  key={a}
+                  value={a}
+                  style={{ backgroundColor: "var(--bg-2)", color: "var(--ink)" }}
+                >
                   {a}
                 </option>
               ))}
