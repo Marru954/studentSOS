@@ -15,7 +15,6 @@ import {
 import Link from "next/link";
 import { CountUp } from "@/components/primitives/CountUp";
 import { AteneoSearch } from "./AteneoSearch";
-import { HeroDemo } from "./HeroDemo";
 
 const FEATURES: { icon: LucideIcon; href: string; title: string; desc: string }[] = [
   {
@@ -156,9 +155,6 @@ export function Landing() {
                 prova subito il Focus
               </Link>
             </p>
-          </div>
-          <div className="mt-8">
-            <HeroDemo />
           </div>
         </section>
 
