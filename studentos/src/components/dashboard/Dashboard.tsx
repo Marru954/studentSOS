@@ -29,7 +29,7 @@ import { useSynced } from "@/lib/state/synced";
 import { CruscottoTour } from "@/components/onboarding/CruscottoTour";
 import { BookingDeadlines } from "./BookingDeadlines";
 import { BookingReminders } from "./BookingReminders";
-import { CfuPanel, MediaPanel } from "./CareerPanels";
+import { CareerStrip, CfuMini } from "./CareerSummary";
 import { ChangeNotices } from "./ChangeNotices";
 import { ExamTimeline } from "./ExamTimeline";
 import { LinksPanel } from "./LinksPanel";
@@ -267,22 +267,21 @@ export function Dashboard() {
               exam={nextExam.exam}
               days={nextExam.days}
               examsThisWeek={examsThisWeek}
-              className="lg:col-span-4 lg:row-span-2"
+              className="lg:col-span-4"
             />
           ) : (
-            <NoExamHero className="lg:col-span-4 lg:row-span-2" />
+            <NoExamHero className="lg:col-span-4" />
           )}
-          <MediaPanel
-            entries={libretto.items}
-            targetAverage={settings.degreePlan.targetAverage}
-            className="accent-top lg:col-span-2"
-          />
-          <CfuPanel
-            entries={libretto.items}
-            totalCfu={settings.degreePlan.totalCfu}
-            now={now}
-            className="lg:col-span-2"
-          />
+          {/* Riassunti compatti read-only: i dati pieni (andamento voti,
+              stima laurea, simulatore) vivono SOLO nel Libretto; qui una riga
+              che ci linka, così il Cruscotto resta glanceable e non duplica. */}
+          <div className="flex flex-col justify-between gap-4 lg:col-span-2">
+            <CareerStrip entries={libretto.items} />
+            <CfuMini
+              entries={libretto.items}
+              totalCfu={settings.degreePlan.totalCfu}
+            />
+          </div>
 
           {/* Riga media: oggi + appelli in arrivo. */}
           <TodayTimeline events={todayEvents} className="lg:col-span-3" />
