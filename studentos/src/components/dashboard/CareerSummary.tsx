@@ -1,4 +1,4 @@
-import { ArrowRight, Gauge, TrendingUp } from "lucide-react";
+import { ArrowRight, Gauge, TrendingUp, Trophy } from "lucide-react";
 import Link from "next/link";
 import { CountUp } from "@/components/primitives/CountUp";
 import { ProgressRing } from "@/components/primitives/ProgressRing";
@@ -14,12 +14,16 @@ import { fmtNum } from "@/lib/format";
  * so the dashboard stays glanceable and the data isn't duplicated.
  */
 
-/** One-line "Carriera": media + base di laurea → Libretto. */
+/** One-line "Carriera": media + base di laurea → Libretto. When a trophy has
+ *  been earned, a second line names the most recent one. */
 export function CareerStrip({
   entries,
+  lastTrophy,
   className,
 }: {
   entries: LibrettoEntry[];
+  /** Most recent unlocked trophy, if any. */
+  lastTrophy?: { title: string };
   className?: string;
 }) {
   const average = weightedAverage(entries);
@@ -28,37 +32,51 @@ export function CareerStrip({
       href="/libretto"
       aria-label="Apri il libretto"
       className={cn(
-        "glass lift group flex items-center gap-3 rounded-xl px-4 py-3",
+        "glass lift group flex flex-col gap-1.5 rounded-xl px-4 py-3",
         className,
       )}
     >
-      <TrendingUp
-        aria-hidden="true"
-        className="size-[1.125rem] shrink-0 text-[var(--signal-2)]"
-      />
-      <span className="shrink-0 text-[0.95rem] font-semibold text-ink">
-        Carriera
-      </span>
-      {average === undefined ? (
-        <span className="text-sm text-ink-mute">— nessun voto</span>
-      ) : (
-        <span className="font-num flex min-w-0 flex-wrap items-baseline gap-x-3 gap-y-0.5 text-sm text-ink-mute">
-          <span>
-            Media{" "}
-            <strong className="text-[var(--signal-2)]">
-              {fmtNum(average, 2)}
-            </strong>
-          </span>
-          <span>
-            Base <strong className="text-ink">{fmtNum(graduationBase(average), 1)}</strong>
-            <span className="text-ink-faint">/110</span>
-          </span>
+      <div className="flex items-center gap-3">
+        <TrendingUp
+          aria-hidden="true"
+          className="size-[1.125rem] shrink-0 text-[var(--signal-2)]"
+        />
+        <span className="shrink-0 text-[0.95rem] font-semibold text-ink">
+          Carriera
         </span>
+        {average === undefined ? (
+          <span className="text-sm text-ink-mute">— nessun voto</span>
+        ) : (
+          <span className="font-num flex min-w-0 flex-wrap items-baseline gap-x-3 gap-y-0.5 text-sm text-ink-mute">
+            <span>
+              Media{" "}
+              <strong className="text-[var(--signal-2)]">
+                {fmtNum(average, 2)}
+              </strong>
+            </span>
+            <span>
+              Base <strong className="text-ink">{fmtNum(graduationBase(average), 1)}</strong>
+              <span className="text-ink-faint">/110</span>
+            </span>
+          </span>
+        )}
+        <ArrowRight
+          aria-hidden="true"
+          className="ml-auto size-4 shrink-0 text-ink-faint transition-transform group-hover:translate-x-0.5"
+        />
+      </div>
+      {lastTrophy && (
+        <div className="flex items-center gap-1.5 text-xs text-ink-mute">
+          <Trophy
+            aria-hidden="true"
+            className="size-3.5 shrink-0 text-[var(--signal-2)]"
+          />
+          <span className="truncate">
+            Ultimo traguardo:{" "}
+            <strong className="font-medium text-ink">{lastTrophy.title}</strong>
+          </span>
+        </div>
       )}
-      <ArrowRight
-        aria-hidden="true"
-        className="ml-auto size-4 shrink-0 text-ink-faint transition-transform group-hover:translate-x-0.5"
-      />
     </Link>
   );
 }

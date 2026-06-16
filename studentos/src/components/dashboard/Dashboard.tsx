@@ -22,10 +22,12 @@ import {
   localDayOf,
   localToday,
 } from "@/lib/format";
+import { getTrophy } from "@/lib/domain/achievements";
 import { useNowMinute } from "@/lib/hooks/useNowMinute";
 import { useLibretto } from "@/lib/state/manual";
 import { useSettings } from "@/lib/state/settings";
 import { useSynced } from "@/lib/state/synced";
+import { useTrophies } from "@/lib/state/trophies";
 import { CruscottoTour } from "@/components/onboarding/CruscottoTour";
 import { BackupNudge } from "./BackupNudge";
 import { BookingDeadlines } from "./BookingDeadlines";
@@ -157,8 +159,24 @@ export function Dashboard() {
   const synced = useSynced();
   const settings = useSettings();
   const libretto = useLibretto();
+  const trophies = useTrophies();
   const now = useNowMinute();
   const router = useRouter();
+
+  // Most recently earned trophy, for the one-line nod inside the Carriera card.
+  const lastTrophy = useMemo(() => {
+    const earned = trophies.statuses.filter(
+      (s) => s.unlocked && trophies.ledger[s.id],
+    );
+    if (earned.length === 0) return undefined;
+    const latest = earned.reduce((a, b) =>
+      trophies.ledger[a.id].firstUnlockedAt >= trophies.ledger[b.id].firstUnlockedAt
+        ? a
+        : b,
+    );
+    const def = getTrophy(latest.id);
+    return def ? { title: def.title } : undefined;
+  }, [trophies.statuses, trophies.ledger]);
 
   const ready =
     now !== null && synced.hydrated && settings.hydrated && libretto.hydrated;
@@ -278,7 +296,7 @@ export function Dashboard() {
               stima laurea, simulatore) vivono SOLO nel Libretto; qui una riga
               che ci linka, così il Cruscotto resta glanceable e non duplica. */}
           <div className="flex flex-col justify-between gap-4 lg:col-span-2">
-            <CareerStrip entries={libretto.items} />
+            <CareerStrip entries={libretto.items} lastTrophy={lastTrophy} />
             <CfuMini
               entries={libretto.items}
               totalCfu={settings.degreePlan.totalCfu}

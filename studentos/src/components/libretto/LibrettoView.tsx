@@ -4,8 +4,8 @@
  *  local IndexedDB — sync never reads or writes it. Layout is a vertical
  *  split: the exam list (trophies) on the left, the analysis instruments on
  *  the right; on mobile a tab switches between the two. */
-import { useMemo, useState } from "react";
-import { ChevronDown, FileText, GraduationCap, Info, Printer } from "lucide-react";
+import { useMemo, useRef, useState } from "react";
+import { ChevronDown, FileText, GraduationCap, Info, Printer, Trophy } from "lucide-react";
 import { CfuPanel, GoalPanel, MediaPanel } from "@/components/dashboard/CareerPanels";
 import { Button } from "@/components/primitives/Button";
 import { ConfirmButton } from "@/components/primitives/ConfirmButton";
@@ -19,17 +19,83 @@ import {
   graduationBase,
   weightedAverage,
 } from "@/lib/domain/libretto";
+import { buildTrophyView } from "@/lib/domain/trophyView";
 import { fmtLongDay } from "@/lib/format";
 import { useNowMinute } from "@/lib/hooks/useNowMinute";
 import { useLibretto } from "@/lib/state/manual";
 import { useSettings } from "@/lib/state/settings";
+import { useTrophies } from "@/lib/state/trophies";
 import { DelphiConnect } from "./DelphiConnect";
 import { EntryForm } from "./EntryForm";
 import { EntryTable } from "./EntryTable";
 import { GradeSimulator } from "./GradeSimulator";
 import { TrophyGrid } from "./TrophyGrid";
+import { TrophyShowcase } from "./TrophyShowcase";
 import { ImportDelphiPdf } from "./ImportDelphiPdf";
 import { ImportExams } from "./ImportExams";
+
+const LIB_TABS = [
+  { id: "esami", label: "Esami" },
+  { id: "trofei", label: "Trofei" },
+] as const;
+type LibView = (typeof LIB_TABS)[number]["id"];
+
+/** Accessible tablist (roving tabindex + arrow/Home/End) for the Esami|Trofei
+ *  switch above the registered-exams area. */
+function ViewTabs({
+  value,
+  onChange,
+}: {
+  value: LibView;
+  onChange: (v: LibView) => void;
+}) {
+  const refs = useRef<(HTMLButtonElement | null)[]>([]);
+  const onKeyDown = (e: React.KeyboardEvent, idx: number) => {
+    let next = idx;
+    if (e.key === "ArrowRight" || e.key === "ArrowDown") next = (idx + 1) % LIB_TABS.length;
+    else if (e.key === "ArrowLeft" || e.key === "ArrowUp")
+      next = (idx - 1 + LIB_TABS.length) % LIB_TABS.length;
+    else if (e.key === "Home") next = 0;
+    else if (e.key === "End") next = LIB_TABS.length - 1;
+    else return;
+    e.preventDefault();
+    onChange(LIB_TABS[next].id);
+    refs.current[next]?.focus();
+  };
+  return (
+    <div
+      role="tablist"
+      aria-label="Vista libretto"
+      className="flex gap-1 rounded-xl border border-line p-1"
+    >
+      {LIB_TABS.map((t, i) => {
+        const active = value === t.id;
+        return (
+          <button
+            key={t.id}
+            ref={(el) => {
+              refs.current[i] = el;
+            }}
+            type="button"
+            role="tab"
+            id={`libtab-${t.id}`}
+            aria-selected={active}
+            aria-controls={`libpanel-${t.id}`}
+            tabIndex={active ? 0 : -1}
+            onClick={() => onChange(t.id)}
+            onKeyDown={(e) => onKeyDown(e, i)}
+            className={cn(
+              "flex-1 rounded-lg py-1.5 text-sm font-medium transition-colors",
+              active ? "bg-primary-gradient text-white" : "text-ink-mute",
+            )}
+          >
+            {t.label}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
 
 const statCardStyle = {
   fontFamily: "var(--font-display)",
@@ -40,12 +106,19 @@ const statCardStyle = {
 export function LibrettoView() {
   const libretto = useLibretto();
   const settings = useSettings();
+  const trophies = useTrophies();
   const now = useNowMinute();
   const [editingId, setEditingId] = useState<string | null>(null);
   const [yearFilter, setYearFilter] = useState<string>("all");
   const [tab, setTab] = useState<"trofei" | "analisi">("trofei");
+  const [view, setView] = useState<LibView>("esami");
 
   const ready = libretto.hydrated && settings.hydrated;
+
+  const trophyView = useMemo(
+    () => buildTrophyView(trophies.statuses, trophies.ledger, libretto.items),
+    [trophies.statuses, trophies.ledger, libretto.items],
+  );
   const editing = editingId
     ? libretto.items.find((e) => e.id === editingId)
     : undefined;
@@ -245,6 +318,35 @@ export function LibrettoView() {
     </Panel>
   );
 
+  const vetrinaPanel = (
+    <Panel title="Trofei" icon={<Trophy />} flush>
+      {trophies.hydrated ? (
+        <div className="p-3 lg:max-h-[68vh] lg:overflow-y-auto">
+          <TrophyShowcase view={trophyView} />
+        </div>
+      ) : (
+        <p className="p-4 text-sm text-ink-mute">Caricamento dei trofei…</p>
+      )}
+    </Panel>
+  );
+
+  // Esami | Trofei: the tablist sits above the registered-exams area; "Esami"
+  // is the default and leaves the current behaviour untouched.
+  const librettoArea = (
+    <div className="flex flex-col gap-3">
+      <ViewTabs value={view} onChange={setView} />
+      <div
+        role="tabpanel"
+        id={`libpanel-${view}`}
+        aria-labelledby={`libtab-${view}`}
+        tabIndex={0}
+        className="outline-none"
+      >
+        {view === "esami" ? esamiPanel : vetrinaPanel}
+      </div>
+    </div>
+  );
+
   const analysisPanels = (
     <>
       <MediaPanel
@@ -314,7 +416,7 @@ export function LibrettoView() {
                 </a>
               </EmptyState>
               {entryForm("no-print")}
-              {esamiPanel}
+              {librettoArea}
             </>
           ) : (
             <>
@@ -355,7 +457,7 @@ export function LibrettoView() {
                   )}
                 >
                   {entryForm("no-print")}
-                  {esamiPanel}
+                  {librettoArea}
                 </div>
                 {/* destra: strumenti di analisi */}
                 <div
