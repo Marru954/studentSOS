@@ -39,6 +39,8 @@ export function AccountButton() {
   return (
     <Link
       href="/login"
+      title="Accedi o registrati per salvare i tuoi dati su più dispositivi"
+      aria-label="Accedi o registrati per salvare i tuoi dati su più dispositivi"
       className="flex items-center gap-1.5 rounded-full border border-line px-3 py-1.5 text-xs font-medium text-ink-mute transition-colors hover:border-line-strong hover:text-ink"
     >
       <LogIn aria-hidden="true" className="size-3.5" />

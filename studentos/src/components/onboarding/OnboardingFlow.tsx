@@ -230,8 +230,13 @@ export function OnboardingFlow() {
                 value={email}
                 onChange={(e) => setEmailInput(e.target.value)}
                 placeholder="nome@studenti.uniroma2.it"
+                aria-describedby="onb-email-hint"
                 className="h-10 w-full rounded-xl border border-line bg-night-800 px-3 text-sm text-ink placeholder:text-ink-faint hover:border-line-strong focus:border-signal focus:outline-none"
               />
+              <p id="onb-email-hint" className="text-xs text-ink-faint">
+                La usiamo solo per trovare il tuo ateneo. Non stai creando un
+                account qui.
+              </p>
             </div>
 
             <div className="flex flex-col gap-1">
