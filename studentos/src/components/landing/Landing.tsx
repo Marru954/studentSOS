@@ -44,7 +44,7 @@ const STEPS = [
   {
     n: "01",
     title: "Scegli il tuo ateneo",
-    text: "Cerca tra le università supportate e seleziona il tuo corso di laurea e anno. Accedi con la tua email universitaria.",
+    text: "Cerca tra le università supportate e seleziona il tuo corso di laurea e anno. Bastano pochi tocchi, nessun account richiesto.",
   },
   {
     n: "02",
@@ -54,12 +54,12 @@ const STEPS = [
   {
     n: "03",
     title: "Tutto aggiornato",
-    text: "Media ponderata, CFU acquisiti, prossimi appelli e orario settimanale — pronti ovunque, sempre sincronizzati.",
+    text: "Media ponderata, CFU acquisiti, prossimi appelli e orario settimanale — pronti al volo, sul tuo dispositivo.",
   },
 ];
 
 const STATS: { value: number; suffix?: string; unit: string; desc: string }[] = [
-  { value: 100, suffix: "%", unit: "sincronizzato", desc: "i tuoi dati sul tuo account, accessibili da ogni dispositivo" },
+  { value: 100, suffix: "%", unit: "sincronizzato", desc: "i tuoi dati vivono qui; con l'accesso li ritrovi su ogni dispositivo" },
   { value: 1, unit: "PDF", desc: "tutta la carriera importata in un colpo solo" },
   { value: 5, suffix: " min", unit: "setup", desc: "per essere operativo dal primo avvio" },
 ];
@@ -487,7 +487,7 @@ export function Landing() {
                 Prendi il largo senza affogare negli appelli.
               </h2>
               <p className="mx-auto mt-4 max-w-[36ch] text-ink-mute">
-                Accedi con la tua email universitaria. Apri il cruscotto e parti.
+                Scegli ateneo e corso, apri il cruscotto e parti. Nessun account richiesto.
               </p>
               <div className="mt-7 flex justify-center">
                 <Link href="/cruscotto" className="btn btn-primary">
