@@ -4,7 +4,6 @@
  *  background sync. Renders children immediately — the UI shows cached data
  *  first (offline-first) and updates in place when sync lands. */
 import { useEffect } from "react";
-import { useDelphi } from "@/lib/state/delphi";
 import { useFocusSessions, useLibretto, useNotes, useTasks } from "@/lib/state/manual";
 import { useSettings } from "@/lib/state/settings";
 import { useSynced } from "@/lib/state/synced";
@@ -31,8 +30,6 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       ]);
       if (!cancelled) {
         void useSynced.getState().sync();
-        // auto-syncs the libretto when Delphi credentials are saved
-        void useDelphi.getState().hydrate();
       }
     })();
     return () => {

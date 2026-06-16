@@ -10,7 +10,6 @@
     "test": "tsx tests/storage.test.ts && tsx tests/urgency.test.ts && tsx tests/week.test.ts && tsx tests/projection.test.ts && tsx tests/notes.test.ts && tsx tests/focus.test.ts && tsx tests/delphi.test.ts && tsx tests/calendar.test.ts && tsx tests/esse3.test.ts && tsx tests/csv.test.ts && tsx tests/delphiPdf.test.ts"
   },
   "dependencies": {
-    "@node-saml/node-saml": "^5.1.0",
     "@supabase/supabase-js": "^2.108.1",
     "cheerio": "^1.2.0",
     "ical.js": "^2.2.1",

@@ -1,10 +1,10 @@
 "use client";
 
 /**
- * Pannello "Sincronizza con Delphi". La sincronizzazione SSO con Tor Vergata
- * non è ancora attiva: mostriamo il pulsante (disabilitato) con badge
- * "prossimamente". L'infrastruttura SSO/SAML (/api/saml/*, useDelphi) resta in
- * piedi per l'attivazione futura; per ora gli esami si inseriscono a mano.
+ * Pannello "Sincronizza con Delphi". La sincronizzazione automatica della
+ * carriera non è ancora disponibile: mostriamo il pulsante (disabilitato) con
+ * badge "prossimamente". Per ora gli esami si inseriscono a mano oppure via
+ * import CSV / PDF.
  */
 import { LogIn, ShieldCheck } from "lucide-react";
 import { Badge } from "@/components/primitives/Badge";
