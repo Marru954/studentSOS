@@ -1,28 +1,52 @@
 "use client";
 
 /**
- * Passwordless login. The student types their institutional email, we validate
- * the domain, preview the detected ateneo, and send a Supabase magic link.
- * No password field — the link in the inbox is the proof of identity.
+ * Email + password sign-in — the single entry for every ateneo. Three modes:
+ * accedi (sign in), registrati (sign up, gated to institutional emails and
+ * confirmed by email), and "password dimenticata" (reset). No password ever
+ * reaches our code beyond the Supabase client call; RLS guards the data.
  */
-import { CheckCircle2, GraduationCap, Mail } from "lucide-react";
+import { CheckCircle2, Eye, EyeOff, GraduationCap, Lock, Mail } from "lucide-react";
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Wordmark } from "@/components/Wordmark";
 import { Button } from "@/components/primitives/Button";
-import { useRouter } from "next/navigation";
 import { detectAteneo, isUniversityEmail } from "@/lib/domain/emailToAteneo";
 import { getPreset } from "@/lib/sync/universities";
-import { devLogin, sendMagicLink } from "@/lib/supabase/auth";
+import {
+  devLogin,
+  MIN_PASSWORD,
+  requestPasswordReset,
+  signInWithPassword,
+  signUpWithPassword,
+} from "@/lib/supabase/auth";
 import { supabaseConfigured } from "@/lib/supabase/client";
 
 const IS_DEV = process.env.NODE_ENV === "development";
 
+type Mode = "signin" | "signup" | "reset";
+
+const COPY: Record<Mode, { subtitle: string; submit: string }> = {
+  signin: { subtitle: "Accedi con la tua email universitaria.", submit: "Accedi" },
+  signup: {
+    subtitle: "Crea il tuo account con l'email universitaria.",
+    submit: "Crea account",
+  },
+  reset: {
+    subtitle: "Reimposta la password del tuo account.",
+    submit: "Invia link di reset",
+  },
+};
+
 export function LoginView() {
   const router = useRouter();
+  const [mode, setMode] = useState<Mode>("signin");
   const [email, setEmail] = useState("");
-  const [sending, setSending] = useState(false);
-  const [sent, setSent] = useState(false);
+  const [password, setPassword] = useState("");
+  const [showPw, setShowPw] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [sent, setSent] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const configured = supabaseConfigured();
 
@@ -33,14 +57,34 @@ export function LoginView() {
     return id ? getPreset(id) : null;
   }, [email]);
 
+  function switchMode(next: Mode) {
+    setMode(next);
+    setError(null);
+    setSent(null);
+    setPassword("");
+  }
+
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
-    setSending(true);
-    const r = await sendMagicLink(email);
-    setSending(false);
-    if (r.ok) setSent(true);
-    else setError(r.message);
+    setBusy(true);
+    const r =
+      mode === "signin"
+        ? await signInWithPassword(email, password)
+        : mode === "signup"
+          ? await signUpWithPassword(email, password)
+          : await requestPasswordReset(email);
+    setBusy(false);
+    if (!r.ok) {
+      setError(r.message);
+      return;
+    }
+    if (mode === "signin") {
+      // Session is live; FirstRunGate routes to onboarding if not configured.
+      router.push("/cruscotto");
+      return;
+    }
+    setSent(r.message);
   }
 
   return (
@@ -51,31 +95,25 @@ export function LoginView() {
       <div className="glass gradient-ring reveal in rounded-2xl border border-line p-6 shadow-soft sm:p-8">
         <div className="mb-6 flex flex-col items-center gap-3 text-center">
           <Wordmark className="text-2xl" />
-          <p className="text-sm text-ink-mute">
-            Accedi con la tua email universitaria. Niente password: ti mandiamo
-            un link.
-          </p>
+          <p className="text-sm text-ink-mute">{COPY[mode].subtitle}</p>
         </div>
 
         {sent ? (
           <div className="flex flex-col items-center gap-3 rounded-xl border border-signal/40 bg-signal-dim p-5 text-center">
             <CheckCircle2 aria-hidden="true" className="size-8 text-signal" />
-            <p className="text-sm font-medium text-ink">
-              Link inviato a <span className="font-num">{email}</span>
-            </p>
-            <p className="text-xs text-ink-mute">
-              Apri il messaggio e tocca il link per entrare. Puoi chiudere questa
-              scheda.
-            </p>
+            <p className="text-sm font-medium text-ink">{sent}</p>
+            {email && (
+              <p className="text-xs text-ink-mute">
+                Inviata a <span className="font-num">{email}</span>. Puoi chiudere
+                questa scheda.
+              </p>
+            )}
             <button
               type="button"
-              onClick={() => {
-                setSent(false);
-                setEmail("");
-              }}
+              onClick={() => switchMode("signin")}
               className="text-xs text-ink-mute underline hover:text-ink"
             >
-              Usa un&rsquo;altra email
+              Torna all&rsquo;accesso
             </button>
           </div>
         ) : (
@@ -112,6 +150,62 @@ export function LoginView() {
               )}
             </div>
 
+            {mode !== "reset" && (
+              <div className="flex flex-col gap-1">
+                <label
+                  htmlFor="login-password"
+                  className="text-label font-medium text-ink-mute"
+                >
+                  Password
+                </label>
+                <div className="relative">
+                  <Lock
+                    aria-hidden="true"
+                    className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-ink-faint"
+                  />
+                  <input
+                    id="login-password"
+                    type={showPw ? "text" : "password"}
+                    autoComplete={
+                      mode === "signup" ? "new-password" : "current-password"
+                    }
+                    required
+                    minLength={MIN_PASSWORD}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder={
+                      mode === "signup"
+                        ? `Almeno ${MIN_PASSWORD} caratteri`
+                        : "La tua password"
+                    }
+                    className="h-11 w-full rounded-xl border border-line bg-night-800 pl-9 pr-10 text-sm text-ink placeholder:text-ink-faint hover:border-line-strong focus:border-signal focus:outline-none"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPw((v) => !v)}
+                    aria-label={showPw ? "Nascondi password" : "Mostra password"}
+                    aria-pressed={showPw}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 rounded-md p-1.5 text-ink-faint hover:text-ink focus:text-ink focus:outline-none"
+                  >
+                    {showPw ? (
+                      <EyeOff aria-hidden="true" className="size-4" />
+                    ) : (
+                      <Eye aria-hidden="true" className="size-4" />
+                    )}
+                  </button>
+                </div>
+                {mode === "signin" && (
+                  <button
+                    type="button"
+                    onClick={() => switchMode("reset")}
+                    className="mt-1 self-end text-xs text-ink-mute underline hover:text-ink"
+                  >
+                    Password dimenticata?
+                  </button>
+                )}
+              </div>
+            )}
+
             {error && (
               <p
                 role="alert"
@@ -135,16 +229,45 @@ export function LoginView() {
               type="submit"
               variant="primary"
               size="md"
-              loading={sending}
+              loading={busy}
               className="h-11 w-full"
             >
-              Invia link di accesso
+              {COPY[mode].submit}
             </Button>
 
-            <p className="text-center text-xs text-ink-faint">
-              Solo email istituzionali. I tuoi dati restano tuoi — RLS per
-              utente, nessuna password.
-            </p>
+            <div className="flex flex-col items-center gap-1 text-center text-xs text-ink-mute">
+              {mode === "signin" && (
+                <button
+                  type="button"
+                  onClick={() => switchMode("signup")}
+                  className="underline hover:text-ink"
+                >
+                  Non hai un account? Registrati
+                </button>
+              )}
+              {mode === "signup" && (
+                <button
+                  type="button"
+                  onClick={() => switchMode("signin")}
+                  className="underline hover:text-ink"
+                >
+                  Hai già un account? Accedi
+                </button>
+              )}
+              {mode === "reset" && (
+                <button
+                  type="button"
+                  onClick={() => switchMode("signin")}
+                  className="underline hover:text-ink"
+                >
+                  Torna all&rsquo;accesso
+                </button>
+              )}
+              <span className="text-ink-faint">
+                Solo email istituzionali. I tuoi dati restano tuoi — RLS per
+                utente.
+              </span>
+            </div>
           </form>
         )}
       </div>
@@ -155,7 +278,7 @@ export function LoginView() {
             Dev · accesso di test (solo development)
           </p>
           <p className="mb-3 text-[0.7rem] text-ink-mute">
-            Salta il magic link: entra con qualsiasi email per provare la UX
+            Salta l&rsquo;auth: entra con qualsiasi email per provare la UX
             loggata. Sessione finta, nessuna auth reale.
           </p>
           <div className="flex gap-2">

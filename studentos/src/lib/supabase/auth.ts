@@ -6,8 +6,10 @@
  * changes; when Supabase is not configured the store sits in "offline" and the
  * app behaves exactly as the local-only build.
  *
- * Magic-link only — the user proves they own a university inbox, no password
- * ever travels. The institutional-domain gate lives in `emailToAteneo`.
+ * Email + password — the single sign-in for every ateneo. Sign-up is gated to
+ * institutional inboxes (`isUniversityEmail`, in `emailToAteneo`) and confirmed
+ * by email; the session lives in cookies (see `client.ts`). Authorization is
+ * enforced server-side by Supabase RLS, never by the client.
  */
 import type { User } from "@supabase/supabase-js";
 import { create } from "zustand";
@@ -106,15 +108,16 @@ export function devLogin(emailRaw: string): void {
   useAuth.setState({ user, email, status: "signedIn", hydrated: true });
 }
 
-export interface MagicLinkResult {
+export interface AuthResult {
   ok: boolean;
   /** Localised message to surface to the user. */
   message: string;
 }
 
-/** Send a passwordless magic link, but only to a valid institutional address. */
-export async function sendMagicLink(emailRaw: string): Promise<MagicLinkResult> {
-  const email = emailRaw.trim().toLowerCase();
+/** Minimum password length we accept (Supabase's own minimum is 6). */
+export const MIN_PASSWORD = 8;
+
+function gateEmail(email: string): AuthResult | null {
   if (!email) return { ok: false, message: "Inserisci la tua email." };
   if (!isUniversityEmail(email)) {
     return {
@@ -123,28 +126,114 @@ export async function sendMagicLink(emailRaw: string): Promise<MagicLinkResult> 
         "Usa la tua email universitaria istituzionale (es. nome@studenti.uniroma2.it).",
     };
   }
-  const sb = getSupabase();
-  if (!sb) {
+  return null;
+}
+
+const NOT_CONFIGURED: AuthResult = {
+  ok: false,
+  message: "Accesso online non configurato su questa installazione.",
+};
+
+/** Where Supabase email links (confirm / recovery) come back to. */
+function callbackUrl(suffix = ""): string | undefined {
+  return typeof window !== "undefined"
+    ? `${window.location.origin}/auth/callback${suffix}`
+    : undefined;
+}
+
+/** Map the common Supabase auth errors to a friendly Italian message — never
+ *  echo the raw provider string to the UI. */
+function localizeAuthError(raw: string): string {
+  const m = raw.toLowerCase();
+  if (m.includes("invalid login")) return "Email o password non corretti.";
+  if (m.includes("already registered") || m.includes("already exists"))
+    return "Esiste già un account con questa email: accedi o reimposta la password.";
+  if (m.includes("email not confirmed"))
+    return "Conferma prima la tua email: apri il link che ti abbiamo inviato.";
+  if (m.includes("password should be") || m.includes("weak password"))
+    return `La password deve avere almeno ${MIN_PASSWORD} caratteri.`;
+  if (m.includes("rate limit") || m.includes("too many") || m.includes("for security purposes"))
+    return "Troppi tentativi. Riprova tra qualche minuto.";
+  return "Operazione non riuscita. Riprova tra poco.";
+}
+
+/** Create an account (institutional email only). With email confirmation on,
+ *  no session is returned until the user opens the link sent to their inbox. */
+export async function signUpWithPassword(
+  emailRaw: string,
+  password: string,
+): Promise<AuthResult> {
+  const email = emailRaw.trim().toLowerCase();
+  const gate = gateEmail(email);
+  if (gate) return gate;
+  if (password.length < MIN_PASSWORD) {
     return {
       ok: false,
-      message:
-        "Accesso online non configurato su questa installazione.",
+      message: `La password deve avere almeno ${MIN_PASSWORD} caratteri.`,
     };
   }
-  const { error } = await sb.auth.signInWithOtp({
+  const sb = getSupabase();
+  if (!sb) return NOT_CONFIGURED;
+  const { data, error } = await sb.auth.signUp({
     email,
-    options: {
-      emailRedirectTo:
-        typeof window !== "undefined"
-          ? `${window.location.origin}/auth/callback`
-          : undefined,
-    },
+    password,
+    options: { emailRedirectTo: callbackUrl() },
   });
-  if (error) {
-    return { ok: false, message: "Invio non riuscito. Riprova tra poco." };
-  }
+  if (error) return { ok: false, message: localizeAuthError(error.message) };
+  if (data.session) return { ok: true, message: "Account creato. Accesso in corso…" };
   return {
     ok: true,
-    message: "Link inviato! Controlla la tua casella e apri il link di accesso.",
+    message:
+      "Ti abbiamo inviato un'email di conferma. Aprila per attivare l'account.",
   };
+}
+
+/** Sign in with an existing account. */
+export async function signInWithPassword(
+  emailRaw: string,
+  password: string,
+): Promise<AuthResult> {
+  const email = emailRaw.trim().toLowerCase();
+  if (!email || !password)
+    return { ok: false, message: "Inserisci email e password." };
+  const sb = getSupabase();
+  if (!sb) return NOT_CONFIGURED;
+  const { error } = await sb.auth.signInWithPassword({ email, password });
+  if (error) return { ok: false, message: localizeAuthError(error.message) };
+  return { ok: true, message: "Accesso effettuato." };
+}
+
+/** Send a password-reset email; the link lands on /auth/callback?type=recovery.
+ *  Also the path for legacy passwordless accounts to set their first password. */
+export async function requestPasswordReset(emailRaw: string): Promise<AuthResult> {
+  const email = emailRaw.trim().toLowerCase();
+  const gate = gateEmail(email);
+  if (gate) return gate;
+  const sb = getSupabase();
+  if (!sb) return NOT_CONFIGURED;
+  const { error } = await sb.auth.resetPasswordForEmail(email, {
+    redirectTo: callbackUrl("?type=recovery"),
+  });
+  // Don't leak whether the address exists.
+  if (error) return { ok: false, message: localizeAuthError(error.message) };
+  return {
+    ok: true,
+    message:
+      "Se esiste un account con questa email, riceverai un link per reimpostare la password.",
+  };
+}
+
+/** Set a new password for the user in the current (recovery) session. */
+export async function updatePassword(password: string): Promise<AuthResult> {
+  if (password.length < MIN_PASSWORD) {
+    return {
+      ok: false,
+      message: `La password deve avere almeno ${MIN_PASSWORD} caratteri.`,
+    };
+  }
+  const sb = getSupabase();
+  if (!sb) return NOT_CONFIGURED;
+  const { error } = await sb.auth.updateUser({ password });
+  if (error) return { ok: false, message: localizeAuthError(error.message) };
+  return { ok: true, message: "Password aggiornata." };
 }

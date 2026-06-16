@@ -1,10 +1,11 @@
 "use client";
 
 /**
- * Lands here from the magic link. supabase-js (detectSessionInUrl + PKCE)
- * exchanges the code in the URL for a session on client init; we just wait for
- * the auth state to settle, then route on: first-run → /onboarding, otherwise
- * → /cruscotto. If Supabase isn't configured we bounce straight to the app.
+ * Lands here from a Supabase email link — sign-up confirmation or password
+ * recovery. The browser client (detectSessionInUrl + PKCE) exchanges the code
+ * for a session on init; we wait for auth to settle, then route: recovery →
+ * /auth/reset, first-run → /onboarding, otherwise → /cruscotto. If Supabase
+ * isn't configured we bounce straight to the app.
  */
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -25,6 +26,16 @@ export function AuthCallback() {
     (async () => {
       if (status === "offline") {
         router.replace("/cruscotto");
+        return;
+      }
+      // Password-recovery links carry ?type=recovery → send the user to set a
+      // new password (the screen handles the no-session / expired-link case).
+      const isRecovery =
+        typeof window !== "undefined" &&
+        (new URLSearchParams(window.location.search).get("type") === "recovery" ||
+          window.location.hash.includes("type=recovery"));
+      if (isRecovery) {
+        router.replace("/auth/reset");
         return;
       }
       // The cloud profile is the ONLY source of truth for "already onboarded".

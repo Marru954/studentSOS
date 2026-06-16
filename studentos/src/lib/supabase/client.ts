@@ -8,13 +8,19 @@
  * the offline-first app it has always been (IndexedDB only, no account). Every
  * caller must handle the null case. The anon key is public by design — row
  * security is enforced server-side by Supabase RLS, never by hiding the key.
+ *
+ * Sessions live in COOKIES (via @supabase/ssr), not localStorage: the token is
+ * Secure (prod) + SameSite=Lax and readable by the matching server client in
+ * `proxy.ts`, which refreshes it on each request. The cookie is intentionally
+ * not HttpOnly — the browser client must read it because all data access is
+ * client-side under RLS, which stays the real authorization boundary.
  */
-import {
-  createClient,
-  type SupabaseClient,
-} from "@supabase/supabase-js";
+import { createBrowserClient } from "@supabase/ssr";
+import type { SupabaseClient } from "@supabase/supabase-js";
 
 let cached: SupabaseClient | null | undefined;
+
+const isProd = process.env.NODE_ENV === "production";
 
 export function supabaseConfigured(): boolean {
   return Boolean(
@@ -32,16 +38,13 @@ export function getSupabase(): SupabaseClient | null {
     cached = null;
     return cached;
   }
-  cached = createClient(url, anon, {
-    auth: {
-      // magic-link tokens land in the URL; finalise the session client-side.
-      detectSessionInUrl: true,
-      // session persists in localStorage under our own key → a reload restores
-      // it without re-login; the token auto-refreshes in the background.
-      persistSession: true,
-      autoRefreshToken: true,
-      storageKey: "studentos-auth",
-      flowType: "pkce",
+  cached = createBrowserClient(url, anon, {
+    cookieOptions: {
+      // SameSite=Lax survives the email-link redirect GET; Secure only in prod
+      // (a Secure cookie is dropped over http://localhost during dev).
+      sameSite: "lax",
+      secure: isProd,
+      path: "/",
     },
   });
   return cached;
