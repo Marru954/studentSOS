@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { CountUp } from "@/components/primitives/CountUp";
+import { UNIVERSITY_PRESETS } from "@/lib/sync/universities";
 import { HeroDemo } from "./HeroDemo";
 
 const FEATURES: { icon: LucideIcon; href: string; title: string; desc: string }[] = [
@@ -79,20 +80,15 @@ const SAMPLE_TROPHIES: {
   { grade: "Idoneo", course: "Inglese B2", border: "border-line/60", Icon: GraduationCap, iconColor: "text-ink-mute" },
 ];
 
-const UNIVERSITY_NAMES = [
-  "Tor Vergata",
-  "La Sapienza",
-  "Politecnico di Milano",
-  "Università di Bologna",
-  "Federico II",
-  "Politecnico di Torino",
-  "Università di Padova",
-  "Bocconi",
-  "Trento",
-  "Firenze",
-  "Statale di Milano",
-  "Ca' Foscari",
-];
+/** Atenei derived from the real presets, split by capability so the page is
+ *  honest: "sync live" (orario ed esami in automatico) vs "manuale" (inseriti
+ *  a mano). `UNIVERSITY_PRESETS` is already in this bundle via HeroDemo. */
+const ATENEI = UNIVERSITY_PRESETS.map((p) => ({
+  name: p.shortName ?? p.name,
+  live: Boolean(p.liveSources),
+}));
+const LIVE_ATENEI = ATENEI.filter((a) => a.live);
+const MANUAL_ATENEI = ATENEI.filter((a) => !a.live);
 
 const ALL: { icon: LucideIcon; title: string; desc: string }[] = [
   { icon: GraduationCap, title: "Libretto", desc: "voti dal portale o manuali" },
@@ -206,18 +202,48 @@ export function Landing() {
           <h2 className="reveal display-md mx-auto mt-2.5 max-w-[20ch] text-center">
             Funziona per il <span className="grad-text">tuo ateneo</span>.
           </h2>
-          <div className="mt-8 grid gap-3 [grid-template-columns:repeat(auto-fit,minmax(200px,1fr))]">
-            {UNIVERSITY_NAMES.map((name, i) => (
+
+          {/* Sync live: orario ed esami arrivano in automatico */}
+          <div className="reveal mt-8 flex items-center justify-center gap-2 text-sm">
+            <span aria-hidden="true" className="size-2 rounded-full bg-[var(--signal-2)]" />
+            <span className="font-semibold text-ink">Sync live</span>
+            <span className="text-ink-mute">— orario ed esami in automatico</span>
+          </div>
+          <div className="mt-4 grid gap-3 [grid-template-columns:repeat(auto-fit,minmax(180px,1fr))]">
+            {LIVE_ATENEI.map((a, i) => (
               <div
-                key={name}
-                className="glass lift reveal flex items-center justify-center rounded-lg px-[1.2rem] py-[1.1rem] text-center text-[0.95rem] font-semibold"
+                key={a.name}
+                className="glass lift reveal flex items-center justify-center gap-2 rounded-lg border border-[color:var(--signal)]/30 px-[1.1rem] py-[1rem] text-center text-[0.95rem] font-semibold"
                 style={{ ["--d" as string]: `${(i % 3) * 0.07}s` }}
               >
-                {name}
+                <span
+                  aria-label="sync live"
+                  className="size-1.5 shrink-0 rounded-full bg-[var(--signal-2)]"
+                />
+                {a.name}
               </div>
             ))}
           </div>
-          <p className="reveal mt-6 text-center text-sm text-ink-mute">
+
+          {/* Manuale: orario ed esami inseriti a mano (o import PDF del libretto) */}
+          <div className="reveal mt-10 flex items-center justify-center gap-2 text-sm">
+            <span aria-hidden="true" className="size-2 rounded-full bg-[var(--ink-faint)]" />
+            <span className="font-semibold text-ink">Manuale</span>
+            <span className="text-ink-mute">— orario ed esami inseriti a mano</span>
+          </div>
+          <div className="mt-4 grid gap-3 [grid-template-columns:repeat(auto-fit,minmax(160px,1fr))]">
+            {MANUAL_ATENEI.map((a, i) => (
+              <div
+                key={a.name}
+                className="glass reveal flex items-center justify-center rounded-lg px-[1rem] py-[0.9rem] text-center text-[0.9rem] font-medium text-ink-mute"
+                style={{ ["--d" as string]: `${(i % 3) * 0.07}s` }}
+              >
+                {a.name}
+              </div>
+            ))}
+          </div>
+
+          <p className="reveal mt-8 text-center text-sm text-ink-mute">
             Il tuo ateneo non è in lista?{" "}
             <a href="mailto:support@studentos.app" className="underline hover:text-ink">
               Segnalacelo →
