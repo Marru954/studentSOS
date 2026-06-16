@@ -234,7 +234,7 @@ export function Landing() {
               <Link
                 key={title}
                 href={href}
-                className={`glass gradient-ring lift reveal flex flex-col gap-[0.9rem] rounded-2xl p-[1.6rem] text-left ${["", "lg:mt-6", "lg:mt-12"][i] ?? ""}`}
+                className={`glass gradient-ring lift reveal flex flex-col gap-[0.9rem] rounded-xl p-[1.6rem] text-left ${["", "lg:mt-6", "lg:mt-12"][i] ?? ""}`}
                 style={{ ["--d" as string]: `${i * 0.08}s` }}
               >
                 <span className="grad-fill inline-flex size-[46px] items-center justify-center rounded-[14px] text-white">
@@ -474,7 +474,7 @@ export function Landing() {
         {/* CTA */}
         <section className="wrap section">
           <div
-            className="glass reveal relative overflow-hidden rounded-2xl text-center"
+            className="glass reveal relative overflow-hidden rounded-xl text-center"
             style={{ padding: "clamp(2rem, 6vw, 4rem)" }}
           >
             <div
