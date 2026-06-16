@@ -317,10 +317,12 @@ export function Landing() {
                 style={{ ["--d" as string]: `${i * 0.1}s` }}
               >
                 <div className="font-display font-extrabold leading-none">
-                  <span className="grad-text" style={{ fontSize: "clamp(3rem, 7vw, 4.5rem)" }}>
+                  <span className="grad-text block" style={{ fontSize: "clamp(2.6rem, 6.5vw, 4.2rem)" }}>
                     <CountUp value={value} suffix={suffix ?? ""} inView />
                   </span>
-                  <span className="ml-1.5 text-[1.3rem] font-bold text-ink-mute">{unit}</span>
+                  <span className="mt-1.5 block text-[1.05rem] font-bold text-ink-mute">
+                    {unit}
+                  </span>
                 </div>
                 <p className="mx-auto mt-[0.7rem] max-w-[24ch] text-[0.9rem] text-ink-mute">
                   {desc}
