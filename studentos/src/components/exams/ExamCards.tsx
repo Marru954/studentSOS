@@ -62,8 +62,11 @@ function ExamCard({
   const urgent = days >= 0 && days <= 7;
   const barWidth = days < 0 ? 100 : Math.max(8, 100 - days * 2.5);
   // Manually-added appelli carry a `manual-…` sentinel sourceId; only these
-  // are deletable. Synced exams expose no delete control.
+  // are deletable. Synced exams expose no delete control. PDF-imported ones use
+  // the `manual-pdf-import-…` variant, so they get the same handling but a
+  // distinct "da PDF" badge.
   const manual = exam.sourceId.startsWith("manual");
+  const fromPdf = exam.sourceId.includes("pdf-import");
   const deletable = Boolean(onDelete) && manual;
 
   return (
@@ -79,7 +82,7 @@ function ExamCard({
           {exam.courseName}
         </h3>
         <div className="flex shrink-0 items-center gap-1.5">
-          {manual && <Badge tone="neutral">manuale</Badge>}
+          {manual && <Badge tone="neutral">{fromPdf ? "da PDF" : "manuale"}</Badge>}
           <span className={chip.cls}>{chip.label}</span>
         </div>
       </div>

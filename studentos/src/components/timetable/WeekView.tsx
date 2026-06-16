@@ -19,6 +19,7 @@ import { useSynced } from "@/lib/state/synced";
 import { useToast } from "@/lib/state/toast";
 import { deleteClassEventSeries } from "@/lib/storage/repo";
 import { CoursePicker } from "@/components/CoursePicker";
+import { ImportPdfButton } from "@/components/import/ImportPdfButton";
 import { ImportIcalForm } from "./ImportIcalForm";
 import {
   ManualLessonForm,
@@ -376,6 +377,7 @@ export function WeekView() {
           )}
         </div>
         <div className="flex flex-wrap items-center gap-2">
+          <ImportPdfButton kind="orario" disabled={!ready} />
           {ready && (
             <div
               role="group"

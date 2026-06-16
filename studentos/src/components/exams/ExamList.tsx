@@ -23,6 +23,7 @@ import { EmptyState } from "@/components/primitives/EmptyState";
 import { Panel } from "@/components/primitives/Panel";
 import { PanelSkeleton } from "@/components/primitives/Skeleton";
 import { CoursePicker } from "@/components/CoursePicker";
+import { ImportPdfButton } from "@/components/import/ImportPdfButton";
 import { YearFilter } from "@/components/YearFilter";
 import { bookingState } from "@/lib/domain/booking";
 import {
@@ -257,6 +258,7 @@ export function ExamList() {
             <CalendarArrowDown aria-hidden="true" className="size-4" />
             Esporta in Calendario
           </button>
+          <ImportPdfButton kind="esami" disabled={!ready} />
           <button
             type="button"
             onClick={() => {
