@@ -234,7 +234,7 @@ export function Landing() {
               <Link
                 key={title}
                 href={href}
-                className="glass lift reveal flex flex-col gap-[0.9rem] rounded-lg p-[1.6rem] text-left"
+                className={`glass lift reveal flex flex-col gap-[0.9rem] rounded-lg p-[1.6rem] text-left ${["", "lg:mt-6", "lg:mt-12"][i] ?? ""}`}
                 style={{ ["--d" as string]: `${i * 0.08}s` }}
               >
                 <span className="grad-fill inline-flex size-[46px] items-center justify-center rounded-[14px] text-white">
@@ -424,7 +424,7 @@ export function Landing() {
             {TESTIMONIALS.map((t, i) => (
               <figure
                 key={t.name}
-                className="glass reveal flex flex-col gap-4 rounded-lg p-[1.6rem]"
+                className={`glass reveal flex flex-col gap-4 rounded-lg p-[1.6rem] ${["lg:mt-12", "lg:mt-6", ""][i] ?? ""}`}
                 style={{ ["--d" as string]: `${i * 0.1}s` }}
               >
                 <blockquote className="text-[0.98rem] italic text-ink">
