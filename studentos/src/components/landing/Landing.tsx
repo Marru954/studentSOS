@@ -59,7 +59,7 @@ const STEPS = [
 
 const STATS: { value: number; suffix?: string; unit: string; desc: string }[] = [
   { value: 100, suffix: "%", unit: "in locale", desc: "i tuoi dati vivono sul dispositivo; l'accesso per ritrovarli altrove è opzionale" },
-  { value: 1, suffix: " import", unit: "tutta la carriera", desc: "un PDF del libretto e i voti sono già dentro, senza digitare nulla" },
+  { value: 1, suffix: " file", unit: "tutta la carriera dentro", desc: "carichi il PDF del libretto e i voti sono già dentro, senza digitare nulla" },
   { value: 5, suffix: " min", unit: "setup", desc: "per essere operativo dal primo avvio" },
 ];
 
