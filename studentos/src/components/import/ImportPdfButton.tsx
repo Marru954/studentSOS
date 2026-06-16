@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import { useId, useRef, useState } from "react";
 import { Button } from "@/components/primitives/Button";
+import { DateField } from "@/components/primitives/DateField";
 import { inputClass } from "@/components/primitives/Field";
 import { Overlay } from "@/components/primitives/Overlay";
 import {
@@ -511,12 +512,11 @@ export function ImportPdfButton({
                               placeholder="Corso"
                               className={`${inputClass} col-span-2 sm:col-span-4`}
                             />
-                            <input
-                              type="date"
+                            <DateField
                               value={ex.date}
-                              onChange={(e) => patchExam(i, { date: e.target.value })}
-                              aria-label="Data"
-                              className={`${inputClass} sm:col-span-3`}
+                              onChange={(date) => patchExam(i, { date })}
+                              ariaLabel="Data"
+                              className="sm:col-span-3"
                             />
                             <input
                               type="time"

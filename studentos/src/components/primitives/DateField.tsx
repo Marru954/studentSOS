@@ -26,6 +26,7 @@ export function DateField({
   onChange,
   required,
   className,
+  ariaLabel,
 }: {
   id?: string;
   /** ISO date "YYYY-MM-DD", or "" when empty. */
@@ -34,6 +35,8 @@ export function DateField({
   onChange: (iso: string) => void;
   required?: boolean;
   className?: string;
+  /** Accessible name when there's no associated <label> (e.g. compact grids). */
+  ariaLabel?: string;
 }) {
   const [display, setDisplay] = useState(() => formatItDate(value));
   const [lastValue, setLastValue] = useState(value);
@@ -48,6 +51,7 @@ export function DateField({
       type="text"
       inputMode="numeric"
       autoComplete="off"
+      aria-label={ariaLabel}
       placeholder="gg/mm/aaaa"
       maxLength={10}
       value={display}

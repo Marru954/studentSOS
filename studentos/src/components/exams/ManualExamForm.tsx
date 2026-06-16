@@ -15,6 +15,7 @@
 import { CalendarPlus } from "lucide-react";
 import { useId, useState } from "react";
 import { Button } from "@/components/primitives/Button";
+import { DateField } from "@/components/primitives/DateField";
 import { Field, inputClass } from "@/components/primitives/Field";
 import { putExamCall } from "@/lib/storage/repo";
 import { useSettings } from "@/lib/state/settings";
@@ -107,13 +108,11 @@ export function ManualExamForm({ courses }: { courses: string[] }) {
             </Field>
 
             <Field label="Data" htmlFor={`${baseId}-date`}>
-              <input
+              <DateField
                 id={`${baseId}-date`}
-                type="date"
                 required
                 value={date}
-                onChange={(e) => setDate(e.target.value)}
-                className={inputClass}
+                onChange={setDate}
               />
             </Field>
 
