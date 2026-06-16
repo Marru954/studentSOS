@@ -31,7 +31,7 @@ export function Panel({
   const Heading = `h${headingLevel}` as const;
   const titled = Boolean(title || actions);
   return (
-    <section className={cn("glass rounded-lg shadow-soft", className)}>
+    <section className={cn("glass rounded-xl shadow-soft", className)}>
       {titled && (
         <header className="flex min-h-11 items-center justify-between gap-3 px-5 pb-4 pt-5">
           {title && (
