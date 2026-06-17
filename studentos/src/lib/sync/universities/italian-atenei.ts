@@ -36,8 +36,8 @@ interface Ateneo {
 
 // NB: many big atenei (Trieste, Perugia, Cagliari, Trento, Napoli Federico II,
 // Ferrara, Parma, Salerno, Sassari, Firenze, Genova, Piemonte Orientale, Ca'
-// Foscari Venezia, Salento/Lecce, Campania "Vanvitelli", …) now ship as
-// fully-wired LIVE EasyAcademy presets — see easyacademy-live.ts. The
+// Foscari Venezia, Salento/Lecce, Campania "Vanvitelli", Bari Aldo Moro, …) now
+// ship as fully-wired LIVE EasyAcademy presets — see easyacademy-live.ts. The
 // list below is the manual fallback for atenei whose timetable system isn't yet
 // supported (Bologna in-house, PoliMi/PoliTo homegrown, Sapienza/Roma Tre GOMP,
 // Torino Cineca University Planner, Padova semester-keyed agendaweb, …); see

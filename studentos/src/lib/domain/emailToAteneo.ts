@@ -101,6 +101,9 @@ const DOMAIN_TO_PRESET: Record<string, string> = {
   // Campania "Luigi Vanvitelli" — live EasyAcademy preset (whole ateneo)
   "unicampania.it": "unicampania-ingegneria",
   "studenti.unicampania.it": "unicampania-ingegneria",
+  // Bari Aldo Moro — live EasyAcademy preset (Giurisprudenza + Scienze Politiche)
+  "uniba.it": "uniba-giurisprudenza",
+  "studenti.uniba.it": "uniba-giurisprudenza",
 };
 
 /** Valid Italian academic domains WITHOUT a preset yet — login allowed, the
@@ -131,8 +134,6 @@ const EXTRA_ACADEMIC_DOMAINS = new Set<string>([
   "unict.it",
   "studium.unict.it",
   "unifg.it",
-  "uniba.it",
-  "studenti.uniba.it",
   "poliba.it",
   "studenti.poliba.it",
   "uniud.it",

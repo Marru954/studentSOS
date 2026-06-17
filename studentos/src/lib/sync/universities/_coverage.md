@@ -43,6 +43,7 @@ use manual entry / PDF import.
 | Ca' Foscari Venezia | unive.it | unive-informatica | Informatica (69 corsi live, verif. 2026-06-17) | orari.unive.it/AgendaWebUnive |
 | Salento (Lecce) | unisalento.it | unisalento-economia | Whole ateneo (81 corsi live, 31 con esami, verif. 2026-06-17) | logistica.unisalento.it/PortaleStudenti |
 | Campania "Vanvitelli" 🟢 | unicampania.it | unicampania-ingegneria | Ingegneria (17 corsi live, 10 con esami, verif. 2026-06-17) | easyacademy.easystaff.it/agendastudenti |
+| Bari Aldo Moro | uniba.it | uniba-giurisprudenza | Giurisprudenza + Scienze Politiche (12 corsi live, 4 con esami, verif. 2026-06-17) | easyacademy.ict.uniba.it/PortaleStudenti |
 
 🟢 = timetable verified, exams not published via EasyAcademy (kept in Esse3).
 
@@ -67,7 +68,6 @@ use manual entry / PDF import.
 | Politecnico Milano | mail.polimi.it | custom (homegrown) | polimi (manual) |
 | Politecnico Torino | studenti.polito.it | custom (homegrown) | polito (manual) |
 | Pisa | studenti.unipi.it | EasyAcademy/UP (migrating) | unipi (manual — to re-probe) |
-| Bari Aldo Moro | studenti.uniba.it | EasyAcademy | EXTRA domain, manual (to probe) |
 | Catania | studium.unict.it | GOMP | EXTRA domain, manual |
 | Palermo | community.unipa.it | custom (OffWeb) | EXTRA domain, manual |
 | Milano-Bicocca | campus.unimib.it | PortaleStudenti | EXTRA domain, manual |
@@ -161,7 +161,7 @@ combo-confirmed candidates to verify the same way next batch.
 |---|---|---|---|---|---|---|
 | Verona (univr) | univr.it | **Cineca UP** | univr.prod.up.cineca.it/calendarioPubblico | n/a | — | Cineca UP (NON EasyAcademy) |
 | Salento/Lecce (unisalento) | studenti.unisalento.it | **EasyAcademy** | logistica.unisalento.it/PortaleStudenti | combo 158 corsi; **adapter celle>0** su tutti gli 81 raggruppamenti, Appelli>0 su 31 | PortaleStudenti | ✅ **WIRED LIVE 2026-06-17** — 81 corsi, preset `unisalento-economia`; vedi `_unisalento-economia_coverage.md` |
-| Bari (uniba) | studenti.uniba.it | EasyAcademy (parziale) | easyacademy.ict.uniba.it/PortaleStudenti | combo OK ma **solo 12 corsi** (solo Giurisprudenza + Scienze Politiche; no Info/Ing/Eco) | PortaleStudenti | EasyAcademy ma catalogo pubblico ridotto → manual finché non compaiono Info/Ing |
+| Bari (uniba) | uniba.it | EasyAcademy (parziale) | easyacademy.ict.uniba.it/PortaleStudenti | combo 12 corsi (Giurisprudenza + Scienze Politiche); **adapter celle>0 su tutti i 12**, Appelli>0 su 4 | PortaleStudenti | ✅ **WIRED LIVE 2026-06-17** — 12 corsi, preset `uniba-giurisprudenza`; vedi `_uniba-giurisprudenza_coverage.md`. (Il resto dell'ateneo usa altri sistemi → manual) |
 | Politecnico Bari (poliba) | poliba.it | in-house (PDF/dept) | poliba.it/orariolezioni (PDF) | n/a | — | in-house (orari pubblicati in PDF per dipartimento) |
 | Campania Vanvitelli (unicampania) | studenti.unicampania.it | **EasyAcademy** | easyacademy.easystaff.it/agendastudenti | combo 40 corsi; **adapter celle>0** su tutti i 17 raggruppamenti, Appelli>0 su 10 (ingegneria) | agendastudenti (shared host) | ✅ **WIRED LIVE 2026-06-17** — 17 corsi, preset `unicampania-ingegneria`; vedi `_unicampania-ingegneria_coverage.md` |
 | Macerata (unimc) | studenti.unimc.it | app/dept (myUNIMC + docenti.unimc.it) | nessun host agendaweb pubblico | n/a | — | in-house / app-based (nessun combo.php pubblico trovato) |
@@ -174,11 +174,14 @@ combo-confirmed candidates to verify the same way next batch.
   `unisalento-economia`, 81 corsi, 31 con esami) · Campania Vanvitelli
   (unicampania, `unicampania-ingegneria`, 17 corsi, 10 con esami). Tutti
   verificati esercitando l'adapter reale end-to-end (`celle`/`Appelli` non vuoti).
-- **EasyAcademy verificabile (combo) — prossimo batch:** Bari (uniba, ma catalogo
-  pubblico ridotto a 12 corsi), Macerata/IUAV (da riprovare). Vedi tabella sotto.
-- **EasyAcademy ma non utilizzabile:** Padova (period-keyed, anno2 assenti),
-  Bari (catalogo pubblico ridotto a 12 corsi), Milano Statale (login-walled),
-  IUAV (combo vuoto).
+- **EasyAcademy wirato LIVE 2026-06-17 (batch 3):** Bari Aldo Moro (uniba,
+  `uniba-giurisprudenza`, 12 corsi live — Giurisprudenza + Scienze Politiche, 4
+  con esami; deployment EasyAcademy parziale, resto ateneo su altri sistemi).
+- **EasyAcademy ma non utilizzabile (nessun candidato verificabile rimasto):**
+  Padova (period-keyed, anno2 assenti), Milano Statale (login-walled), IUAV
+  (combo `elenco_corsi=[]` per ogni aa → login-walled), Macerata (nessun host
+  agendaweb pubblico — app/dipartimentale), Roma Tre / Tuscia / Chieti / Politecnica
+  Marche (grid non pubblicata).
 - **Cineca University Planner (no adapter):** Siena, Pisa, Torino, Pavia, Verona.
 - **GOMP:** Sapienza.
 - **In-house / login-walled (no adapter):** Bologna, PoliMi, PoliTo, Bocconi,
