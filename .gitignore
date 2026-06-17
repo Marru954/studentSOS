@@ -36,4 +36,6 @@ yarn-error.log*
 .vercel
 
 # local agent/session config
-.claude/
+.claude/*
+!.claude/agents/
+!.claude/agents/*.md
