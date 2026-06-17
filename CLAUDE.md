@@ -25,6 +25,8 @@ Run all commands **inside `studentos/`**, not from this root.
 - **Never invent EasyAcademy `scuola`/`corso`/`anno2` codes.** Use only codes confirmed by a real GET on `combo.php` (+ POST `grid_call.php`/`test_call.php` returning `celle`/`Appelli`). Unverifiable or empty → `liveSources: false` / leave the degree out of `livePrograms`, with the reason in a comment. Wrong data is worse than none.
 - **Green before commit:** `npm run build`, `npm test`, `tsc --noEmit`, `npm run lint` all pass first. One commit per completed objective/feature.
 - **No new npm dependency** unless the user explicitly asks.
+- **Local-first is the product, not a fallback.** User data lives in IndexedDB, on the device; the app works **fully** with no account. The Supabase email+password login is **optional** — backup/multi-device for those who want it, never required. The data-security wall for cloud rows is **Supabase RLS**, not local encryption. **Copy/UI rule:** never promise the cloud or sync as default behaviour — the default is local, sync is an opt-in extra. (This rule exists because the copy has repeatedly contradicted the footer by promising "dati su ogni dispositivo".)
+- **Central actions never fail silently.** Core product actions (e.g. registering a voto in the Libretto) must surface validation **inline next to the field**, mark required fields, and announce errors for a11y — never a single message at the bottom of the form / below the fold.
 - **Design language is fixed:** glass, aurora, Bricolage Grotesque, Tailwind v4, CSS-variable tokens — reskin via the `@theme` var blocks, never per-component.
 - **Accessibility on every new component:** `aria-label`, `sr-only`, keyboard-reachable.
 - **UI copy is always Italian.**
@@ -55,6 +57,7 @@ Tests use `node:test` + `tsx` + `fake-indexeddb` (no Jest/Vitest). There is **no
 - Push to GitHub after each significant work session.
 - **Auto-push after every objective:** the cycle is build+test green → commit → push. The push is **automatic** — never wait for user confirmation, never need a separate "carica su github" prompt.
 - **Tight sessions:** max 5–6 objectives per session. When a big block is done, commit+push then start a fresh session. Don't compact — a clean restart beats a compacted context.
+- **Aggiorna STATO.md dopo ogni sessione:** prima del push finale, riscrivi STATO.md con i task completati oggi, quelli in sospeso e i prossimi obiettivi. Data in cima al file.
 
 ## StudentOS architecture (the big picture)
 
