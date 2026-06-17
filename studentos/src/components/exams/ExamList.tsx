@@ -24,6 +24,7 @@ import { Panel } from "@/components/primitives/Panel";
 import { PanelSkeleton } from "@/components/primitives/Skeleton";
 import { CoursePicker } from "@/components/CoursePicker";
 import { ImportPdfButton } from "@/components/import/ImportPdfButton";
+import { SyncFailureBanner } from "@/components/SyncFailureBanner";
 import { YearFilter } from "@/components/YearFilter";
 import { bookingState } from "@/lib/domain/booking";
 import {
@@ -296,6 +297,7 @@ export function ExamList() {
         </div>
       ) : (
         <>
+          <SyncFailureBanner capability="exams" />
           {!hasSources && (
             <Panel>
               <p className="text-sm text-ink-mute">

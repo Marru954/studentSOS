@@ -20,6 +20,7 @@ import { useToast } from "@/lib/state/toast";
 import { deleteClassEventSeries } from "@/lib/storage/repo";
 import { CoursePicker } from "@/components/CoursePicker";
 import { ImportPdfButton } from "@/components/import/ImportPdfButton";
+import { SyncFailureBanner } from "@/components/SyncFailureBanner";
 import { ImportIcalForm } from "./ImportIcalForm";
 import {
   ManualLessonForm,
@@ -481,6 +482,7 @@ export function WeekView() {
         </div>
       ) : (
         <>
+          <SyncFailureBanner capability="timetable" />
           {/* No live sources → keep the configure hint, but still let the
               student build their week by hand (the manual form below writes
               into the same classEvents store the grid reads). */}
