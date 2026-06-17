@@ -16,9 +16,14 @@
  * `anno2` suffix; some curricula carry literal spaces, e.g. "RISPI 1|1" — kept
  * exact).
  *
- * Exams are PER-DEGREE: the Giurisprudenza-area corsi expose easytest appelli
- * (exams: true); the Scienze Politiche corsi keep their exam calendar elsewhere
- * and ship timetable-only (the `false` 6th arg). Wrong data is worse than none.
+ * Exams: UniBA keeps almost all exam calendars OUTSIDE EasyAcademy. Re-verified
+ * 2026-06-17 over the full academic year (Mar 2026 → Feb 2027): of the 12 live
+ * degrees only ONE source returns real appelli — Giurisprudenza anno-1 (corso
+ * 6001, 2 appelli, e.g. "Istituzioni di diritto romano A-L"). Every other corso
+ * (incl. Giurisprudenza anni 2-5, Giurisprudenza D'impresa, Consulente del
+ * Lavoro, Scienze dei Servizi Giuridici) returns empty `Insegnamenti` →
+ * timetable-only (`false` 6th arg). Giurisprudenza carries its single live exam
+ * source hand-wired on anno-1. Wrong/empty data is worse than none.
  */
 import type { LiveProgram, UniversityPreset } from "../provider";
 import { degreeSources } from "./easystaff";
@@ -29,31 +34,50 @@ const ANNO = "2025";
 const livePrograms: LiveProgram[] = [
   {
     programme: "Consulente del Lavoro e Operatore D'impresa",
+    // Esami: test_call.php non espone appelli per questo corso (verificato
+    // 2026-06-17, finestra intero anno accademico → 0 appelli) → solo orario.
     sources: degreeSources(BASE, ANNO, "consulente-del-lavoro-e-operatore-d-impresa", "DipartimentodiGiurisprudenza", [
       { year: 1, corso: "7968", anno2: ["comune|1"] },
       { year: 2, corso: "7968", anno2: ["comune|2"] },
       { year: 3, corso: "7968", anno2: ["comune|3"] },
-    ]),
+    ], false),
   },
   {
     programme: "Giurisprudenza",
-    sources: degreeSources(BASE, ANNO, "giurisprudenza", "DipartimentodiGiurisprudenza", [
-      { year: 1, corso: "6001", anno2: ["comune|1"] },
-      { year: 2, corso: "6001", anno2: ["comune|2"] },
-      { year: 3, corso: "6001", anno2: ["comune|3"] },
-      { year: 4, corso: "6001", anno2: ["comune|4"] },
-      { year: 5, corso: "6001", anno2: ["comune|5"] },
-    ]),
+    // Orario live su tutti i 5 anni. Esami: test_call.php espone appelli SOLO
+    // per l'anno-1 (2 appelli reali, es. "Istituzioni di diritto romano A-L",
+    // verificato 2026-06-17); anni 2-5 tornano vuoti → solo l'anno-1 ha
+    // capability "exams", il resto è timetable-only (dato vuoto è peggio di
+    // nessun dato). Per-anno: degreeSources è all-or-nothing sugli esami, quindi
+    // l'unica source esami è cablata a mano.
+    sources: [
+      ...degreeSources(BASE, ANNO, "giurisprudenza", "DipartimentodiGiurisprudenza", [
+        { year: 1, corso: "6001", anno2: ["comune|1"] },
+        { year: 2, corso: "6001", anno2: ["comune|2"] },
+        { year: 3, corso: "6001", anno2: ["comune|3"] },
+        { year: 4, corso: "6001", anno2: ["comune|4"] },
+        { year: 5, corso: "6001", anno2: ["comune|5"] },
+      ], false),
+      {
+        id: "giurisprudenza-esami-anno-1",
+        label: "Appelli d'esame — 1° anno",
+        capability: "exams" as const,
+        providerId: "easyacademy",
+        params: { kind: "exams", baseUrl: BASE, scuola: "DipartimentodiGiurisprudenza", cdl: "6001", anno2: ["1"] },
+      },
+    ],
   },
   {
     programme: "Giurisprudenza D'impresa",
+    // Esami: test_call.php non espone appelli (verificato 2026-06-17, intero
+    // anno accademico → 0 appelli su tutti i 5 anni) → solo orario.
     sources: degreeSources(BASE, ANNO, "giurisprudenza-d-impresa", "DipartimentodiGiurisprudenza", [
       { year: 1, corso: "6002", anno2: ["comune|1"] },
       { year: 2, corso: "6002", anno2: ["comune|2"] },
       { year: 3, corso: "6002", anno2: ["comune|3"] },
       { year: 4, corso: "6002", anno2: ["comune|4"] },
       { year: 5, corso: "6002", anno2: ["comune|5"] },
-    ]),
+    ], false),
   },
   {
     programme: "Interclasse Magistrale RISPI",
@@ -116,11 +140,14 @@ const livePrograms: LiveProgram[] = [
   },
   {
     programme: "Scienze dei Servizi Giuridici",
+    // Esami: test_call.php espone 1 solo appello (anno-2) sull'intero anno
+    // accademico (verificato 2026-06-17); troppo sparso per giustificare le
+    // source esami vuote degli altri anni → solo orario.
     sources: degreeSources(BASE, ANNO, "scienze-dei-servizi-giuridici", "DipartimentodiGiurisprudenza", [
       { year: 1, corso: "7222", anno2: ["comune|1"] },
       { year: 2, corso: "7222", anno2: ["comune|2"] },
       { year: 3, corso: "7222", anno2: ["comune|3"] },
-    ]),
+    ], false),
   },
 ];
 
