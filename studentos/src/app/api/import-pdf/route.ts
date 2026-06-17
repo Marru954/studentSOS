@@ -7,6 +7,7 @@
  * nothing is persisted here. Mirrors the existing /api/assistente proxy.
  */
 import { guardPost } from "@/lib/api/guard";
+import { apiLog } from "@/lib/api/logger";
 
 const GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
 const MODEL = process.env.GROQ_MODEL ?? "llama-3.3-70b-versatile";
@@ -125,7 +126,10 @@ export async function POST(req: Request): Promise<Response> {
     // Log upstream detail server-side only; don't echo the provider body to the
     // client (info disclosure).
     const detail = await groqRes.text().catch(() => "");
-    console.warn(`[import-pdf] upstream ${groqRes.status}: ${detail.slice(0, 160)}`);
+    apiLog("error", "import-pdf", "upstream Groq error", {
+      status: groqRes.status,
+      detail: detail.slice(0, 160),
+    });
     return jsonError(
       "Errore dal servizio AI. Riprova tra poco o inserisci i dati a mano.",
       "upstream",

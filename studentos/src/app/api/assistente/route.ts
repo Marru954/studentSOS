@@ -15,6 +15,7 @@ import {
   type ChatMessage,
 } from "@/lib/assistente";
 import { guardPost } from "@/lib/api/guard";
+import { apiLog } from "@/lib/api/logger";
 
 const GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
 const MODEL = process.env.GROQ_MODEL ?? "llama-3.3-70b-versatile";
@@ -147,7 +148,10 @@ export async function POST(req: Request): Promise<Response> {
     // Log the upstream detail server-side only; never echo the provider's raw
     // response body to the client (info disclosure).
     const detail = await groqRes.text().catch(() => "");
-    console.warn(`[assistente] upstream ${groqRes.status}: ${detail.slice(0, 200)}`);
+    apiLog("error", "assistente", "upstream Groq error", {
+      status: groqRes.status,
+      detail: detail.slice(0, 200),
+    });
     return jsonError("Impossibile contattare l'assistente. Riprova.", 502);
   }
 

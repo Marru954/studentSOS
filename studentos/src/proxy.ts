@@ -6,6 +6,7 @@
  */
 import { NextResponse, type NextRequest } from "next/server";
 import { getServerSupabase } from "@/lib/supabase/server";
+import { apiLog } from "@/lib/api/logger";
 
 export async function proxy(request: NextRequest) {
   let response = NextResponse.next({ request });
@@ -35,7 +36,9 @@ export async function proxy(request: NextRequest) {
   try {
     await supabase.auth.getUser();
   } catch {
-    // swallow — pass the request through with the cookies we already have
+    // Fail open — pass the request through with the cookies we already have.
+    // Log it (no URL/cookie content) so a recurring outage is visible in Vercel.
+    apiLog("warn", "middleware", "Supabase session refresh failed, falling back to stale cookie");
   }
 
   return response;
