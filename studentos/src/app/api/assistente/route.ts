@@ -102,11 +102,11 @@ export async function POST(req: Request): Promise<Response> {
   }
 
   if (!groqRes.ok || !groqRes.body) {
+    // Log the upstream detail server-side only; never echo the provider's raw
+    // response body to the client (info disclosure).
     const detail = await groqRes.text().catch(() => "");
-    return jsonError(
-      `Errore dall'assistente (${groqRes.status}). ${detail.slice(0, 200)}`,
-      502,
-    );
+    console.warn(`[assistente] upstream ${groqRes.status}: ${detail.slice(0, 200)}`);
+    return jsonError("Impossibile contattare l'assistente. Riprova.", 502);
   }
 
   // Transform Groq's SSE ("data: {json}\n\n", terminated by "data: [DONE]") into

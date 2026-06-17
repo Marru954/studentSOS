@@ -117,9 +117,12 @@ export async function POST(req: Request): Promise<Response> {
     );
   }
   if (!groqRes.ok) {
+    // Log upstream detail server-side only; don't echo the provider body to the
+    // client (info disclosure).
     const detail = await groqRes.text().catch(() => "");
+    console.warn(`[import-pdf] upstream ${groqRes.status}: ${detail.slice(0, 160)}`);
     return jsonError(
-      `Errore dal servizio AI (${groqRes.status}). ${detail.slice(0, 160)}`,
+      "Errore dal servizio AI. Riprova tra poco o inserisci i dati a mano.",
       "upstream",
       502,
     );

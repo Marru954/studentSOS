@@ -29,7 +29,14 @@ export async function proxy(request: NextRequest) {
   // Touch the user: @supabase/ssr refreshes the token and rewrites the cookie
   // (via setAll above) when it's near expiry. Do not run logic between the
   // client creation and this call, per Supabase's SSR guidance.
-  await supabase.auth.getUser();
+  // Fail open: a transient Supabase outage must never 500 every navigation —
+  // local-first means the app keeps working with the cloud down. A stale token
+  // just isn't refreshed this pass; the next request retries.
+  try {
+    await supabase.auth.getUser();
+  } catch {
+    // swallow — pass the request through with the cookies we already have
+  }
 
   return response;
 }
