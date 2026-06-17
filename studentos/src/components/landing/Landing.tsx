@@ -19,33 +19,6 @@ import Link from "next/link";
 import { CountUp } from "@/components/primitives/CountUp";
 import { AteneoSearch } from "./AteneoSearch";
 
-const FEATURES: { icon: LucideIcon; href: string; title: string; desc: string }[] = [
-  {
-    icon: CalendarClock,
-    href: "/appelli",
-    title: "Appelli",
-    desc: "Ogni data che conta in un posto solo. Avvisi sui conflitti e sulle scadenze di prenotazione.",
-  },
-  {
-    icon: GraduationCap,
-    href: "/libretto",
-    title: "Libretto",
-    desc: "Voti dal portale del tuo ateneo o a mano: media ponderata e CFU sempre aggiornati.",
-  },
-  {
-    icon: LayoutDashboard,
-    href: "/cruscotto",
-    title: "Cruscotto",
-    desc: "Come sei messo a colpo d'occhio: media, CFU e proiezione di laurea.",
-  },
-  {
-    icon: CalendarDays,
-    href: "/orario",
-    title: "Orario",
-    desc: "La tua settimana di lezioni, sempre aggiornata e a portata di sguardo.",
-  },
-];
-
 const STEPS = [
   {
     n: "01",
@@ -119,12 +92,13 @@ const MILESTONES: {
   },
 ];
 
+/** I cinque strumenti sono solo descrittivi sulla landing (niente link): la
+ *  Panoramica qui sotto è l'unico ingresso cliccabile, l'inizio del percorso. */
 const ALL: { icon: LucideIcon; title: string; desc: string }[] = [
   { icon: GraduationCap, title: "Libretto", desc: "voti dal portale o manuali" },
   { icon: CalendarClock, title: "Appelli", desc: "date, avvisi e conflitti" },
   { icon: NotebookPen, title: "Note", desc: "appunti per materia" },
   { icon: Timer, title: "Focus", desc: "Pomodoro per studiare meglio" },
-  { icon: LayoutDashboard, title: "Cruscotto", desc: "panoramica della carriera" },
   { icon: CalendarDays, title: "Orario", desc: "la settimana a colpo d'occhio" },
 ];
 
@@ -161,7 +135,7 @@ const fadeIn =
   };
 
 /** Public landing — no login required. The global AppNav sits above it as the
- *  top bar; "Inizia ora" drops the visitor into the Cruscotto. */
+ *  top bar; "Inizia ora" drops the visitor into the Panoramica. */
 export function Landing() {
   return (
     <>
@@ -213,30 +187,6 @@ export function Landing() {
           </div>
         </section>
 
-        {/* FEATURE CARDS */}
-        <section className="wrap section">
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {FEATURES.map(({ icon: Icon, href, title, desc }, i) => (
-              <Link
-                key={title}
-                href={href}
-                className="glass gradient-ring lift reveal flex flex-col gap-[0.9rem] rounded-xl p-[1.6rem] text-left"
-                style={{ ["--d" as string]: `${i * 0.08}s` }}
-              >
-                <span className="grad-fill inline-flex size-[46px] items-center justify-center rounded-[14px] text-white">
-                  <Icon className="size-[22px]" aria-hidden="true" />
-                </span>
-                <h3 className="text-[1.2rem]">{title}</h3>
-                <p className="text-[0.92rem] text-ink-mute">{desc}</p>
-                <span className="eyebrow mt-auto inline-flex items-center gap-1.5">
-                  Apri
-                  <ArrowRight className="size-[0.85rem]" aria-hidden="true" />
-                </span>
-              </Link>
-            ))}
-          </div>
-        </section>
-
         {/* ATENEI SUPPORTATI */}
         <section className="wrap section">
           <p className="reveal eyebrow text-center">Atenei supportati</p>
@@ -258,7 +208,7 @@ export function Landing() {
               className="reveal display-lg mt-3 max-w-[16ch]"
               style={{ ["--d" as string]: "0.05s" }}
             >
-              Dal tuo ateneo al <span className="grad-text">cruscotto</span> in tre passi.
+              Dal tuo ateneo alla <span className="grad-text">panoramica</span> in tre passi.
             </h2>
             <p className="reveal mt-3 text-ink-mute" style={{ ["--d" as string]: "0.1s" }}>
               Tre passaggi, una volta sola. Dopo si aggiorna tutto da sé.
@@ -350,15 +300,42 @@ export function Landing() {
               Tutto in un posto
             </h2>
             <p className="reveal mt-3 text-ink-mute">
-              Libretto, appelli, note, focus, cruscotto e orario — senza saltare
+              Libretto, appelli, note, focus, panoramica e orario — senza saltare
               tra app diverse.
             </p>
           </div>
-          <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3">
+
+          {/* Panoramica: unico ingresso cliccabile, visivamente prominente */}
+          <Link
+            href="/cruscotto"
+            aria-label="Vai alla panoramica della tua carriera"
+            className="glass gradient-ring lift reveal mt-8 flex flex-col gap-[0.9rem] rounded-xl p-[1.8rem] text-left sm:flex-row sm:items-center sm:gap-6"
+          >
+            <span className="grad-fill inline-flex size-[58px] shrink-0 items-center justify-center rounded-[16px] text-white">
+              <LayoutDashboard className="size-7" aria-hidden="true" />
+            </span>
+            <div className="min-w-0 flex-1">
+              <div className="flex items-center gap-2.5">
+                <h3 className="text-[1.35rem]">Panoramica</h3>
+                <span className="chip chip-signal">Inizia da qui</span>
+              </div>
+              <p className="mt-1.5 text-[0.95rem] text-ink-mute">
+                Media, CFU e proiezione di laurea a colpo d&apos;occhio: il punto
+                di partenza per tutto il resto.
+              </p>
+            </div>
+            <span className="eyebrow inline-flex shrink-0 items-center gap-1.5">
+              Entra
+              <ArrowRight className="size-[0.9rem]" aria-hidden="true" />
+            </span>
+          </Link>
+
+          {/* Gli altri cinque strumenti: solo descrittivi, non cliccabili */}
+          <ul className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3">
             {ALL.map(({ icon: Icon, title, desc }, i) => (
-              <div
+              <li
                 key={title}
-                className="glass lift reveal flex items-center gap-[0.9rem] rounded-lg px-[1.2rem] py-[1.1rem]"
+                className="glass reveal flex items-center gap-[0.9rem] rounded-lg px-[1.2rem] py-[1.1rem]"
                 style={{ ["--d" as string]: `${(i % 3) * 0.07}s` }}
               >
                 <span className="glass-2 inline-flex size-10 shrink-0 items-center justify-center rounded-xl text-[var(--signal-2)]">
@@ -368,9 +345,9 @@ export function Landing() {
                   <div className="text-[0.95rem] font-semibold">{title}</div>
                   <div className="text-[0.82rem] text-ink-mute">{desc}</div>
                 </div>
-              </div>
+              </li>
             ))}
-          </div>
+          </ul>
         </section>
       </main>
     </>
