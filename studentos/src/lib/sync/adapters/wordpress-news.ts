@@ -33,7 +33,11 @@ async function fetchNews(params: WordPressNewsParams, ctx: FetchContext): Promis
   url.searchParams.set("_fields", "id,date_gmt,link,title,excerpt");
   if (params.categories?.length) url.searchParams.set("categories", params.categories.join(","));
 
-  const res = await fetch(url, { signal: ctx.signal, headers: { Accept: "application/json" } });
+  const res = await fetch(url, {
+    signal: ctx.signal,
+    redirect: "manual",
+    headers: { Accept: "application/json" },
+  });
   if (!res.ok) throw new Error(`WordPress REST API responded ${res.status}`);
   const posts = z.array(wpPost).parse(await res.json());
 

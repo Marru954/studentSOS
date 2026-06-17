@@ -7,6 +7,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { runSources } from "@/lib/sync/engine";
+import { validateSources } from "@/lib/sync/validateUrl";
 import { guardPost } from "@/lib/api/guard";
 
 const isoDate = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "data ISO YYYY-MM-DD richiesta");
@@ -44,6 +45,17 @@ export async function POST(request: Request) {
       { error: parsed.error.issues[0]?.message ?? "richiesta non valida" },
       { status: 400 },
     );
+  }
+
+  // SSRF guard: every source URL must hit an allowlisted university host whose
+  // resolved IP is public. A throw maps to a single generic 400 — we never echo
+  // which internal address was probed. (The easyacademy adapter can't be edited,
+  // so this upfront check is its sole SSRF defence; the editable adapters also
+  // pass redirect:"manual" so a 3xx can't bounce onto an internal host.)
+  try {
+    await validateSources(parsed.data.sources);
+  } catch {
+    return NextResponse.json({ error: "sorgente non consentita" }, { status: 400 });
   }
 
   const results = await runSources(parsed.data.sources, parsed.data.range);
