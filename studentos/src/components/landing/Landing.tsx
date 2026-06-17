@@ -20,6 +20,7 @@ import {
 import Link from "next/link";
 import { CountUp } from "@/components/primitives/CountUp";
 import { AteneoSearch } from "./AteneoSearch";
+import { HeroPreview } from "./HeroPreview";
 
 const STEPS = [
   {
@@ -197,6 +198,8 @@ export function Landing() {
               </Link>
             </p>
           </div>
+
+          <HeroPreview />
         </section>
 
         {/* ATENEI SUPPORTATI — il gancio: subito sotto l'hero */}

@@ -1,8 +1,17 @@
 # Stato attuale StudentOS
 
-Aggiornato: 2026-06-18 (landing UX blind-test fix)
+Aggiornato: 2026-06-18 (landing: mockup cruscotto nell'hero)
 
 ## Completati
+
+### Sessione 2026-06-18 — hero product shot (1 commit)
+✅ HeroPreview.tsx: mockup STATICO del cruscotto in una finta finestra browser
+   (pallini semaforo + URL studentos.app/cruscotto), sotto il CTA dell'hero.
+   Server component decorativo (aria-hidden), zero dati reali, zero immagini
+   esterne, solo classi/token del design system (glass, gradient-ring,
+   accent-top, grad-fill, chip, --signal-2). Replica NextExamHero (numerone "3
+   giorni") + Carriera/CFU + Oggi + Appelli in arrivo. Verificato dark+light+
+   mobile (impila), build/test(197)/tsc/lint verdi
 
 ### Sessione 2026-06-18 — landing UX (blind-test studente, 1 commit)
 ✅ CTA unificati: navbar "Inizia ora" → /onboarding (era /cruscotto); i due
