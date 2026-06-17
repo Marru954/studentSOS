@@ -7,6 +7,7 @@ import {
   GraduationCap,
   LayoutDashboard,
   LifeBuoy,
+  MessageCircle,
   NotebookPen,
   Sparkles,
   Star,
@@ -33,7 +34,7 @@ const STEPS = [
   {
     n: "03",
     title: "Tutto aggiornato",
-    text: "Media ponderata, CFU acquisiti, prossimi appelli e orario settimanale — pronti al volo, sul tuo dispositivo.",
+    text: "Media, CFU, prossimi appelli e orario della settimana. Già sul tuo dispositivo, senza copiare niente a mano.",
   },
 ];
 
@@ -58,35 +59,35 @@ const MILESTONES: {
   {
     icon: Sparkles,
     label: "Primo voto",
-    hint: "la media inizia a correre",
+    hint: "la media inizia a muoversi",
     grad: "linear-gradient(135deg, #6d6bff, #38bdf8)",
     glow: "rgba(109, 107, 255, 0.5)",
   },
   {
     icon: Trophy,
     label: "Primo 30",
-    hint: "il trofeo d'oro che brilla",
+    hint: "ci vuole un tentativo",
     grad: "linear-gradient(135deg, #f0a500, #ffd874)",
     glow: "rgba(240, 165, 0, 0.5)",
   },
   {
     icon: Star,
     label: "Prima lode",
-    hint: "la stella in più",
+    hint: "quando ci riesci",
     grad: "linear-gradient(135deg, #f97316, #fbbf24)",
     glow: "rgba(249, 115, 22, 0.5)",
   },
   {
     icon: Target,
     label: "Metà CFU",
-    hint: "sei a metà strada",
+    hint: "sei a buon punto",
     grad: "linear-gradient(135deg, #06b6d4, #22d3ee)",
     glow: "rgba(6, 182, 212, 0.5)",
   },
   {
     icon: GraduationCap,
     label: "Laurea",
-    hint: "il traguardo che conta",
+    hint: "quello che conta davvero",
     grad: "linear-gradient(135deg, #7c3aed, #a78bfa)",
     glow: "rgba(124, 58, 237, 0.5)",
   },
@@ -100,6 +101,7 @@ const ALL: { icon: LucideIcon; title: string; desc: string }[] = [
   { icon: NotebookPen, title: "Note", desc: "appunti per materia" },
   { icon: Timer, title: "Focus", desc: "Pomodoro per studiare meglio" },
   { icon: CalendarDays, title: "Orario", desc: "la settimana a colpo d'occhio" },
+  { icon: MessageCircle, title: "Assistente", desc: "chiedi, studia, capisci" },
 ];
 
 /** Fades an element up after `delay` ms — set before first paint (ref callback
@@ -167,8 +169,8 @@ export function Landing() {
             className="mx-auto mt-6 max-w-[40ch] text-ink-mute"
             style={{ fontSize: "clamp(1.05rem, 2.4vw, 1.35rem)" }}
           >
-            Esami, appelli, libretto e carriera in un unico posto.{" "}
-            <span className="text-ink">Calmo, immersivo, sempre con te.</span>
+            Esami, appelli, libretto e carriera in un posto solo.{" "}
+            <span className="text-ink">Sul tuo dispositivo, senza account.</span>
           </p>
           <div ref={fadeIn(2000)} className="mt-9 flex flex-col items-center gap-3">
             <Link href="/cruscotto" className="btn btn-primary px-7 py-3 text-base">
@@ -256,16 +258,14 @@ export function Landing() {
           </div>
         </section>
 
-        {/* RESTA IN PISTA — gamification teaser */}
+        {/* TRAGUARDI — gamification teaser */}
         <section className="wrap section">
-          <p className="reveal eyebrow text-center">Resta in pista</p>
           <h2 className="reveal display-md mx-auto mt-2.5 max-w-[20ch] text-center">
-            Ogni esame è un <span className="grad-text">trofeo</span> sbloccato.
+            I tuoi <span className="grad-text">traguardi</span>.
           </h2>
           <p className="reveal mx-auto mt-3 max-w-[46ch] text-center text-sm text-ink-mute">
-            Registra i tuoi voti: ogni esame diventa un trofeo e la media cresce
-            a ogni passo. Ecco i traguardi che ti aspettano — pronti a sbloccarsi
-            uno dopo l&apos;altro.
+            Tieni traccia degli esami e guarda la media salire. Ogni traguardo si
+            sblocca da solo.
           </p>
           <ul className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
             {MILESTONES.map(({ icon: Icon, label, hint, grad, glow }, i) => (
