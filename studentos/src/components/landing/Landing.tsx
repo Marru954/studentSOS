@@ -27,7 +27,7 @@ import { AteneoSearch } from "./AteneoSearch";
 import { AteneoStrip } from "./AteneoStrip";
 import { HeroPreview } from "./HeroPreview";
 import { LandingFaq } from "./LandingFaq";
-import { LIVE_COUNT } from "@/lib/liveAtenei";
+import type { AteneoListItem } from "@/lib/liveAtenei";
 
 const TRUST: { icon: LucideIcon; label: string }[] = [
   { icon: ShieldCheck, label: "Nessun account richiesto" },
@@ -54,8 +54,10 @@ const STEPS = [
   },
 ];
 
-const STATS: { value: number; suffix?: string; unit: string; desc: string }[] = [
-  { value: LIVE_COUNT, suffix: "", unit: "atenei in sync live", desc: "orario ed esami arrivano in automatico dal tuo ateneo, senza copiarli a mano" },
+const statsFor = (
+  liveCount: number,
+): { value: number; suffix?: string; unit: string; desc: string }[] => [
+  { value: liveCount, suffix: "", unit: "atenei in sync live", desc: "orario ed esami arrivano in automatico dal tuo ateneo, senza copiarli a mano" },
   { value: 100, suffix: "%", unit: "in locale", desc: "i tuoi dati restano sul dispositivo; l'accesso per ritrovarli altrove è opzionale" },
   { value: 1, suffix: " file", unit: "e il libretto è dentro", desc: "carichi il PDF dal portale e i voti sono già lì, senza digitare nulla" },
 ];
@@ -161,7 +163,9 @@ const fadeIn =
 
 /** Public landing — no login required. The global AppNav sits above it as the
  *  top bar; "Inizia ora" drops the visitor into the Panoramica. */
-export function Landing() {
+export function Landing({ atenei }: { atenei: AteneoListItem[] }) {
+  const liveNames = atenei.filter((a) => a.live).map((a) => a.name);
+  const STATS = statsFor(liveNames.length);
   return (
     <>
       <main id="contenuto" className="relative z-[2] flex-1">
@@ -224,7 +228,7 @@ export function Landing() {
         </section>
 
         {/* STRISCIA ATENEI — social proof onesta coi nomi reali */}
-        <AteneoStrip />
+        <AteneoStrip names={liveNames} />
 
         {/* ATENEI SUPPORTATI — il gancio: subito sotto l'hero */}
         <section id="atenei" className="wrap section scroll-mt-24">
@@ -236,7 +240,7 @@ export function Landing() {
             Cerca il tuo: ti diciamo se orario ed esami arrivano in automatico
             (sync live) o se li inserisci a mano.
           </p>
-          <AteneoSearch />
+          <AteneoSearch atenei={atenei} />
         </section>
 
         {/* COME FUNZIONA */}

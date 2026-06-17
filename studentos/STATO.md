@@ -1,8 +1,23 @@
 # Stato attuale StudentOS
 
-Aggiornato: 2026-06-18 (landing 10/10: OG, atenei, SEO)
+Aggiornato: 2026-06-18 (perf landing: bundle più leggero)
 
 ## Completati
+
+### Sessione 2026-06-18 — audit performance landing (1 commit)
+✅ Finding A: la landing spediva l'intero catalogo atenei come JS client
+   (Landing "use client" → UNIVERSITY_PRESETS via AteneoSearch/AteneoStrip).
+   Fix: page.tsx (server) deriva ATENEI_LIST {name,live} e lo passa come prop;
+   AteneoSearch/AteneoStrip/Landing ora ricevono props, nessun import del grafo
+   preset nel client. Provato: marker grid_call/test_call/combo.php = 0 chunk
+   client (prima in un chunk da 379KB)
+✅ Finding B: AssistantBubble (globale, nascosto su /) importava staticamente
+   AssistantChat (react-markdown+remark-gfm) → nel bundle iniziale di ogni
+   pagina. Fix: next/dynamic ssr:false, chat caricata solo all'apertura.
+   Verificato: bubble apre e chat si carica on-demand su /design
+✅ Dimensioni SEO/a11y/best-practices già a posto (non toccate): lang=it,
+   meta/OG, sitemap/robots, label/aria, route / statica, 0 errori console
+   → build/test(197)/tsc/lint verdi, comportamento invariato
 
 ### Sessione 2026-06-18 — share card + social proof + SEO (1 commit)
 ✅ Share card Open Graph: src/app/opengraph-image.tsx (ImageResponse 1200x630,

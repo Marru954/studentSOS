@@ -1,11 +1,24 @@
 import { UNIVERSITY_PRESETS } from "@/lib/sync/universities";
 
-/** Nomi reali degli atenei con sync live (orari/esami in automatico), derivati
- *  dai preset — singola fonte di verità per la striscia di social proof onesta,
- *  il conteggio nella stat band e la meta description. Niente numeri inventati. */
-export const LIVE_ATENEI: string[] = UNIVERSITY_PRESETS.filter((p) => p.liveSources)
-  .map((p) => p.shortName ?? p.name)
-  .filter((n, i, a) => a.indexOf(n) === i)
+export type AteneoListItem = { name: string; live: boolean };
+
+/** Lista LEGGERA di tutti gli atenei ({name, live}), dedup + ordinata live-first
+ *  poi alfabetica. Derivata server-side dai preset e passata come prop alla
+ *  landing, così il grafo pesante di UNIVERSITY_PRESETS (codici + livePrograms)
+ *  NON entra nel bundle client. Unica fonte: i dati reali. */
+export const ATENEI_LIST: AteneoListItem[] = UNIVERSITY_PRESETS.map((p) => ({
+  name: p.shortName ?? p.name,
+  live: Boolean(p.liveSources),
+}))
+  .filter((a, i, arr) => arr.findIndex((b) => b.name === a.name) === i)
+  .sort((a, b) =>
+    a.live === b.live ? a.name.localeCompare(b.name, "it") : a.live ? -1 : 1,
+  );
+
+/** Solo i nomi degli atenei con sync live, ordine alfabetico — per la striscia
+ *  di social proof, il conteggio stat band e la meta description. */
+export const LIVE_ATENEI: string[] = ATENEI_LIST.filter((a) => a.live)
+  .map((a) => a.name)
   .sort((a, b) => a.localeCompare(b, "it"));
 
 export const LIVE_COUNT = LIVE_ATENEI.length;

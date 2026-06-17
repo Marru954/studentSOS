@@ -6,22 +6,8 @@
  *  automatico) o "manuale" (inseriti a mano). Se non c'è: lo consiglia. */
 import { Search } from "lucide-react";
 import { useMemo, useState } from "react";
-import { UNIVERSITY_PRESETS } from "@/lib/sync/universities";
 
 type Ateneo = { name: string; live: boolean };
-
-/** Atenei reali dai preset, ordinati: prima i sync live, poi alfabetico. */
-const ATENEI: Ateneo[] = UNIVERSITY_PRESETS.map((p) => ({
-  name: p.shortName ?? p.name,
-  live: Boolean(p.liveSources),
-}))
-  .filter((a, i, arr) => arr.findIndex((b) => b.name === a.name) === i)
-  .sort((a, b) =>
-    a.live === b.live ? a.name.localeCompare(b.name, "it") : a.live ? -1 : 1,
-  );
-
-const LIVE_COUNT = ATENEI.filter((a) => a.live).length;
-const MANUAL_COUNT = ATENEI.length - LIVE_COUNT;
 
 /** Minuscolo + senza accenti, per un confronto tollerante. */
 const norm = (s: string): string =>
@@ -30,13 +16,16 @@ const norm = (s: string): string =>
     .normalize("NFD")
     .replace(/[̀-ͯ]/g, "");
 
-export function AteneoSearch() {
+export function AteneoSearch({ atenei }: { atenei: Ateneo[] }) {
   const [query, setQuery] = useState("");
   const q = norm(query.trim());
 
+  const liveCount = useMemo(() => atenei.filter((a) => a.live).length, [atenei]);
+  const manualCount = atenei.length - liveCount;
+
   const results = useMemo(
-    () => (q === "" ? ATENEI : ATENEI.filter((a) => norm(a.name).includes(q))),
-    [q],
+    () => (q === "" ? atenei : atenei.filter((a) => norm(a.name).includes(q))),
+    [q, atenei],
   );
 
   return (
@@ -104,7 +93,7 @@ export function AteneoSearch() {
       )}
 
       <p className="mt-4 text-center text-xs text-ink-faint">
-        {LIVE_COUNT} atenei in sync live · {MANUAL_COUNT} in manuale
+        {liveCount} atenei in sync live · {manualCount} in manuale
       </p>
     </div>
   );

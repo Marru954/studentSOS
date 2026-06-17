@@ -6,10 +6,17 @@
  *  there). Keyboard: Enter/Space toggles, Esc closes and returns focus to the
  *  launcher; the panel is announced via role="dialog" + aria-label. */
 import { LifeBuoy, X } from "lucide-react";
+import dynamic from "next/dynamic";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { AssistantChat } from "@/components/assistente/AssistantChat";
 import { cn } from "@/lib/cn";
+
+/** Caricata on-demand (solo all'apertura del pannello): tiene react-markdown +
+ *  remark-gfm fuori dal bundle iniziale di ogni pagina, landing inclusa. */
+const AssistantChat = dynamic(
+  () => import("@/components/assistente/AssistantChat").then((m) => m.AssistantChat),
+  { ssr: false },
+);
 
 /** Routes where the bubble must NOT appear (public shell + the standalone page). */
 const HIDDEN_PREFIXES = ["/login", "/onboarding", "/auth", "/assistente"];
