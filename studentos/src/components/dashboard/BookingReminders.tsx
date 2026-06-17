@@ -69,14 +69,12 @@ export function BookingReminders({ className }: { className?: string }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [examCalls, now, visibleTick]);
 
-  // Effetto side: chiede il permesso una volta sola alla prima urgenza, oppure
-  // — se concesso — invia una notifica per ogni appello non ancora notificato.
+  // Effetto side: se il permesso è concesso, invia una notifica per ogni appello
+  // non ancora notificato. Il permesso NON si chiede qui: i browser ignorano
+  // `requestPermission()` senza un gesto utente, quindi lo chiediamo dal pulsante
+  // nel banner (vedi sotto). Senza permesso resta il banner in-app.
   useEffect(() => {
     if (closing.length === 0) return;
-    if (perm === "default") {
-      void requestNotifyPermission();
-      return;
-    }
     if (perm !== "granted") return;
     const seen = notifiedSet();
     let changed = false;
@@ -121,6 +119,15 @@ export function BookingReminders({ className }: { className?: string }) {
           </li>
         ))}
       </ul>
+      {perm === "default" && (
+        <button
+          type="button"
+          onClick={() => void requestNotifyPermission()}
+          className="btn-press mt-1 self-start rounded-md border border-warn/40 px-3 py-1 text-xs font-medium text-warn transition-colors hover:bg-warn/10"
+        >
+          Attiva le notifiche del browser
+        </button>
+      )}
     </div>
   );
 }

@@ -51,7 +51,32 @@ const YEARS = [1, 2, 3, 4, 5, 6];
 
 export function ImpostazioniView() {
   const router = useRouter();
-  const settings = useSettings();
+  // Field selectors (non whole-store): la pagina rilegge molti campi, ma così
+  // un set() che non tocca un campo letto qui non forza il re-render dei pannelli.
+  const hydrated = useSettings((s) => s.hydrated);
+  const presetId = useSettings((s) => s.presetId);
+  const programme = useSettings((s) => s.programme);
+  const yearOfStudy = useSettings((s) => s.yearOfStudy);
+  const degreePlan = useSettings((s) => s.degreePlan);
+  const pinnedCourses = useSettings((s) => s.pinnedCourses);
+  const density = useSettings((s) => s.density);
+  const weekStartsOn = useSettings((s) => s.weekStartsOn);
+  const examReminders = useSettings((s) => s.examReminders);
+  const reminderDaysBefore = useSettings((s) => s.reminderDaysBefore);
+  const update = useSettings((s) => s.update);
+  const settings = {
+    hydrated,
+    presetId,
+    programme,
+    yearOfStudy,
+    degreePlan,
+    pinnedCourses,
+    density,
+    weekStartsOn,
+    examReminders,
+    reminderDaysBefore,
+    update,
+  };
   const status = useAuth((s) => s.status);
   const email = useAuth((s) => s.email);
   const librettoCount = useLibretto((s) => s.items.length);
@@ -163,29 +188,8 @@ export function ImpostazioniView() {
                 className={inputClass}
               />
             </Field>
-
-            <Field label="Obiettivo media" htmlFor="imp-obiettivo">
-              <input
-                id="imp-obiettivo"
-                type="number"
-                min={18}
-                max={30}
-                step={0.5}
-                value={settings.degreePlan.targetAverage ?? ""}
-                placeholder="es. 28"
-                onChange={(e) => {
-                  const v = Number(e.target.value);
-                  void settings.update({
-                    degreePlan: {
-                      ...settings.degreePlan,
-                      targetAverage:
-                        e.target.value === "" || Number.isNaN(v) ? undefined : v,
-                    },
-                  });
-                }}
-                className={inputClass}
-              />
-            </Field>
+            {/* La media obiettivo vive nel pannello «Studio e obiettivi» (un solo
+                controllo per evitare due campi legati allo stesso valore). */}
           </div>
 
           {/* Per cambiare ateneo/corso riusiamo l'intera cascata di onboarding

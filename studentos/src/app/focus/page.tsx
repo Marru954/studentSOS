@@ -17,7 +17,9 @@ export default async function FocusPage({
       id="contenuto"
       className="mx-auto w-full max-w-6xl flex-1 px-4 py-8 sm:px-6"
     >
-      <FocusView initialCourse={initialCourse} />
+      {/* key sul parametro: una soft-nav verso /focus?course=… (mentre la pagina
+          è già montata) rimonta la vista, così il corso preselezionato cambia. */}
+      <FocusView key={initialCourse ?? ""} initialCourse={initialCourse} />
     </main>
   );
 }

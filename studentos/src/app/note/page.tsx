@@ -18,7 +18,9 @@ export default async function NotePage({
       id="contenuto"
       className="mx-auto w-full max-w-6xl flex-1 px-4 py-8 sm:px-6"
     >
-      <NotesView initialQuery={initialQuery} />
+      {/* key sul parametro: una soft-nav verso /note?course=… (mentre la pagina
+          è già montata) rimonta la vista, così la ricerca riparte dal nuovo corso. */}
+      <NotesView key={initialQuery ?? ""} initialQuery={initialQuery} />
     </main>
   );
 }

@@ -136,14 +136,28 @@ const fadeIn =
   (el: HTMLElement | null): void => {
     if (!el || typeof window === "undefined") return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    // Senza Web Animations API lasciamo l'elemento pienamente visibile: mai
+    // nascondere la CTA dietro un'animazione che potrebbe non partire.
+    if (typeof el.animate !== "function") return;
     el.style.opacity = "0";
-    el.animate(
-      [
-        { opacity: 0, transform: "translateY(10px)" },
-        { opacity: 1, transform: "none" },
-      ],
-      { duration: 700, delay, fill: "forwards", easing: "cubic-bezier(.22,1,.36,1)" },
-    );
+    try {
+      const anim = el.animate(
+        [
+          { opacity: 0, transform: "translateY(10px)" },
+          { opacity: 1, transform: "none" },
+        ],
+        { duration: 700, delay, fill: "forwards", easing: "cubic-bezier(.22,1,.36,1)" },
+      );
+      // Garantisce lo stato finale visibile anche se l'animazione viene annullata
+      // (fill:forwards non scrive lo stile inline; un cancel lascerebbe opacity:0).
+      const reveal = () => {
+        el.style.opacity = "1";
+      };
+      anim.addEventListener("finish", reveal);
+      anim.addEventListener("cancel", reveal);
+    } catch {
+      el.style.opacity = "1";
+    }
   };
 
 /** Public landing — no login required. The global AppNav sits above it as the

@@ -124,7 +124,10 @@ function AiAvatar() {
   );
 }
 
-export function AssistantChat() {
+/** The chat experience. `compact` tunes it for the floating bubble panel
+ *  (smaller title, single-column suggestions, no page padding); the default
+ *  is the full-height `/assistente` page. */
+export function AssistantChat({ compact = false }: { compact?: boolean } = {}) {
   const now = useNowMinute();
   const classEvents = useSynced((s) => s.classEvents);
   const examCalls = useSynced((s) => s.examCalls);
@@ -331,18 +334,37 @@ export function AssistantChat() {
   const empty = turns.length === 0 && !awaiting;
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col py-4 sm:py-6">
-      <header className="flex shrink-0 items-center justify-between gap-3 pb-3">
-        <h1 className="text-2xl font-semibold sm:text-3xl">Assistente</h1>
+    <div
+      className={cn(
+        "flex min-h-0 flex-1 flex-col",
+        compact ? "pt-2" : "py-4 sm:py-6",
+      )}
+    >
+      <header
+        className={cn(
+          "flex shrink-0 items-center justify-between gap-3 pb-3",
+          // lascia spazio al pulsante "Chiudi" della bubble (assoluto in alto a destra).
+          compact && "pr-10",
+        )}
+      >
+        <h1
+          className={cn(
+            "font-semibold",
+            compact ? "text-lg" : "text-2xl sm:text-3xl",
+          )}
+        >
+          Assistente
+        </h1>
         {turns.length > 0 && (
           <button
             type="button"
             onClick={newConversation}
             disabled={busy}
+            aria-label="Nuova conversazione"
             className="glass flex items-center gap-1.5 rounded-full border border-line px-3 py-1.5 text-xs font-medium text-ink-mute transition-colors hover:text-ink disabled:opacity-45"
           >
             <SquarePen aria-hidden="true" className="size-3.5" />
-            Nuova conversazione
+            <span className={cn(compact && "sr-only")}>Nuova conversazione</span>
           </button>
         )}
       </header>
@@ -350,7 +372,7 @@ export function AssistantChat() {
       <div
         ref={scrollRef}
         role="log"
-        aria-live="polite"
+        aria-live="off"
         aria-label="Conversazione con l'assistente"
         className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto px-0.5 py-2"
       >
@@ -365,7 +387,12 @@ export function AssistantChat() {
                 Conosco i tuoi esami, l&rsquo;orario, il libretto e le ore di studio.
               </p>
             </div>
-            <div className="grid w-full max-w-xl grid-cols-1 gap-2.5 sm:grid-cols-2">
+            <div
+              className={cn(
+                "grid w-full max-w-xl grid-cols-1 gap-2.5",
+                !compact && "sm:grid-cols-2",
+              )}
+            >
               {SUGGESTIONS.map((s) => (
                 <button
                   key={s.label}
@@ -465,6 +492,19 @@ export function AssistantChat() {
             )}
           </>
         )}
+      </div>
+
+      {/* Il log sopra è aria-live="off" così lo screen reader non rilegge ogni
+          token in streaming; qui annunciamo la risposta completa una volta sola
+          quando lo streaming termina (busy/awaiting tornano falsi). */}
+      <div aria-live="polite" aria-atomic="true" className="sr-only">
+        {!busy &&
+        !awaiting &&
+        turns.length > 0 &&
+        turns[turns.length - 1].role === "assistant" &&
+        !turns[turns.length - 1].error
+          ? turns[turns.length - 1].content
+          : ""}
       </div>
 
       <form
