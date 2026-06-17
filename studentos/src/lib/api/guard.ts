@@ -123,7 +123,13 @@ export function guardPost(
     return {
       response: new Response(
         JSON.stringify({ ok: false, error: "Origine non consentita." }),
-        { status: 403, headers: { "Content-Type": "application/json" } },
+        {
+          status: 403,
+          headers: {
+            "Content-Type": "application/json",
+            "X-Content-Type-Options": "nosniff",
+          },
+        },
       ),
       remaining: 0,
     };
@@ -148,6 +154,7 @@ export function guardPost(
           status: 429,
           headers: {
             "Content-Type": "application/json",
+            "X-Content-Type-Options": "nosniff",
             "Retry-After": String(retryAfter),
           },
         },

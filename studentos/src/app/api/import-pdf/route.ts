@@ -22,7 +22,11 @@ type Kind = "orario" | "esami";
 function jsonError(error: string, code: string, status: number): Response {
   return new Response(JSON.stringify({ ok: false, error, code }), {
     status,
-    headers: { "Content-Type": "application/json", "Cache-Control": "no-store" },
+    headers: {
+      "Content-Type": "application/json",
+      "Cache-Control": "no-store",
+      "X-Content-Type-Options": "nosniff",
+    },
   });
 }
 
@@ -163,6 +167,7 @@ export async function POST(req: Request): Promise<Response> {
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
     "Cache-Control": "no-store",
+    "X-Content-Type-Options": "nosniff",
   };
   // Solo per debug in sviluppo: non esporre lo stato del rate-limit in produzione.
   if (process.env.NODE_ENV !== "production") {

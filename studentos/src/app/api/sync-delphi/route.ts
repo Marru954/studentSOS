@@ -15,6 +15,8 @@ export const runtime = "nodejs";
 /** Never cache a credentialed scrape. */
 export const dynamic = "force-dynamic";
 
+const NOSNIFF = { "X-Content-Type-Options": "nosniff" } as const;
+
 const requestSchema = z.object({
   login: z.string().min(1).max(32),
   password: z.string().min(1).max(64),
@@ -33,7 +35,7 @@ export async function POST(request: Request) {
   } catch {
     return NextResponse.json(
       { ok: false, error: "Richiesta non valida." },
-      { status: 400 },
+      { status: 400, headers: NOSNIFF },
     );
   }
 
@@ -45,14 +47,14 @@ export async function POST(request: Request) {
     );
     return NextResponse.json(
       { ok: true, entries },
-      { headers: { "Cache-Control": "no-store" } },
+      { headers: { "Cache-Control": "no-store", ...NOSNIFF } },
     );
   } catch (error) {
     if (error instanceof DelphiError) {
       const status = error.code === "credentials" ? 401 : 502;
       return NextResponse.json(
         { ok: false, error: error.message, code: error.code },
-        { status, headers: { "Cache-Control": "no-store" } },
+        { status, headers: { "Cache-Control": "no-store", ...NOSNIFF } },
       );
     }
     const aborted = error instanceof Error && error.name === "TimeoutError";
@@ -63,7 +65,7 @@ export async function POST(request: Request) {
           ? "Delphi non ha risposto in tempo. Riprova."
           : "Errore durante la sincronizzazione.",
       },
-      { status: 504, headers: { "Cache-Control": "no-store" } },
+      { status: 504, headers: { "Cache-Control": "no-store", ...NOSNIFF } },
     );
   } finally {
     // belt-and-suspenders: drop references before the GC pass

@@ -10,6 +10,10 @@ import { runSources } from "@/lib/sync/engine";
 import { validateSources } from "@/lib/sync/validateUrl";
 import { guardPost } from "@/lib/api/guard";
 
+// Dipende da node:dns / node:net (validateSources): forziamo il runtime Node
+// così un'eventuale regressione a edge non rompe la SSRF guard.
+export const runtime = "nodejs";
+
 const isoDate = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "data ISO YYYY-MM-DD richiesta");
 
 const requestSchema = z.object({
@@ -28,6 +32,9 @@ const requestSchema = z.object({
     .max(12),
 });
 
+/** `nosniff` su ogni risposta API. */
+const SECURE_HEADERS = { "X-Content-Type-Options": "nosniff" } as const;
+
 export async function POST(request: Request) {
   const { response: blocked } = guardPost(request, "sync", {
     limit: 20,
@@ -39,14 +46,17 @@ export async function POST(request: Request) {
   try {
     body = await request.json();
   } catch {
-    return NextResponse.json({ error: "JSON non valido" }, { status: 400 });
+    return NextResponse.json(
+      { error: "JSON non valido" },
+      { status: 400, headers: SECURE_HEADERS },
+    );
   }
 
   const parsed = requestSchema.safeParse(body);
   if (!parsed.success) {
     return NextResponse.json(
       { error: parsed.error.issues[0]?.message ?? "richiesta non valida" },
-      { status: 400 },
+      { status: 400, headers: SECURE_HEADERS },
     );
   }
 
@@ -58,9 +68,15 @@ export async function POST(request: Request) {
   try {
     await validateSources(parsed.data.sources);
   } catch {
-    return NextResponse.json({ error: "sorgente non consentita" }, { status: 400 });
+    return NextResponse.json(
+      { error: "sorgente non consentita" },
+      { status: 400, headers: SECURE_HEADERS },
+    );
   }
 
   const results = await runSources(parsed.data.sources, parsed.data.range);
-  return NextResponse.json({ syncedAt: new Date().toISOString(), results });
+  return NextResponse.json(
+    { syncedAt: new Date().toISOString(), results },
+    { headers: SECURE_HEADERS },
+  );
 }

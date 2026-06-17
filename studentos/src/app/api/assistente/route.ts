@@ -66,7 +66,10 @@ function sanitizeContext(input: unknown): AssistantContext {
 function jsonError(message: string, status: number): Response {
   return new Response(JSON.stringify({ error: message }), {
     status,
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      "X-Content-Type-Options": "nosniff",
+    },
   });
 }
 
@@ -196,6 +199,7 @@ export async function POST(req: Request): Promise<Response> {
   const headers: Record<string, string> = {
     "Content-Type": "text/plain; charset=utf-8",
     "Cache-Control": "no-store",
+    "X-Content-Type-Options": "nosniff",
     "X-Accel-Buffering": "no",
   };
   // Solo per debug in sviluppo: non esporre lo stato del rate-limit in produzione.
