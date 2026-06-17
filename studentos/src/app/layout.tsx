@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Bricolage_Grotesque, Inter } from "next/font/google";
 import { AppFooter } from "@/components/AppFooter";
 import { AppNav } from "@/components/AppNav";
+import { AssistantBubble } from "@/components/assistente/AssistantBubble";
 import { DensityApplier } from "@/components/DensityApplier";
 import { OfflineBanner } from "@/components/OfflineBanner";
 import { FirstRunGate } from "@/components/onboarding/FirstRunGate";
@@ -76,6 +77,7 @@ export default function RootLayout({
           <FirstRunGate />
           <SearchPalette />
           <QuickAddFab />
+          <AssistantBubble />
         </StoreProvider>
         <ToastHost />
         <CelebrationHost />

@@ -3,10 +3,8 @@
 import {
   CalendarClock,
   CalendarDays,
-  CalendarRange,
   GraduationCap,
   LayoutDashboard,
-  MessageSquare,
   NotebookPen,
   Search,
   Settings,
@@ -25,16 +23,16 @@ import { useScrolled } from "@/lib/hooks/useScrolled";
 import { useSearchPalette } from "@/lib/state/searchPalette";
 import { useSynced } from "@/lib/state/synced";
 
+// Sei voci principali. Impostazioni vive nel cluster in alto a destra (icona
+// ingranaggio), l'Assistente è una bubble flottante: nessuno dei due è una voce
+// di barra. La landing (/) è pubblica, non una sezione dell'app.
 const LINKS = [
   { href: "/cruscotto", label: "Cruscotto", short: "Crusc.", icon: LayoutDashboard },
   { href: "/orario", label: "Orario", short: "Orario", icon: CalendarDays },
   { href: "/appelli", label: "Appelli", short: "Esami", icon: CalendarClock },
-  { href: "/calendario", label: "Calendario", short: "Cal.", icon: CalendarRange },
   { href: "/libretto", label: "Libretto", short: "Voti", icon: GraduationCap },
   { href: "/note", label: "Note", short: "Note", icon: NotebookPen },
   { href: "/focus", label: "Focus", short: "Focus", icon: Timer },
-  { href: "/assistente", label: "Assistente", short: "AI", icon: MessageSquare },
-  { href: "/impostazioni", label: "Impostazioni", short: "Impost.", icon: Settings },
 ];
 
 /** Floating top bar (sm+) plus a fixed bottom tab bar on mobile. The active page
@@ -108,6 +106,8 @@ export function AppNav() {
               : "glass shadow-soft",
           )}
         >
+          {/* Salvagente: cap segmentato all'estremità sinistra della barra. */}
+          <span className="buoy-cap ml-1" aria-hidden="true" />
           <Link
             href="/"
             className="mr-2 flex items-center pl-1 text-sm font-semibold text-ink transition-opacity hover:opacity-80"
@@ -161,7 +161,25 @@ export function AppNav() {
               <Search aria-hidden="true" className="size-4" />
             </button>
             <AccountButton />
+            <Link
+              href="/impostazioni"
+              aria-label="Impostazioni"
+              aria-current={
+                pathname.startsWith("/impostazioni") ? "page" : undefined
+              }
+              title="Impostazioni"
+              className={cn(
+                "flex size-8 shrink-0 items-center justify-center rounded-full transition-colors",
+                pathname.startsWith("/impostazioni")
+                  ? "bg-primary-gradient text-white shadow-accent"
+                  : "text-ink-mute hover:bg-night-700 hover:text-ink",
+              )}
+            >
+              <Settings aria-hidden="true" className="size-4" />
+            </Link>
             <ThemeToggle />
+            {/* Salvagente: cap segmentato all'estremità destra della barra. */}
+            <span className="buoy-cap" aria-hidden="true" />
           </div>
         </nav>
       </header>

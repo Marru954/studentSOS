@@ -673,6 +673,28 @@ html[data-density="compact"] { font-size: 93.75%; } /* 15px from a 16px base */
 .buoy-spin { animation: buoy-spin 28s linear infinite; transform-origin: center; }
 @keyframes buoy-spin { to { transform: rotate(360deg); } }
 
+/* life-buoy end-caps for the internal app nav: a segmented ring (the donut
+   motif) in signal tones — token-only, no per-component colour. The theme lives
+   only here, at the two extremities of the bar. Spin is neutralised by the
+   global prefers-reduced-motion reset. */
+.buoy-cap {
+  flex: none;
+  width: 1.1rem;
+  height: 1.1rem;
+  border-radius: 9999px;
+  background: conic-gradient(
+    from 45deg,
+    var(--signal) 0 25%,
+    var(--signal-3) 25% 50%,
+    var(--signal) 50% 75%,
+    var(--signal-3) 75% 100%
+  );
+  -webkit-mask: radial-gradient(circle, transparent 33%, #000 35%);
+          mask: radial-gradient(circle, transparent 33%, #000 35%);
+  opacity: 0.85;
+  animation: buoy-spin 36s linear infinite;
+}
+
 /* hero wordmark SOS→StudentOS reveal */
 .word { display: inline-flex; align-items: center; }
 .word .mid { display: inline-grid; grid-template-columns: 1fr; }
