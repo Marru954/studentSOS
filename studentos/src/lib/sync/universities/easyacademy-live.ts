@@ -30,6 +30,7 @@ import { uniss } from "./uniss";
 import { unipg } from "./unipg";
 import { unistrasi } from "./unistrasi";
 import { units } from "./units";
+import { unive } from "./unive";
 
 
 
@@ -59,4 +60,5 @@ export const easyAcademyLivePresets: UniversityPreset[] = [
   unige,
   uniupo,
   unistrasi,
+  unive,
 ];

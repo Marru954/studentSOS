@@ -55,9 +55,9 @@ const DOMAIN_TO_PRESET: Record<string, string> = {
   // Trento — live EasyAcademy preset (Informatica)
   "unitn.it": "unitn-informatica",
   "studenti.unitn.it": "unitn-informatica",
-  // Ca' Foscari Venezia
-  "unive.it": "unive-cafoscari",
-  "stud.unive.it": "unive-cafoscari",
+  // Ca' Foscari Venezia — live EasyAcademy preset (Informatica)
+  "unive.it": "unive-informatica",
+  "stud.unive.it": "unive-informatica",
   // Bocconi
   "unibocconi.it": "unibocconi",
   "studbocconi.it": "unibocconi",

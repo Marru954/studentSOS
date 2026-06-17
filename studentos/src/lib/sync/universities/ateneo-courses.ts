@@ -23,6 +23,7 @@ export const ATENEO_COURSES: Record<string, string[]> = {
   "unige-informatica": [],
   "uniupo-informatica": ["Disaster and Health Crisis Management", "Lettere - Alessandria"],
   "unistrasi-mediazione": [],
+  "unive-informatica": ["Ancient Civilizations for the Contemporary World", "Chimica Sostenibile", "Computer and Data Science", "Comunicare la Complessità", "Environmental Engineering for the Green Transition", "Filologia, Linguistica e Letteratura Italiana", "Ingegneria Fisica e Materiali", "Scienze Archivistiche e Biblioteconomiche", "Scienze Dell'antichità: Archeologia, Letterature e Storia", "Scienze Dell'antichità: Letterature, Storia e Archeologia", "Storia Dal Medioevo All'età Contemporanea", "Studi Storici: Età Medievale, Moderna, Contemporanea"],
 };
 
 /** The course list for a live ateneo with its verified live programme first

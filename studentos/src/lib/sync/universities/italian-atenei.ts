@@ -35,8 +35,9 @@ interface Ateneo {
 }
 
 // NB: many big atenei (Trieste, Perugia, Cagliari, Trento, Napoli Federico II,
-// Ferrara, Parma, Salerno, Sassari, Firenze, Genova, Piemonte Orientale, …) now
-// ship as fully-wired LIVE EasyAcademy presets — see easyacademy-live.ts. The
+// Ferrara, Parma, Salerno, Sassari, Firenze, Genova, Piemonte Orientale, Ca'
+// Foscari Venezia, …) now ship as fully-wired LIVE EasyAcademy presets — see
+// easyacademy-live.ts. The
 // list below is the manual fallback for atenei whose timetable system isn't yet
 // supported (Bologna in-house, PoliMi/PoliTo homegrown, Sapienza/Roma Tre GOMP,
 // Torino Cineca University Planner, Padova semester-keyed agendaweb, …); see
@@ -51,7 +52,6 @@ const ATENEI: Ateneo[] = [
   { id: "unipi", name: "Università di Pisa", shortName: "Università di Pisa", city: "Pisa" },
   { id: "unimi-statale", name: "Università degli Studi di Milano", shortName: "Statale di Milano", city: "Milano" },
   { id: "unito", name: "Università degli Studi di Torino", shortName: "Università di Torino", city: "Torino" },
-  { id: "unive-cafoscari", name: "Università Ca' Foscari Venezia", shortName: "Ca' Foscari", city: "Venezia", programmes: ["Economia", "Lingue", "Lettere e Filosofia", "Informatica", "Scienze Ambientali"] },
   { id: "unibocconi", name: "Università Commerciale Luigi Bocconi", shortName: "Bocconi", city: "Milano", programmes: ["Economia", "Management", "Finanza", "Scienze Politiche", "Data Science"] },
   { id: "unipv", name: "Università degli Studi di Pavia", shortName: "Università di Pavia", city: "Pavia" },
 ];
