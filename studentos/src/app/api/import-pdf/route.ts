@@ -86,6 +86,7 @@ export async function POST(req: Request): Promise<Response> {
     groqRes = await fetch(GROQ_URL, {
       method: "POST",
       redirect: "manual",
+      signal: AbortSignal.timeout(30_000),
       headers: {
         Authorization: `Bearer ${apiKey}`,
         "Content-Type": "application/json",

@@ -36,6 +36,17 @@ interface Bucket {
 }
 const buckets = new Map<string, Bucket>();
 
+/** Oltre questa soglia facciamo una passata di pulizia delle finestre scadute,
+ *  così la Map non cresce illimitata su un server di lunga durata (ogni IP unico
+ *  lasciava altrimenti un'entry permanente → leak di memoria). */
+const SWEEP_THRESHOLD = 5_000;
+
+function sweepExpired(now: number): void {
+  for (const [key, b] of buckets) {
+    if (now >= b.reset) buckets.delete(key);
+  }
+}
+
 /** Rate-limit fixed-window in-memory. Ritorna ok + secondi di attesa al
  *  superamento + richieste residue nella finestra corrente (per header di debug). */
 export function rateLimit(
@@ -45,6 +56,7 @@ export function rateLimit(
 ): { ok: boolean; retryAfter: number; remaining: number } {
   const b = buckets.get(key);
   if (!b || now >= b.reset) {
+    if (buckets.size >= SWEEP_THRESHOLD) sweepExpired(now);
     buckets.set(key, { count: 1, reset: now + opts.windowMs });
     return { ok: true, retryAfter: 0, remaining: Math.max(0, opts.limit - 1) };
   }

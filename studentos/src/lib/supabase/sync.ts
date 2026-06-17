@@ -73,10 +73,11 @@ function mirror(
     for (const it of state.items) next.set(it.id, JSON.stringify(it));
 
     for (const id of snapshot.keys()) {
-      if (!next.has(id)) void deleteItem(table, uid, id);
+      if (!next.has(id)) void deleteItem(table, uid, id).catch(() => {});
     }
     for (const it of state.items) {
-      if (snapshot.get(it.id) !== next.get(it.id)) void pushItem(table, uid, it);
+      if (snapshot.get(it.id) !== next.get(it.id))
+        void pushItem(table, uid, it).catch(() => {});
     }
     snapshot.clear();
     for (const [id, json] of next) snapshot.set(id, json);
@@ -160,7 +161,7 @@ export async function startCloudSync(
         programme: s.programme,
         yearOfStudy: s.yearOfStudy,
         degreePlan: s.degreePlan,
-      });
+      }).catch(() => {});
     }),
   );
 }

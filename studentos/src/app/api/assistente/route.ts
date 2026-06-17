@@ -10,6 +10,8 @@
 import {
   buildSystemPrompt,
   type AssistantContext,
+  type AssistantExam,
+  type AssistantLesson,
   type ChatMessage,
 } from "@/lib/assistente";
 import { guardPost } from "@/lib/api/guard";
@@ -19,6 +21,47 @@ const MODEL = process.env.GROQ_MODEL ?? "llama-3.3-70b-versatile";
 
 const MAX_MESSAGES = 20;
 const MAX_CONTENT = 4000;
+/** Bounds on the client-supplied context so a hostile (same-origin) caller can't
+ *  inflate the system prompt into a cost/abuse vector. */
+const MAX_EXAMS = 30;
+const MAX_LESSONS = 20;
+const MAX_FIELD = 120;
+
+const str = (v: unknown, max = MAX_FIELD): string =>
+  typeof v === "string" ? v.slice(0, max) : "";
+const optStr = (v: unknown): string | undefined => {
+  const s = str(v);
+  return s || undefined;
+};
+const num = (v: unknown): number | undefined =>
+  typeof v === "number" && Number.isFinite(v) ? v : undefined;
+
+/** Coerce + clamp the untrusted context into the shape buildSystemPrompt expects. */
+function sanitizeContext(input: unknown): AssistantContext {
+  const c = (input && typeof input === "object" ? input : {}) as Record<string, unknown>;
+  const exams: AssistantExam[] = Array.isArray(c.upcomingExams)
+    ? c.upcomingExams.slice(0, MAX_EXAMS).map((e) => {
+        const o = (e && typeof e === "object" ? e : {}) as Record<string, unknown>;
+        return { courseName: str(o.courseName), date: str(o.date), time: optStr(o.time) };
+      })
+    : [];
+  const lessons: AssistantLesson[] = Array.isArray(c.todayLessons)
+    ? c.todayLessons.slice(0, MAX_LESSONS).map((l) => {
+        const o = (l && typeof l === "object" ? l : {}) as Record<string, unknown>;
+        return { courseName: str(o.courseName), time: str(o.time), room: optStr(o.room) };
+      })
+    : [];
+  return {
+    ateneo: optStr(c.ateneo),
+    programme: optStr(c.programme),
+    year: num(c.year),
+    upcomingExams: exams,
+    todayLessons: lessons,
+    average: num(c.average),
+    earnedCfu: num(c.earnedCfu) ?? 0,
+    focusMinutesThisWeek: num(c.focusMinutesThisWeek) ?? 0,
+  };
+}
 
 function jsonError(message: string, status: number): Response {
   return new Response(JSON.stringify({ error: message }), {
@@ -70,18 +113,14 @@ export async function POST(req: Request): Promise<Response> {
   if (messages.length === 0) {
     return jsonError("Nessun messaggio da inviare.", 400);
   }
-  const context = ((body as { context?: AssistantContext })?.context ?? {
-    upcomingExams: [],
-    todayLessons: [],
-    earnedCfu: 0,
-    focusMinutesThisWeek: 0,
-  }) as AssistantContext;
+  const context = sanitizeContext((body as { context?: unknown })?.context);
 
   let groqRes: Response;
   try {
     groqRes = await fetch(GROQ_URL, {
       method: "POST",
       redirect: "manual",
+      signal: AbortSignal.timeout(30_000),
       headers: {
         Authorization: `Bearer ${apiKey}`,
         "Content-Type": "application/json",
