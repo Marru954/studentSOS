@@ -156,50 +156,70 @@ function NoExamHero({ className }: { className?: string }) {
 }
 
 export function Dashboard() {
-  const synced = useSynced();
-  const settings = useSettings();
-  const libretto = useLibretto();
-  const trophies = useTrophies();
+  // Field selectors — non l'intero store — così il Cruscotto si ri-renderizza
+  // solo quando cambia un campo che mostra davvero, non a ogni mutazione non
+  // correlata (un toggle settings, una nota, ecc.).
+  const syncedHydrated = useSynced((s) => s.hydrated);
+  const classEvents = useSynced((s) => s.classEvents);
+  const examCalls = useSynced((s) => s.examCalls);
+  const syncing = useSynced((s) => s.syncing);
+  const lastSyncError = useSynced((s) => s.lastSyncError);
+  const syncMeta = useSynced((s) => s.syncMeta);
+  const notices = useSynced((s) => s.notices);
+  const dismissNotices = useSynced((s) => s.dismissNotices);
+
+  const settingsHydrated = useSettings((s) => s.hydrated);
+  const pinnedCourses = useSettings((s) => s.pinnedCourses);
+  const examReminders = useSettings((s) => s.examReminders);
+  const degreePlan = useSettings((s) => s.degreePlan);
+  const enabledSources = useSettings((s) => s.enabledSources);
+
+  const librettoHydrated = useLibretto((s) => s.hydrated);
+  const librettoItems = useLibretto((s) => s.items);
+
+  const trophyStatuses = useTrophies((s) => s.statuses);
+  const trophyLedger = useTrophies((s) => s.ledger);
+
   const now = useNowMinute();
   const router = useRouter();
 
   // Most recently earned trophy, for the one-line nod inside the Carriera card.
   const lastTrophy = useMemo(() => {
-    const earned = trophies.statuses.filter(
-      (s) => s.unlocked && trophies.ledger[s.id],
+    const earned = trophyStatuses.filter(
+      (s) => s.unlocked && trophyLedger[s.id],
     );
     if (earned.length === 0) return undefined;
     const latest = earned.reduce((a, b) =>
-      trophies.ledger[a.id].firstUnlockedAt >= trophies.ledger[b.id].firstUnlockedAt
+      trophyLedger[a.id].firstUnlockedAt >= trophyLedger[b.id].firstUnlockedAt
         ? a
         : b,
     );
     const def = getTrophy(latest.id);
     return def ? { title: def.title } : undefined;
-  }, [trophies.statuses, trophies.ledger]);
+  }, [trophyStatuses, trophyLedger]);
 
   const ready =
-    now !== null && synced.hydrated && settings.hydrated && libretto.hydrated;
+    now !== null && syncedHydrated && settingsHydrated && librettoHydrated;
 
   // the merged all-years feed narrows to the pinned courses when set
   const todayEvents = useMemo(() => {
     if (!ready) return [];
     const today = localToday(now);
-    const pinned = settings.pinnedCourses;
-    return synced.classEvents
+    const pinned = pinnedCourses;
+    return classEvents
       .filter((e) => localDayOf(e.start) === today)
       .filter((e) => pinned.length === 0 || pinned.includes(e.courseName));
-  }, [ready, synced.classEvents, settings.pinnedCourses, now]);
+  }, [ready, classEvents, pinnedCourses, now]);
 
   // the student's own exams: the merged feed narrowed to the pinned courses
   // ("I miei esami"), so the hero + timeline match /appelli and /calendario.
   const myExamCalls = useMemo(() => {
     if (!ready) return [];
-    const pinned = settings.pinnedCourses;
-    return synced.examCalls.filter(
+    const pinned = pinnedCourses;
+    return examCalls.filter(
       (e) => pinned.length === 0 || pinned.includes(e.courseName),
     );
-  }, [ready, synced.examCalls, settings.pinnedCourses]);
+  }, [ready, examCalls, pinnedCourses]);
 
   // exams within the next 7 days, for the hero sub-stat
   const examsThisWeek = useMemo(() => {
@@ -249,10 +269,10 @@ export function Dashboard() {
             Configura
           </Button>
           <SyncStatus
-            syncing={synced.syncing}
-            lastSyncError={synced.lastSyncError}
-            syncMeta={synced.syncMeta}
-            canSync={ready && settings.enabledSources().length > 0}
+            syncing={syncing}
+            lastSyncError={lastSyncError}
+            syncMeta={syncMeta}
+            canSync={ready && enabledSources().length > 0}
             onSync={() => void useSynced.getState().sync()}
           />
         </div>
@@ -274,7 +294,7 @@ export function Dashboard() {
         <div className="stagger-children grid grid-cols-1 gap-4 lg:grid-cols-6">
           {/* Banner a tutta larghezza (condizionali) + scorciatoie. Il promemoria
               appelli rispetta l'interruttore «Notifiche» nelle impostazioni. */}
-          {(settings.examReminders ?? true) && (
+          {(examReminders ?? true) && (
             <BookingReminders className="lg:col-span-6" />
           )}
           <QuickActions className="lg:col-span-6" />
@@ -296,10 +316,10 @@ export function Dashboard() {
               stima laurea, simulatore) vivono SOLO nel Libretto; qui una riga
               che ci linka, così il Cruscotto resta glanceable e non duplica. */}
           <div className="flex flex-col justify-between gap-4 lg:col-span-2">
-            <CareerStrip entries={libretto.items} lastTrophy={lastTrophy} />
+            <CareerStrip entries={librettoItems} lastTrophy={lastTrophy} />
             <CfuMini
-              entries={libretto.items}
-              totalCfu={settings.degreePlan.totalCfu}
+              entries={librettoItems}
+              totalCfu={degreePlan.totalCfu}
             />
           </div>
 
@@ -311,10 +331,10 @@ export function Dashboard() {
             className="panel-hero accent-top lg:col-span-3"
           />
 
-          {synced.notices.length > 0 && (
+          {notices.length > 0 && (
             <ChangeNotices
-              notices={synced.notices}
-              onDismiss={(ids) => void synced.dismissNotices(ids)}
+              notices={notices}
+              onDismiss={(ids) => void dismissNotices(ids)}
               className="lg:col-span-6"
             />
           )}

@@ -104,50 +104,71 @@ const statCardStyle = {
 } as const;
 
 export function LibrettoView() {
-  const libretto = useLibretto();
-  const settings = useSettings();
-  const trophies = useTrophies();
+  // Field selectors — non l'intero store — così il Libretto si ri-renderizza
+  // solo quando cambia un campo che mostra davvero, non a ogni mutazione non
+  // correlata (es. una sincronizzazione dei dati pubblici, una nota).
+  const librettoItems = useLibretto((s) => s.items);
+  const librettoHydrated = useLibretto((s) => s.hydrated);
+  const upsertEntry = useLibretto((s) => s.upsert);
+  const removeEntryFn = useLibretto((s) => s.remove);
+  const clearLibretto = useLibretto((s) => s.clear);
+
+  const settingsHydrated = useSettings((s) => s.hydrated);
+  const degreePlan = useSettings((s) => s.degreePlan);
+  const updateSettings = useSettings((s) => s.update);
+
+  const trophyStatuses = useTrophies((s) => s.statuses);
+  const trophyLedger = useTrophies((s) => s.ledger);
+  const trophiesHydrated = useTrophies((s) => s.hydrated);
+
   const now = useNowMinute();
   const [editingId, setEditingId] = useState<string | null>(null);
   const [yearFilter, setYearFilter] = useState<string>("all");
   const [tab, setTab] = useState<"trofei" | "analisi">("trofei");
-  const [view, setView] = useState<LibView>("esami");
+  // Deep-link: /libretto#trofei lands on the vetrina (the cruscotto "Ultimo
+  // traguardo" links here). Read in the initializer, not an effect — the tabs
+  // render only after `ready`, so the SSR "esami" default never hydration-clashes.
+  const [view, setView] = useState<LibView>(() =>
+    typeof window !== "undefined" && window.location.hash === "#trofei"
+      ? "trofei"
+      : "esami",
+  );
 
-  const ready = libretto.hydrated && settings.hydrated;
+  const ready = librettoHydrated && settingsHydrated;
 
   const trophyView = useMemo(
-    () => buildTrophyView(trophies.statuses, trophies.ledger, libretto.items),
-    [trophies.statuses, trophies.ledger, libretto.items],
+    () => buildTrophyView(trophyStatuses, trophyLedger, librettoItems),
+    [trophyStatuses, trophyLedger, librettoItems],
   );
   const editing = editingId
-    ? libretto.items.find((e) => e.id === editingId)
+    ? librettoItems.find((e) => e.id === editingId)
     : undefined;
 
   const years = useMemo(() => {
     const set = new Set<string>();
-    for (const e of libretto.items) if (e.academicYear) set.add(e.academicYear);
+    for (const e of librettoItems) if (e.academicYear) set.add(e.academicYear);
     return [...set].sort((a, b) => b.localeCompare(a));
-  }, [libretto.items]);
+  }, [librettoItems]);
 
-  const hasUndated = libretto.items.some((e) => !e.academicYear);
+  const hasUndated = librettoItems.some((e) => !e.academicYear);
 
-  const totalCfu = settings.degreePlan.totalCfu;
-  const average = weightedAverage(libretto.items);
+  const totalCfu = degreePlan.totalCfu;
+  const average = weightedAverage(librettoItems);
   const base = average === undefined ? 0 : graduationBase(average);
-  const acquired = earnedCfu(libretto.items);
-  const verbalised = libretto.items.length;
+  const acquired = earnedCfu(librettoItems);
+  const verbalised = librettoItems.length;
   const isEmpty = verbalised === 0;
 
   const visible = useMemo(() => {
-    if (yearFilter === "all") return libretto.items;
+    if (yearFilter === "all") return librettoItems;
     if (yearFilter === "none")
-      return libretto.items.filter((e) => !e.academicYear);
-    return libretto.items.filter((e) => e.academicYear === yearFilter);
-  }, [libretto.items, yearFilter]);
+      return librettoItems.filter((e) => !e.academicYear);
+    return librettoItems.filter((e) => e.academicYear === yearFilter);
+  }, [librettoItems, yearFilter]);
 
   const removeEntry = (id: string) => {
     if (editingId === id) setEditingId(null);
-    void libretto.remove(id);
+    void removeEntryFn(id);
   };
 
   const statCards = (
@@ -193,7 +214,7 @@ export function LibrettoView() {
       key={editingId ?? "new"}
       initial={editing}
       onSave={(entry) => {
-        void libretto.upsert(entry);
+        void upsertEntry(entry);
         setEditingId(null);
       }}
       onCancel={editing ? () => setEditingId(null) : undefined}
@@ -207,7 +228,7 @@ export function LibrettoView() {
       icon={<GraduationCap />}
       flush
       actions={
-        libretto.items.length > 0 ? (
+        librettoItems.length > 0 ? (
           <div className="no-print flex flex-wrap items-center gap-2">
             <Button size="sm" onClick={() => window.print()}>
               <Printer aria-hidden="true" className="size-3.5" />
@@ -238,7 +259,7 @@ export function LibrettoView() {
               armedLabel="Cancella tutto?"
               onConfirm={() => {
                 setEditingId(null);
-                void libretto.clear();
+                void clearLibretto();
               }}
             >
               Svuota libretto
@@ -286,7 +307,7 @@ export function LibrettoView() {
           <ImportExams />
         </div>
       </div>
-      {libretto.items.length === 0 ? (
+      {librettoItems.length === 0 ? (
         <p className="p-4 text-sm text-ink-mute">
           Nessun esame registrato. Aggiungi il primo dal modulo qui sopra o
           importa un CSV.
@@ -320,7 +341,7 @@ export function LibrettoView() {
 
   const vetrinaPanel = (
     <Panel title="Trofei" icon={<Trophy />} flush>
-      {trophies.hydrated ? (
+      {trophiesHydrated ? (
         <div className="p-3 lg:max-h-[68vh] lg:overflow-y-auto">
           <TrophyShowcase view={trophyView} />
         </div>
@@ -350,18 +371,18 @@ export function LibrettoView() {
   const analysisPanels = (
     <>
       <MediaPanel
-        entries={libretto.items}
-        targetAverage={settings.degreePlan.targetAverage}
+        entries={librettoItems}
+        targetAverage={degreePlan.targetAverage}
         className="no-print"
       />
-      <CfuPanel entries={libretto.items} totalCfu={totalCfu} className="no-print" />
+      <CfuPanel entries={librettoItems} totalCfu={totalCfu} className="no-print" />
       <GoalPanel
-        entries={libretto.items}
+        entries={librettoItems}
         totalCfu={totalCfu}
-        targetAverage={settings.degreePlan.targetAverage}
+        targetAverage={degreePlan.targetAverage}
         onPlanChange={(patch) =>
-          void settings.update({
-            degreePlan: { ...settings.degreePlan, ...patch },
+          void updateSettings({
+            degreePlan: { ...degreePlan, ...patch },
           })
         }
         className="no-print"
