@@ -19,19 +19,23 @@ export function CelebrationHost() {
   const showToast = useToast((s) => s.show);
   const reduced = usePrefersReducedMotion();
 
-  // Threshold → delegate to the existing toast host, then advance.
+  // Threshold → delegate to the existing toast host, then advance. shift is
+  // key-bound so a late timer never advances past the wrong item.
   useEffect(() => {
     if (!item || item.kind !== "toast") return;
+    const { key } = item;
     showToast(`Traguardo raggiunto: ${item.title}`, "ok");
-    const t = setTimeout(shift, TOAST_MS);
+    const t = setTimeout(() => shift(key), TOAST_MS);
     return () => clearTimeout(t);
   }, [item, showToast, shift]);
 
   // Scenic → auto-dismiss after a beat (shorter under reduced motion). A manual
-  // close advances the queue too, which clears this timer via the cleanup.
+  // close advances the queue too; the key guard makes a late auto-dismiss a
+  // no-op, so it can't swallow a toast queued behind this scenic.
   useEffect(() => {
     if (!item || item.kind !== "scenic") return;
-    const t = setTimeout(shift, reduced ? SCENIC_MS_REDUCED : SCENIC_MS);
+    const { key } = item;
+    const t = setTimeout(() => shift(key), reduced ? SCENIC_MS_REDUCED : SCENIC_MS);
     return () => clearTimeout(t);
   }, [item, reduced, shift]);
 
@@ -42,7 +46,7 @@ export function CelebrationHost() {
       title={item.title}
       condition={item.condition}
       reducedMotion={reduced}
-      onClose={shift}
+      onClose={() => shift(item.key)}
     />
   );
 }

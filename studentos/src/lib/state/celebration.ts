@@ -18,7 +18,10 @@ interface CelebrationStore {
   queue: CelebrationItem[];
   nextKey: number;
   enqueue(items: Omit<CelebrationItem, "key">[]): void;
-  shift(): void;
+  /** Advance past the item with this key. Key-guarded so a stale/duplicate
+   *  advance (e.g. a scenic's auto-dismiss timer firing after a manual close)
+   *  can't drop the NEXT item — that race used to swallow a co-occurring toast. */
+  shift(key: number): void;
 }
 
 export const useCelebration = create<CelebrationStore>()((set, get) => ({
@@ -32,7 +35,10 @@ export const useCelebration = create<CelebrationStore>()((set, get) => ({
     set({ queue: [...get().queue, ...added], nextKey: key });
   },
 
-  shift() {
-    set({ queue: get().queue.slice(1) });
+  shift(key) {
+    const q = get().queue;
+    // Only advance if the head is still the item the caller meant to dismiss.
+    if (q[0]?.key !== key) return;
+    set({ queue: q.slice(1) });
   },
 }));
