@@ -81,4 +81,30 @@ Tests use `node:test` + `tsx` + `fake-indexeddb` (no Jest/Vitest). There is **no
 
 **Libretto "synced from ateneo" import** (`src/lib/sync/delphi/*`, `src/app/api/sync-delphi/route.ts`, `src/components/libretto/{ImportDelphiPdf,DelphiConnect}.tsx`). The **live** path is the client-side **Delphi PDF import** (pdfjs in the browser, zero upload — see `domain/delphiPdf.ts`). An optional server-side **credential scrape** also exists: `POST /api/sync-delphi` logs into delphi.uniroma2.it server-side and returns parsed `LibrettoEntry[]` (credentials used once as local consts, then dropped — never logged/stored/cached). Synced rows are tagged `source: "delphi"` (the "synced from ateneo" bucket) vs `"manual"`; `replaceDelphiLibretto` swaps only the synced bucket atomically, leaving manual entries untouched. The `DelphiConnect` credential UI is intentionally disabled ("prossimamente"). **The old SAML/SSO + Esse3 career-sync subsystem was removed** (Fase 1 of the security audit): `src/lib/saml/`, `src/app/api/saml/*`, `esse3/client.ts`, `state/delphi.ts` are gone, and `@node-saml/node-saml` is out of `package.json`. `esse3/parse.ts` survives only as an orphan pure+tested parser (kept green; not wired to anything).
 
+**Nav (6 voci):** Cruscotto · Orario · Appelli · Libretto · Note · Focus, with **Impostazioni** as a gear icon in the right cluster and **Assistente** as a floating bubble (`AssistantBubble` wrapping a compact `AssistantChat`); Calendario is NOT in the bar. Libretto trophies UI: `CareerStrip` / `TrophyGrid` (two-step delete: arm 4s, Esc disarms) / `TrophyShowcase`, deep-link `/libretto#trofei`.
+
+**API routes:** `POST /api/sync`, `POST /api/sync-delphi`, `GET /api/health`; route handlers use a structured logger.
+
 **Routes:** `/` (public **landing** page — hero with the animated `S→tudent🛟S` wordmark, feature cards, "Come funziona", stats, footer; no login), `/cruscotto` (the predictive bento **dashboard** — instruments media/CFU/projection read the libretto store reactively, live), `/orario` (CSS-Grid week view, with year + per-course filters), `/appelli` (month calendar + exam cards, with year + per-course filters), `/libretto` (manual entry + CSV import + Delphi PDF import + career instruments + "Obiettivo laurea" goal card), `/note` (Markdown+KaTeX+code editor with full-text search), `/focus` (pomodoro + kanban), `/design` (component gallery), `/login` + `/auth/callback` + `/auth/reset` (optional email+password sign-in, with sign-up confirm and password recovery), `/onboarding` (the mandatory ateneo/corso/anno setup — `FirstRunGate` redirects any unconfigured signed-in user here). `/orario` and `/appelli` share the same filter primitives — `<YearFilter>` (`components/YearFilter.tsx`, chips Tutti/1°/2°/3°, default "Tutti") + `<CoursePicker>` (`components/timetable/CoursePicker.tsx`) over `domain/sources.ts`'s `matchesYear`/`yearOfSource`, which read the `…-anno-N` suffix of each event's `sourceId` (the namespacing `degreeSources` emits). `template.tsx` wraps every page for the per-navigation entrance animation; the `Wordmark` (lucide `LifeBuoy` as the "O") is the brand mark in navbar + footer.
+
+## Team Agenti
+
+Per qualsiasi task, parti da @dispatch se non sai da dove iniziare.
+Altrimenti usa direttamente l'agente giusto:
+
+| Task | Agente |
+|---|---|
+| Feature nuova o decisione architetturale | @planner |
+| UI, componenti, Tailwind, /orario, /appelli | @frontend |
+| Sync, EasyAcademy, preset atenei, banner | @sync-engineer |
+| Test mancanti, test rotti, coverage | @test-writer |
+| SSRF, rate limit, auth, Supabase, sicurezza | @security-reviewer |
+| Task ambiguo o che tocca più aree | @dispatch prima |
+
+Regola: per ogni feature nuova, @planner produce sempre una spec
+prima che qualsiasi altro agente inizi a scrivere codice.
+
+Come usarli:
+"Usa il subagente @dispatch: [descrivi il task in una riga]"
+"Usa il subagente @planner per analizzare [feature] e scrivere una spec"
+"Usa il subagente @frontend per implementare [componente]"
