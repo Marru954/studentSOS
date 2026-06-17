@@ -17,6 +17,10 @@ export function RevealManager() {
 
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    // No IntersectionObserver → never arm `.anim-ready`, or content would hide
+    // with nothing left to reveal it. Leave the SSR markup fully visible.
+    if (typeof IntersectionObserver !== "function") return;
+
     document.documentElement.classList.add("anim-ready");
 
     const io = new IntersectionObserver(
@@ -43,7 +47,21 @@ export function RevealManager() {
     const mo = new MutationObserver(observeAll);
     mo.observe(document.body, { childList: true, subtree: true });
 
+    // Failsafe: if the observer never fires (fast scroll past, throttled
+    // callback, observe() race), nothing should stay invisible. After a short
+    // grace period reveal anything already within/above the viewport; genuinely
+    // below-fold nodes keep their scroll-in animation.
+    const failsafe = window.setTimeout(() => {
+      for (const el of document.querySelectorAll<HTMLElement>(".reveal:not(.in)")) {
+        if (el.getBoundingClientRect().top < window.innerHeight) {
+          el.classList.add("in");
+          io.unobserve(el);
+        }
+      }
+    }, 800);
+
     return () => {
+      window.clearTimeout(failsafe);
       io.disconnect();
       mo.disconnect();
     };

@@ -4,6 +4,7 @@ import {
   ArrowRight,
   CalendarClock,
   CalendarDays,
+  Check,
   GraduationCap,
   LayoutDashboard,
   LifeBuoy,
@@ -44,17 +45,19 @@ const STATS: { value: number; suffix?: string; unit: string; desc: string }[] = 
   { value: 5, suffix: " min", unit: "setup", desc: "per essere operativo dal primo avvio" },
 ];
 
-/** Traguardi ancora da sbloccare: la sezione è una PROMESSA, non uno stato
- *  pieno finto — niente voti di qualcun altro. Ogni slot è un trofeo acceso e
- *  invitante (icona colorata che brilla), ma marcato "Da sbloccare": mostra il
- *  valore futuro, qualcosa che vuoi raggiungere, non qualcosa che possiedi già.
- *  `grad`/`glow` sono accenti di contenuto per-trofeo, brand-coherent. */
+/** Teaser gamification con stato MOCK statico (solo landing — non legge lo store
+ *  né la logica reale dei trofei): i primi quattro traguardi appaiono già
+ *  sbloccati con icona colorata che brilla, così la sezione comunica progresso e
+ *  slancio invece di cinque caselle grigie "non hai fatto niente". Solo la Laurea
+ *  resta bloccata (icona spenta), per creare tensione narrativa verso il
+ *  traguardo finale. `grad`/`glow` sono accenti per-trofeo, brand-coherent. */
 const MILESTONES: {
   icon: LucideIcon;
   label: string;
   hint: string;
   grad: string;
   glow: string;
+  unlocked: boolean;
 }[] = [
   {
     icon: Sparkles,
@@ -62,6 +65,7 @@ const MILESTONES: {
     hint: "la media inizia a muoversi",
     grad: "linear-gradient(135deg, #6d6bff, #38bdf8)",
     glow: "rgba(109, 107, 255, 0.5)",
+    unlocked: true,
   },
   {
     icon: Trophy,
@@ -69,6 +73,7 @@ const MILESTONES: {
     hint: "ci vuole un tentativo",
     grad: "linear-gradient(135deg, #f0a500, #ffd874)",
     glow: "rgba(240, 165, 0, 0.5)",
+    unlocked: true,
   },
   {
     icon: Star,
@@ -76,6 +81,7 @@ const MILESTONES: {
     hint: "quando ci riesci",
     grad: "linear-gradient(135deg, #f97316, #fbbf24)",
     glow: "rgba(249, 115, 22, 0.5)",
+    unlocked: true,
   },
   {
     icon: Target,
@@ -83,13 +89,15 @@ const MILESTONES: {
     hint: "sei a buon punto",
     grad: "linear-gradient(135deg, #06b6d4, #22d3ee)",
     glow: "rgba(6, 182, 212, 0.5)",
+    unlocked: true,
   },
   {
     icon: GraduationCap,
     label: "Laurea",
-    hint: "quello che conta davvero",
+    hint: "il traguardo che conta",
     grad: "linear-gradient(135deg, #7c3aed, #a78bfa)",
     glow: "rgba(124, 58, 237, 0.5)",
+    unlocked: false,
   },
 ];
 
@@ -144,12 +152,6 @@ export function Landing() {
       <main id="contenuto" className="relative z-[2] flex-1">
         {/* HERO */}
         <section className="wrap relative overflow-hidden py-10 text-center sm:py-12">
-          <div className="reveal in mb-6 inline-flex">
-            <span className="chip chip-signal">
-              <LifeBuoy className="size-[0.85rem]" aria-hidden="true" />
-              Il tuo sistema operativo universitario
-            </span>
-          </div>
           <h1
             aria-label="StudentOS"
             className="mx-auto font-bold tracking-[-0.04em] text-ink"
@@ -166,14 +168,22 @@ export function Landing() {
           </h1>
           <p
             ref={fadeIn(1500)}
-            className="mx-auto mt-6 max-w-[40ch] text-ink-mute"
-            style={{ fontSize: "clamp(1.05rem, 2.4vw, 1.35rem)" }}
+            className="mx-auto mt-6 max-w-[28ch] font-display font-bold leading-[1.15] text-ink"
+            style={{ fontSize: "clamp(1.5rem, 4vw, 2.4rem)" }}
           >
-            Esami, appelli, libretto e carriera in un posto solo.{" "}
-            <span className="text-ink">Sul tuo dispositivo, senza account.</span>
+            Il tuo orario, gli esami e la media.{" "}
+            <span className="grad-text">Tutto aggiornato, tutto sul tuo dispositivo.</span>
+          </p>
+          <p
+            ref={fadeIn(1800)}
+            className="mx-auto mt-4 max-w-[44ch] text-ink-mute"
+            style={{ fontSize: "clamp(1rem, 2.2vw, 1.2rem)" }}
+          >
+            Orario, appelli, libretto e note — senza account, senza sync forzato,
+            senza perdere tempo.
           </p>
           <div ref={fadeIn(2000)} className="mt-9 flex flex-col items-center gap-3">
-            <Link href="/cruscotto" className="btn btn-primary px-7 py-3 text-base">
+            <Link href="/onboarding" className="btn btn-primary px-7 py-3 text-base">
               Inizia ora
               <ArrowRight className="size-[1.15rem]" aria-hidden="true" />
             </Link>
@@ -187,109 +197,6 @@ export function Landing() {
               </Link>
             </p>
           </div>
-        </section>
-
-        {/* ATENEI SUPPORTATI */}
-        <section className="wrap section">
-          <p className="reveal eyebrow text-center">Atenei supportati</p>
-          <h2 className="reveal display-md mx-auto mt-2.5 max-w-[20ch] text-center">
-            Funziona per il <span className="grad-text">tuo ateneo</span>.
-          </h2>
-          <p className="reveal mx-auto mt-3 max-w-[42ch] text-center text-sm text-ink-mute">
-            Cerca il tuo: ti diciamo se orario ed esami arrivano in automatico
-            (sync live) o se li inserisci a mano.
-          </p>
-          <AteneoSearch />
-        </section>
-
-        {/* COME FUNZIONA */}
-        <section className="wrap section">
-          <div className="section-lead section-lead--left">
-            <p className="reveal eyebrow">Come funziona</p>
-            <h2
-              className="reveal display-lg mt-3 max-w-[16ch]"
-              style={{ ["--d" as string]: "0.05s" }}
-            >
-              Dal tuo ateneo alla <span className="grad-text">panoramica</span> in tre passi.
-            </h2>
-            <p className="reveal mt-3 text-ink-mute" style={{ ["--d" as string]: "0.1s" }}>
-              Tre passaggi, una volta sola. Dopo si aggiorna tutto da sé.
-            </p>
-          </div>
-          <div className="mt-10 grid gap-4 [grid-template-columns:repeat(auto-fit,minmax(240px,1fr))]">
-            {STEPS.map((s, i) => (
-              <div
-                key={s.n}
-                className="glass reveal rounded-lg p-[1.6rem]"
-                style={{ ["--d" as string]: `${i * 0.1}s` }}
-              >
-                <div className="grad-text font-display font-num text-[2.6rem] font-extrabold leading-none">
-                  {s.n}
-                </div>
-                <h3 className="mt-[0.9rem] text-[1.15rem]">{s.title}</h3>
-                <p className="mt-2 text-[0.9rem] text-ink-mute">{s.text}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* STATS BAND */}
-        <section className="section">
-          <div className="wrap grid gap-4 [grid-template-columns:repeat(auto-fit,minmax(220px,1fr))]">
-            {STATS.map(({ value, suffix, unit, desc }, i) => (
-              <div
-                key={unit}
-                className="glass reveal rounded-lg p-8 text-center"
-                style={{ ["--d" as string]: `${i * 0.1}s` }}
-              >
-                <div className="font-display font-extrabold leading-none">
-                  <span className="grad-text block" style={{ fontSize: "clamp(2.6rem, 6.5vw, 4.2rem)" }}>
-                    <CountUp value={value} suffix={suffix ?? ""} inView />
-                  </span>
-                  <span className="mt-1.5 block text-[1.05rem] font-bold text-ink-mute">
-                    {unit}
-                  </span>
-                </div>
-                <p className="mx-auto mt-[0.7rem] max-w-[24ch] text-[0.9rem] text-ink-mute">
-                  {desc}
-                </p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* TRAGUARDI — gamification teaser */}
-        <section className="wrap section">
-          <h2 className="reveal display-md mx-auto mt-2.5 max-w-[20ch] text-center">
-            I tuoi <span className="grad-text">traguardi</span>.
-          </h2>
-          <p className="reveal mx-auto mt-3 max-w-[46ch] text-center text-sm text-ink-mute">
-            Tieni traccia degli esami e guarda la media salire. Ogni traguardo si
-            sblocca da solo.
-          </p>
-          <ul className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-            {MILESTONES.map(({ icon: Icon, label, hint, grad, glow }, i) => (
-              <li
-                key={label}
-                className="glass lift reveal flex flex-col items-center gap-2.5 rounded-xl p-5 text-center"
-                style={{ ["--d" as string]: `${(i % 5) * 0.06}s` }}
-              >
-                <span
-                  className="inline-flex size-14 items-center justify-center rounded-2xl text-white"
-                  style={{ background: grad, boxShadow: `0 10px 28px -8px ${glow}` }}
-                >
-                  <Icon className="size-7" aria-hidden="true" />
-                </span>
-                <div className="font-display text-[1.1rem] font-bold leading-tight text-ink">
-                  {label}
-                </div>
-                <div className="text-xs font-medium text-ink-mute">{hint}</div>
-                <span className="mt-auto rounded-full bg-[var(--surface)] px-2.5 py-0.5 text-[0.68rem] font-semibold uppercase tracking-wide text-ink-faint">
-                  Da sbloccare
-                </span>
-              </li>
-            ))}
-          </ul>
         </section>
 
         {/* TUTTO IN UN POSTO */}
@@ -345,6 +252,130 @@ export function Landing() {
                   <div className="text-[0.95rem] font-semibold">{title}</div>
                   <div className="text-[0.82rem] text-ink-mute">{desc}</div>
                 </div>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        {/* COME FUNZIONA */}
+        <section className="wrap section">
+          <div className="section-lead section-lead--left">
+            <p className="reveal eyebrow">Come funziona</p>
+            <h2
+              className="reveal display-lg mt-3 max-w-[16ch]"
+              style={{ ["--d" as string]: "0.05s" }}
+            >
+              Dal tuo ateneo alla <span className="grad-text">panoramica</span> in tre passi.
+            </h2>
+            <p className="reveal mt-3 text-ink-mute" style={{ ["--d" as string]: "0.1s" }}>
+              Tre passaggi, una volta sola. Dopo si aggiorna tutto da sé.
+            </p>
+          </div>
+          <div className="mt-10 grid gap-4 [grid-template-columns:repeat(auto-fit,minmax(240px,1fr))]">
+            {STEPS.map((s, i) => (
+              <div
+                key={s.n}
+                className="glass reveal rounded-lg p-[1.6rem]"
+                style={{ ["--d" as string]: `${i * 0.1}s` }}
+              >
+                <div className="grad-text font-display font-num text-[2.6rem] font-extrabold leading-none">
+                  {s.n}
+                </div>
+                <h3 className="mt-[0.9rem] text-[1.15rem]">{s.title}</h3>
+                <p className="mt-2 text-[0.9rem] text-ink-mute">{s.text}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* ATENEI SUPPORTATI */}
+        <section className="wrap section">
+          <p className="reveal eyebrow text-center">Atenei supportati</p>
+          <h2 className="reveal display-md mx-auto mt-2.5 max-w-[20ch] text-center">
+            Funziona per il <span className="grad-text">tuo ateneo</span>.
+          </h2>
+          <p className="reveal mx-auto mt-3 max-w-[42ch] text-center text-sm text-ink-mute">
+            Cerca il tuo: ti diciamo se orario ed esami arrivano in automatico
+            (sync live) o se li inserisci a mano.
+          </p>
+          <AteneoSearch />
+        </section>
+
+        {/* STATS BAND */}
+        <section className="section">
+          <div className="wrap grid gap-4 [grid-template-columns:repeat(auto-fit,minmax(220px,1fr))]">
+            {STATS.map(({ value, suffix, unit, desc }, i) => (
+              <div
+                key={unit}
+                className="glass reveal rounded-lg p-8 text-center"
+                style={{ ["--d" as string]: `${i * 0.1}s` }}
+              >
+                <div className="font-display font-extrabold leading-none">
+                  <span className="grad-text block" style={{ fontSize: "clamp(2.6rem, 6.5vw, 4.2rem)" }}>
+                    <CountUp value={value} suffix={suffix ?? ""} inView />
+                  </span>
+                  <span className="mt-1.5 block text-[1.05rem] font-bold text-ink-mute">
+                    {unit}
+                  </span>
+                </div>
+                <p className="mx-auto mt-[0.7rem] max-w-[24ch] text-[0.9rem] text-ink-mute">
+                  {desc}
+                </p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* TRAGUARDI — gamification teaser */}
+        <section className="wrap section">
+          <h2 className="reveal display-md mx-auto mt-2.5 max-w-[20ch] text-center">
+            I tuoi <span className="grad-text">traguardi</span>.
+          </h2>
+          <p className="reveal mx-auto mt-3 max-w-[46ch] text-center text-sm text-ink-mute">
+            Tieni traccia degli esami e guarda la media salire. Ogni traguardo si
+            sblocca da solo.
+          </p>
+          <ul className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+            {MILESTONES.map(({ icon: Icon, label, hint, grad, glow, unlocked }, i) => (
+              <li
+                key={label}
+                className="glass lift reveal flex flex-col items-center gap-2.5 rounded-xl p-5 text-center"
+                style={{ ["--d" as string]: `${(i % 5) * 0.06}s` }}
+              >
+                <span
+                  className={
+                    unlocked
+                      ? "inline-flex size-14 items-center justify-center rounded-2xl text-white"
+                      : "inline-flex size-14 items-center justify-center rounded-2xl bg-[var(--surface)] text-ink-faint"
+                  }
+                  style={
+                    unlocked
+                      ? { background: grad, boxShadow: `0 10px 28px -8px ${glow}` }
+                      : undefined
+                  }
+                >
+                  <Icon className="size-7" aria-hidden="true" />
+                </span>
+                <div
+                  className={
+                    unlocked
+                      ? "font-display text-[1.1rem] font-bold leading-tight text-ink"
+                      : "font-display text-[1.1rem] font-bold leading-tight text-ink-mute"
+                  }
+                >
+                  {label}
+                </div>
+                <div className="text-xs font-medium text-ink-mute">{hint}</div>
+                {unlocked ? (
+                  <span className="chip chip-ok mt-auto">
+                    <Check className="size-[0.85rem]" aria-hidden="true" />
+                    Sbloccato
+                  </span>
+                ) : (
+                  <span className="mt-auto rounded-full bg-[var(--surface)] px-2.5 py-0.5 text-[0.68rem] font-semibold uppercase tracking-wide text-ink-faint">
+                    Da sbloccare
+                  </span>
+                )}
               </li>
             ))}
           </ul>
