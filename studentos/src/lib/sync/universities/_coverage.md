@@ -40,6 +40,7 @@ use manual entry / PDF import.
 | Genova | unige.it | unige-informatica | Informatica | easyacademy.unige.it/portalestudenti |
 | Piemonte Orientale | uniupo.it | uniupo-informatica | Informatica (Vercelli) | upoplanner.uniupo.it/timetable |
 | Stranieri di Siena 🟢 | unistrasi.it | unistrasi-mediazione | Mediazione Linguistica | gd.unistrasi.it/agendaweb |
+| Ca' Foscari Venezia | unive.it | unive-informatica | Informatica (69 corsi live, verif. 2026-06-17) | orari.unive.it/AgendaWebUnive |
 
 🟢 = timetable verified, exams not published via EasyAcademy (kept in Esse3).
 
@@ -70,8 +71,7 @@ use manual entry / PDF import.
 | Milano-Bicocca | campus.unimib.it | PortaleStudenti | EXTRA domain, manual |
 | Pavia | universitadipavia.it | per-faculty | unipv (manual) |
 | Politecnico Bari | poliba.it | EasyAcademy | EXTRA domain, manual (to probe) |
-| Verona | univr.it | EasyAcademy | EXTRA domain, manual (to probe) |
-| Ca' Foscari Venezia | stud.unive.it | EasyAcademy | unive-cafoscari (manual, to probe) |
+| Verona | univr.it | Cineca UP | EXTRA domain, manual (migrated off EasyAcademy) |
 | Modena e Reggio Emilia | studenti.unimore.it | PortaleStudenti | EXTRA domain, manual |
 | Salento (Lecce) | studenti.unisalento.it | EasyAcademy | EXTRA domain, manual (to probe) |
 | Calabria | studenti.unical.it | Cineca University Planner | EXTRA domain, manual |
@@ -113,3 +113,71 @@ use manual entry / PDF import.
 4. Verify exams: `POST {base}/test_call.php` with esami_cdl + plain-year anno2[].
 5. Wire with `easyAcademyPreset(...)` in `easyacademy-live.ts`; map the email
    domain in `emailToAteneo.ts`; the array is registered in `index.ts`.
+
+## Recon 2026-06-17 — sistemi orari atenei manual-mode
+
+Phase-1 reconnaissance (probe via throwaway `curl`, no preset written).
+Classifies the 12 manual-mode presets in `italian-atenei.ts` + a quick
+EasyAcademy probe of the secondary "to probe" hosts. **Detection of the system
+(EasyAcademy vs Cineca UP vs GOMP vs custom vs login-walled) is reliable;**
+see the off-season caveat below for why timetable `celle>0` could not be
+confirmed for ANY ateneo in June.
+
+### ✅ "celle=0" caveat — RESOLVED (was a raw-contract artifact, not off-season)
+
+The recon initially concluded that `grid_call.php` returns `celle=0` everywhere in
+June (off-season) and that only `combo.php` was verifiable. **That was wrong**: a
+hand-built raw `grid_call.php` POST returns `celle=0` even for the shipping,
+verified-live `units` preset — but the **real easyacademy adapter** returns
+`celle>0` for the same course right now (units Architettura: 37/24/15 celle for
+AA-2025/26; Ca' Foscari Informatica: 124/120/82 celle + 47/49/53 Appelli). So
+`celle=0` from a manual curl is a **contract artifact** (the adapter encodes
+fields/date-walking the raw POST omits), NOT proof of "not published". **The
+reliable verification is to drive the adapter end-to-end** (a throwaway tsx over a
+preset's `degreeSources`), which is exactly how the live presets are confirmed.
+Ca' Foscari was wired live this session on that basis; Salento and Campania remain
+combo-confirmed candidates to verify the same way next batch.
+
+### Primary scope (the 12 manual-mode presets)
+
+| ateneo | dominio email | sistema rilevato | host orario | endpoint orario | slug EasyAcademy | verdict |
+|---|---|---|---|---|---|---|
+| Sapienza Roma (uniroma1) | studenti.uniroma1.it | GOMP | corsidilaurea.uniroma1.it (GOMP) | n/a | — | GOMP |
+| Bologna (unibo) | studio.unibo.it | in-house | corsi.unibo.it | n/a | — | in-house |
+| Politecnico Milano (polimi) | mail.polimi.it | in-house | ceda.polimi.it / manifesti | n/a | — | in-house |
+| Politecnico Torino (polito) | studenti.polito.it | in-house | didattica.polito.it | n/a | — | in-house |
+| Padova (unipd) | unipd.it | EasyAcademy (period-keyed) | agendastudentiunipd.easystaff.it/AgendaStudentiUnipd | combo OK (400 corsi) ma `elenco_anni` VUOTO → grid celle=0 | agendastudentiunipd | EasyAcademy non pubblicato (period/semester-keyed, no course-grid anno2) |
+| Siena (unisi) | student.unisi.it | **Cineca UP** | unisi.prod.up.cineca.it/calendarioPubblico | n/a | — | Cineca UP (coverage hypothesis "EasyAcademy" era ERRATA — migrato a Cineca) |
+| Pisa (unipi) | studenti.unipi.it | **Cineca UP** | unipi.prod.up.cineca.it/calendarioPubblico | n/a | — | Cineca UP |
+| Milano Statale (unimi) | studenti.unimi.it | EasyAcademy **login-walled** + PortaleStudenti | orari-be.divsi.unimi.it/EasyAcademy (login) · orari.unimi.it/PortaleStudenti | combo → "File not found" (auth) | — | login-walled |
+| Torino (unito) | edu.unito.it | **Cineca UP** | unito.prod.up.cineca.it/calendarioPubblico | n/a | — | Cineca UP |
+| Ca' Foscari Venezia (unive) | stud.unive.it | **EasyAcademy** | orari.unive.it/AgendaWebUnive | combo 130 corsi / 81 label; **adapter celle>0 + Appelli>0** (Informatica CTR3→CT3) | AgendaWebUnive | ✅ **WIRED LIVE 2026-06-17** — 69 corsi (65 con esami), preset `unive-informatica`; vedi `_unive-informatica_coverage.md` |
+| Bocconi (unibocconi) | unibocconi.it | in-house (yoU@B) | didattica.unibocconi.eu/lezioni | n/a | — | in-house / login-walled |
+| Pavia (unipv) | universitadipavia.it | **Cineca UP** | unipv.prod.up.cineca.it/calendarioPubblico | n/a | — | Cineca UP |
+
+### Secondary scope (EasyAcademy quick-probe of "to probe" hosts)
+
+| ateneo | dominio email | sistema rilevato | host orario | endpoint orario | slug EasyAcademy | verdict |
+|---|---|---|---|---|---|---|
+| Verona (univr) | univr.it | **Cineca UP** | univr.prod.up.cineca.it/calendarioPubblico | n/a | — | Cineca UP (NON EasyAcademy) |
+| Salento/Lecce (unisalento) | studenti.unisalento.it | **EasyAcademy** | logistica.unisalento.it/PortaleStudenti | combo OK **158 corsi, tutti con anno2** (Economia Aziendale LB05R `A-L|1`); grid celle=0 (off-season) | PortaleStudenti | **EasyAcademy verificabile** (combo) → stub `_unisalento-economia_coverage.md` |
+| Bari (uniba) | studenti.uniba.it | EasyAcademy (parziale) | easyacademy.ict.uniba.it/PortaleStudenti | combo OK ma **solo 12 corsi** (solo Giurisprudenza + Scienze Politiche; no Info/Ing/Eco) | PortaleStudenti | EasyAcademy ma catalogo pubblico ridotto → manual finché non compaiono Info/Ing |
+| Politecnico Bari (poliba) | poliba.it | in-house (PDF/dept) | poliba.it/orariolezioni (PDF) | n/a | — | in-house (orari pubblicati in PDF per dipartimento) |
+| Campania Vanvitelli (unicampania) | studenti.unicampania.it | **EasyAcademy** | easyacademy.easystaff.it/agendastudenti | combo OK **40 corsi, tutti con anno2** (Ing. Aerospaziale A15 `GEN|2`); grid celle=0 (off-season) | agendastudenti (shared host) | **EasyAcademy verificabile** (combo) → stub `_unicampania-ingegneria_coverage.md` |
+| Macerata (unimc) | studenti.unimc.it | app/dept (myUNIMC + docenti.unimc.it) | nessun host agendaweb pubblico | n/a | — | in-house / app-based (nessun combo.php pubblico trovato) |
+| IUAV Venezia (iuav) | stud.iuav.it | EasyAcademy (combo vuoto) | orarilezioni.iuav.it/PortaleStudentiIuav | combo `elenco_corsi=[]` per ogni aa (2023–2026) | PortaleStudentiIuav | EasyAcademy presente ma enumerazione corsi NON pubblica → login-walled/non verificabile |
+
+### Verdetto sintetico
+
+- **EasyAcademy wirato LIVE questa sessione:** Ca' Foscari Venezia (unive,
+  preset `unive-informatica`, 69 corsi live verificati via adapter — orari+esami).
+- **EasyAcademy verificabile (combo) — prossimo batch:** Salento/Lecce
+  (unisalento, 158 corsi), Campania Vanvitelli (unicampania, 40 corsi). Stub
+  creati; verificare end-to-end via adapter (come Ca' Foscari) prima di wirare.
+- **EasyAcademy ma non utilizzabile:** Padova (period-keyed, anno2 assenti),
+  Bari (catalogo pubblico ridotto a 12 corsi), Milano Statale (login-walled),
+  IUAV (combo vuoto).
+- **Cineca University Planner (no adapter):** Siena, Pisa, Torino, Pavia, Verona.
+- **GOMP:** Sapienza.
+- **In-house / login-walled (no adapter):** Bologna, PoliMi, PoliTo, Bocconi,
+  Politecnico Bari, Macerata.
