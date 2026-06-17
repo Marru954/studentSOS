@@ -24,8 +24,10 @@ import {
 import Link from "next/link";
 import { CountUp } from "@/components/primitives/CountUp";
 import { AteneoSearch } from "./AteneoSearch";
+import { AteneoStrip } from "./AteneoStrip";
 import { HeroPreview } from "./HeroPreview";
 import { LandingFaq } from "./LandingFaq";
+import { LIVE_COUNT } from "@/lib/liveAtenei";
 
 const TRUST: { icon: LucideIcon; label: string }[] = [
   { icon: ShieldCheck, label: "Nessun account richiesto" },
@@ -53,7 +55,7 @@ const STEPS = [
 ];
 
 const STATS: { value: number; suffix?: string; unit: string; desc: string }[] = [
-  { value: 18, suffix: "", unit: "atenei in sync live", desc: "orario ed esami arrivano in automatico dal tuo ateneo, senza copiarli a mano" },
+  { value: LIVE_COUNT, suffix: "", unit: "atenei in sync live", desc: "orario ed esami arrivano in automatico dal tuo ateneo, senza copiarli a mano" },
   { value: 100, suffix: "%", unit: "in locale", desc: "i tuoi dati restano sul dispositivo; l'accesso per ritrovarli altrove è opzionale" },
   { value: 1, suffix: " file", unit: "e il libretto è dentro", desc: "carichi il PDF dal portale e i voti sono già lì, senza digitare nulla" },
 ];
@@ -220,6 +222,9 @@ export function Landing() {
 
           <HeroPreview />
         </section>
+
+        {/* STRISCIA ATENEI — social proof onesta coi nomi reali */}
+        <AteneoStrip />
 
         {/* ATENEI SUPPORTATI — il gancio: subito sotto l'hero */}
         <section id="atenei" className="wrap section scroll-mt-24">

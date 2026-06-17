@@ -1,8 +1,25 @@
 # Stato attuale StudentOS
 
-Aggiornato: 2026-06-18 (landing: tagline salvagente)
+Aggiornato: 2026-06-18 (landing 10/10: OG, atenei, SEO)
 
 ## Completati
+
+### Sessione 2026-06-18 — share card + social proof + SEO (1 commit)
+✅ Share card Open Graph: src/app/opengraph-image.tsx (ImageResponse 1200x630,
+   brand StudentOS, generata in casa, zero font/immagini esterni) + twitter-image
+   (re-export) + metadata openGraph/twitter/metadataBase in layout.tsx. Ora il
+   link condiviso mostra anteprima ricca (verificato: og:* e twitter:* nei meta,
+   PNG 86KB)
+✅ src/lib/site.ts: SITE_URL da env NEXT_PUBLIC_SITE_URL (fallback studentos.app)
+✅ src/lib/liveAtenei.ts: LIVE_ATENEI + LIVE_COUNT da UNIVERSITY_PRESETS (fonte
+   unica del numero reale = 18). AteneoStrip.tsx: striscia nomi atenei live
+   ("Orari ed esami ufficiali di: Tor Vergata · Federico II · ...") sotto l'hero,
+   social proof onesta (niente loghi/utenti inventati). Stat band ora usa
+   LIVE_COUNT (niente più 18 hardcoded → niente drift)
+✅ SEO: sitemap.ts (/, /login) + robots.ts (route app/private disallow) +
+   meta description riscritta (atenei live + auto-sync + local-first)
+   → build/test(197)/tsc/lint verdi, endpoint /opengraph-image /sitemap.xml
+   /robots.txt verificati
 
 ### Sessione 2026-06-18 — micro-tagline hero (1 commit)
 ✅ Tagline "Il salvagente per la tua carriera universitaria." sotto il wordmark

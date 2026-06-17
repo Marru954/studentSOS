@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Bricolage_Grotesque, Inter } from "next/font/google";
+import { SITE_URL } from "@/lib/site";
+import { LIVE_COUNT } from "@/lib/liveAtenei";
 import { AppFooter } from "@/components/AppFooter";
 import { AppNav } from "@/components/AppNav";
 import { AssistantBubble } from "@/components/assistente/AssistantBubble";
@@ -25,11 +27,26 @@ const bricolage = Bricolage_Grotesque({
   subsets: ["latin"],
 });
 
+const DESCRIPTION = `Orario, appelli, libretto e media del tuo ateneo, già pronti e aggiornati in automatico. ${LIVE_COUNT} atenei in sync live, senza account: i tuoi dati restano sul dispositivo.`;
+
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: { default: "StudentOS", template: "%s — StudentOS" },
-  description:
-    "Sistema operativo per la vita universitaria: orari, appelli, libretto, note e focus in un unico strumento.",
+  description: DESCRIPTION,
   appleWebApp: { capable: true, title: "StudentOS", statusBarStyle: "black-translucent" },
+  openGraph: {
+    type: "website",
+    locale: "it_IT",
+    url: SITE_URL,
+    siteName: "StudentOS",
+    title: "StudentOS — il salvagente per la tua carriera universitaria",
+    description: DESCRIPTION,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "StudentOS — il salvagente per la tua carriera universitaria",
+    description: DESCRIPTION,
+  },
 };
 
 export const viewport: Viewport = {
