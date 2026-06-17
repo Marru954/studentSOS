@@ -1,9 +1,15 @@
+"use client";
+
 /** The libretto as a wall of trophies: each passed exam is an achievement card,
  *  bordered by how good the grade is. Same props as EntryTable (which survives
  *  for the print export). Newest first. */
+import { useEffect, useRef, useState } from "react";
 import { Award, GraduationCap, Pencil, Trash2, Trophy } from "lucide-react";
+import { cn } from "@/lib/cn";
 import type { Grade, LibrettoEntry } from "@/lib/domain/types";
 import { fmtPlainDate } from "@/lib/format";
+
+const DISARM_MS = 4000;
 
 type Tier = "gold" | "signal" | "good" | "plain" | "pass";
 
@@ -84,6 +90,32 @@ export function TrophyGrid({
 }) {
   const sorted = [...entries].sort((a, b) => b.date.localeCompare(a.date));
 
+  // Two-step delete: first click arms (4s), second confirms. Mirrors
+  // ConfirmButton so a stray click can't wipe an exam (and lose its trophy).
+  const [armedId, setArmedId] = useState<string | null>(null);
+  const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  useEffect(() => () => clearTimeout(timer.current), []);
+  // Esc disarms, so a keyboard user is never trapped in the armed state.
+  useEffect(() => {
+    if (!armedId) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setArmedId(null);
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [armedId]);
+
+  function handleDelete(id: string) {
+    clearTimeout(timer.current);
+    if (armedId === id) {
+      setArmedId(null);
+      onRemove(id);
+      return;
+    }
+    setArmedId(id);
+    timer.current = setTimeout(() => setArmedId(null), DISARM_MS);
+  }
+
   return (
     <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
       {sorted.map((entry) => {
@@ -125,9 +157,18 @@ export function TrophyGrid({
                 </button>
                 <button
                   type="button"
-                  onClick={() => onRemove(entry.id)}
-                  aria-label={`Elimina ${entry.courseName}`}
-                  className="glass-2 rounded-full p-1.5 text-ink-mute transition-colors hover:text-danger"
+                  onClick={() => handleDelete(entry.id)}
+                  aria-label={
+                    armedId === entry.id
+                      ? `Conferma eliminazione di ${entry.courseName}`
+                      : `Elimina ${entry.courseName}`
+                  }
+                  className={cn(
+                    "glass-2 rounded-full p-1.5 transition-colors",
+                    armedId === entry.id
+                      ? "bg-danger/20 text-danger ring-1 ring-danger"
+                      : "text-ink-mute hover:text-danger",
+                  )}
                 >
                   <Trash2 aria-hidden="true" className="size-3.5" />
                 </button>

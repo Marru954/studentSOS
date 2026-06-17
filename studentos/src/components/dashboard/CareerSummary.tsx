@@ -28,15 +28,14 @@ export function CareerStrip({
 }) {
   const average = weightedAverage(entries);
   return (
-    <Link
-      href="/libretto"
-      aria-label="Apri il libretto"
-      className={cn(
-        "glass lift group flex flex-col gap-1.5 rounded-xl px-4 py-3",
-        className,
-      )}
-    >
-      <div className="flex items-center gap-3">
+    // Container, not a link: the media row and the trophy row deep-link to
+    // different libretto tabs, so they are two sibling links (no nested <a>).
+    <div className={cn("glass lift flex flex-col gap-1.5 rounded-xl", className)}>
+      <Link
+        href="/libretto"
+        aria-label="Apri il libretto"
+        className="group flex items-center gap-3 rounded-xl px-4 pt-3 pb-1.5"
+      >
         <TrendingUp
           aria-hidden="true"
           className="size-[1.125rem] shrink-0 text-[var(--signal-2)]"
@@ -64,9 +63,13 @@ export function CareerStrip({
           aria-hidden="true"
           className="ml-auto size-4 shrink-0 text-ink-faint transition-transform group-hover:translate-x-0.5"
         />
-      </div>
+      </Link>
       {lastTrophy && (
-        <div className="flex items-center gap-1.5 text-xs text-ink-mute">
+        <Link
+          href="/libretto#trofei"
+          aria-label={`Apri i trofei — ultimo traguardo: ${lastTrophy.title}`}
+          className="mx-2 mb-2 flex items-center gap-1.5 rounded-lg px-2 py-1 text-xs text-ink-mute transition-colors hover:bg-night-800"
+        >
           <Trophy
             aria-hidden="true"
             className="size-3.5 shrink-0 text-[var(--signal-2)]"
@@ -75,9 +78,9 @@ export function CareerStrip({
             Ultimo traguardo:{" "}
             <strong className="font-medium text-ink">{lastTrophy.title}</strong>
           </span>
-        </div>
+        </Link>
       )}
-    </Link>
+    </div>
   );
 }
 

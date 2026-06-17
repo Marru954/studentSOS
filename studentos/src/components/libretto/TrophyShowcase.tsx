@@ -60,8 +60,17 @@ function LockedCard({ card }: { card: TrophyCardModel }) {
 }
 
 export function TrophyShowcase({ view }: { view: TrophyView }) {
+  const total = view.unlocked.length + view.locked.length;
   return (
     <div className="flex flex-col gap-5">
+      <div className="flex items-baseline gap-2">
+        <span className="font-display text-2xl font-bold text-ink">
+          {view.unlocked.length}
+          <span className="text-ink-faint">/{total}</span>
+        </span>
+        <span className="text-sm text-ink-mute">trofei sbloccati</span>
+      </div>
+
       {view.unlocked.length > 0 && (
         <section>
           <h3 className="eyebrow mb-2 text-[var(--signal-2)]">

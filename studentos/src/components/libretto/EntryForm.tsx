@@ -143,7 +143,9 @@ export function EntryForm({
             required
             aria-invalid={error?.field === "courseName" || undefined}
             aria-describedby={error?.field === "courseName" ? "lib-corso-error" : undefined}
-            className={inputClass}
+            // scroll-mt: il quick-add/focus scrolla qui; lascia spazio sotto la
+            // navbar fissa così il campo non finisce occluso.
+            className={`${inputClass} scroll-mt-24`}
           />
         </Field>
 
