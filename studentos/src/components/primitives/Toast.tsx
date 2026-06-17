@@ -25,24 +25,30 @@ export function ToastHost() {
     return () => clearTimeout(t);
   }, [id, message, dismiss]);
 
-  if (!message) return null;
   const { cls, Icon } = TONE[tone];
+  const isError = tone === "danger";
 
+  // The live region is mounted unconditionally and only its content swaps, so
+  // screen readers reliably announce a message that arrives after first paint
+  // (a region created at the same moment as its text is often skipped). Errors
+  // are assertive so a failed action is announced promptly.
   return (
     <div
-      role="status"
-      aria-live="polite"
+      role={isError ? "alert" : "status"}
+      aria-live={isError ? "assertive" : "polite"}
       className="no-print fixed bottom-[84px] right-4 z-50 sm:bottom-4"
     >
-      <div
-        className={cn(
-          "glass overlay-in flex max-w-[min(92vw,22rem)] items-center gap-2.5 rounded-lg border px-4 py-3 text-sm font-medium shadow-soft",
-          cls,
-        )}
-      >
-        <Icon aria-hidden="true" className="size-4 shrink-0" />
-        <span className="text-ink">{message}</span>
-      </div>
+      {message && (
+        <div
+          className={cn(
+            "glass overlay-in flex max-w-[min(92vw,22rem)] items-center gap-2.5 rounded-lg border px-4 py-3 text-sm font-medium shadow-soft",
+            cls,
+          )}
+        >
+          <Icon aria-hidden="true" className="size-4 shrink-0" />
+          <span className="text-ink">{message}</span>
+        </div>
+      )}
     </div>
   );
 }

@@ -34,9 +34,17 @@ export function ImportExams() {
     const file = e.target.files?.[0];
     e.target.value = ""; // permette di re-importare lo stesso file
     if (!file) return;
-    const text = await file.text();
-    const result = parseLibrettoCsv(text);
-    if (result.entries.length > 0) await upsertMany(result.entries);
+    let result: ReturnType<typeof parseLibrettoCsv>;
+    try {
+      const text = await file.text();
+      result = parseLibrettoCsv(text);
+      if (result.entries.length > 0) await upsertMany(result.entries);
+    } catch {
+      const msg = "Impossibile leggere il file CSV. Riprova.";
+      setFeedback({ ok: false, text: msg, errors: [] });
+      useToast.getState().show(msg, "danger");
+      return;
+    }
     const summary =
       result.imported > 0
         ? `${result.imported} esami importati${result.skipped ? `, ${result.skipped} saltati` : ""}.`

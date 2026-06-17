@@ -70,6 +70,7 @@ export function OnboardingFlow() {
   const [year, setYear] = useState(1);
   const [totalCfu, setTotalCfu] = useState(180);
   const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState(false);
   // Untouched fields read from derived defaults; once edited they take over.
   const [emailInput, setEmailInput] = useState<string | null>(null);
   const [chosenPreset, setChosenPreset] = useState<string | null>(null);
@@ -129,6 +130,18 @@ export function OnboardingFlow() {
   async function finish() {
     if (!preset) return;
     setSaving(true);
+    setSaveError(false);
+    try {
+      await applyOnboarding();
+    } catch {
+      // A failed local write must never leave the gate spinning forever.
+      setSaveError(true);
+      setSaving(false);
+    }
+  }
+
+  async function applyOnboarding() {
+    if (!preset) return;
     await useSettings.getState().hydrate();
     // Only the verified live course activates the live sources; any other course
     // at this ateneo is manual (no sources → enabledSources() stays empty and
@@ -477,6 +490,11 @@ export function OnboardingFlow() {
             </Button>
           )}
         </div>
+        {saveError && (
+          <p role="alert" className="mt-3 text-right text-sm text-danger">
+            Attivazione non riuscita. Controlla la connessione e riprova.
+          </p>
+        )}
       </div>
 
       <p className="mt-5 text-center text-xs text-ink-faint">

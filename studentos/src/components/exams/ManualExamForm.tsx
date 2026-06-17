@@ -55,16 +55,23 @@ export function ManualExamForm({ courses }: { courses: string[] }) {
     e.preventDefault();
     const name = courseName.trim();
     if (!name || !date) return;
-    await putExamCall({
-      id: crypto.randomUUID(),
-      courseName: name,
-      date,
-      time: time || undefined,
-      room: room.trim() || undefined,
-      kind,
-      teacher: teacher.trim() || undefined,
-      sourceId: `manual-anno-${yearOfStudy ?? 1}`,
-    });
+    try {
+      await putExamCall({
+        id: crypto.randomUUID(),
+        courseName: name,
+        date,
+        time: time || undefined,
+        room: room.trim() || undefined,
+        kind,
+        teacher: teacher.trim() || undefined,
+        sourceId: `manual-anno-${yearOfStudy ?? 1}`,
+      });
+    } catch {
+      useToast
+        .getState()
+        .show("Salvataggio non riuscito. Riprova.", "danger");
+      return;
+    }
     useSynced.getState().refresh();
     useToast.getState().show("Appello aggiunto.", "ok");
     reset();

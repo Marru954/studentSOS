@@ -97,7 +97,12 @@ export function ImportDelphiPdf() {
   async function confirmImport() {
     if (!result) return;
     const chosen = result.entries.filter((en) => selected.has(en.id));
-    await upsertMany(chosen);
+    try {
+      await upsertMany(chosen);
+    } catch {
+      setError("Salvataggio non riuscito. Riprova.");
+      return;
+    }
     setDone(
       `${chosen.length} ${chosen.length === 1 ? "esame importato" : "esami importati"} dal PDF Delphi.`,
     );

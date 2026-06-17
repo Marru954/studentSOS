@@ -159,9 +159,6 @@ export function ManualLessonForm({
     const name = courseName.trim();
     if (!name || !startTime || !endTime) return;
 
-    // Edit = delete the old series, then write a fresh one (simplest correct).
-    if (initial?.seriesId) await deleteClassEventSeries(initial.seriesId);
-
     const seriesId = crypto.randomUUID();
     const series = buildManualLessonSeries(
       { courseName: name, weekday, startTime, endTime, room, kind },
@@ -169,7 +166,17 @@ export function ManualLessonForm({
       yearOfStudy,
       new Date(),
     );
-    await putClassEvents(series);
+    // Write the fresh series FIRST, then delete the old one (edit). If the write
+    // fails the old series stays intact — never delete-then-lose on a failed put.
+    try {
+      await putClassEvents(series);
+      if (initial?.seriesId) await deleteClassEventSeries(initial.seriesId);
+    } catch {
+      useToast
+        .getState()
+        .show("Salvataggio non riuscito. Riprova.", "danger");
+      return;
+    }
     useSynced.getState().refresh();
     useToast.getState().show(
       editing ? "Lezione aggiornata (ogni settimana)." : "Lezione aggiunta (ogni settimana).",
