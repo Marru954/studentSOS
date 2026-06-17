@@ -36,7 +36,7 @@ export function EmptyState({
     >
       <span
         aria-hidden="true"
-        className="grid size-12 place-items-center rounded-2xl bg-[color:var(--signal)]/12 text-[var(--signal-2)] [&_svg]:size-6"
+        className="grid size-12 place-items-center rounded-2xl bg-signal-dim text-signal [&_svg]:size-6"
       >
         {icon}
       </span>

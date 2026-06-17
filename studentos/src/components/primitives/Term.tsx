@@ -23,6 +23,9 @@ export function Term({
       )}
     >
       {children}
+      {/* `title` non è esposto in modo affidabile a screen reader e touch:
+          ripetiamo la spiegazione in sr-only così resta accessibile. */}
+      <span className="sr-only"> ({title})</span>
     </span>
   );
 }

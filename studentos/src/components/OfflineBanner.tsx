@@ -28,9 +28,10 @@ export function OfflineBanner() {
   return (
     <div
       role="status"
+      aria-live="polite"
       className="glass fixed inset-x-0 bottom-[76px] z-40 mx-auto flex w-fit max-w-[92vw] items-center gap-2 rounded-full px-4 py-2 text-sm text-ink shadow-soft sm:bottom-5"
     >
-      <WifiOff aria-hidden="true" className="size-4 text-[var(--warn)]" />
+      <WifiOff aria-hidden="true" className="size-4 text-warn" />
       <span>
         Sei offline — stai vedendo i dati salvati. Si aggiorneranno appena torni
         online.

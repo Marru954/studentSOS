@@ -1,7 +1,7 @@
 "use client";
 
 import { CalendarClock, ChevronDown, TriangleAlert } from "lucide-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Badge } from "@/components/primitives/Badge";
 import { Panel } from "@/components/primitives/Panel";
 import type { ExamCall } from "@/lib/domain/types";
@@ -115,14 +115,21 @@ export function ExamTimeline({
   const [openDates, setOpenDates] = useState<Set<string>>(new Set());
   const [clashesOpen, setClashesOpen] = useState(false);
 
-  const upcoming = exams
-    .filter((e) => daysFromToday(e.date, now) >= 0)
-    .sort(
-      (a, b) =>
-        a.date.localeCompare(b.date) || (a.time ?? "").localeCompare(b.time ?? ""),
-    );
-  const groups = buildGroups(upcoming);
-  const clashes = buildClashes(upcoming);
+  // Memoizzati su [exams, now]: i toggle locali (openDates/clashesOpen) non
+  // devono ricostruire gruppi e conflitti su tutti gli appelli a ogni click.
+  const upcoming = useMemo(
+    () =>
+      exams
+        .filter((e) => daysFromToday(e.date, now) >= 0)
+        .sort(
+          (a, b) =>
+            a.date.localeCompare(b.date) ||
+            (a.time ?? "").localeCompare(b.time ?? ""),
+        ),
+    [exams, now],
+  );
+  const groups = useMemo(() => buildGroups(upcoming), [upcoming]);
+  const clashes = useMemo(() => buildClashes(upcoming), [upcoming]);
 
   function toggleDates(course: string) {
     setOpenDates((prev) => {

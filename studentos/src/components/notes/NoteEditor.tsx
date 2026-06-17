@@ -109,6 +109,11 @@ export function NoteEditor({
       }
     >
       <div className="flex flex-col gap-4">
+        {/* Lo stato salvataggio vive nel titolo del Panel (non in live region):
+            qui lo annunciamo a salvataggio avvenuto, una volta sola. */}
+        <div aria-live="polite" className="sr-only">
+          {saved ? "Nota salvata" : ""}
+        </div>
         <Field label="Titolo" htmlFor="nota-titolo">
           <input
             id="nota-titolo"

@@ -383,7 +383,7 @@ export function CalendarView() {
             </div>
           ) : (
             <p className="muted text-sm">
-              Nessun evento nei prossimi 7 giorni — settimana libera 🎉
+              Nessun evento nei prossimi 7 giorni — settimana libera.
             </p>
           )}
 

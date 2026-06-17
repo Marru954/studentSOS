@@ -87,8 +87,10 @@ export function FocusView({ initialCourse }: { initialCourse?: string }) {
     return count;
   }, [focus.items, now]);
 
-  const longest = longestSession(focus.items);
-  const best = bestDay(focus.items);
+  // Memoizzati: il componente si ri-renderizza ogni minuto (useNowMinute) ma
+  // questi scan su tutte le sessioni dipendono solo da focus.items.
+  const longest = useMemo(() => longestSession(focus.items), [focus.items]);
+  const best = useMemo(() => bestDay(focus.items), [focus.items]);
 
   function recordSession(session: Omit<FocusSession, "id">) {
     void focus.upsert({ ...session, id: crypto.randomUUID() });

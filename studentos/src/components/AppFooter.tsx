@@ -5,7 +5,7 @@ import { Wordmark } from "@/components/Wordmark";
  *  Hidden when printing (FEAT export). */
 export function AppFooter() {
   return (
-    <footer className="no-print mt-8 border-t border-[var(--hairline)]">
+    <footer className="no-print mt-8 border-t border-line">
       <div className="wrap flex flex-wrap items-center justify-between gap-3 py-8 text-[0.8rem]">
         <Link
           href="/"

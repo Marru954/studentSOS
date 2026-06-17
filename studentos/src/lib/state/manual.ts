@@ -48,8 +48,17 @@ function createManualStore<T extends { id: string }>(repo: {
 
     async upsert(item) {
       // optimistic: state first, then disk — IndexedDB writes don't fail
-      // under normal operation, and the store re-hydrates on next load
-      set({ items: [...get().items.filter((i) => i.id !== item.id), item] });
+      // under normal operation, and the store re-hydrates on next load.
+      // Modifica = sostituzione in posizione (niente salto in fondo alla lista);
+      // inserimento = append. upsertMany preserva già l'ordine via Map.
+      const items = get().items;
+      const idx = items.findIndex((i) => i.id === item.id);
+      set({
+        items:
+          idx === -1
+            ? [...items, item]
+            : items.map((i) => (i.id === item.id ? item : i)),
+      });
       await repo.put(item);
     },
 
