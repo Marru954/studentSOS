@@ -29,7 +29,10 @@ const requestSchema = z.object({
 });
 
 export async function POST(request: Request) {
-  const blocked = guardPost(request, "sync", { limit: 20, windowMs: 60_000 });
+  const { response: blocked } = guardPost(request, "sync", {
+    limit: 20,
+    windowMs: 60_000,
+  });
   if (blocked) return blocked;
 
   let body: unknown;

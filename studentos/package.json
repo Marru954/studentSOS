@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "tsx tests/storage.test.ts && tsx tests/urgency.test.ts && tsx tests/week.test.ts && tsx tests/projection.test.ts && tsx tests/notes.test.ts && tsx tests/focus.test.ts && tsx tests/delphi.test.ts && tsx tests/calendar.test.ts && tsx tests/esse3.test.ts && tsx tests/csv.test.ts && tsx tests/delphiPdf.test.ts && tsx tests/validateUrl.test.ts && tsx tests/achievements.test.ts && tsx tests/trophyView.test.ts && tsx tests/celebrations.test.ts && tsx tests/dateField.test.ts && tsx tests/pdfImport.test.ts && tsx tests/isOnboarded.test.ts"
+    "test": "tsx tests/storage.test.ts && tsx tests/urgency.test.ts && tsx tests/week.test.ts && tsx tests/projection.test.ts && tsx tests/notes.test.ts && tsx tests/focus.test.ts && tsx tests/delphi.test.ts && tsx tests/calendar.test.ts && tsx tests/esse3.test.ts && tsx tests/csv.test.ts && tsx tests/delphiPdf.test.ts && tsx tests/validateUrl.test.ts && tsx tests/achievements.test.ts && tsx tests/trophyView.test.ts && tsx tests/celebrations.test.ts && tsx tests/dateField.test.ts && tsx tests/pdfImport.test.ts && tsx tests/isOnboarded.test.ts && tsx tests/guard.test.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.0",

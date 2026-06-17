@@ -45,7 +45,10 @@ function sanitizeMessages(input: unknown): ChatMessage[] {
 }
 
 export async function POST(req: Request): Promise<Response> {
-  const blocked = guardPost(req, "assistente", { limit: 10, windowMs: 60_000 });
+  const { response: blocked, remaining } = guardPost(req, "assistente", {
+    limit: 10,
+    windowMs: 60_000,
+  });
   if (blocked) return blocked;
 
   const apiKey = process.env.GROQ_API_KEY;
@@ -151,11 +154,14 @@ export async function POST(req: Request): Promise<Response> {
     },
   });
 
-  return new Response(stream, {
-    headers: {
-      "Content-Type": "text/plain; charset=utf-8",
-      "Cache-Control": "no-store",
-      "X-Accel-Buffering": "no",
-    },
-  });
+  const headers: Record<string, string> = {
+    "Content-Type": "text/plain; charset=utf-8",
+    "Cache-Control": "no-store",
+    "X-Accel-Buffering": "no",
+  };
+  // Solo per debug in sviluppo: non esporre lo stato del rate-limit in produzione.
+  if (process.env.NODE_ENV !== "production") {
+    headers["X-RateLimit-Remaining"] = String(remaining);
+  }
+  return new Response(stream, { headers });
 }

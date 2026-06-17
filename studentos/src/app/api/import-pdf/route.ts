@@ -48,7 +48,10 @@ function systemPrompt(kind: Kind): string {
 }
 
 export async function POST(req: Request): Promise<Response> {
-  const blocked = guardPost(req, "import-pdf", { limit: 10, windowMs: 60_000 });
+  const { response: blocked, remaining } = guardPost(req, "import-pdf", {
+    limit: 10,
+    windowMs: 60_000,
+  });
   if (blocked) return blocked;
 
   const apiKey = process.env.GROQ_API_KEY;
@@ -153,7 +156,13 @@ export async function POST(req: Request): Promise<Response> {
     );
   }
 
-  return new Response(JSON.stringify({ ok: true, items }), {
-    headers: { "Content-Type": "application/json", "Cache-Control": "no-store" },
-  });
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+    "Cache-Control": "no-store",
+  };
+  // Solo per debug in sviluppo: non esporre lo stato del rate-limit in produzione.
+  if (process.env.NODE_ENV !== "production") {
+    headers["X-RateLimit-Remaining"] = String(remaining);
+  }
+  return new Response(JSON.stringify({ ok: true, items }), { headers });
 }
