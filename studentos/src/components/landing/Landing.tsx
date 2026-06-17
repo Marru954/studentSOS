@@ -5,22 +5,34 @@ import {
   CalendarClock,
   CalendarDays,
   Check,
+  EyeOff,
   GraduationCap,
+  HardDrive,
   LayoutDashboard,
   LifeBuoy,
   MessageCircle,
   NotebookPen,
+  ShieldCheck,
   Sparkles,
   Star,
   Target,
   Timer,
   Trophy,
+  WifiOff,
   type LucideIcon,
 } from "lucide-react";
 import Link from "next/link";
 import { CountUp } from "@/components/primitives/CountUp";
 import { AteneoSearch } from "./AteneoSearch";
 import { HeroPreview } from "./HeroPreview";
+import { LandingFaq } from "./LandingFaq";
+
+const TRUST: { icon: LucideIcon; label: string }[] = [
+  { icon: ShieldCheck, label: "Nessun account richiesto" },
+  { icon: WifiOff, label: "Funziona offline" },
+  { icon: EyeOff, label: "Niente tracciamento" },
+  { icon: HardDrive, label: "I dati restano sul dispositivo" },
+];
 
 const STEPS = [
   {
@@ -168,7 +180,7 @@ export function Landing() {
             </span>
           </h1>
           <p
-            ref={fadeIn(1500)}
+            ref={fadeIn(250)}
             className="mx-auto mt-6 max-w-[28ch] font-display font-bold leading-[1.15] text-ink"
             style={{ fontSize: "clamp(1.5rem, 4vw, 2.4rem)" }}
           >
@@ -176,14 +188,14 @@ export function Landing() {
             <span className="grad-text">Tutto aggiornato, tutto sul tuo dispositivo.</span>
           </p>
           <p
-            ref={fadeIn(1800)}
+            ref={fadeIn(350)}
             className="mx-auto mt-4 max-w-[44ch] text-ink-mute"
             style={{ fontSize: "clamp(1rem, 2.2vw, 1.2rem)" }}
           >
             Orario, appelli, libretto e note — già pronti per il tuo corso, senza
             account.
           </p>
-          <div ref={fadeIn(2000)} className="mt-9 flex flex-col items-center gap-3">
+          <div ref={fadeIn(450)} className="mt-9 flex flex-col items-center gap-3">
             <Link href="/onboarding" className="btn btn-primary px-7 py-3 text-base">
               Inizia ora
               <ArrowRight className="size-[1.15rem]" aria-hidden="true" />
@@ -383,6 +395,33 @@ export function Landing() {
               </li>
             ))}
           </ul>
+        </section>
+
+        {/* FAQ — gestione obiezioni prima della CTA finale */}
+        <LandingFaq />
+
+        {/* CTA DI CHIUSURA */}
+        <section className="wrap section text-center">
+          <ul className="reveal mx-auto flex max-w-[52rem] flex-wrap items-center justify-center gap-x-5 gap-y-3">
+            {TRUST.map(({ icon: Icon, label }) => (
+              <li key={label} className="flex items-center gap-2 text-sm text-ink-mute">
+                <Icon className="size-4 shrink-0 text-[var(--signal-2)]" aria-hidden="true" />
+                {label}
+              </li>
+            ))}
+          </ul>
+          <h2 className="reveal display-md mx-auto mt-8 max-w-[18ch]">
+            Pronto a <span className="grad-text">partire</span>?
+          </h2>
+          <p className="reveal mx-auto mt-3 max-w-[40ch] text-ink-mute">
+            Senza registrarti, bastano pochi tocchi. Il tuo ateneo, già pronto.
+          </p>
+          <div className="reveal mt-8 flex justify-center">
+            <Link href="/onboarding" className="btn btn-primary px-7 py-3 text-base">
+              Inizia ora
+              <ArrowRight className="size-[1.15rem]" aria-hidden="true" />
+            </Link>
+          </div>
         </section>
       </main>
     </>

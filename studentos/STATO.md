@@ -1,8 +1,22 @@
 # Stato attuale StudentOS
 
-Aggiornato: 2026-06-18 (landing: mockup cruscotto nell'hero)
+Aggiornato: 2026-06-18 (landing: CTA chiusura, FAQ, footer)
 
 ## Completati
+
+### Sessione 2026-06-18 — conversione + fiducia landing (1 commit)
+✅ CTA di chiusura: banda finale "Pronto a partire? → Inizia ora" con riga di
+   trust badge ONESTI (no account, offline, no tracking, dati sul dispositivo).
+   La pagina non muore più sui trofei
+✅ LandingFaq.tsx: 5 obiezioni (gratis? dati? offline? ateneo non c'è?
+   registrazione?) con <details> native (zero JS, a11y da tastiera). La #4
+   colma il dead-end "ateneo non trovato". Risposte local-first, niente promesse
+   cloud
+✅ Fix timing hero: fadeIn da 1500/1800/2000 → 250/350/450ms — value prop
+   leggibile subito, il wordmark non resta da solo ~2s
+✅ Footer: aggiunti "Domande frequenti" (/#faq) + "Contatto" (mailto), resta
+   leggero (globale anche nelle pagine app)
+   → build/test(197)/tsc/lint verdi, verificato in browser
 
 ### Sessione 2026-06-18 — hero product shot (1 commit)
 ✅ HeroPreview.tsx: mockup STATICO del cruscotto in una finta finestra browser

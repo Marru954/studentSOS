@@ -13,9 +13,18 @@ export function AppFooter() {
         >
           <Wordmark />
         </Link>
-        <span className="text-ink-mute">
-          I tuoi dati restano su questo dispositivo
-        </span>
+        <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-ink-mute">
+          <Link href="/#faq" className="transition-colors hover:text-ink">
+            Domande frequenti
+          </Link>
+          <a
+            href="mailto:support@studentos.app?subject=Feedback%20StudentOS"
+            className="transition-colors hover:text-ink"
+          >
+            Contatto
+          </a>
+          <span>I tuoi dati restano su questo dispositivo</span>
+        </div>
       </div>
     </footer>
   );
