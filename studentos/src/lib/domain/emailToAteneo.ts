@@ -95,6 +95,9 @@ const DOMAIN_TO_PRESET: Record<string, string> = {
   // Stranieri di Siena — live (Mediazione Linguistica e Culturale)
   "unistrasi.it": "unistrasi-mediazione",
   "studenti.unistrasi.it": "unistrasi-mediazione",
+  // Salento (Lecce) — live EasyAcademy preset (whole ateneo)
+  "unisalento.it": "unisalento-economia",
+  "studenti.unisalento.it": "unisalento-economia",
 };
 
 /** Valid Italian academic domains WITHOUT a preset yet — login allowed, the
@@ -127,8 +130,6 @@ const EXTRA_ACADEMIC_DOMAINS = new Set<string>([
   "unict.it",
   "studium.unict.it",
   "unifg.it",
-  "unisalento.it",
-  "studenti.unisalento.it",
   "uniba.it",
   "studenti.uniba.it",
   "poliba.it",
