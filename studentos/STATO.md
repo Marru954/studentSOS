@@ -1,8 +1,21 @@
 # Stato attuale StudentOS
 
-Aggiornato: 2026-06-17
+Aggiornato: 2026-06-17 (sessione nav + polish UX)
 
 ## Completati
+
+### Sessione 2026-06-17 — nav, assistente, polish UX (4 commit)
+✅ Nav a 6 voci: Impostazioni → icona ingranaggio nel cluster destro,
+   Assistente → bubble flottante (AssistantBubble, riusa AssistantChat compact),
+   Calendario tolto dalla barra; cap segmentati "salvagente" alle estremità
+✅ Fix race celebration: shift(key) key-guarded — l'auto-dismiss tardivo di uno
+   scenic non ingoia più il toast accodato dietro
+✅ Libretto: CareerStrip in due link fratelli (media → /libretto, trofeo →
+   /libretto#trofei, niente <a> annidato); TrophyGrid delete a due step (arma 4s,
+   Esc disarma); TrophyShowcase contatore "N/total"; EntryForm scroll-mt-24
+✅ Docs: regole CLAUDE.md (local-first, validazione inline, aggiorna STATO.md)
+
+### Audit precedente
 ✅ Fix SSRF su /api/sync
 ✅ 5 test fantasma aggiunti (suite: 35 file)
 ✅ SyncFailureBanner in /orario e /appelli
