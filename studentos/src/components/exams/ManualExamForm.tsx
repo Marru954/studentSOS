@@ -13,7 +13,7 @@
  * Native <details> keeps the collapse keyboard-accessible (mirrors CoursePicker).
  */
 import { CalendarPlus } from "lucide-react";
-import { useId, useState } from "react";
+import { useId, useRef, useState } from "react";
 import { Button } from "@/components/primitives/Button";
 import { DateField } from "@/components/primitives/DateField";
 import { Field, inputClass } from "@/components/primitives/Field";
@@ -29,6 +29,9 @@ const KIND_OPTIONS: { value: ExamKind; label: string }[] = [
   { value: "written+oral", label: "Scritto e orale" },
 ];
 
+/** Which required field an inline validation message belongs to. */
+type ExamField = "courseName" | "date";
+
 export function ManualExamForm({ courses }: { courses: string[] }) {
   const yearOfStudy = useSettings((s) => s.yearOfStudy);
 
@@ -39,8 +42,44 @@ export function ManualExamForm({ courses }: { courses: string[] }) {
   const [kind, setKind] = useState<ExamKind>("written");
   const [teacher, setTeacher] = useState("");
 
+  // Un campo mostra l'errore solo dopo che è stato toccato (blur) o dopo un
+  // tentativo di submit — non mentre l'utente sta ancora digitando.
+  const [touched, setTouched] = useState<Partial<Record<ExamField, boolean>>>({});
+  const [submitAttempted, setSubmitAttempted] = useState(false);
+
+  const courseRef = useRef<HTMLInputElement>(null);
+  const dateRef = useRef<HTMLInputElement>(null);
+
   const baseId = useId();
   const courseListId = `${baseId}-courses`;
+
+  // Errori grezzi per campo (sempre calcolati); la visibilità è decisa sotto.
+  const errors: Partial<Record<ExamField, string>> = {};
+  if (!courseName.trim()) errors.courseName = "Inserisci il nome dell'esame.";
+  if (!date) errors.date = "Inserisci una data valida.";
+  const isValid = Object.keys(errors).length === 0;
+
+  const fieldRefs: Record<ExamField, React.RefObject<HTMLInputElement | null>> = {
+    courseName: courseRef,
+    date: dateRef,
+  };
+
+  /** L'errore di un campo si vede solo se toccato o dopo un tentativo di submit. */
+  function errorOf(field: ExamField): string | undefined {
+    return touched[field] || submitAttempted ? errors[field] : undefined;
+  }
+
+  /** Porta il fuoco sul primo campo invalido così l'errore inline è subito visibile. */
+  function focusFirstError() {
+    const first = (["courseName", "date"] as ExamField[]).find((f) => errors[f]);
+    if (first) fieldRefs[first].current?.focus();
+  }
+
+  /** Clic sul pulsante disabilitato: rivela gli errori e spiega perché non funziona. */
+  function revealErrors() {
+    setSubmitAttempted(true);
+    focusFirstError();
+  }
 
   function reset() {
     setCourseName("");
@@ -49,12 +88,18 @@ export function ManualExamForm({ courses }: { courses: string[] }) {
     setRoom("");
     setKind("written");
     setTeacher("");
+    setTouched({});
+    setSubmitAttempted(false);
   }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (!isValid) {
+      setSubmitAttempted(true);
+      focusFirstError();
+      return;
+    }
     const name = courseName.trim();
-    if (!name || !date) return;
     try {
       await putExamCall({
         id: crypto.randomUUID(),
@@ -93,16 +138,28 @@ export function ManualExamForm({ courses }: { courses: string[] }) {
           className="flex flex-col gap-3"
         >
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-            <Field label="Corso" htmlFor={`${baseId}-course`} className="sm:col-span-2">
+            <Field
+              label="Corso"
+              htmlFor={`${baseId}-course`}
+              required
+              error={errorOf("courseName")}
+              className="sm:col-span-2"
+            >
               <input
+                ref={courseRef}
                 id={`${baseId}-course`}
                 type="text"
                 required
                 value={courseName}
                 onChange={(e) => setCourseName(e.target.value)}
+                onBlur={() => setTouched((t) => ({ ...t, courseName: true }))}
                 list={courseListId}
                 autoComplete="off"
                 placeholder="Nome dell'insegnamento"
+                aria-invalid={errorOf("courseName") ? true : undefined}
+                aria-describedby={
+                  errorOf("courseName") ? `${baseId}-course-error` : undefined
+                }
                 className={inputClass}
               />
               {courses.length > 0 && (
@@ -114,12 +171,21 @@ export function ManualExamForm({ courses }: { courses: string[] }) {
               )}
             </Field>
 
-            <Field label="Data" htmlFor={`${baseId}-date`}>
+            <Field
+              label="Data"
+              htmlFor={`${baseId}-date`}
+              required
+              error={errorOf("date")}
+            >
               <DateField
                 id={`${baseId}-date`}
                 required
                 value={date}
                 onChange={setDate}
+                inputRef={dateRef}
+                onBlur={() => setTouched((t) => ({ ...t, date: true }))}
+                ariaInvalid={errorOf("date") ? true : undefined}
+                ariaDescribedBy={errorOf("date") ? `${baseId}-date-error` : undefined}
               />
             </Field>
 
@@ -172,10 +238,23 @@ export function ManualExamForm({ courses }: { courses: string[] }) {
           </div>
 
           <div className="flex justify-end">
-            <Button type="submit" variant="primary" disabled={!courseName.trim() || !date}>
-              <CalendarPlus aria-hidden="true" className="size-4" />
-              Aggiungi appello
-            </Button>
+            {/* Pulsante disabilitato finché il form non è valido; l'overlay
+                cattura il clic per rivelare gli errori (un <button disabled>
+                non emette eventi), così l'utente capisce perché non funziona. */}
+            <div className="relative inline-flex">
+              <Button type="submit" variant="primary" disabled={!isValid}>
+                <CalendarPlus aria-hidden="true" className="size-4" />
+                Aggiungi appello
+              </Button>
+              {!isValid && (
+                <button
+                  type="button"
+                  onClick={revealErrors}
+                  aria-label="Mostra perché non puoi aggiungere l'appello"
+                  className="absolute inset-0 cursor-not-allowed"
+                />
+              )}
+            </div>
           </div>
         </form>
       </div>

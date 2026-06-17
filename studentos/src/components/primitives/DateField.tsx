@@ -30,6 +30,7 @@ export function DateField({
   ariaInvalid,
   ariaDescribedBy,
   inputRef,
+  onBlur,
 }: {
   id?: string;
   /** ISO date "YYYY-MM-DD", or "" when empty. */
@@ -43,6 +44,8 @@ export function DateField({
   ariaInvalid?: boolean;
   ariaDescribedBy?: string;
   inputRef?: React.Ref<HTMLInputElement>;
+  /** Fired when the field loses focus (for blur-triggered validation). */
+  onBlur?: () => void;
 }) {
   const [display, setDisplay] = useState(() => formatItDate(value));
   const [lastValue, setLastValue] = useState(value);
@@ -61,6 +64,7 @@ export function DateField({
       aria-label={ariaLabel}
       aria-invalid={ariaInvalid}
       aria-describedby={ariaDescribedBy}
+      onBlur={onBlur}
       placeholder="gg/mm/aaaa"
       maxLength={10}
       value={display}

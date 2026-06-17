@@ -24,7 +24,7 @@
  * Native <details> keeps the collapse keyboard-accessible (mirrors CoursePicker).
  */
 import { CalendarPlus } from "lucide-react";
-import { useId, useState } from "react";
+import { useId, useRef, useState } from "react";
 import { Button } from "@/components/primitives/Button";
 import { Field, inputClass } from "@/components/primitives/Field";
 import type { ClassEvent, ClassEventKind } from "@/lib/domain/types";
@@ -51,6 +51,9 @@ export interface ManualLessonDraft {
   room?: string;
   kind: ClassEventKind;
 }
+
+/** Which required field an inline validation message belongs to. */
+type LessonField = "courseName" | "startTime" | "endTime";
 
 /** Only the three kinds a manual entry can pick (lab/lecture/exercise). */
 const KIND_OPTIONS: { value: ClassEventKind; label: string }[] = [
@@ -141,9 +144,48 @@ export function ManualLessonForm({
   const [room, setRoom] = useState(initial?.room ?? "");
   const [kind, setKind] = useState<ClassEventKind>(initial?.kind ?? "lecture");
 
+  // Un campo mostra l'errore solo dopo blur o dopo un tentativo di submit,
+  // mai mentre l'utente sta digitando.
+  const [touched, setTouched] = useState<Partial<Record<LessonField, boolean>>>({});
+  const [submitAttempted, setSubmitAttempted] = useState(false);
+
+  const courseRef = useRef<HTMLInputElement>(null);
+  const startRef = useRef<HTMLInputElement>(null);
+  const endRef = useRef<HTMLInputElement>(null);
+
   const baseId = useId();
   const courseListId = `${baseId}-courses`;
   const editing = Boolean(initial?.seriesId);
+
+  // Errori grezzi per campo; la visibilità è decisa da errorOf().
+  const errors: Partial<Record<LessonField, string>> = {};
+  if (!courseName.trim()) errors.courseName = "Inserisci il nome della lezione.";
+  if (!startTime) errors.startTime = "Inserisci l'ora di inizio.";
+  if (!endTime) errors.endTime = "Inserisci l'ora di fine.";
+  else if (startTime && endTime <= startTime)
+    errors.endTime = "L'ora di fine deve essere dopo l'inizio.";
+  const isValid = Object.keys(errors).length === 0;
+
+  const fieldRefs: Record<LessonField, React.RefObject<HTMLInputElement | null>> = {
+    courseName: courseRef,
+    startTime: startRef,
+    endTime: endRef,
+  };
+
+  function errorOf(field: LessonField): string | undefined {
+    return touched[field] || submitAttempted ? errors[field] : undefined;
+  }
+
+  function focusFirstError() {
+    const order: LessonField[] = ["courseName", "startTime", "endTime"];
+    const first = order.find((f) => errors[f]);
+    if (first) fieldRefs[first].current?.focus();
+  }
+
+  function revealErrors() {
+    setSubmitAttempted(true);
+    focusFirstError();
+  }
 
   function reset() {
     setCourseName("");
@@ -152,12 +194,18 @@ export function ManualLessonForm({
     setEndTime("");
     setRoom("");
     setKind("lecture");
+    setTouched({});
+    setSubmitAttempted(false);
   }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (!isValid) {
+      setSubmitAttempted(true);
+      focusFirstError();
+      return;
+    }
     const name = courseName.trim();
-    if (!name || !startTime || !endTime) return;
 
     const seriesId = crypto.randomUUID();
     const series = buildManualLessonSeries(
@@ -193,16 +241,28 @@ export function ManualLessonForm({
       className="flex flex-col gap-3"
     >
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-        <Field label="Corso" htmlFor={`${baseId}-course`} className="sm:col-span-2">
+        <Field
+          label="Corso"
+          htmlFor={`${baseId}-course`}
+          required
+          error={errorOf("courseName")}
+          className="sm:col-span-2"
+        >
           <input
+            ref={courseRef}
             id={`${baseId}-course`}
             type="text"
             required
             value={courseName}
             onChange={(e) => setCourseName(e.target.value)}
+            onBlur={() => setTouched((t) => ({ ...t, courseName: true }))}
             list={courseListId}
             autoComplete="off"
             placeholder="Nome dell'insegnamento"
+            aria-invalid={errorOf("courseName") ? true : undefined}
+            aria-describedby={
+              errorOf("courseName") ? `${baseId}-course-error` : undefined
+            }
             className={inputClass}
           />
           {courses.length > 0 && (
@@ -244,24 +304,44 @@ export function ManualLessonForm({
           </select>
         </Field>
 
-        <Field label="Ora inizio" htmlFor={`${baseId}-start`}>
+        <Field
+          label="Ora inizio"
+          htmlFor={`${baseId}-start`}
+          required
+          error={errorOf("startTime")}
+        >
           <input
+            ref={startRef}
             id={`${baseId}-start`}
             type="time"
             required
             value={startTime}
             onChange={(e) => setStartTime(e.target.value)}
+            onBlur={() => setTouched((t) => ({ ...t, startTime: true }))}
+            aria-invalid={errorOf("startTime") ? true : undefined}
+            aria-describedby={
+              errorOf("startTime") ? `${baseId}-start-error` : undefined
+            }
             className={inputClass}
           />
         </Field>
 
-        <Field label="Ora fine" htmlFor={`${baseId}-end`}>
+        <Field
+          label="Ora fine"
+          htmlFor={`${baseId}-end`}
+          required
+          error={errorOf("endTime")}
+        >
           <input
+            ref={endRef}
             id={`${baseId}-end`}
             type="time"
             required
             value={endTime}
             onChange={(e) => setEndTime(e.target.value)}
+            onBlur={() => setTouched((t) => ({ ...t, endTime: true }))}
+            aria-invalid={errorOf("endTime") ? true : undefined}
+            aria-describedby={errorOf("endTime") ? `${baseId}-end-error` : undefined}
             className={inputClass}
           />
         </Field>
@@ -284,14 +364,22 @@ export function ManualLessonForm({
             Annulla
           </Button>
         )}
-        <Button
-          type="submit"
-          variant="primary"
-          disabled={!courseName.trim() || !startTime || !endTime}
-        >
-          <CalendarPlus aria-hidden="true" className="size-4" />
-          {editing ? "Salva modifiche" : "Aggiungi lezione"}
-        </Button>
+        {/* Pulsante disabilitato finché invalido; l'overlay cattura il clic per
+            rivelare gli errori (un <button disabled> non emette eventi). */}
+        <div className="relative inline-flex">
+          <Button type="submit" variant="primary" disabled={!isValid}>
+            <CalendarPlus aria-hidden="true" className="size-4" />
+            {editing ? "Salva modifiche" : "Aggiungi lezione"}
+          </Button>
+          {!isValid && (
+            <button
+              type="button"
+              onClick={revealErrors}
+              aria-label="Mostra perché non puoi salvare la lezione"
+              className="absolute inset-0 cursor-not-allowed"
+            />
+          )}
+        </div>
       </div>
     </form>
   );
