@@ -41,6 +41,8 @@ use manual entry / PDF import.
 | Piemonte Orientale | uniupo.it | uniupo-informatica | Informatica (Vercelli) | upoplanner.uniupo.it/timetable |
 | Stranieri di Siena 🟢 | unistrasi.it | unistrasi-mediazione | Mediazione Linguistica | gd.unistrasi.it/agendaweb |
 | Ca' Foscari Venezia | unive.it | unive-informatica | Informatica (69 corsi live, verif. 2026-06-17) | orari.unive.it/AgendaWebUnive |
+| Salento (Lecce) | unisalento.it | unisalento-economia | Whole ateneo (81 corsi live, 31 con esami, verif. 2026-06-17) | logistica.unisalento.it/PortaleStudenti |
+| Campania "Vanvitelli" 🟢 | unicampania.it | unicampania-ingegneria | Ingegneria (17 corsi live, 10 con esami, verif. 2026-06-17) | easyacademy.easystaff.it/agendastudenti |
 
 🟢 = timetable verified, exams not published via EasyAcademy (kept in Esse3).
 
@@ -73,9 +75,7 @@ use manual entry / PDF import.
 | Politecnico Bari | poliba.it | EasyAcademy | EXTRA domain, manual (to probe) |
 | Verona | univr.it | Cineca UP | EXTRA domain, manual (migrated off EasyAcademy) |
 | Modena e Reggio Emilia | studenti.unimore.it | PortaleStudenti | EXTRA domain, manual |
-| Salento (Lecce) | studenti.unisalento.it | EasyAcademy | EXTRA domain, manual (to probe) |
 | Calabria | studenti.unical.it | Cineca University Planner | EXTRA domain, manual |
-| Campania Vanvitelli | studenti.unicampania.it | EasyAcademy | EXTRA domain, manual (to probe) |
 | Messina | studenti.unime.it | Cineca University Planner | EXTRA domain, manual |
 | Brescia | studenti.unibs.it | Cineca University Planner | migrated off EasyAcademy; manual |
 | Bergamo | studenti.unibg.it | PortaleStudenti | EXTRA domain, manual |
@@ -160,20 +160,22 @@ combo-confirmed candidates to verify the same way next batch.
 | ateneo | dominio email | sistema rilevato | host orario | endpoint orario | slug EasyAcademy | verdict |
 |---|---|---|---|---|---|---|
 | Verona (univr) | univr.it | **Cineca UP** | univr.prod.up.cineca.it/calendarioPubblico | n/a | — | Cineca UP (NON EasyAcademy) |
-| Salento/Lecce (unisalento) | studenti.unisalento.it | **EasyAcademy** | logistica.unisalento.it/PortaleStudenti | combo OK **158 corsi, tutti con anno2** (Economia Aziendale LB05R `A-L|1`); grid celle=0 (off-season) | PortaleStudenti | **EasyAcademy verificabile** (combo) → stub `_unisalento-economia_coverage.md` |
+| Salento/Lecce (unisalento) | studenti.unisalento.it | **EasyAcademy** | logistica.unisalento.it/PortaleStudenti | combo 158 corsi; **adapter celle>0** su tutti gli 81 raggruppamenti, Appelli>0 su 31 | PortaleStudenti | ✅ **WIRED LIVE 2026-06-17** — 81 corsi, preset `unisalento-economia`; vedi `_unisalento-economia_coverage.md` |
 | Bari (uniba) | studenti.uniba.it | EasyAcademy (parziale) | easyacademy.ict.uniba.it/PortaleStudenti | combo OK ma **solo 12 corsi** (solo Giurisprudenza + Scienze Politiche; no Info/Ing/Eco) | PortaleStudenti | EasyAcademy ma catalogo pubblico ridotto → manual finché non compaiono Info/Ing |
 | Politecnico Bari (poliba) | poliba.it | in-house (PDF/dept) | poliba.it/orariolezioni (PDF) | n/a | — | in-house (orari pubblicati in PDF per dipartimento) |
-| Campania Vanvitelli (unicampania) | studenti.unicampania.it | **EasyAcademy** | easyacademy.easystaff.it/agendastudenti | combo OK **40 corsi, tutti con anno2** (Ing. Aerospaziale A15 `GEN|2`); grid celle=0 (off-season) | agendastudenti (shared host) | **EasyAcademy verificabile** (combo) → stub `_unicampania-ingegneria_coverage.md` |
+| Campania Vanvitelli (unicampania) | studenti.unicampania.it | **EasyAcademy** | easyacademy.easystaff.it/agendastudenti | combo 40 corsi; **adapter celle>0** su tutti i 17 raggruppamenti, Appelli>0 su 10 (ingegneria) | agendastudenti (shared host) | ✅ **WIRED LIVE 2026-06-17** — 17 corsi, preset `unicampania-ingegneria`; vedi `_unicampania-ingegneria_coverage.md` |
 | Macerata (unimc) | studenti.unimc.it | app/dept (myUNIMC + docenti.unimc.it) | nessun host agendaweb pubblico | n/a | — | in-house / app-based (nessun combo.php pubblico trovato) |
 | IUAV Venezia (iuav) | stud.iuav.it | EasyAcademy (combo vuoto) | orarilezioni.iuav.it/PortaleStudentiIuav | combo `elenco_corsi=[]` per ogni aa (2023–2026) | PortaleStudentiIuav | EasyAcademy presente ma enumerazione corsi NON pubblica → login-walled/non verificabile |
 
 ### Verdetto sintetico
 
-- **EasyAcademy wirato LIVE questa sessione:** Ca' Foscari Venezia (unive,
-  preset `unive-informatica`, 69 corsi live verificati via adapter — orari+esami).
-- **EasyAcademy verificabile (combo) — prossimo batch:** Salento/Lecce
-  (unisalento, 158 corsi), Campania Vanvitelli (unicampania, 40 corsi). Stub
-  creati; verificare end-to-end via adapter (come Ca' Foscari) prima di wirare.
+- **EasyAcademy wirati LIVE (sessioni 2026-06-17):** Ca' Foscari Venezia (unive,
+  `unive-informatica`, 69 corsi, orari+esami) · Salento/Lecce (unisalento,
+  `unisalento-economia`, 81 corsi, 31 con esami) · Campania Vanvitelli
+  (unicampania, `unicampania-ingegneria`, 17 corsi, 10 con esami). Tutti
+  verificati esercitando l'adapter reale end-to-end (`celle`/`Appelli` non vuoti).
+- **EasyAcademy verificabile (combo) — prossimo batch:** Bari (uniba, ma catalogo
+  pubblico ridotto a 12 corsi), Macerata/IUAV (da riprovare). Vedi tabella sotto.
 - **EasyAcademy ma non utilizzabile:** Padova (period-keyed, anno2 assenti),
   Bari (catalogo pubblico ridotto a 12 corsi), Milano Statale (login-walled),
   IUAV (combo vuoto).
