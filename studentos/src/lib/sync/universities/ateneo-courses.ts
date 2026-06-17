@@ -27,6 +27,10 @@ export const ATENEO_COURSES: Record<string, string[]> = {
   // Salento: the 81 verified-live degrees come from unisalento.ts `livePrograms`;
   // these ISUFI honours-college tracks have no public EasyAcademy grid → manual.
   "unisalento-economia": ["Corso Ordinario Area Economico-Giuridica - I Livello", "Corso Ordinario Area Economico-Giuridica - II Livello", "Corso Ordinario Area Tecnico-Scientifica - I Livello", "Corso Ordinario Area Tecnico-Scientifica - II Livello", "Corso Ordinario Area Umanistico-Sociale - I Livello", "Corso Ordinario Area Umanistico-Sociale - II Livello"],
+  // Campania Vanvitelli: the 17 verified-live degrees come from unicampania.ts
+  // `livePrograms`; these science corsi returned no celle in the probed windows
+  // (re-verify in October when the term is in session) → manual for now.
+  "unicampania-ingegneria": ["Scienze Agrarie e Forestali", "Scienze Ambientali", "Scienze e Tecnologie per L'ambiente e il Territorio"],
 };
 
 /** The course list for a live ateneo with its verified live programme first

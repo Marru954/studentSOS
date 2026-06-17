@@ -98,6 +98,9 @@ const DOMAIN_TO_PRESET: Record<string, string> = {
   // Salento (Lecce) — live EasyAcademy preset (whole ateneo)
   "unisalento.it": "unisalento-economia",
   "studenti.unisalento.it": "unisalento-economia",
+  // Campania "Luigi Vanvitelli" — live EasyAcademy preset (whole ateneo)
+  "unicampania.it": "unicampania-ingegneria",
+  "studenti.unicampania.it": "unicampania-ingegneria",
 };
 
 /** Valid Italian academic domains WITHOUT a preset yet — login allowed, the
@@ -114,8 +117,6 @@ const EXTRA_ACADEMIC_DOMAINS = new Set<string>([
   "studenti.univpm.it",
   "unica.it",
   "uniss.it",
-  "unicampania.it",
-  "studenti.unicampania.it",
   "unisannio.it",
   "unisa.it",
   "studenti.unisa.it",
