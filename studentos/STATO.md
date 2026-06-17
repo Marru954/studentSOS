@@ -1,8 +1,21 @@
 # Stato attuale StudentOS
 
-Aggiornato: 2026-06-17 (sessione nav + polish UX)
+Aggiornato: 2026-06-18 (landing UX blind-test fix)
 
 ## Completati
+
+### Sessione 2026-06-18 — landing UX (blind-test studente, 1 commit)
+✅ CTA unificati: navbar "Inizia ora" → /onboarding (era /cruscotto); i due
+   bottoni gemelli non divergono più. Card Panoramica rietichettata "Anteprima"
+   / "Guarda un esempio" (preview del cruscotto, non ingresso primario)
+✅ Riordino sezioni: Atenei + "Come funziona" salgono subito sotto l'hero (il
+   gancio); Tutto-in-un-posto e Stats scendono; Traguardi resta ultimo
+✅ Copy: sub-headline senza "sync forzato" ("già pronti per il tuo corso, senza
+   account"); link secondario hero → ancora #atenei ("controlla se c'è il tuo
+   ateneo") invece di Focus; banda stats riscritta (18 atenei sync live / 100%
+   in locale / 1 file libretto), via "5 min setup"
+✅ Trofei demoti: tile più piccoli (size-11, p-4), heading ridotto + eyebrow
+   "Un piccolo extra" → sezione di chiusura, non headline feature
 
 ### Sessione 2026-06-17 — nav, assistente, polish UX (4 commit)
 ✅ Nav a 6 voci: Impostazioni → icona ingranaggio nel cluster destro,

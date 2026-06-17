@@ -40,9 +40,9 @@ const STEPS = [
 ];
 
 const STATS: { value: number; suffix?: string; unit: string; desc: string }[] = [
-  { value: 100, suffix: "%", unit: "in locale", desc: "i tuoi dati vivono sul dispositivo; l'accesso per ritrovarli altrove è opzionale" },
-  { value: 1, suffix: " file", unit: "tutta la carriera dentro", desc: "carichi il PDF del libretto e i voti sono già dentro, senza digitare nulla" },
-  { value: 5, suffix: " min", unit: "setup", desc: "per essere operativo dal primo avvio" },
+  { value: 18, suffix: "", unit: "atenei in sync live", desc: "orario ed esami arrivano in automatico dal tuo ateneo, senza copiarli a mano" },
+  { value: 100, suffix: "%", unit: "in locale", desc: "i tuoi dati restano sul dispositivo; l'accesso per ritrovarli altrove è opzionale" },
+  { value: 1, suffix: " file", unit: "e il libretto è dentro", desc: "carichi il PDF dal portale e i voti sono già lì, senza digitare nulla" },
 ];
 
 /** Teaser gamification con stato MOCK statico (solo landing — non legge lo store
@@ -179,8 +179,8 @@ export function Landing() {
             className="mx-auto mt-4 max-w-[44ch] text-ink-mute"
             style={{ fontSize: "clamp(1rem, 2.2vw, 1.2rem)" }}
           >
-            Orario, appelli, libretto e note — senza account, senza sync forzato,
-            senza perdere tempo.
+            Orario, appelli, libretto e note — già pronti per il tuo corso, senza
+            account.
           </p>
           <div ref={fadeIn(2000)} className="mt-9 flex flex-col items-center gap-3">
             <Link href="/onboarding" className="btn btn-primary px-7 py-3 text-base">
@@ -192,69 +192,24 @@ export function Landing() {
             </p>
             <p className="text-sm text-ink-mute">
               oppure{" "}
-              <Link href="/focus" className="underline hover:text-ink">
-                prova subito il Focus
+              <Link href="#atenei" className="underline hover:text-ink">
+                controlla se c&apos;è il tuo ateneo
               </Link>
             </p>
           </div>
         </section>
 
-        {/* TUTTO IN UN POSTO */}
-        <section className="wrap section">
-          <div className="section-lead section-lead--left">
-            <p className="reveal eyebrow">Una sola app</p>
-            <h2 className="reveal display-md mt-3">
-              Tutto in un posto
-            </h2>
-            <p className="reveal mt-3 text-ink-mute">
-              Libretto, appelli, note, focus, panoramica e orario — senza saltare
-              tra app diverse.
-            </p>
-          </div>
-
-          {/* Panoramica: unico ingresso cliccabile, visivamente prominente */}
-          <Link
-            href="/cruscotto"
-            aria-label="Vai alla panoramica della tua carriera"
-            className="glass gradient-ring lift reveal mt-8 flex flex-col gap-[0.9rem] rounded-xl p-[1.8rem] text-left sm:flex-row sm:items-center sm:gap-6"
-          >
-            <span className="grad-fill inline-flex size-[58px] shrink-0 items-center justify-center rounded-[16px] text-white">
-              <LayoutDashboard className="size-7" aria-hidden="true" />
-            </span>
-            <div className="min-w-0 flex-1">
-              <div className="flex items-center gap-2.5">
-                <h3 className="text-[1.35rem]">Panoramica</h3>
-                <span className="chip chip-signal">Inizia da qui</span>
-              </div>
-              <p className="mt-1.5 text-[0.95rem] text-ink-mute">
-                Media, CFU e proiezione di laurea a colpo d&apos;occhio: il punto
-                di partenza per tutto il resto.
-              </p>
-            </div>
-            <span className="eyebrow inline-flex shrink-0 items-center gap-1.5">
-              Entra
-              <ArrowRight className="size-[0.9rem]" aria-hidden="true" />
-            </span>
-          </Link>
-
-          {/* Gli altri cinque strumenti: solo descrittivi, non cliccabili */}
-          <ul className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3">
-            {ALL.map(({ icon: Icon, title, desc }, i) => (
-              <li
-                key={title}
-                className="glass reveal flex items-center gap-[0.9rem] rounded-lg px-[1.2rem] py-[1.1rem]"
-                style={{ ["--d" as string]: `${(i % 3) * 0.07}s` }}
-              >
-                <span className="glass-2 inline-flex size-10 shrink-0 items-center justify-center rounded-xl text-[var(--signal-2)]">
-                  <Icon className="size-[19px]" aria-hidden="true" />
-                </span>
-                <div>
-                  <div className="text-[0.95rem] font-semibold">{title}</div>
-                  <div className="text-[0.82rem] text-ink-mute">{desc}</div>
-                </div>
-              </li>
-            ))}
-          </ul>
+        {/* ATENEI SUPPORTATI — il gancio: subito sotto l'hero */}
+        <section id="atenei" className="wrap section scroll-mt-24">
+          <p className="reveal eyebrow text-center">Atenei supportati</p>
+          <h2 className="reveal display-md mx-auto mt-2.5 max-w-[20ch] text-center">
+            Funziona per il <span className="grad-text">tuo ateneo</span>.
+          </h2>
+          <p className="reveal mx-auto mt-3 max-w-[42ch] text-center text-sm text-ink-mute">
+            Cerca il tuo: ti diciamo se orario ed esami arrivano in automatico
+            (sync live) o se li inserisci a mano.
+          </p>
+          <AteneoSearch />
         </section>
 
         {/* COME FUNZIONA */}
@@ -288,17 +243,62 @@ export function Landing() {
           </div>
         </section>
 
-        {/* ATENEI SUPPORTATI */}
+        {/* TUTTO IN UN POSTO */}
         <section className="wrap section">
-          <p className="reveal eyebrow text-center">Atenei supportati</p>
-          <h2 className="reveal display-md mx-auto mt-2.5 max-w-[20ch] text-center">
-            Funziona per il <span className="grad-text">tuo ateneo</span>.
-          </h2>
-          <p className="reveal mx-auto mt-3 max-w-[42ch] text-center text-sm text-ink-mute">
-            Cerca il tuo: ti diciamo se orario ed esami arrivano in automatico
-            (sync live) o se li inserisci a mano.
-          </p>
-          <AteneoSearch />
+          <div className="section-lead section-lead--left">
+            <p className="reveal eyebrow">Una sola app</p>
+            <h2 className="reveal display-md mt-3">
+              Tutto in un posto
+            </h2>
+            <p className="reveal mt-3 text-ink-mute">
+              Libretto, appelli, note, focus, panoramica e orario — senza saltare
+              tra app diverse.
+            </p>
+          </div>
+
+          {/* Panoramica: anteprima cliccabile del cruscotto */}
+          <Link
+            href="/cruscotto"
+            aria-label="Guarda un esempio della panoramica"
+            className="glass gradient-ring lift reveal mt-8 flex flex-col gap-[0.9rem] rounded-xl p-[1.8rem] text-left sm:flex-row sm:items-center sm:gap-6"
+          >
+            <span className="grad-fill inline-flex size-[58px] shrink-0 items-center justify-center rounded-[16px] text-white">
+              <LayoutDashboard className="size-7" aria-hidden="true" />
+            </span>
+            <div className="min-w-0 flex-1">
+              <div className="flex items-center gap-2.5">
+                <h3 className="text-[1.35rem]">Panoramica</h3>
+                <span className="chip chip-signal">Anteprima</span>
+              </div>
+              <p className="mt-1.5 text-[0.95rem] text-ink-mute">
+                Media, CFU e proiezione di laurea a colpo d&apos;occhio: il punto
+                di partenza per tutto il resto.
+              </p>
+            </div>
+            <span className="eyebrow inline-flex shrink-0 items-center gap-1.5">
+              Guarda un esempio
+              <ArrowRight className="size-[0.9rem]" aria-hidden="true" />
+            </span>
+          </Link>
+
+          {/* Gli altri cinque strumenti: solo descrittivi, non cliccabili */}
+          <ul className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3">
+            {ALL.map(({ icon: Icon, title, desc }, i) => (
+              <li
+                key={title}
+                className="glass reveal flex items-center gap-[0.9rem] rounded-lg px-[1.2rem] py-[1.1rem]"
+                style={{ ["--d" as string]: `${(i % 3) * 0.07}s` }}
+              >
+                <span className="glass-2 inline-flex size-10 shrink-0 items-center justify-center rounded-xl text-[var(--signal-2)]">
+                  <Icon className="size-[19px]" aria-hidden="true" />
+                </span>
+                <div>
+                  <div className="text-[0.95rem] font-semibold">{title}</div>
+                  <div className="text-[0.82rem] text-ink-mute">{desc}</div>
+                </div>
+              </li>
+            ))}
+          </ul>
         </section>
 
         {/* STATS BAND */}
@@ -326,9 +326,10 @@ export function Landing() {
           </div>
         </section>
 
-        {/* TRAGUARDI — gamification teaser */}
+        {/* TRAGUARDI — gamification teaser, secondario (sezione di chiusura) */}
         <section className="wrap section">
-          <h2 className="reveal display-md mx-auto mt-2.5 max-w-[20ch] text-center">
+          <p className="reveal eyebrow text-center">Un piccolo extra</p>
+          <h2 className="reveal mx-auto mt-2.5 max-w-[20ch] text-center font-display text-2xl font-bold">
             I tuoi <span className="grad-text">traguardi</span>.
           </h2>
           <p className="reveal mx-auto mt-3 max-w-[46ch] text-center text-sm text-ink-mute">
@@ -339,14 +340,14 @@ export function Landing() {
             {MILESTONES.map(({ icon: Icon, label, hint, grad, glow, unlocked }, i) => (
               <li
                 key={label}
-                className="glass lift reveal flex flex-col items-center gap-2.5 rounded-xl p-5 text-center"
+                className="glass lift reveal flex flex-col items-center gap-2 rounded-xl p-4 text-center"
                 style={{ ["--d" as string]: `${(i % 5) * 0.06}s` }}
               >
                 <span
                   className={
                     unlocked
-                      ? "inline-flex size-14 items-center justify-center rounded-2xl text-white"
-                      : "inline-flex size-14 items-center justify-center rounded-2xl bg-[var(--surface)] text-ink-faint"
+                      ? "inline-flex size-11 items-center justify-center rounded-2xl text-white"
+                      : "inline-flex size-11 items-center justify-center rounded-2xl bg-[var(--surface)] text-ink-faint"
                   }
                   style={
                     unlocked
@@ -354,13 +355,13 @@ export function Landing() {
                       : undefined
                   }
                 >
-                  <Icon className="size-7" aria-hidden="true" />
+                  <Icon className="size-6" aria-hidden="true" />
                 </span>
                 <div
                   className={
                     unlocked
-                      ? "font-display text-[1.1rem] font-bold leading-tight text-ink"
-                      : "font-display text-[1.1rem] font-bold leading-tight text-ink-mute"
+                      ? "font-display text-[0.95rem] font-bold leading-tight text-ink"
+                      : "font-display text-[0.95rem] font-bold leading-tight text-ink-mute"
                   }
                 >
                   {label}

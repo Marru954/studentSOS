@@ -84,7 +84,7 @@ export function AppNav() {
           >
             Accedi
           </Link>
-          <Link href="/cruscotto" className="btn btn-primary px-4 py-1.5 text-xs">
+          <Link href="/onboarding" className="btn btn-primary px-4 py-1.5 text-xs">
             Inizia ora
           </Link>
           <ThemeToggle />
