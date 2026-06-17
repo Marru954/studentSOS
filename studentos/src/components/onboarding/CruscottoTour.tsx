@@ -25,6 +25,7 @@ import { Overlay } from "@/components/primitives/Overlay";
 import { Button } from "@/components/primitives/Button";
 import { useSettings } from "@/lib/state/settings";
 import { useAuth } from "@/lib/supabase/auth";
+import { isOnboarded } from "@/lib/supabase/isOnboarded";
 
 const TOUR_DONE_KEY = "studentos-tour-done";
 
@@ -84,13 +85,19 @@ function emitTour() {
 
 /** Il gating, identico nello spirito a FirstRunGate, letto dagli snapshot
  *  correnti degli store: impostazioni idratate e — se loggati — profilo cloud
- *  riconciliato, con un preset scelto, e tour non ancora completato. */
+ *  riconciliato, onboarding completo (stesso predicato condiviso `isOnboarded`),
+ *  e tour non ancora completato. */
 function tourShouldOpen(): boolean {
-  const { hydrated, presetId } = useSettings.getState();
+  const { hydrated, presetId, programme, yearOfStudy } = useSettings.getState();
   const { status, reconciled } = useAuth.getState();
   const ready =
     hydrated && status !== "loading" && !(status === "signedIn" && !reconciled);
-  return ready && Boolean(presetId) && !tourDone();
+  const onboarded = isOnboarded({
+    preset_id: presetId,
+    programme,
+    year_of_study: yearOfStudy,
+  });
+  return ready && onboarded && !tourDone();
 }
 
 /** Valutata al mount e a ogni cambio di settings/auth, ma SOLO finché la

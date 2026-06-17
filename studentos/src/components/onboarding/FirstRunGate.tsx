@@ -10,6 +10,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useSettings } from "@/lib/state/settings";
 import { useAuth } from "@/lib/supabase/auth";
+import { isOnboarded } from "@/lib/supabase/isOnboarded";
 
 const GATED_PREFIXES = [
   "/cruscotto",
@@ -25,6 +26,7 @@ export function FirstRunGate() {
   const pathname = usePathname();
   const hydrated = useSettings((s) => s.hydrated);
   const presetId = useSettings((s) => s.presetId);
+  const programme = useSettings((s) => s.programme);
   const yearOfStudy = useSettings((s) => s.yearOfStudy);
   const status = useAuth((s) => s.status);
   const reconciled = useAuth((s) => s.reconciled);
@@ -36,12 +38,17 @@ export function FirstRunGate() {
     // local settings (reconciled). Otherwise we'd redirect a returning user on
     // a half-reconciled empty state. The cloud profile is authoritative.
     if (status === "signedIn" && !reconciled) return;
-    const complete = Boolean(presetId) && yearOfStudy !== undefined;
+    // Shared predicate — same definition as AuthCallback / CruscottoTour.
+    const complete = isOnboarded({
+      preset_id: presetId,
+      programme,
+      year_of_study: yearOfStudy,
+    });
     if (complete) return;
     if (GATED_PREFIXES.some((p) => pathname.startsWith(p))) {
       router.replace("/onboarding");
     }
-  }, [hydrated, status, reconciled, presetId, yearOfStudy, pathname, router]);
+  }, [hydrated, status, reconciled, presetId, programme, yearOfStudy, pathname, router]);
 
   return null;
 }

@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useAuth } from "@/lib/supabase/auth";
 import { fetchProfile } from "@/lib/supabase/remote";
+import { isOnboarded } from "@/lib/supabase/isOnboarded";
 
 export function AuthCallback() {
   const router = useRouter();
@@ -49,8 +50,8 @@ export function AuthCallback() {
       }
       const profile = await fetchProfile(uid);
       if (cancelled) return;
-      const complete = Boolean(profile?.preset_id && profile?.programme);
-      router.replace(complete ? "/cruscotto" : "/onboarding");
+      // Shared predicate — same definition as FirstRunGate / CruscottoTour.
+      router.replace(isOnboarded(profile) ? "/cruscotto" : "/onboarding");
     })();
     return () => {
       cancelled = true;
