@@ -1,8 +1,14 @@
 # Stato attuale StudentOS
 
-Aggiornato: 2026-06-18 (landing: CTA chiusura, FAQ, footer)
+Aggiornato: 2026-06-18 (landing: tagline salvagente)
 
 ## Completati
+
+### Sessione 2026-06-18 — micro-tagline hero (1 commit)
+✅ Tagline "Il salvagente per la tua carriera universitaria." sotto il wordmark
+   (accento --signal-2, fadeIn 120ms = prima riga leggibile): la metafora del
+   salvagente si auto-spiega per chi arriva freddo. Copy-only, salvagente nel
+   wordmark invariato
 
 ### Sessione 2026-06-18 — conversione + fiducia landing (1 commit)
 ✅ CTA di chiusura: banda finale "Pronto a partire? → Inizia ora" con riga di

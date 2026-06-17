@@ -180,6 +180,13 @@ export function Landing() {
             </span>
           </h1>
           <p
+            ref={fadeIn(120)}
+            className="mx-auto mt-4 font-display font-semibold text-[var(--signal-2)]"
+            style={{ fontSize: "clamp(0.95rem, 2vw, 1.15rem)" }}
+          >
+            Il salvagente per la tua carriera universitaria.
+          </p>
+          <p
             ref={fadeIn(250)}
             className="mx-auto mt-6 max-w-[28ch] font-display font-bold leading-[1.15] text-ink"
             style={{ fontSize: "clamp(1.5rem, 4vw, 2.4rem)" }}
