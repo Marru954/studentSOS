@@ -1,0 +1,215 @@
+- generic [active] [ref=e1]:
+  - link "Salta al contenuto" [ref=e2] [cursor=pointer]:
+    - /url: "#contenuto"
+  - banner [ref=e3]:
+    - navigation "Principale" [ref=e4]:
+      - link "StudentOS" [ref=e6] [cursor=pointer]:
+        - /url: /
+        - generic "StudentOS" [ref=e7]:
+          - generic [ref=e8]:
+            - text: Student
+            - img [ref=e9]
+            - text: S
+      - generic [ref=e16]:
+        - link "Cruscotto" [ref=e17] [cursor=pointer]:
+          - /url: /cruscotto
+          - img [ref=e19]
+          - text: Cruscotto
+        - link "Orario" [ref=e24] [cursor=pointer]:
+          - /url: /orario
+          - img [ref=e26]
+          - text: Orario
+        - link "Appelli" [ref=e28] [cursor=pointer]:
+          - /url: /appelli
+          - img [ref=e30]
+          - text: Appelli
+        - link "Libretto" [ref=e34] [cursor=pointer]:
+          - /url: /libretto
+          - img [ref=e36]
+          - text: Libretto
+        - link "Note" [ref=e39] [cursor=pointer]:
+          - /url: /note
+          - img [ref=e41]
+          - text: Note
+        - link "Focus" [ref=e44] [cursor=pointer]:
+          - /url: /focus
+          - img [ref=e46]
+          - text: Focus
+      - generic [ref=e49]:
+        - button "Cerca (Cmd+K)" [ref=e50]:
+          - img [ref=e51]
+        - link "Impostazioni" [ref=e54] [cursor=pointer]:
+          - /url: /impostazioni
+          - img [ref=e55]
+        - button "Passa al tema chiaro" [ref=e58]:
+          - img [ref=e59]
+  - main [ref=e67]:
+    - generic [ref=e68]:
+      - generic "StudentOS" [ref=e69]:
+        - generic [ref=e70]:
+          - text: Student
+          - img [ref=e71]
+          - text: S
+      - paragraph [ref=e78]: Tre domande e il cruscotto si adatta a te.
+    - generic [ref=e79]:
+      - generic [ref=e82]: 1. Ateneo
+      - generic [ref=e85]: 2. Corso
+      - generic [ref=e88]: 3. Anno e CFU
+      - generic [ref=e91]: 4. Conferma
+    - generic [ref=e92]:
+      - generic [ref=e93]:
+        - heading "In quale università studi?" [level=1] [ref=e94]
+        - generic [ref=e95]:
+          - generic [ref=e96]: Email universitaria (rileva l’ateneo)
+          - textbox "Email universitaria (rileva l’ateneo)" [ref=e97]:
+            - /placeholder: nome@studenti.uniroma2.it
+          - paragraph [ref=e98]: La usiamo solo per trovare il tuo ateneo. Non stai creando un account qui.
+        - generic [ref=e99]:
+          - generic [ref=e100]: …oppure cerca il tuo ateneo
+          - generic [ref=e101]:
+            - img
+            - textbox "…oppure cerca il tuo ateneo" [ref=e102]:
+              - /placeholder: Cerca per nome o città…
+        - generic [ref=e103]:
+          - button "Tor Vergata Roma · sync live" [ref=e104]:
+            - generic [ref=e105]:
+              - generic [ref=e106]: Tor Vergata
+              - generic [ref=e107]: Roma · sync live
+          - button "Università di Trieste Trieste · sync live" [ref=e108]:
+            - generic [ref=e109]:
+              - generic [ref=e110]: Università di Trieste
+              - generic [ref=e111]: Trieste · sync live
+          - button "Università di Perugia Perugia · sync live" [ref=e112]:
+            - generic [ref=e113]:
+              - generic [ref=e114]: Università di Perugia
+              - generic [ref=e115]: Perugia · sync live
+          - button "Università di Cagliari Cagliari · sync live" [ref=e116]:
+            - generic [ref=e117]:
+              - generic [ref=e118]: Università di Cagliari
+              - generic [ref=e119]: Cagliari · sync live
+          - button "Università di Trento Trento · sync live" [ref=e120]:
+            - generic [ref=e121]:
+              - generic [ref=e122]: Università di Trento
+              - generic [ref=e123]: Trento · sync live
+          - button "Federico II Napoli · sync live" [ref=e124]:
+            - generic [ref=e125]:
+              - generic [ref=e126]: Federico II
+              - generic [ref=e127]: Napoli · sync live
+          - button "Università di Ferrara Ferrara · sync live" [ref=e128]:
+            - generic [ref=e129]:
+              - generic [ref=e130]: Università di Ferrara
+              - generic [ref=e131]: Ferrara · sync live
+          - button "Università di Parma Parma · sync live" [ref=e132]:
+            - generic [ref=e133]:
+              - generic [ref=e134]: Università di Parma
+              - generic [ref=e135]: Parma · sync live
+          - button "Università di Salerno Salerno · sync live" [ref=e136]:
+            - generic [ref=e137]:
+              - generic [ref=e138]: Università di Salerno
+              - generic [ref=e139]: Salerno · sync live
+          - button "Università di Sassari Sassari · sync live" [ref=e140]:
+            - generic [ref=e141]:
+              - generic [ref=e142]: Università di Sassari
+              - generic [ref=e143]: Sassari · sync live
+          - button "Università di Firenze Firenze · sync live" [ref=e144]:
+            - generic [ref=e145]:
+              - generic [ref=e146]: Università di Firenze
+              - generic [ref=e147]: Firenze · sync live
+          - button "Università di Genova Genova · sync live" [ref=e148]:
+            - generic [ref=e149]:
+              - generic [ref=e150]: Università di Genova
+              - generic [ref=e151]: Genova · sync live
+          - button "Piemonte Orientale Vercelli · sync live" [ref=e152]:
+            - generic [ref=e153]:
+              - generic [ref=e154]: Piemonte Orientale
+              - generic [ref=e155]: Vercelli · sync live
+          - button "Stranieri Siena Siena · sync live" [ref=e156]:
+            - generic [ref=e157]:
+              - generic [ref=e158]: Stranieri Siena
+              - generic [ref=e159]: Siena · sync live
+          - button "Ca' Foscari Venezia · sync live" [ref=e160]:
+            - generic [ref=e161]:
+              - generic [ref=e162]: Ca' Foscari
+              - generic [ref=e163]: Venezia · sync live
+          - button "UniSalento Lecce · sync live" [ref=e164]:
+            - generic [ref=e165]:
+              - generic [ref=e166]: UniSalento
+              - generic [ref=e167]: Lecce · sync live
+          - button "Vanvitelli Caserta · sync live" [ref=e168]:
+            - generic [ref=e169]:
+              - generic [ref=e170]: Vanvitelli
+              - generic [ref=e171]: Caserta · sync live
+          - button "Università di Bari Bari · sync live" [ref=e172]:
+            - generic [ref=e173]:
+              - generic [ref=e174]: Università di Bari
+              - generic [ref=e175]: Bari · sync live
+          - button "La Sapienza Roma · inserimento manuale" [ref=e176]:
+            - generic [ref=e177]:
+              - generic [ref=e178]: La Sapienza
+              - generic [ref=e179]: Roma · inserimento manuale
+          - button "Università di Bologna Bologna · inserimento manuale" [ref=e180]:
+            - generic [ref=e181]:
+              - generic [ref=e182]: Università di Bologna
+              - generic [ref=e183]: Bologna · inserimento manuale
+          - button "Politecnico di Milano Milano · inserimento manuale" [ref=e184]:
+            - generic [ref=e185]:
+              - generic [ref=e186]: Politecnico di Milano
+              - generic [ref=e187]: Milano · inserimento manuale
+          - button "Politecnico di Torino Torino · inserimento manuale" [ref=e188]:
+            - generic [ref=e189]:
+              - generic [ref=e190]: Politecnico di Torino
+              - generic [ref=e191]: Torino · inserimento manuale
+          - button "Università di Padova Padova · inserimento manuale" [ref=e192]:
+            - generic [ref=e193]:
+              - generic [ref=e194]: Università di Padova
+              - generic [ref=e195]: Padova · inserimento manuale
+          - button "Università di Siena Siena · inserimento manuale" [ref=e196]:
+            - generic [ref=e197]:
+              - generic [ref=e198]: Università di Siena
+              - generic [ref=e199]: Siena · inserimento manuale
+          - button "Università di Pisa Pisa · inserimento manuale" [ref=e200]:
+            - generic [ref=e201]:
+              - generic [ref=e202]: Università di Pisa
+              - generic [ref=e203]: Pisa · inserimento manuale
+          - button "Statale di Milano Milano · inserimento manuale" [ref=e204]:
+            - generic [ref=e205]:
+              - generic [ref=e206]: Statale di Milano
+              - generic [ref=e207]: Milano · inserimento manuale
+          - button "Università di Torino Torino · inserimento manuale" [ref=e208]:
+            - generic [ref=e209]:
+              - generic [ref=e210]: Università di Torino
+              - generic [ref=e211]: Torino · inserimento manuale
+          - button "Bocconi Milano · inserimento manuale" [ref=e212]:
+            - generic [ref=e213]:
+              - generic [ref=e214]: Bocconi
+              - generic [ref=e215]: Milano · inserimento manuale
+          - button "Università di Pavia Pavia · inserimento manuale" [ref=e216]:
+            - generic [ref=e217]:
+              - generic [ref=e218]: Università di Pavia
+              - generic [ref=e219]: Pavia · inserimento manuale
+      - generic [ref=e220]:
+        - button "Indietro" [disabled]:
+          - img
+          - text: Indietro
+        - button "Continua" [disabled]:
+          - text: Continua
+          - img
+    - paragraph [ref=e221]: Puoi cambiare questi dati quando vuoi dal cruscotto.
+  - contentinfo [ref=e222]:
+    - generic [ref=e223]:
+      - link "StudentOS" [ref=e224] [cursor=pointer]:
+        - /url: /
+        - generic "StudentOS" [ref=e225]:
+          - generic [ref=e226]:
+            - text: Student
+            - img [ref=e227]
+            - text: S
+      - generic [ref=e234]:
+        - link "Domande frequenti" [ref=e235] [cursor=pointer]:
+          - /url: /#faq
+        - link "Contatto" [ref=e236] [cursor=pointer]:
+          - /url: mailto:support@studentos.app?subject=Feedback%20StudentOS
+        - generic [ref=e237]: I tuoi dati restano su questo dispositivo
+  - status
+  - button "Open Next.js Dev Tools" [ref=e243] [cursor=pointer]:
+    - img [ref=e244]
