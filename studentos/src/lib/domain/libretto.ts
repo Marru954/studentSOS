@@ -53,6 +53,11 @@ export function graduationBase(average: number): number {
   return (average / 30) * 110;
 }
 
+/** Inverso di graduationBase: dalla base /110 ricava la media ponderata /30. */
+export function baseToAverage(base: number): number {
+  return (base / 110) * 30;
+}
+
 /** One numeric grade plotted in time — fuel for the andamento scatter chart. */
 export interface GradePoint {
   courseName: string;
