@@ -1,0 +1,72 @@
+- generic [active] [ref=e1]:
+  - link "Salta al contenuto" [ref=e2] [cursor=pointer]:
+    - /url: "#contenuto"
+  - banner [ref=e3]:
+    - navigation "Principale" [ref=e4]:
+      - link "StudentOS" [ref=e6] [cursor=pointer]:
+        - /url: /
+        - generic "StudentOS" [ref=e7]:
+          - generic [ref=e8]:
+            - text: Student
+            - img [ref=e9]
+            - text: S
+      - generic [ref=e16]:
+        - button "Cerca (Cmd+K)" [ref=e17]:
+          - img [ref=e18]
+        - link "Impostazioni" [ref=e21] [cursor=pointer]:
+          - /url: /impostazioni
+          - img [ref=e22]
+        - button "Passa al tema chiaro" [ref=e25]:
+          - img [ref=e26]
+  - navigation "Navigazione" [ref=e33]:
+    - link "Crusc." [ref=e34] [cursor=pointer]:
+      - /url: /cruscotto
+      - img [ref=e36]
+      - text: Crusc.
+    - link "Orario" [ref=e41] [cursor=pointer]:
+      - /url: /orario
+      - img [ref=e43]
+      - text: Orario
+    - link "Esami" [ref=e45] [cursor=pointer]:
+      - /url: /appelli
+      - img [ref=e47]
+      - text: Esami
+    - link "Voti" [ref=e51] [cursor=pointer]:
+      - /url: /libretto
+      - img [ref=e53]
+      - text: Voti
+    - link "Note" [ref=e56] [cursor=pointer]:
+      - /url: /note
+      - img [ref=e58]
+      - text: Note
+    - link "Focus" [ref=e61] [cursor=pointer]:
+      - /url: /focus
+      - img [ref=e63]
+      - text: Focus
+  - main [ref=e67]:
+    - generic [ref=e68]:
+      - generic [ref=e69]:
+        - heading "Cruscotto" [level=1] [ref=e71]
+        - generic [ref=e72]:
+          - button "Configura" [ref=e73]:
+            - img [ref=e74]
+            - text: Configura
+          - generic [ref=e77]:
+            - button "Sincronizza" [disabled]
+      - status [ref=e78]:
+        - generic [ref=e79]: Caricamento dei dati locali…
+  - contentinfo [ref=e104]:
+    - generic [ref=e105]:
+      - link "StudentOS" [ref=e106] [cursor=pointer]:
+        - /url: /
+        - generic "StudentOS" [ref=e107]:
+          - generic [ref=e108]:
+            - text: Student
+            - img [ref=e109]
+            - text: S
+      - generic [ref=e116]: I tuoi dati restano su questo dispositivo
+  - button "Apri l'assistente" [ref=e117]:
+    - img [ref=e118]
+  - status
+  - button "Open Next.js Dev Tools" [ref=e130] [cursor=pointer]:
+    - img [ref=e131]
