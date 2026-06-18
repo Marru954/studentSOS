@@ -19,7 +19,7 @@ Legenda: ✅ ok · ⚠️ migliorabile · 🐞 bug · 💡 idea aggiunta
 - SSO Delphi **disabilitato di proposito** ("prossimamente" in `DelphiConnect`). In offline-mode (no Supabase env) non c'è login email: l'onboarding scrive `presetId/programme/yearOfStudy` in IndexedDB. `FirstRunGate` manda gli unconfigured a `/onboarding`. Flusso ateneo→corso→anno (`OnboardingFlow`), corsi live taggati "sync live" vs "manuale".
 - ⚠️ Da rivedere live in una sessione dedicata (questa sessione gira già su un profilo onboardato Tor Vergata).
 
-### Cruscotto (`/cruscotto`)
+### Panoramica (`/panoramica`)
 - ✅ Saluto orario corretto, banner prossimo esame (ora aggiunto l'orario), QuickActions ateneo-aware, "Oggi", Carriera/CFU, ExamTimeline, Link utili, Obiettivo settimana, Scadenze prenotazione.
 - ⚠️ **Layout piatto**: pannelli glass affiancati, poca gerarchia. → FASE 3 bento asimmetrico.
 - ⚠️ "Appelli in arrivo" badge mostra l'intero calendario del corso (es. 53) — non gli esami dello studente (limite: nessuna iscrizione per-studente).
@@ -59,13 +59,13 @@ Legenda: ✅ ok · ⚠️ migliorabile · 🐞 bug · 💡 idea aggiunta
 ---
 
 ## Decisione: Calendario
-**Verdetto: ha valore, NON fonderlo nel Cruscotto.** L'Agenda 7-giorni unifica lezioni+appelli+task+focus in un'unica timeline cronologica che né Orario (solo lezioni, vista settimana) né Appelli (solo esami, vista mese) offrono. È l'unica vista "cosa mi succede nei prossimi giorni a colpo d'occhio". La vista Mese dà il quadro mensile multi-tipo. Rimuoverlo perderebbe la cross-type timeline. → **Tenere**, ma rendere gli eventi cliccabili (deep-link) in futuro (backlog).
+**Verdetto: ha valore, NON fonderlo nel Panoramica.** L'Agenda 7-giorni unifica lezioni+appelli+task+focus in un'unica timeline cronologica che né Orario (solo lezioni, vista settimana) né Appelli (solo esami, vista mese) offrono. È l'unica vista "cosa mi succede nei prossimi giorni a colpo d'occhio". La vista Mese dà il quadro mensile multi-tipo. Rimuoverlo perderebbe la cross-type timeline. → **Tenere**, ma rendere gli eventi cliccabili (deep-link) in futuro (backlog).
 
 ---
 
 ## Lista "non-wow" (cosa non reggeva l'aspettativa)
 1. Focus senza modalità/immersività/motivazione (la pagina con più potenziale sprecato).
-2. Layout uniforme (glass affiancati) su Cruscotto/Libretto → manca varietà visiva (Linear/Notion/Vercel).
+2. Layout uniforme (glass affiancati) su Panoramica/Libretto → manca varietà visiva (Linear/Notion/Vercel).
 3. Impostazioni troppo scarne.
 4. Libretto: ridondanza Obiettivo/Proiezioni.
 5. Landing: testimonial finti + lista atenei hardcoded che può divergere dai preset reali.
@@ -104,14 +104,14 @@ Differenze tra atenei: nessuna a livello funzionale — il motore di sync è ide
 2. `feat(focus)` — ambiente di studio: 4 modalità (Pomodoro/Deep Work/Flow count-up/Sprint), sessione immersiva (la pagina collassa sul timer), widget motivazionale, record, chime, beforeunload. **Verificato live** (Flow conta in su, immersivo collassa/riapre, timer non si resetta).
 3. `feat(impostazioni)` — Privacy e dati (contatori + export JSON + cancellazione granulare) + Info app. **Verificato live** (9 esami, 56 appelli).
 4. `feat(appelli)` — card urgenti con bordo pulsante. **Verificato live**.
-5. `feat(cruscotto)` — **layout bento asimmetrico**: hero prossimo esame + countdown (2/3) con Carriera/CFU impilati accanto, riga media Oggi/Appelli, riga piccola. Rimossi SummaryBar + banner ridondanti. **Verificato live**.
+5. `feat(panoramica)` — **layout bento asimmetrico**: hero prossimo esame + countdown (2/3) con Carriera/CFU impilati accanto, riga media Oggi/Appelli, riga piccola. Rimossi SummaryBar + banner ridondanti. **Verificato live**.
 6. `feat(libretto)` — **split verticale** (esami a sx, analisi a dx, tab su mobile) + **unione Obiettivo laurea/Proiezioni** in un pannello (ridondanza eliminata, ProjectionPanel rimosso). **Verificato live**.
 
 ## ⏳ RIMANENZE (non completate — budget sessione)
-- **FASE 3 redesign** restanti: Orario barra "Oggi" in cima (pill lezioni di oggi), Impostazioni a colonne tematiche. (Cruscotto bento e Libretto split ✅ fatti.)
+- **FASE 3 redesign** restanti: Orario barra "Oggi" in cima (pill lezioni di oggi), Impostazioni a colonne tematiche. (Panoramica bento e Libretto split ✅ fatti.)
 - **FASE 4 Focus** scope rimandato: **sopravvivenza sessione cross-route** (richiede lift del timer in uno store globale — escluso per non rompere il timer funzionante) + indicatore "In sessione" in navbar + dialog "stai studiando, esci?"; **suoni combinabili** (ora uno alla volta) + più suoni/sfondi; **confetti** su task completato; **avvia timer da un task** (StudyTask.examId è già nel tipo ma inutilizzato — gancio pronto).
 - **FASE 5 Impostazioni** rimandate: Studio&obiettivi (ore settimanali → unificare l'orfano localStorage `studentos-weekly-goal-hours`, CFU/semestre, inizio settimana, pausa lunga dopo N), Notifiche (4 toggle), Accessibilità (dimensione testo, riduci animazioni, alto contrasto → richiedono nuovi campi `AppSettings` + applier globale su `<html>` + CSS; `db.ts` NON va toccato, i campi opzionali sono schema-safe).
 - **Backlog UX** (da [[studentos-ux-backlog]]): appelli doppia etichetta Urgenti/Futuri, deep-link da Cmd+K/FAB/calendario.
 
-Punto di ripartenza consigliato: Cruscotto bento → Libretto split+merge → Focus cross-route session → Impostazioni Studio/Notifiche/Accessibilità.
+Punto di ripartenza consigliato: Panoramica bento → Libretto split+merge → Focus cross-route session → Impostazioni Studio/Notifiche/Accessibilità.
 

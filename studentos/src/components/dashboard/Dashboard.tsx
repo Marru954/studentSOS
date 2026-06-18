@@ -28,7 +28,7 @@ import { useLibretto } from "@/lib/state/manual";
 import { useSettings } from "@/lib/state/settings";
 import { useSynced } from "@/lib/state/synced";
 import { useTrophies } from "@/lib/state/trophies";
-import { CruscottoTour } from "@/components/onboarding/CruscottoTour";
+import { PanoramicaTour } from "@/components/onboarding/PanoramicaTour";
 import { BackupNudge } from "./BackupNudge";
 import { BookingDeadlines } from "./BookingDeadlines";
 import { BookingReminders } from "./BookingReminders";
@@ -156,7 +156,7 @@ function NoExamHero({ className }: { className?: string }) {
 }
 
 export function Dashboard() {
-  // Field selectors — non l'intero store — così il Cruscotto si ri-renderizza
+  // Field selectors — non l'intero store — così il Panoramica si ri-renderizza
   // solo quando cambia un campo che mostra davvero, non a ogni mutazione non
   // correlata (un toggle settings, una nota, ecc.).
   const syncedHydrated = useSynced((s) => s.hydrated);
@@ -246,11 +246,11 @@ export function Dashboard() {
   return (
     <div className="flex flex-col gap-5">
       {/* Tour guidato al primo accesso (si auto-gestisce: gating + localStorage). */}
-      <CruscottoTour />
+      <PanoramicaTour />
 
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="text-[clamp(2rem,5vw,3rem)]">Cruscotto</h1>
+          <h1 className="text-[clamp(2rem,5vw,3rem)]">Panoramica</h1>
           {now && (
             <p className="mt-1 text-sm text-ink-mute">
               {now.getHours() < 12
@@ -314,7 +314,7 @@ export function Dashboard() {
           )}
           {/* Riassunti compatti read-only: i dati pieni (andamento voti,
               stima laurea, simulatore) vivono SOLO nel Libretto; qui una riga
-              che ci linka, così il Cruscotto resta glanceable e non duplica. */}
+              che ci linka, così il Panoramica resta glanceable e non duplica. */}
           <div className="flex flex-col justify-between gap-4 lg:col-span-2">
             <CareerStrip entries={librettoItems} lastTrophy={lastTrophy} />
             <CfuMini

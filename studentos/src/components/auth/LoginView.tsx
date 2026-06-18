@@ -81,7 +81,7 @@ export function LoginView() {
     }
     if (mode === "signin") {
       // Session is live; FirstRunGate routes to onboarding if not configured.
-      router.push("/cruscotto");
+      router.push("/panoramica");
       return;
     }
     setSent(r.message);
@@ -224,8 +224,8 @@ export function LoginView() {
             {!configured && (
               <p className="rounded-lg border border-warn/40 bg-warn-dim px-3 py-2 text-xs text-warn">
                 Accesso online non configurato su questa installazione.{" "}
-                <Link href="/cruscotto" className="underline">
-                  vai al cruscotto
+                <Link href="/panoramica" className="underline">
+                  vai al panoramica
                 </Link>
                 .
               </p>
@@ -300,7 +300,7 @@ export function LoginView() {
               type="button"
               onClick={() => {
                 devLogin(email);
-                router.push("/cruscotto");
+                router.push("/panoramica");
               }}
             >
               Accedi come test
@@ -311,7 +311,7 @@ export function LoginView() {
 
       <p className="mt-6 text-center text-xs text-ink-mute">
         Vuoi prima dare un&rsquo;occhiata?{" "}
-        <Link href="/cruscotto" className="underline hover:text-ink">
+        <Link href="/panoramica" className="underline hover:text-ink">
           Esplora StudentOS
         </Link>
       </p>

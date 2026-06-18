@@ -8,7 +8,7 @@ import type { LibrettoEntry } from "@/lib/domain/types";
 import { fmtNum } from "@/lib/format";
 
 /**
- * Compact, read-only career summaries for the Cruscotto. The FULL instruments
+ * Compact, read-only career summaries for the Panoramica. The FULL instruments
  * (grade trend, CFU pace + graduation estimate, goal simulator) live only in
  * the Libretto — here we show a one-line glance that links to that master page,
  * so the dashboard stays glanceable and the data isn't duplicated.

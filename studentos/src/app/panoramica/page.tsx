@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { Dashboard } from "@/components/dashboard/Dashboard";
 
-export const metadata: Metadata = { title: "Cruscotto" };
+export const metadata: Metadata = { title: "Panoramica" };
 
-export default function CruscottoPage() {
+export default function PanoramicaPage() {
   return (
     <main
       id="contenuto"

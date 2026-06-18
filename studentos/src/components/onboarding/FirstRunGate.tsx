@@ -13,7 +13,7 @@ import { useAuth } from "@/lib/supabase/auth";
 import { isOnboarded } from "@/lib/supabase/isOnboarded";
 
 const GATED_PREFIXES = [
-  "/cruscotto",
+  "/panoramica",
   "/orario",
   "/appelli",
   "/libretto",
@@ -38,7 +38,7 @@ export function FirstRunGate() {
     // local settings (reconciled). Otherwise we'd redirect a returning user on
     // a half-reconciled empty state. The cloud profile is authoritative.
     if (status === "signedIn" && !reconciled) return;
-    // Shared predicate — same definition as AuthCallback / CruscottoTour.
+    // Shared predicate — same definition as AuthCallback / PanoramicaTour.
     const complete = isOnboarded({
       preset_id: presetId,
       programme,

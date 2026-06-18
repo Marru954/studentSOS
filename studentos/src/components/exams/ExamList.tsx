@@ -303,7 +303,7 @@ export function ExamList() {
               <p className="text-sm text-ink-mute">
                 Nessuna fonte attiva.{" "}
                 <Link href="/" className="text-signal underline underline-offset-2">
-                  Configura il tuo ateneo dal cruscotto
+                  Configura il tuo ateneo dal panoramica
                 </Link>{" "}
                 per sincronizzare gli appelli d&rsquo;esame, oppure aggiungine
                 uno manualmente qui sotto.

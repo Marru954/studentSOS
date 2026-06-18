@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * Tour guidato mostrato UNA volta sola, al primo accesso al cruscotto dopo
+ * Tour guidato mostrato UNA volta sola, al primo accesso al panoramica dopo
  * l'onboarding. Quattro passi che indicano: appelli urgenti, aggiunta di un
  * voto al libretto, avvio di una sessione focus, posizione delle impostazioni.
  *
@@ -36,7 +36,7 @@ const STEPS = [
   },
   {
     title: "Aggiungi un voto",
-    body: "Vai su Libretto per registrare un esame superato: inserimento manuale, import CSV o import dal PDF di Delphi. Media e CFU sul cruscotto si aggiornano subito.",
+    body: "Vai su Libretto per registrare un esame superato: inserimento manuale, import CSV o import dal PDF di Delphi. Media e CFU sul panoramica si aggiornano subito.",
   },
   {
     title: "Avvia una sessione focus",
@@ -44,7 +44,7 @@ const STEPS = [
   },
   {
     title: "Le impostazioni",
-    body: "Il pulsante Configura qui nel cruscotto (e la voce Impostazioni nel menu) ti riporta ad ateneo, corso e anno per aggiornare in ogni momento la tua configurazione.",
+    body: "Il pulsante Configura qui nel panoramica (e la voce Impostazioni nel menu) ti riporta ad ateneo, corso e anno per aggiornare in ogni momento la tua configurazione.",
   },
 ] as const;
 
@@ -112,7 +112,7 @@ function evaluateTour() {
 }
 
 /** Chiusura definitiva per la sessione: persiste il flag e congela la
- *  decisione, così un eventuale rimontaggio del cruscotto non lo riapre. */
+ *  decisione, così un eventuale rimontaggio del panoramica non lo riapre. */
 function dismissTour() {
   persistDone();
   tourOpen = false;
@@ -141,7 +141,7 @@ function useTourOpen(): boolean {
   );
 }
 
-export function CruscottoTour() {
+export function PanoramicaTour() {
   const [step, setStep] = useState(0);
   // Apertura decisa una volta sola e congelata: né la sync né lo stato auth
   // possono chiudere il tour, solo `close()` (X o "Ho capito").
@@ -155,7 +155,7 @@ export function CruscottoTour() {
   const current = STEPS[step];
 
   return (
-    <Overlay open={open} onClose={close} label="Tour del cruscotto" align="center">
+    <Overlay open={open} onClose={close} label="Tour del panoramica" align="center">
       <div className="max-w-md p-6">
         <div className="mb-4 flex items-start justify-between gap-3">
           <h2 className="flex items-center gap-2 text-lg font-semibold text-ink">

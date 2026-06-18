@@ -491,7 +491,7 @@ export function WeekView() {
               <p className="muted text-sm">
                 Nessuna fonte attiva.{" "}
                 <Link href="/" className="text-signal underline underline-offset-2">
-                  Configura il tuo ateneo dal cruscotto
+                  Configura il tuo ateneo dal panoramica
                 </Link>{" "}
                 per sincronizzare l&rsquo;orario, oppure inserisci le lezioni
                 manualmente qui sotto.

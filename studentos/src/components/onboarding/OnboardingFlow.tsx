@@ -189,7 +189,7 @@ export function OnboardingFlow() {
     // sync now → orario e appelli compaiono senza refresh manuale.
     await clearSyncedCaches();
     void useSynced.getState().sync();
-    router.replace("/cruscotto");
+    router.replace("/panoramica");
   }
 
   return (
@@ -200,7 +200,7 @@ export function OnboardingFlow() {
       <div className="mb-6 flex flex-col items-center gap-2 text-center">
         <Wordmark className="text-xl" />
         <p className="text-sm text-ink-mute">
-          Tre domande e il cruscotto si adatta a te.
+          Tre domande e il panoramica si adatta a te.
         </p>
       </div>
 
@@ -498,7 +498,7 @@ export function OnboardingFlow() {
       </div>
 
       <p className="mt-5 text-center text-xs text-ink-faint">
-        Puoi cambiare questi dati quando vuoi dal cruscotto.
+        Puoi cambiare questi dati quando vuoi dal panoramica.
       </p>
     </main>
   );

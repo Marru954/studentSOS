@@ -3,7 +3,7 @@
  *
  * Before this helper the check was spelled three different ways across the app
  * (FirstRunGate: presetId + yearOfStudy; AuthCallback: preset_id + programme;
- * CruscottoTour: presetId alone), so a half-configured profile could pass one
+ * PanoramicaTour: presetId alone), so a half-configured profile could pass one
  * gate and be bounced by another. The rule is now defined exactly once here:
  * a user is onboarded only when ALL THREE of ateneo (preset_id), corso
  * (programme) and anno (year_of_study) are present.

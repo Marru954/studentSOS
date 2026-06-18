@@ -5,7 +5,7 @@ import {
   TrendingUp,
 } from "lucide-react";
 
-/** Mockup STATICO del cruscotto dentro una finta finestra del browser, mostrato
+/** Mockup STATICO del panoramica dentro una finta finestra del browser, mostrato
  *  nell'hero della landing. Puramente decorativo (`aria-hidden`): non legge lo
  *  store, non è interattivo, non ha link — è uno "screenshot" finto fatto con i
  *  token del design system (glass, gradient-ring, --signal-2). Dati plausibili
@@ -36,15 +36,15 @@ export function HeroPreview() {
           </div>
           <div className="glass-2 mx-auto flex items-center gap-1.5 rounded-full px-3 py-1 text-xs text-ink-mute">
             <Lock className="size-3" />
-            studentos.app/cruscotto
+            studentos.app/panoramica
           </div>
         </div>
 
-        {/* contenuto cruscotto (statico) */}
+        {/* contenuto panoramica (statico) */}
         <div className="relative p-4 sm:p-6">
           {/* header mini */}
           <div className="mb-4 flex items-center justify-between">
-            <div className="font-display text-xl font-bold text-ink">Cruscotto</div>
+            <div className="font-display text-xl font-bold text-ink">Panoramica</div>
             <span className="chip chip-signal">Mercoledì 18 giugno</span>
           </div>
 

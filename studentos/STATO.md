@@ -57,8 +57,8 @@ Aggiornato: 2026-06-18 (perf landing: bundle più leggero)
    → build/test(197)/tsc/lint verdi, verificato in browser
 
 ### Sessione 2026-06-18 — hero product shot (1 commit)
-✅ HeroPreview.tsx: mockup STATICO del cruscotto in una finta finestra browser
-   (pallini semaforo + URL studentos.app/cruscotto), sotto il CTA dell'hero.
+✅ HeroPreview.tsx: mockup STATICO del panoramica in una finta finestra browser
+   (pallini semaforo + URL studentos.app/panoramica), sotto il CTA dell'hero.
    Server component decorativo (aria-hidden), zero dati reali, zero immagini
    esterne, solo classi/token del design system (glass, gradient-ring,
    accent-top, grad-fill, chip, --signal-2). Replica NextExamHero (numerone "3
@@ -66,9 +66,9 @@ Aggiornato: 2026-06-18 (perf landing: bundle più leggero)
    mobile (impila), build/test(197)/tsc/lint verdi
 
 ### Sessione 2026-06-18 — landing UX (blind-test studente, 1 commit)
-✅ CTA unificati: navbar "Inizia ora" → /onboarding (era /cruscotto); i due
+✅ CTA unificati: navbar "Inizia ora" → /onboarding (era /panoramica); i due
    bottoni gemelli non divergono più. Card Panoramica rietichettata "Anteprima"
-   / "Guarda un esempio" (preview del cruscotto, non ingresso primario)
+   / "Guarda un esempio" (preview del panoramica, non ingresso primario)
 ✅ Riordino sezioni: Atenei + "Come funziona" salgono subito sotto l'hero (il
    gancio); Tutto-in-un-posto e Stats scendono; Traguardi resta ultimo
 ✅ Copy: sub-headline senza "sync forzato" ("già pronti per il tuo corso, senza

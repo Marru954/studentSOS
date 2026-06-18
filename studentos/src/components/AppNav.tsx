@@ -27,7 +27,7 @@ import { useSynced } from "@/lib/state/synced";
 // ingranaggio), l'Assistente è una bubble flottante: nessuno dei due è una voce
 // di barra. La landing (/) è pubblica, non una sezione dell'app.
 const LINKS = [
-  { href: "/cruscotto", label: "Cruscotto", short: "Crusc.", icon: LayoutDashboard },
+  { href: "/panoramica", label: "Panoramica", short: "Crusc.", icon: LayoutDashboard },
   { href: "/orario", label: "Orario", short: "Orario", icon: CalendarDays },
   { href: "/appelli", label: "Appelli", short: "Esami", icon: CalendarClock },
   { href: "/libretto", label: "Libretto", short: "Voti", icon: GraduationCap },
@@ -37,7 +37,7 @@ const LINKS = [
 
 /** Floating top bar (sm+) plus a fixed bottom tab bar on mobile. The active page
  *  is marked by the filled accent pill AND aria-current — never by colour alone.
- *  A red dot flags the Cruscotto when there are critical urgencies. */
+ *  A red dot flags the Panoramica when there are critical urgencies. */
 export function AppNav() {
   const pathname = usePathname();
   const scrolled = useScrolled();
@@ -120,7 +120,7 @@ export function AppNav() {
           <div className="hidden items-center gap-1 xl:flex">
             {LINKS.map(({ href, label, icon: Icon }) => {
               const active = pathname.startsWith(href);
-              const alert = href === "/cruscotto" && criticalCount > 0;
+              const alert = href === "/panoramica" && criticalCount > 0;
               return (
                 <Link
                   key={href}
@@ -191,7 +191,7 @@ export function AppNav() {
       >
         {LINKS.map(({ href, short, icon: Icon }) => {
           const active = pathname.startsWith(href);
-          const alert = href === "/cruscotto" && criticalCount > 0;
+          const alert = href === "/panoramica" && criticalCount > 0;
           return (
             <Link
               key={href}

@@ -210,7 +210,7 @@ export function ImpostazioniView() {
         <div className="flex flex-col gap-3">
           <p className="muted text-sm">
             Scegli i corsi che segui davvero: la selezione filtra in modo coerente
-            appelli, calendario e cruscotto. Lasciali tutti per vedere l&apos;intero
+            appelli, calendario e panoramica. Lasciali tutti per vedere l&apos;intero
             corso di laurea.
           </p>
           {courseOptions.length > 0 ? (
@@ -320,7 +320,7 @@ export function ImpostazioniView() {
         </div>
         <p className="muted mt-3 text-xs">
           L&apos;obiettivo settimanale alimenta la card «Obiettivo settimana» nel
-          cruscotto; la media obiettivo guida le proiezioni del libretto.
+          panoramica; la media obiettivo guida le proiezioni del libretto.
         </p>
       </Panel>
 
@@ -331,7 +331,7 @@ export function ImpostazioniView() {
             <div>
               <p className="text-sm text-ink">Promemoria appelli</p>
               <p className="muted mt-0.5 text-xs">
-                Evidenzia nel cruscotto gli esami in arrivo.
+                Evidenzia nel panoramica gli esami in arrivo.
               </p>
             </div>
             <input

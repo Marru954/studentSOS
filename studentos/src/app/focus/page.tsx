@@ -9,7 +9,7 @@ export default async function FocusPage({
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   // Deep link "studia per questo esame": /focus?course=<nome> preseleziona il
-  // corso nel timer (link dal cruscotto e dalle card appello).
+  // corso nel timer (link dal panoramica e dalle card appello).
   const { course } = await searchParams;
   const initialCourse = Array.isArray(course) ? course[0] : course;
   return (

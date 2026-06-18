@@ -125,7 +125,7 @@ export function LibrettoView() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [yearFilter, setYearFilter] = useState<string>("all");
   const [tab, setTab] = useState<"trofei" | "analisi">("trofei");
-  // Deep-link: /libretto#trofei lands on the vetrina (the cruscotto "Ultimo
+  // Deep-link: /libretto#trofei lands on the vetrina (the panoramica "Ultimo
   // traguardo" links here). Read in the initializer, not an effect — the tabs
   // render only after `ready`, so the SSR "esami" default never hydration-clashes.
   const [view, setView] = useState<LibView>(() =>

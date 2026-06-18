@@ -4,7 +4,7 @@
  * Lands here from a Supabase email link — sign-up confirmation or password
  * recovery. The browser client (detectSessionInUrl + PKCE) exchanges the code
  * for a session on init; we wait for auth to settle, then route: recovery →
- * /auth/reset, first-run → /onboarding, otherwise → /cruscotto. If Supabase
+ * /auth/reset, first-run → /onboarding, otherwise → /panoramica. If Supabase
  * isn't configured we bounce straight to the app.
  */
 import { useRouter } from "next/navigation";
@@ -26,7 +26,7 @@ export function AuthCallback() {
     let cancelled = false;
     (async () => {
       if (status === "offline") {
-        router.replace("/cruscotto");
+        router.replace("/panoramica");
         return;
       }
       // Password-recovery links carry ?type=recovery → send the user to set a
@@ -42,7 +42,7 @@ export function AuthCallback() {
       // The cloud profile is the ONLY source of truth for "already onboarded".
       // Local IndexedDB is never consulted here — it may still hold a previous
       // account's preset. A profile missing preset_id OR programme → always
-      // /onboarding; only a complete cloud profile skips to /cruscotto.
+      // /onboarding; only a complete cloud profile skips to /panoramica.
       const uid = useAuth.getState().user?.id;
       if (!uid) {
         router.replace("/onboarding");
@@ -50,8 +50,8 @@ export function AuthCallback() {
       }
       const profile = await fetchProfile(uid);
       if (cancelled) return;
-      // Shared predicate — same definition as FirstRunGate / CruscottoTour.
-      router.replace(isOnboarded(profile) ? "/cruscotto" : "/onboarding");
+      // Shared predicate — same definition as FirstRunGate / PanoramicaTour.
+      router.replace(isOnboarded(profile) ? "/panoramica" : "/onboarding");
     })();
     return () => {
       cancelled = true;

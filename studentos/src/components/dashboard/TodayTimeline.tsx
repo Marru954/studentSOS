@@ -19,7 +19,7 @@ export function TodayTimeline({
   events: ClassEvent[];
   className?: string;
 }) {
-  // Niente lezioni oggi → messaggio positivo, non un buco nel cruscotto.
+  // Niente lezioni oggi → messaggio positivo, non un buco nel panoramica.
   if (events.length === 0) {
     return (
       <Panel title="Oggi" icon={<Clock />} className={className}>

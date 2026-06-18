@@ -298,9 +298,9 @@ export function Landing({ atenei }: { atenei: AteneoListItem[] }) {
             </p>
           </div>
 
-          {/* Panoramica: anteprima cliccabile del cruscotto */}
+          {/* Panoramica: anteprima cliccabile della pagina */}
           <Link
-            href="/cruscotto"
+            href="/panoramica"
             aria-label="Guarda un esempio della panoramica"
             className="glass gradient-ring lift reveal mt-8 flex flex-col gap-[0.9rem] rounded-xl p-[1.8rem] text-left sm:flex-row sm:items-center sm:gap-6"
           >

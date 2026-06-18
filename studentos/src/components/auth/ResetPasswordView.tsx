@@ -42,7 +42,7 @@ export function ResetPasswordView() {
       return;
     }
     setDone(true);
-    setTimeout(() => router.replace("/cruscotto"), 1200);
+    setTimeout(() => router.replace("/panoramica"), 1200);
   }
 
   return (
@@ -65,7 +65,7 @@ export function ResetPasswordView() {
           <div className="flex flex-col items-center gap-3 rounded-xl border border-signal/40 bg-signal-dim p-5 text-center">
             <CheckCircle2 aria-hidden="true" className="size-8 text-signal" />
             <p className="text-sm font-medium text-ink">Password aggiornata.</p>
-            <p className="text-xs text-ink-mute">Ti porto al cruscotto…</p>
+            <p className="text-xs text-ink-mute">Ti porto al panoramica…</p>
           </div>
         ) : status === "signedOut" || status === "offline" ? (
           <div className="flex flex-col items-center gap-3 rounded-xl border border-warn/40 bg-warn-dim p-5 text-center">
