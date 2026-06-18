@@ -6,6 +6,9 @@
 import { useEffect } from "react";
 import { getTrophy } from "@/lib/domain/achievements";
 import type { CelebrationDecision } from "@/lib/domain/celebrations";
+import { detectAlerts } from "@/lib/domain/detectAlerts";
+import { weightedAverage } from "@/lib/domain/libretto";
+import { useAlerts } from "@/lib/state/alerts";
 import { type CelebrationItem, useCelebration } from "@/lib/state/celebration";
 import { useFocusSessions, useLibretto, useNotes, useTasks } from "@/lib/state/manual";
 import { useSettings } from "@/lib/state/settings";
@@ -34,6 +37,26 @@ function queueCelebrations(decision: CelebrationDecision): void {
   useCelebration.getState().enqueue(items);
 }
 
+/** Recompute the smart alerts from the freshly-synced data and store them.
+ *  `previousExamIds` / `previousMedia` are captured *before* the sync so
+ *  NUOVO_ESAME and MEDIA_CAMBIATA can diff against the prior state. */
+function detectAndStoreAlerts(
+  previousExamIds: string[],
+  previousMedia: number | null,
+): void {
+  const synced = useSynced.getState();
+  const alerts = detectAlerts({
+    classEvents: synced.classEvents,
+    examCalls: synced.examCalls,
+    previousExamIds,
+    libroEntries: useLibretto.getState().items,
+    previousMedia,
+    syncMeta: synced.syncMeta,
+    now: new Date(),
+  });
+  useAlerts.getState().setAlerts(alerts);
+}
+
 export function StoreProvider({ children }: { children: React.ReactNode }) {
   const authStatus = useAuth((s) => s.status);
   const userId = useAuth((s) => s.user?.id ?? null);
@@ -54,6 +77,11 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
         useFocusSessions.getState().hydrate(),
       ]);
       if (cancelled) return;
+      // Smart alerts: load any persisted (still-dismissed) alerts, then drop
+      // whatever has expired since the last run.
+      await useAlerts.getState().hydrate();
+      if (cancelled) return;
+      useAlerts.getState().clearExpired(new Date());
       // Trophies are a consequence of the libretto: load the first-unlock
       // ledger, do one pass against the freshly-hydrated exams, then recompute
       // on every later libretto change. This single subscription is the unlock
@@ -78,7 +106,12 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
             if (!suppress) queueCelebrations(decision);
           });
       });
-      void useSynced.getState().sync();
+      // Capture pre-sync state so detection can diff for new exams / media.
+      const prevExamIds = useSynced.getState().examCalls.map((e) => e.id);
+      const prevMedia = weightedAverage(useLibretto.getState().items) ?? null;
+      await useSynced.getState().sync();
+      if (cancelled) return;
+      detectAndStoreAlerts(prevExamIds, prevMedia);
     })();
     return () => {
       cancelled = true;
@@ -130,12 +163,29 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       }
       if (cancelled) return;
       useAuth.setState({ reconciled: true });
-      void useSynced.getState().sync();
+      // Pre-sync snapshot for new-exam / media diffing (see mount effect).
+      const prevExamIds = useSynced.getState().examCalls.map((e) => e.id);
+      const prevMedia = weightedAverage(useLibretto.getState().items) ?? null;
+      await useSynced.getState().sync();
+      if (cancelled) return;
+      detectAndStoreAlerts(prevExamIds, prevMedia);
     })();
     return () => {
       cancelled = true;
     };
   }, [authStatus, userId, email]);
+
+  // Returning to the app drops alerts that expired while it was backgrounded,
+  // so the user never sees a stale "scade tra 2 ore" on resume.
+  useEffect(() => {
+    function onVisibility() {
+      if (document.visibilityState === "visible") {
+        useAlerts.getState().clearExpired(new Date());
+      }
+    }
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => document.removeEventListener("visibilitychange", onVisibility);
+  }, []);
 
   return <>{children}</>;
 }

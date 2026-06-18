@@ -13,6 +13,7 @@ import type {
   StudyTask,
 } from "@/lib/domain/types";
 import type { TrophyLedger } from "@/lib/domain/achievements";
+import type { Alert } from "@/lib/domain/alerts";
 import type { SyncCapability } from "@/lib/sync/provider";
 import { getDb } from "./db";
 import { diffClassEvents, diffExamCalls } from "./diff";
@@ -234,4 +235,31 @@ export async function getRelockLog(): Promise<Record<string, string>> {
 
 export async function saveRelockLog(log: Record<string, string>): Promise<void> {
   await (await getDb()).put("settings", log, RELOCK_KEY);
+}
+
+// ── smart alerts ──────────────────────────────────────────────────────────────
+// Derived, short-lived notices + the user's manual dismissals. Lives under its
+// own key in the generic `settings` bucket (no schema change), same pattern as
+// the trophy ledger. IndexedDB structured clone preserves the `Date` fields, so
+// alerts round-trip without any parse step. Kept apart from AppSettings so it
+// never rides the profile/settings cloud push — alerts re-derive on any device.
+
+const ALERTS_KEY = "alerts";
+
+export interface StoredAlerts {
+  alerts: Alert[];
+  lastCheckedAt: Date | null;
+}
+
+export async function getStoredAlerts(): Promise<StoredAlerts> {
+  const stored = await (await getDb()).get("settings", ALERTS_KEY);
+  const value = stored as Partial<StoredAlerts> | undefined;
+  return {
+    alerts: value?.alerts ?? [],
+    lastCheckedAt: value?.lastCheckedAt ?? null,
+  };
+}
+
+export async function saveStoredAlerts(state: StoredAlerts): Promise<void> {
+  await (await getDb()).put("settings", state, ALERTS_KEY);
 }
