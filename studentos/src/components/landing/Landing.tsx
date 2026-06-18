@@ -58,8 +58,8 @@ const statsFor = (
   liveCount: number,
 ): { value: number; suffix?: string; unit: string; desc: string }[] => [
   { value: liveCount, suffix: "", unit: "atenei in sync live", desc: "orario ed esami arrivano in automatico dal tuo ateneo, senza copiarli a mano" },
-  { value: 100, suffix: "%", unit: "in locale", desc: "i tuoi dati restano sul dispositivo; l'accesso per ritrovarli altrove è opzionale" },
-  { value: 1, suffix: " file", unit: "e il libretto è dentro", desc: "carichi il PDF dal portale e i voti sono già lì, senza digitare nulla" },
+  { value: 0, suffix: "", unit: "account richiesti", desc: "apri e usi: nessuna registrazione, i tuoi dati restano sul dispositivo" },
+  { value: 1, suffix: " PDF", unit: "e hai tutto il libretto", desc: "carichi il PDF dal portale e i voti sono già lì, senza digitare nulla" },
 ];
 
 /** Teaser gamification con stato MOCK statico (solo landing — non legge lo store
@@ -126,7 +126,7 @@ const ALL: { icon: LucideIcon; title: string; desc: string }[] = [
   { icon: NotebookPen, title: "Note", desc: "appunti per materia" },
   { icon: Timer, title: "Focus", desc: "Pomodoro per studiare meglio" },
   { icon: CalendarDays, title: "Orario", desc: "la settimana a colpo d'occhio" },
-  { icon: MessageCircle, title: "Assistente", desc: "chiedi, studia, capisci" },
+  { icon: MessageCircle, title: "Assistente", desc: "domande sul corso e sui voti" },
 ];
 
 /** Fades an element up after `delay` ms — set before first paint (ref callback
@@ -174,7 +174,7 @@ export function Landing({ atenei }: { atenei: AteneoListItem[] }) {
           <h1
             aria-label="StudentOS"
             className="mx-auto font-bold tracking-[-0.04em] text-ink"
-            style={{ fontSize: "clamp(3.2rem, 13vw, 9rem)" }}
+            style={{ fontSize: "clamp(2.5rem, 9vw, 6rem)" }}
           >
             <span className="word" aria-hidden="true">
               <span>S</span>
@@ -194,28 +194,39 @@ export function Landing({ atenei }: { atenei: AteneoListItem[] }) {
           </p>
           <p
             ref={fadeIn(250)}
-            className="mx-auto mt-6 max-w-[28ch] font-display font-bold leading-[1.15] text-ink"
-            style={{ fontSize: "clamp(1.5rem, 4vw, 2.4rem)" }}
+            className="mx-auto mt-6 max-w-[26ch] font-display font-bold leading-[1.1] text-ink"
+            style={{ fontSize: "clamp(1.75rem, 4.8vw, 3rem)" }}
           >
             Il tuo orario, gli esami e la media.{" "}
-            <span className="grad-text">Tutto aggiornato, tutto sul tuo dispositivo.</span>
+            <span className="grad-text">Sempre aggiornati, senza scriverli a mano.</span>
           </p>
           <p
             ref={fadeIn(350)}
-            className="mx-auto mt-4 max-w-[44ch] text-ink-mute"
+            className="mx-auto mt-4 max-w-[46ch] text-ink-mute"
             style={{ fontSize: "clamp(1rem, 2.2vw, 1.2rem)" }}
           >
-            Orario, appelli, libretto e note — già pronti per il tuo corso, senza
-            account.
+            Orario, appelli e libretto arrivano già pronti dal tuo ateneo. Niente
+            account, niente da copiare.
           </p>
-          <div ref={fadeIn(450)} className="mt-9 flex flex-col items-center gap-3">
+          <div ref={fadeIn(450)} className="mt-9 flex flex-col items-center gap-4">
             <Link href="/onboarding" className="btn btn-primary px-7 py-3 text-base">
               Inizia ora
               <ArrowRight className="size-[1.15rem]" aria-hidden="true" />
             </Link>
-            <p className="eyebrow text-ink-faint">
-              Gratis · i tuoi dati restano sul dispositivo
-            </p>
+            <ul className="flex flex-wrap items-center justify-center gap-2">
+              <li className="chip chip-ok">
+                <Check className="size-[0.85rem]" aria-hidden="true" />
+                Gratis
+              </li>
+              <li className="chip chip-signal">
+                <ShieldCheck className="size-[0.85rem]" aria-hidden="true" />
+                Senza account
+              </li>
+              <li className="chip chip-signal">
+                <HardDrive className="size-[0.85rem]" aria-hidden="true" />
+                Dati sul tuo dispositivo
+              </li>
+            </ul>
             <p className="text-sm text-ink-mute">
               oppure{" "}
               <Link href="#atenei" className="underline hover:text-ink">
