@@ -22,3 +22,11 @@ export const LIVE_ATENEI: string[] = ATENEI_LIST.filter((a) => a.live)
   .sort((a, b) => a.localeCompare(b, "it"));
 
 export const LIVE_COUNT = LIVE_ATENEI.length;
+
+/** Totale dei corsi di laurea live verificati uno per uno (somma di
+ *  `livePrograms` su tutti i preset). Prova sociale onesta e concreta — un
+ *  numero reale, non un testimonial inventato. Derivato server-side. */
+export const LIVE_PROGRAMME_COUNT = UNIVERSITY_PRESETS.reduce(
+  (sum, p) => sum + (p.livePrograms?.length ?? 0),
+  0,
+);

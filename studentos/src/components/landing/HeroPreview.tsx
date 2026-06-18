@@ -38,6 +38,7 @@ export function HeroPreview() {
             <Lock className="size-3" />
             studentos.app/panoramica
           </div>
+          <span className="chip chip-signal shrink-0">Esempio</span>
         </div>
 
         {/* contenuto panoramica (statico) */}

@@ -39,35 +39,38 @@ const TRUST: { icon: LucideIcon; label: string }[] = [
 const STEPS = [
   {
     n: "01",
-    title: "Scegli il tuo ateneo",
-    text: "Cerca tra le università supportate e seleziona il tuo corso di laurea e anno. Bastano pochi tocchi, nessun account richiesto.",
+    title: "Scegli ateneo e corso",
+    text: "Cerca il tuo, seleziona anno e materie. Senza account.",
   },
   {
     n: "02",
-    title: "Seleziona i tuoi corsi",
-    text: "Scegli le materie che frequenti. StudentOS sincronizza orario, appelli e avvisi solo per te.",
+    title: "Si configura da solo",
+    text: "Orario, appelli e avvisi del tuo corso, già pronti.",
   },
   {
     n: "03",
-    title: "Tutto aggiornato",
-    text: "Media, CFU, prossimi appelli e orario della settimana. Già sul tuo dispositivo, senza copiare niente a mano.",
+    title: "Resta aggiornato",
+    text: "Media e CFU si aggiornano coi voti che inserisci. Tu apri e guardi.",
   },
 ];
 
 const statsFor = (
   liveCount: number,
+  programmes: number,
 ): { value: number; suffix?: string; unit: string; desc: string }[] => [
   { value: liveCount, suffix: "", unit: "atenei in sync live", desc: "orario ed esami arrivano in automatico dal tuo ateneo, senza copiarli a mano" },
+  { value: programmes, suffix: "", unit: "corsi di laurea", desc: "mappati e verificati uno per uno: cerchi il tuo e parte già configurato" },
   { value: 0, suffix: "", unit: "account richiesti", desc: "apri e usi: nessuna registrazione, i tuoi dati restano sul dispositivo" },
   { value: 1, suffix: " PDF", unit: "e hai tutto il libretto", desc: "carichi il PDF dal portale e i voti sono già lì, senza digitare nulla" },
 ];
 
-/** Teaser gamification con stato MOCK statico (solo landing — non legge lo store
- *  né la logica reale dei trofei): i primi quattro traguardi appaiono già
- *  sbloccati con icona colorata che brilla, così la sezione comunica progresso e
- *  slancio invece di cinque caselle grigie "non hai fatto niente". Solo la Laurea
- *  resta bloccata (icona spenta), per creare tensione narrativa verso il
- *  traguardo finale. `grad`/`glow` sono accenti per-trofeo, brand-coherent. */
+/** Teaser dei trofei (solo landing — render statico, non legge lo store): mostra
+ *  un sottoinsieme dei trofei REALI di `domain/achievements.ts` (Primo esame,
+ *  Primo 30, 30 e lode, Media 27, 120 CFU), così l'anteprima è onesta — sono
+ *  traguardi che esistono davvero e si sbloccano dai voti inseriti. I primi
+ *  quattro appaiono sbloccati (icona colorata) per comunicare progresso; "120
+ *  CFU" resta locked per dare tensione verso la laurea. `grad`/`glow` sono
+ *  accenti per-trofeo, brand-coherent. */
 const MILESTONES: {
   icon: LucideIcon;
   label: string;
@@ -78,7 +81,7 @@ const MILESTONES: {
 }[] = [
   {
     icon: Sparkles,
-    label: "Primo voto",
+    label: "Primo esame",
     hint: "la media inizia a muoversi",
     grad: "linear-gradient(135deg, #6d6bff, #38bdf8)",
     glow: "rgba(109, 107, 255, 0.5)",
@@ -87,14 +90,14 @@ const MILESTONES: {
   {
     icon: Trophy,
     label: "Primo 30",
-    hint: "ci vuole un tentativo",
+    hint: "il primo trenta pieno",
     grad: "linear-gradient(135deg, #f0a500, #ffd874)",
     glow: "rgba(240, 165, 0, 0.5)",
     unlocked: true,
   },
   {
     icon: Star,
-    label: "Prima lode",
+    label: "30 e lode",
     hint: "quando ci riesci",
     grad: "linear-gradient(135deg, #f97316, #fbbf24)",
     glow: "rgba(249, 115, 22, 0.5)",
@@ -102,16 +105,16 @@ const MILESTONES: {
   },
   {
     icon: Target,
-    label: "Metà CFU",
-    hint: "sei a buon punto",
+    label: "Media 27",
+    hint: "media alta, costante",
     grad: "linear-gradient(135deg, #06b6d4, #22d3ee)",
     glow: "rgba(6, 182, 212, 0.5)",
     unlocked: true,
   },
   {
     icon: GraduationCap,
-    label: "Laurea",
-    hint: "il traguardo che conta",
+    label: "120 CFU",
+    hint: "a metà strada per la laurea",
     grad: "linear-gradient(135deg, #7c3aed, #a78bfa)",
     glow: "rgba(124, 58, 237, 0.5)",
     unlocked: false,
@@ -126,7 +129,7 @@ const ALL: { icon: LucideIcon; title: string; desc: string }[] = [
   { icon: NotebookPen, title: "Note", desc: "appunti per materia" },
   { icon: Timer, title: "Focus", desc: "Pomodoro per studiare meglio" },
   { icon: CalendarDays, title: "Orario", desc: "la settimana a colpo d'occhio" },
-  { icon: MessageCircle, title: "Assistente", desc: "domande sul corso e sui voti" },
+  { icon: MessageCircle, title: "Assistente", desc: "es. «quanti CFU mi mancano?»" },
 ];
 
 /** Fades an element up after `delay` ms — set before first paint (ref callback
@@ -163,9 +166,15 @@ const fadeIn =
 
 /** Public landing — no login required. The global AppNav sits above it as the
  *  top bar; "Inizia ora" drops the visitor into the Panoramica. */
-export function Landing({ atenei }: { atenei: AteneoListItem[] }) {
+export function Landing({
+  atenei,
+  programmes,
+}: {
+  atenei: AteneoListItem[];
+  programmes: number;
+}) {
   const liveNames = atenei.filter((a) => a.live).map((a) => a.name);
-  const STATS = statsFor(liveNames.length);
+  const STATS = statsFor(liveNames.length, programmes);
   return (
     <>
       <main id="contenuto" className="relative z-[2] flex-1">
@@ -197,16 +206,14 @@ export function Landing({ atenei }: { atenei: AteneoListItem[] }) {
             className="mx-auto mt-6 max-w-[26ch] font-display font-bold leading-[1.1] text-ink"
             style={{ fontSize: "clamp(1.75rem, 4.8vw, 3rem)" }}
           >
-            Il tuo orario, gli esami e la media.{" "}
-            <span className="grad-text">Sempre aggiornati, senza scriverli a mano.</span>
+            La tua università, <span className="grad-text">già organizzata.</span>
           </p>
           <p
             ref={fadeIn(350)}
             className="mx-auto mt-4 max-w-[46ch] text-ink-mute"
             style={{ fontSize: "clamp(1rem, 2.2vw, 1.2rem)" }}
           >
-            Orario, appelli e libretto arrivano già pronti dal tuo ateneo. Niente
-            account, niente da copiare.
+            Orario, esami e media sempre aggiornati — senza copiare niente a mano.
           </p>
           <div ref={fadeIn(450)} className="mt-9 flex flex-col items-center gap-4">
             <Link href="/onboarding" className="btn btn-primary px-7 py-3 text-base">
