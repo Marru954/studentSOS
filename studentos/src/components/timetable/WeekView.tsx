@@ -4,11 +4,13 @@
 import { CalendarClock, CalendarCog, CalendarOff, ChevronLeft, ChevronRight, MapPin, Pencil } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { AlertBanner } from "@/components/alerts";
 import { Button } from "@/components/primitives/Button";
 import { ConfirmButton } from "@/components/primitives/ConfirmButton";
 import { EmptyState } from "@/components/primitives/EmptyState";
 import { PanelSkeleton } from "@/components/primitives/Skeleton";
 import { YearFilter } from "@/components/YearFilter";
+import { AlertType } from "@/lib/domain/alerts";
 import type { ClassEvent } from "@/lib/domain/types";
 import { extractCourseNames } from "@/lib/domain/notes";
 import { matchesYear } from "@/lib/domain/sources";
@@ -482,6 +484,11 @@ export function WeekView() {
         </div>
       ) : (
         <>
+          {/* Avvisi contestuali sopra il banner di sync: gli avvisi urgenti
+              (conflitti d'orario, sync fallito) hanno precedenza. */}
+          <AlertBanner
+            types={[AlertType.CONFLITTO_ORARIO, AlertType.SYNC_FALLITO]}
+          />
           <SyncFailureBanner capability="timetable" />
           {/* No live sources → keep the configure hint, but still let the
               student build their week by hand (the manual form below writes
