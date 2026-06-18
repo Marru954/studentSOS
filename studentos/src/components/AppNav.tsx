@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  Bell,
   CalendarClock,
   CalendarDays,
   GraduationCap,
@@ -17,9 +18,11 @@ import { AccountButton } from "@/components/auth/AccountButton";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Wordmark } from "@/components/Wordmark";
 import { cn } from "@/lib/cn";
+import { isAlertActive } from "@/lib/domain/alerts";
 import { computeUrgencies } from "@/lib/domain/urgency";
 import { useNowMinute } from "@/lib/hooks/useNowMinute";
 import { useScrolled } from "@/lib/hooks/useScrolled";
+import { useAlerts } from "@/lib/state/alerts";
 import { useSearchPalette } from "@/lib/state/searchPalette";
 import { useSynced } from "@/lib/state/synced";
 
@@ -55,6 +58,15 @@ export function AppNav() {
       (u) => u.severity === "critical",
     ).length;
   }, [hydrated, now, classEvents, examCalls]);
+
+  // Avvisi attivi (non letti, non scaduti) per il badge sulla campanella.
+  // Sottoscrive l'array `alerts` e ricalcola il conteggio attivo a ogni minuto
+  // (`now` da useNowMinute, SSR-safe) invece di chiamare `new Date()` in render.
+  const alerts = useAlerts((s) => s.alerts);
+  const alertCount = useMemo(() => {
+    if (now === null) return 0;
+    return alerts.filter((a) => isAlertActive(a, now)).length;
+  }, [alerts, now]);
 
   // Sulla landing pubblica il visitatore non deve avere vie di fuga: niente
   // navbar app a 9 voci, solo logo + "Accedi" + il CTA principale. La navbar
@@ -160,6 +172,25 @@ export function AppNav() {
             >
               <Search aria-hidden="true" className="size-4" />
             </button>
+            {/* Campanella avvisi: porta agli /appelli (la pagina con più avvisi
+                contestuali). Il badge numerico compare solo se ci sono avvisi
+                attivi; oltre 9 mostra "9+". */}
+            <Link
+              href="/appelli"
+              aria-label={`Avvisi: ${alertCount} non letti`}
+              title="Avvisi"
+              className="relative flex size-8 shrink-0 items-center justify-center rounded-full text-ink-mute transition-colors hover:bg-night-700 hover:text-ink"
+            >
+              <Bell aria-hidden="true" className="size-4" />
+              {alertCount > 0 && (
+                <span
+                  aria-hidden="true"
+                  className="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-signal px-1 text-[0.6rem] font-semibold leading-none text-white"
+                >
+                  {alertCount > 9 ? "9+" : alertCount}
+                </span>
+              )}
+            </Link>
             <AccountButton />
             <Link
               href="/impostazioni"
