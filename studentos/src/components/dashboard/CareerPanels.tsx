@@ -1,5 +1,8 @@
+"use client";
+
 import { Gauge, Plus, Share2, Target, TrendingUp } from "lucide-react";
 import Link from "next/link";
+import { useState } from "react";
 import { Badge } from "@/components/primitives/Badge";
 import { Field, inputClass } from "@/components/primitives/Field";
 import { CountUp } from "@/components/primitives/CountUp";
@@ -8,6 +11,7 @@ import { ProgressRing } from "@/components/primitives/ProgressRing";
 import { Sparkline } from "@/components/primitives/Sparkline";
 import { Stat } from "@/components/primitives/Stat";
 import {
+  baseToAverage,
   cfuPerMonth,
   earnedCfu,
   graduationBase,
@@ -214,30 +218,85 @@ export function GoalPanel({
 }) {
   const current = weightedAverage(entries);
   const remaining = Math.max(totalCfu - earnedCfu(entries), 0);
+  const [unit, setUnit] = useState<"avg" | "base">("avg");
+  const shownValue =
+    targetAverage === undefined
+      ? ""
+      : unit === "base"
+        ? Math.round(graduationBase(targetAverage))
+        : targetAverage;
+  const equivalent =
+    targetAverage === undefined
+      ? undefined
+      : unit === "base"
+        ? `≈ media ${fmtNum(targetAverage, 1)}`
+        : `≈ ${fmtNum(graduationBase(targetAverage), 0)}/110`;
 
   return (
     <Panel title="Obiettivo laurea" icon={<Target />} className={className}>
       <div className="flex flex-col gap-5">
         <div className="grid grid-cols-2 gap-3">
-          <Field label="Media obiettivo" htmlFor="goal-target">
+          <div className="flex flex-col gap-1.5">
+            <div className="flex items-center justify-between">
+              <label
+                htmlFor="goal-target"
+                className="text-label font-medium text-ink-mute"
+              >
+                Obiettivo
+              </label>
+              <div
+                role="group"
+                aria-label="Unità obiettivo"
+                className="flex gap-1"
+              >
+                {(["avg", "base"] as const).map((u) => (
+                  <button
+                    key={u}
+                    type="button"
+                    aria-pressed={unit === u}
+                    onClick={() => setUnit(u)}
+                    className={`rounded-full px-2.5 py-0.5 text-xs font-medium transition-colors ${
+                      unit === u
+                        ? "bg-signal text-night-950"
+                        : "border border-line text-ink-mute hover:text-ink"
+                    }`}
+                  >
+                    {u === "avg" ? "/30" : "/110"}
+                  </button>
+                ))}
+              </div>
+            </div>
             <input
               id="goal-target"
               type="number"
-              min={18}
-              max={30}
-              step={0.5}
-              value={targetAverage ?? ""}
-              placeholder="es. 28"
+              inputMode="decimal"
+              aria-label={
+                unit === "base"
+                  ? "Voto di laurea obiettivo su 110"
+                  : "Media obiettivo su 30"
+              }
+              min={unit === "base" ? 66 : 18}
+              max={unit === "base" ? 110 : 30}
+              step={unit === "base" ? 1 : 0.5}
+              value={shownValue}
+              placeholder={unit === "base" ? "es. 99" : "es. 28"}
               onChange={(e) => {
-                const v = Number(e.target.value);
+                const raw = Number(e.target.value);
                 const next =
-                  e.target.value === "" || Number.isNaN(v) ? undefined : v;
+                  e.target.value === "" || Number.isNaN(raw)
+                    ? undefined
+                    : unit === "base"
+                      ? baseToAverage(raw)
+                      : raw;
                 onPlanChange?.({ targetAverage: next });
                 onTargetChange?.(next);
               }}
               className={inputClass}
             />
-          </Field>
+            {equivalent && (
+              <span className="text-xs text-ink-faint">{equivalent}</span>
+            )}
+          </div>
           <Field label="CFU del piano" htmlFor="goal-cfu">
             <input
               id="goal-cfu"
