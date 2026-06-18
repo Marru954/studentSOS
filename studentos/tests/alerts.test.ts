@@ -252,3 +252,106 @@ test("store: activeByType filters by type", () => {
   assert.equal(useAlerts.getState().activeByType(AlertType.SYNC_FALLITO, NOW).length, 1);
   assert.equal(useAlerts.getState().activeByType(AlertType.CONFLITTO_ORARIO, NOW).length, 0);
 });
+
+// ════════════════════════════════════════════════════════════════════════════
+// wt4 — casi obbligatori aggiuntivi (boundary, conteggi, dedup) richiesti dal
+// task della route. Completano i casi-base già coperti sopra da wt3.
+//
+// NB sul caso "NUOVO_ESAME con previousExamIds vuota": la spec del task chiedeva
+// "tutti gli esami generano avviso", ma l'implementazione (detectAlerts) sceglie
+// di stare ZITTA al primo sync — altrimenti il primo avvio sparerebbe un avviso
+// per ogni appello del catalogo. Il test sopra ("NUOVO_ESAME: first sync … stays
+// silent") asserisce il comportamento reale; non lo si duplica qui.
+// ════════════════════════════════════════════════════════════════════════════
+
+// ── SCADENZA_APPELLO: boundary 48h + conteggi ──────────────────────────────
+
+test("SCADENZA_APPELLO: deadline oltre la finestra 48h → nessun avviso", () => {
+  // NOW = 12/06 10:00Z; endOfDay(14/06) ≈ +62h, ben oltre le 48h del radar.
+  const far = exam({ id: "a", booking: { closesAt: "2026-06-14" } });
+  const got = detectAlerts(base({ examCalls: [far] })).filter(
+    (a) => a.type === AlertType.SCADENZA_APPELLO,
+  );
+  assert.equal(got.length, 0);
+});
+
+test("SCADENZA_APPELLO: due appelli in scadenza → due avvisi distinti", () => {
+  const a = exam({ id: "a", courseName: "ALGEBRA", booking: { closesAt: "2026-06-12" } }); // ~14h
+  const b = exam({ id: "b", courseName: "FISICA", booking: { closesAt: "2026-06-13" } }); // ~38h
+  const got = detectAlerts(base({ examCalls: [a, b] })).filter(
+    (x) => x.type === AlertType.SCADENZA_APPELLO,
+  );
+  assert.equal(got.length, 2);
+  assert.deepEqual(got.map((x) => x.sourceId).sort(), ["a", "b"]);
+  // id stabili e distinti per i due eventi
+  assert.equal(new Set(got.map((x) => x.id)).size, 2);
+});
+
+// ── CONFLITTO_ORARIO: adiacenza, conteggio parziale, dedup di coppia ───────
+
+test("CONFLITTO_ORARIO: lezioni back-to-back (fine == inizio) → nessun avviso", () => {
+  const a = lesson({ id: "x", courseName: "A", start: "2026-06-15T07:00:00.000Z", end: "2026-06-15T09:00:00.000Z" });
+  const b = lesson({ id: "y", courseName: "B", start: "2026-06-15T09:00:00.000Z", end: "2026-06-15T11:00:00.000Z" });
+  const got = detectAlerts(base({ classEvents: [a, b] })).filter(
+    (al) => al.type === AlertType.CONFLITTO_ORARIO,
+  );
+  assert.equal(got.length, 0);
+});
+
+test("CONFLITTO_ORARIO: tre lezioni, solo due si sovrappongono → un avviso", () => {
+  const a = lesson({ id: "x", courseName: "A", start: "2026-06-15T07:00:00.000Z", end: "2026-06-15T09:00:00.000Z" });
+  const b = lesson({ id: "y", courseName: "B", start: "2026-06-15T08:00:00.000Z", end: "2026-06-15T10:00:00.000Z" });
+  const c = lesson({ id: "z", courseName: "C", start: "2026-06-15T11:00:00.000Z", end: "2026-06-15T13:00:00.000Z" });
+  const got = detectAlerts(base({ classEvents: [a, b, c] })).filter(
+    (al) => al.type === AlertType.CONFLITTO_ORARIO,
+  );
+  assert.equal(got.length, 1);
+  assert.match(got[0].message, /A e B si sovrappongono/);
+});
+
+test("CONFLITTO_ORARIO: stessa coppia rilevata due volte → un solo avviso", () => {
+  const a = lesson({ id: "x", courseName: "A", start: "2026-06-15T07:00:00.000Z", end: "2026-06-15T09:00:00.000Z" });
+  const b = lesson({ id: "y", courseName: "B", start: "2026-06-15T08:00:00.000Z", end: "2026-06-15T10:00:00.000Z" });
+  // 'a' compare due volte (stesso id): la coppia (x,y) viene incontrata più di
+  // una volta ma deve produrre un unico avviso (dedup per coppia ordinata).
+  const aDup = lesson({ id: "x", courseName: "A", start: "2026-06-15T07:00:00.000Z", end: "2026-06-15T09:00:00.000Z" });
+  const got = detectAlerts(base({ classEvents: [a, b, aDup] })).filter(
+    (al) => al.type === AlertType.CONFLITTO_ORARIO,
+  );
+  assert.equal(got.length, 1);
+});
+
+// ── MEDIA_CAMBIATA: incremento minimo richiesto dalla spec (27 → 28) ───────
+
+test("MEDIA_CAMBIATA: media da 27 a 28 → un avviso", () => {
+  const got = detectAlerts(
+    base({
+      libroEntries: [entry({ grade: { kind: "numeric", value: 28, laude: false } })],
+      previousMedia: 27,
+    }),
+  ).filter((a) => a.type === AlertType.MEDIA_CAMBIATA);
+  assert.equal(got.length, 1);
+  assert.match(got[0].message, /da 27,00 a 28,00/);
+});
+
+// ── SYNC_FALLITO: una sola fonte fallita, e nessuna fonte fallita ──────────
+
+test("SYNC_FALLITO: una sola fonte fallita → un avviso", () => {
+  const got = detectAlerts(
+    base({
+      syncMeta: [
+        syncMeta({ sourceId: "orario-anno-1", ok: false }),
+        syncMeta({ sourceId: "esami-anno-1", ok: true }),
+      ],
+    }),
+  ).filter((a) => a.type === AlertType.SYNC_FALLITO);
+  assert.equal(got.length, 1);
+  assert.match(got[0].message, /orario-anno-1/);
+});
+
+test("SYNC_FALLITO: nessuna fonte fallita → nessun avviso", () => {
+  const got = detectAlerts(
+    base({ syncMeta: [syncMeta({ sourceId: "orario-anno-1", ok: true })] }),
+  ).filter((a) => a.type === AlertType.SYNC_FALLITO);
+  assert.equal(got.length, 0);
+});
