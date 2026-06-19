@@ -200,7 +200,10 @@ export function OnboardingFlow() {
       <div className="mb-6 flex flex-col items-center gap-2 text-center">
         <Wordmark className="text-xl" />
         <p className="text-sm text-ink-mute">
-          Tre domande e il panoramica si adatta a te.
+          Orario, appelli e voti della tua università, senza accedere al portale.
+        </p>
+        <p className="text-xs text-ink-faint">
+          Tre domande e la panoramica si adatta a te.
         </p>
       </div>
 
@@ -292,6 +295,11 @@ export function OnboardingFlow() {
                       {p.city}
                       {p.liveSources ? " · sync live" : " · inserimento manuale"}
                     </span>
+                    <span className="block truncate text-[0.65rem] text-ink-faint/70">
+                      {p.liveSources
+                        ? "Orario e appelli aggiornati automaticamente"
+                        : "Inserisci tu le informazioni del tuo corso"}
+                    </span>
                   </span>
                   {presetId === p.id && (
                     <Check aria-hidden="true" className="size-4 shrink-0 text-signal" />
@@ -346,7 +354,14 @@ export function OnboardingFlow() {
                             : "border-line bg-night-800 text-ink-mute hover:border-line-strong"
                         }`}
                       >
-                        <span className="min-w-0 truncate">{c}</span>
+                        <span className="min-w-0">
+                          <span className="block truncate">{c}</span>
+                          <span className="block text-[0.65rem] text-ink-faint/70">
+                            {live
+                              ? "Orario e appelli aggiornati automaticamente"
+                              : "Inserisci tu le informazioni del tuo corso"}
+                          </span>
+                        </span>
                         <span className="flex shrink-0 items-center gap-1.5">
                           <span
                             className={`rounded-full px-2 py-0.5 text-[0.6rem] font-medium ${
