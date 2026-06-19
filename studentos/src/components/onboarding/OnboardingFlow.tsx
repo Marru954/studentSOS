@@ -22,13 +22,37 @@ import type { UniversityPreset } from "@/lib/sync/provider";
 import { UNIVERSITY_PRESETS, getPreset, liveProgramFor } from "@/lib/sync/universities";
 import { ATENEO_COURSES, coursesFor } from "@/lib/sync/universities/ateneo-courses";
 
-const YEARS = [1, 2, 3, 4, 5, 6];
-const CFU_PRESETS = [
-  { label: "Triennale", cfu: 180 },
-  { label: "Magistrale", cfu: 120 },
-  { label: "Ciclo unico", cfu: 300 },
-];
 const STEP_TITLES = ["Ateneo", "Corso", "Anno e CFU", "Conferma"];
+
+type DegreeType = "triennale" | "magistrale" | "ciclo5" | "ciclo6";
+
+const YEARS_FOR_DEGREE: Record<DegreeType, number[]> = {
+  triennale: [1, 2, 3],
+  magistrale: [1, 2],
+  ciclo5: [1, 2, 3, 4, 5],
+  ciclo6: [1, 2, 3, 4, 5, 6],
+};
+
+const CFU_FOR_DEGREE: Record<DegreeType, { label: string; cfu: number }> = {
+  triennale: { label: "Triennale", cfu: 180 },
+  magistrale: { label: "Magistrale", cfu: 120 },
+  ciclo5: { label: "Ciclo unico", cfu: 300 },
+  ciclo6: { label: "Ciclo unico", cfu: 360 },
+};
+
+/** Infer degree type from the course name string (no tipo field in schema). */
+function detectDegreeType(name: string): DegreeType {
+  const n = name.toLowerCase();
+  // 6-year: Medicina e Chirurgia only (LM-41)
+  if (/medicina e chirurgia/.test(n)) return "ciclo6";
+  // Magistrale biennale (LM-*)
+  if (/magistral/.test(n)) return "magistrale";
+  // 5-year ciclo unico: Giurisprudenza, Architettura, Farmacia, Veterinaria, Odontoiatria
+  if (/ciclo unico|giurisprudenza|architettura|farmacia|veterinaria|odontoiatria/.test(n))
+    return "ciclo5";
+  // Default: triennale (L-*)
+  return "triennale";
+}
 
 function programmesOf(p: UniversityPreset | undefined): string[] {
   if (!p) return [];
@@ -68,7 +92,8 @@ export function OnboardingFlow() {
   const [step, setStep] = useState(1);
   const [query, setQuery] = useState("");
   const [year, setYear] = useState(1);
-  const [totalCfu, setTotalCfu] = useState(180);
+  /** null = use derived cfuChip.cfu; bound to corso so a course change resets it. */
+  const [cfuOverride, setCfuOverride] = useState<{ corso: string; cfu: number } | null>(null);
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState(false);
   // Untouched fields read from derived defaults; once edited they take over.
@@ -98,6 +123,16 @@ export function OnboardingFlow() {
     const q = corsoQuery.trim().toLowerCase();
     return q ? corsi.filter((c) => c.toLowerCase().includes(q)) : corsi;
   })();
+
+  // Derive year list and CFU chip purely from the chosen course name.
+  const degreeType = detectDegreeType(corso);
+  const availableYears = YEARS_FOR_DEGREE[degreeType];
+  const cfuChip = CFU_FOR_DEGREE[degreeType];
+  // Override is ignored when corso changed since it was set → auto-follows cfuChip.
+  const totalCfu = cfuOverride?.corso === corso ? cfuOverride.cfu : cfuChip.cfu;
+  // Clamp year to max available for this degree type (user may have picked a
+  // higher year when a different corso was selected).
+  const effectiveYear = Math.min(year, availableYears.length);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -155,14 +190,14 @@ export function OnboardingFlow() {
             (s) =>
               s.capability === "timetable" ||
               s.capability === "news" ||
-              s.id.endsWith(`-anno-${year}`),
+              s.id.endsWith(`-anno-${effectiveYear}`),
           )
           .map((s) => s.id)
       : [];
     await useSettings.getState().update({
       presetId: preset.id,
       programme: corso || undefined,
-      yearOfStudy: year,
+      yearOfStudy: effectiveYear,
       enabledSourceIds,
       degreePlan: {
         ...useSettings.getState().degreePlan,
@@ -403,13 +438,13 @@ export function OnboardingFlow() {
             <div>
               <h1 className="text-lg font-semibold">A che anno di corso sei?</h1>
               <div className="mt-3 flex flex-wrap gap-2">
-                {YEARS.map((y) => (
+                {availableYears.map((y) => (
                   <button
                     key={y}
                     type="button"
                     onClick={() => setYear(y)}
                     className={`rounded-full border px-4 py-2 text-sm transition-colors ${
-                      year === y
+                      effectiveYear === y
                         ? "border-signal/60 bg-signal-dim text-ink"
                         : "border-line bg-night-800 text-ink-mute hover:border-line-strong"
                     }`}
@@ -424,26 +459,19 @@ export function OnboardingFlow() {
                 CFU totali del piano di studi
               </h2>
               <div className="mt-2 flex flex-wrap items-center gap-2">
-                {CFU_PRESETS.map((c) => (
-                  <button
-                    key={c.cfu}
-                    type="button"
-                    onClick={() => setTotalCfu(c.cfu)}
-                    className={`rounded-full border px-3 py-1.5 text-xs transition-colors ${
-                      totalCfu === c.cfu
-                        ? "border-signal/60 bg-signal-dim text-ink"
-                        : "border-line bg-night-800 text-ink-mute hover:border-line-strong"
-                    }`}
-                  >
-                    {c.label} · {c.cfu}
-                  </button>
-                ))}
+                <button
+                  type="button"
+                  onClick={() => setCfuOverride({ corso, cfu: cfuChip.cfu })}
+                  className="rounded-full border border-signal/60 bg-signal-dim px-3 py-1.5 text-xs text-ink"
+                >
+                  {cfuChip.label} · {cfuChip.cfu}
+                </button>
                 <input
                   type="number"
                   min={60}
                   max={400}
                   value={totalCfu}
-                  onChange={(e) => setTotalCfu(Number(e.target.value) || 0)}
+                  onChange={(e) => setCfuOverride({ corso, cfu: Number(e.target.value) || 0 })}
                   aria-label="CFU totali"
                   className="font-num h-9 w-24 rounded-xl border border-line bg-night-800 px-3 text-sm text-ink hover:border-line-strong focus:border-signal focus:outline-none"
                 />
@@ -458,7 +486,7 @@ export function OnboardingFlow() {
             <dl className="flex flex-col gap-2 text-sm">
               <Row label="Ateneo" value={`${preset?.shortName ?? "—"}`} />
               <Row label="Corso" value={corso || "—"} />
-              <Row label="Anno" value={`${year}° anno`} />
+              <Row label="Anno" value={`${effectiveYear}° anno`} />
               <Row label="CFU piano" value={String(totalCfu)} />
             </dl>
             <p className="rounded-lg border border-line bg-night-800 px-3 py-2 text-xs text-ink-mute">
