@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { useMemo, useState } from "react";
 import Link from "next/link";
+import { AlertBanner } from "@/components/alerts";
 import { CountUp } from "@/components/primitives/CountUp";
 import { EmptyState } from "@/components/primitives/EmptyState";
 import { Panel } from "@/components/primitives/Panel";
@@ -26,6 +27,7 @@ import { CoursePicker } from "@/components/CoursePicker";
 import { ImportPdfButton } from "@/components/import/ImportPdfButton";
 import { SyncFailureBanner } from "@/components/SyncFailureBanner";
 import { YearFilter } from "@/components/YearFilter";
+import { AlertType } from "@/lib/domain/alerts";
 import { bookingState } from "@/lib/domain/booking";
 import {
   type ExamFilter,
@@ -297,6 +299,15 @@ export function ExamList() {
         </div>
       ) : (
         <>
+          {/* Avvisi contestuali sopra il banner di sync: scadenze di
+              prenotazione, nuovi appelli e sync fallito hanno precedenza. */}
+          <AlertBanner
+            types={[
+              AlertType.SCADENZA_APPELLO,
+              AlertType.NUOVO_ESAME,
+              AlertType.SYNC_FALLITO,
+            ]}
+          />
           <SyncFailureBanner capability="exams" />
           {!hasSources && (
             <Panel>

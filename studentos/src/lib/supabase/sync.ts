@@ -17,6 +17,7 @@ import {
   useNotes,
   useTasks,
 } from "@/lib/state/manual";
+import { useAlerts } from "@/lib/state/alerts";
 import { useSettings } from "@/lib/state/settings";
 import { useSynced } from "@/lib/state/synced";
 import { useTrophies } from "@/lib/state/trophies";
@@ -202,6 +203,10 @@ export async function resetLocalData(): Promise<void> {
     // the libretto subscription re-derives trophies for the new account once
     // its data lands.
     await useTrophies.getState().clear();
+
+    // Smart alerts are derived from the previous account's data — drop them so
+    // none of their notices (or dismissals) carry into the next account.
+    useAlerts.getState().clear();
 
     // Synced caches belong to the previous account's ateneo — drop them too,
     // along with the saved portal-credential blob.
