@@ -1,6 +1,6 @@
 "use client";
 
-import { PlusCircle, X } from "lucide-react";
+import { Info, PlusCircle, X } from "lucide-react";
 import { useId, useRef, useState } from "react";
 import { Button } from "@/components/primitives/Button";
 import { Field, inputClass } from "@/components/primitives/Field";
@@ -38,22 +38,40 @@ export function InsegnamentoManualForm({
   onCancel,
   ateneo_id = "",
   corso_id = "",
+  initial,
+  notice,
+  title = "Nuovo insegnamento",
+  submitLabel = "Aggiungi",
 }: {
   onSubmit: (ins: DraftInsegnamento) => void;
   onCancel: () => void;
   ateneo_id?: string;
   corso_id?: string;
+  /** Pre-fill per la modifica di una materia esistente. */
+  initial?: Insegnamento;
+  /** Avviso mostrato in cima al form (es. modifica di una materia da sync). */
+  notice?: string;
+  /** Titolo della card form. */
+  title?: string;
+  /** Etichetta del bottone di conferma. */
+  submitLabel?: string;
 }) {
   const baseId = useId();
 
-  const [nome, setNome] = useState("");
-  const [cfu, setCfu] = useState("");
-  const [anno, setAnno] = useState("");
-  const [semestre, setSemestre] = useState("");
-  const [tipo, setTipo] = useState<TipoInsegnamento>("obbligatorio");
-  const [docente, setDocente] = useState("");
-  const [settore, setSettore] = useState("");
-  const [propedeuticita, setPropedeuticita] = useState<string[]>([]);
+  const [nome, setNome] = useState(initial?.nome ?? "");
+  const [codice, setCodice] = useState(initial?.codice ?? "");
+  const [cfu, setCfu] = useState(initial ? String(initial.cfu) : "");
+  const [anno, setAnno] = useState(initial?.anno ?? "");
+  const [semestre, setSemestre] = useState(
+    initial?.semestre !== undefined ? String(initial.semestre) : "",
+  );
+  const [tipo, setTipo] = useState<TipoInsegnamento>(initial?.tipo ?? "obbligatorio");
+  const [docente, setDocente] = useState(initial?.docente ?? "");
+  const [settore, setSettore] = useState(initial?.settore ?? "");
+  const [note, setNote] = useState(initial?.note ?? "");
+  const [propedeuticita, setPropedeuticita] = useState<string[]>(
+    initial?.propedeuticita ?? [],
+  );
   const [propInput, setPropInput] = useState("");
 
   const [touched, setTouched] = useState<Partial<Record<FormField, boolean>>>({});
@@ -97,9 +115,10 @@ export function InsegnamentoManualForm({
       return;
     }
     const draft: DraftInsegnamento = {
-      ateneo_id,
-      corso_id,
+      ateneo_id: initial?.ateneo_id ?? ateneo_id,
+      corso_id: initial?.corso_id ?? corso_id,
       nome: nome.trim(),
+      codice: codice.trim() || undefined,
       cfu: cfuNum,
       anno:  anno  || undefined,
       semestre: semestre || undefined,
@@ -107,8 +126,10 @@ export function InsegnamentoManualForm({
       docente:  docente.trim()  || undefined,
       settore:  settore.trim()  || undefined,
       propedeuticita: propedeuticita.length ? propedeuticita : undefined,
-      superata: false,
-      inserito_manualmente: true,
+      note: note.trim() || undefined,
+      // Editing a sync row keeps its provenance (`false`); new rows are manual.
+      superata: initial?.superata ?? false,
+      inserito_manualmente: initial?.inserito_manualmente ?? true,
     };
     onSubmit(draft);
   }
@@ -117,11 +138,18 @@ export function InsegnamentoManualForm({
     <div
       className="glass rounded-lg border border-line p-5"
       role="region"
-      aria-label="Aggiungi un insegnamento manualmente"
+      aria-label="Modulo insegnamento"
     >
       <h2 className="mb-4 text-base font-semibold text-ink [font-family:var(--font-display)]">
-        Nuovo insegnamento
+        {title}
       </h2>
+
+      {notice && (
+        <p className="mb-4 flex items-start gap-2 rounded-lg border border-signal/30 bg-signal-dim px-3 py-2 text-sm text-signal">
+          <Info aria-hidden="true" className="mt-0.5 size-4 shrink-0" />
+          <span>{notice}</span>
+        </p>
+      )}
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-4" noValidate>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -144,6 +172,18 @@ export function InsegnamentoManualForm({
               placeholder="es. Algoritmi e Strutture Dati"
               aria-invalid={errorOf("nome") ? true : undefined}
               aria-describedby={errorOf("nome") ? `${baseId}-nome-error` : undefined}
+              className={inputClass}
+            />
+          </Field>
+
+          {/* Codice */}
+          <Field label="Codice" htmlFor={`${baseId}-codice`}>
+            <input
+              id={`${baseId}-codice`}
+              type="text"
+              value={codice}
+              onChange={(e) => setCodice(e.target.value)}
+              placeholder="es. 8037488"
               className={inputClass}
             />
           </Field>
@@ -294,6 +334,22 @@ export function InsegnamentoManualForm({
               </div>
             )}
           </div>
+
+          {/* Note personali */}
+          <Field
+            label="Note personali"
+            htmlFor={`${baseId}-note`}
+            className="sm:col-span-2"
+          >
+            <textarea
+              id={`${baseId}-note`}
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+              rows={3}
+              placeholder="Facoltative — restano private, salvate sul dispositivo"
+              className={cn(inputClass, "h-auto resize-y py-2")}
+            />
+          </Field>
         </div>
 
         {/* Azioni */}
@@ -304,7 +360,7 @@ export function InsegnamentoManualForm({
           <div className="relative inline-flex">
             <Button type="submit" variant="primary" disabled={!isValid}>
               <PlusCircle aria-hidden="true" className="size-4" />
-              Aggiungi
+              {submitLabel}
             </Button>
             {!isValid && (
               <button

@@ -1,12 +1,14 @@
 "use client";
 
-import { PlusCircle } from "lucide-react";
+import { LayoutGrid, PlusCircle, Table2 } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/primitives/Button";
 import { cn } from "@/lib/cn";
 import type { Insegnamento, TipoInsegnamento } from "@/types/insegnamenti";
 import { InsegnamentoCard } from "./InsegnamentoCard";
+import { InsegnamentoTable } from "./InsegnamentoTable";
 
+type ViewMode = "card" | "tabella";
 type GroupMode = "anno" | "semestre";
 type FiltroTipo = "tutti" | TipoInsegnamento | "superate";
 
@@ -58,11 +60,16 @@ export function InsegnamentoList({
   insegnamenti,
   materieSuperate,
   onAggiungiManuale,
+  onEdit,
+  onDelete,
 }: {
   insegnamenti: Insegnamento[];
   materieSuperate: Set<string>;
   onAggiungiManuale: () => void;
+  onEdit: (ins: Insegnamento) => void;
+  onDelete: (ins: Insegnamento) => void;
 }) {
+  const [viewMode, setViewMode] = useState<ViewMode>("card");
   const [groupMode, setGroupMode] = useState<GroupMode>("anno");
   const [filtro, setFiltro] = useState<FiltroTipo>("tutti");
 
@@ -72,37 +79,69 @@ export function InsegnamentoList({
     return ins.tipo === filtro;
   });
 
-  const groups =
-    groupMode === "anno"
-      ? groupByAnno(filtered)
-      : groupBySemestre(filtered);
+  // Le card seguono il toggle Anno/Semestre; la tabella è sempre per anno.
+  const cardGroups =
+    groupMode === "anno" ? groupByAnno(filtered) : groupBySemestre(filtered);
+  const tableGroups = Array.from(groupByAnno(filtered).entries());
 
   return (
     <section aria-label="Elenco insegnamenti" className="flex flex-col gap-6">
-      {/* Toggle + Filtri */}
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        {/* Group toggle */}
-        <div
-          role="group"
-          aria-label="Raggruppa per"
-          className="glass flex w-fit gap-px rounded-xl p-1"
-        >
-          {(["anno", "semestre"] as GroupMode[]).map((mode) => (
-            <button
-              key={mode}
-              type="button"
-              onClick={() => setGroupMode(mode)}
-              aria-pressed={groupMode === mode}
-              className={cn(
-                "rounded-lg px-3 py-1 text-sm font-medium transition-colors",
-                groupMode === mode
-                  ? "bg-signal text-white"
-                  : "text-ink-mute hover:text-ink",
-              )}
+      {/* Toolbar: vista · raggruppamento (solo card) · filtri */}
+      <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+        <div className="flex flex-wrap items-center gap-3">
+          {/* View toggle Card/Tabella */}
+          <div
+            role="group"
+            aria-label="Vista"
+            className="glass flex w-fit gap-px rounded-xl p-1"
+          >
+            {([
+              { mode: "card", label: "Card", Icon: LayoutGrid },
+              { mode: "tabella", label: "Tabella", Icon: Table2 },
+            ] as const).map(({ mode, label, Icon }) => (
+              <button
+                key={mode}
+                type="button"
+                onClick={() => setViewMode(mode)}
+                aria-pressed={viewMode === mode}
+                className={cn(
+                  "inline-flex items-center gap-1.5 rounded-lg px-3 py-1 text-sm font-medium transition-colors",
+                  viewMode === mode
+                    ? "bg-signal text-white"
+                    : "text-ink-mute hover:text-ink",
+                )}
+              >
+                <Icon aria-hidden="true" className="size-3.5" />
+                {label}
+              </button>
+            ))}
+          </div>
+
+          {/* Group toggle — pertinente solo alla vista card */}
+          {viewMode === "card" && (
+            <div
+              role="group"
+              aria-label="Raggruppa per"
+              className="glass flex w-fit gap-px rounded-xl p-1"
             >
-              {mode === "anno" ? "Per Anno" : "Per Semestre"}
-            </button>
-          ))}
+              {(["anno", "semestre"] as GroupMode[]).map((mode) => (
+                <button
+                  key={mode}
+                  type="button"
+                  onClick={() => setGroupMode(mode)}
+                  aria-pressed={groupMode === mode}
+                  className={cn(
+                    "rounded-lg px-3 py-1 text-sm font-medium transition-colors",
+                    groupMode === mode
+                      ? "bg-signal text-white"
+                      : "text-ink-mute hover:text-ink",
+                  )}
+                >
+                  {mode === "anno" ? "Per Anno" : "Per Semestre"}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Filtri tipo */}
@@ -141,31 +180,45 @@ export function InsegnamentoList({
         </div>
       )}
 
-      {/* Groups */}
-      {Array.from(groups.entries()).map(([gruppo, items]) => (
-        <section key={gruppo} aria-label={gruppo}>
-          <h2 className="mb-3 text-[0.8rem] font-semibold uppercase tracking-widest text-ink-mute">
-            {gruppo}
-            <span className="ml-2 font-normal normal-case tracking-normal text-ink-faint">
-              {items.length} {items.length === 1 ? "insegnamento" : "insegnamenti"}
-            </span>
-          </h2>
-          <div
-            className="grid gap-4"
-            style={{
-              gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
-            }}
-          >
-            {items.map((ins) => (
-              <InsegnamentoCard
-                key={ins.id}
-                insegnamento={ins}
-                superata={materieSuperate.has(ins.id) || Boolean(ins.superata)}
-              />
-            ))}
-          </div>
-        </section>
-      ))}
+      {/* Vista tabella */}
+      {filtered.length > 0 && viewMode === "tabella" && (
+        <InsegnamentoTable
+          groups={tableGroups}
+          materieSuperate={materieSuperate}
+          onEdit={onEdit}
+          onDelete={onDelete}
+        />
+      )}
+
+      {/* Vista card */}
+      {filtered.length > 0 &&
+        viewMode === "card" &&
+        Array.from(cardGroups.entries()).map(([gruppo, items]) => (
+          <section key={gruppo} aria-label={gruppo}>
+            <h2 className="mb-3 text-[0.8rem] font-semibold uppercase tracking-widest text-ink-mute">
+              {gruppo}
+              <span className="ml-2 font-normal normal-case tracking-normal text-ink-faint">
+                {items.length} {items.length === 1 ? "insegnamento" : "insegnamenti"}
+              </span>
+            </h2>
+            <div
+              className="grid gap-4"
+              style={{
+                gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+              }}
+            >
+              {items.map((ins) => (
+                <InsegnamentoCard
+                  key={ins.id}
+                  insegnamento={ins}
+                  superata={materieSuperate.has(ins.id) || Boolean(ins.superata)}
+                  onEdit={onEdit}
+                  onDelete={onDelete}
+                />
+              ))}
+            </div>
+          </section>
+        ))}
 
       {/* CTA aggiungi */}
       {filtered.length > 0 && (
