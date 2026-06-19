@@ -56,6 +56,13 @@ export function AppNav() {
     ).length;
   }, [hydrated, now, classEvents, examCalls]);
 
+  // Durante l'onboarding la navbar è nascosta: lo step wizard è autocontenuto
+  // e la presenza di link alle sezioni app disorienterebbe chi non è ancora
+  // configurato.
+  if (pathname.startsWith("/onboarding")) {
+    return null;
+  }
+
   // Sulla landing pubblica il visitatore non deve avere vie di fuga: niente
   // navbar app a 9 voci, solo logo + "Accedi" + il CTA principale. La navbar
   // piena resta su tutte le altre route.
