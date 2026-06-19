@@ -66,66 +66,64 @@ let dbPromise: Promise<IDBPDatabase<StudentOSDB>> | undefined;
 
 export function getDb(): Promise<IDBPDatabase<StudentOSDB>> {
   dbPromise ??= openDB<StudentOSDB>(DB_NAME, DB_VERSION, {
-    upgrade(db, oldVersion) {
-      // v3 adds insegnamenti + manifesti stores.
-      if (oldVersion >= 2) {
-        if (!db.objectStoreNames.contains("insegnamenti")) {
-          const ins = db.createObjectStore("insegnamenti", { keyPath: "id" });
-          ins.createIndex("by-ateneo", "ateneo_id");
-          ins.createIndex("by-corso", "corso_id");
-        }
-        if (!db.objectStoreNames.contains("manifesti")) {
-          const man = db.createObjectStore("manifesti", { keyPath: "id" });
-          man.createIndex("by-ateneo", "ateneo_id");
-          man.createIndex("by-corso", "corso_id");
-        }
-        return;
+    upgrade(db) {
+      // Idempotent, order-independent migration: create each missing store (with
+      // its indexes) guarded by contains(), in schema order. NO early returns —
+      // every prior version reaches every check, so a multi-version jump (e.g.
+      // v1 → v3) can't skip a store added in an intermediate version. A fresh DB
+      // (oldVersion 0) creates them all; an existing DB only fills the gaps.
+      if (!db.objectStoreNames.contains("classEvents")) {
+        const classEvents = db.createObjectStore("classEvents", { keyPath: "id" });
+        classEvents.createIndex("by-source", "sourceId");
+        classEvents.createIndex("by-start", "start");
       }
-      // v2 adds the secrets store; guard each store so upgrades from any
-      // prior version create only what's missing.
-      if (oldVersion >= 1) {
-        if (!db.objectStoreNames.contains("secrets")) {
-          db.createObjectStore("secrets");
-        }
-        return;
+      if (!db.objectStoreNames.contains("examCalls")) {
+        const examCalls = db.createObjectStore("examCalls", { keyPath: "id" });
+        examCalls.createIndex("by-source", "sourceId");
+        examCalls.createIndex("by-date", "date");
       }
-      const classEvents = db.createObjectStore("classEvents", { keyPath: "id" });
-      classEvents.createIndex("by-source", "sourceId");
-      classEvents.createIndex("by-start", "start");
-
-      const examCalls = db.createObjectStore("examCalls", { keyPath: "id" });
-      examCalls.createIndex("by-source", "sourceId");
-      examCalls.createIndex("by-date", "date");
-
-      const news = db.createObjectStore("news", { keyPath: "id" });
-      news.createIndex("by-source", "sourceId");
-
-      db.createObjectStore("syncMeta", { keyPath: "sourceId" });
-
-      const notices = db.createObjectStore("changeNotices", { keyPath: "id" });
-      notices.createIndex("by-detected", "detectedAt");
-
-      db.createObjectStore("libretto", { keyPath: "id" });
-
-      const notes = db.createObjectStore("notes", { keyPath: "id" });
-      notes.createIndex("by-updated", "updatedAt");
-
-      const tasks = db.createObjectStore("studyTasks", { keyPath: "id" });
-      tasks.createIndex("by-status", "status");
-
-      const focus = db.createObjectStore("focusSessions", { keyPath: "id" });
-      focus.createIndex("by-started", "startedAt");
-
-      db.createObjectStore("settings");
-      db.createObjectStore("secrets");
-
-      const ins = db.createObjectStore("insegnamenti", { keyPath: "id" });
-      ins.createIndex("by-ateneo", "ateneo_id");
-      ins.createIndex("by-corso", "corso_id");
-
-      const man = db.createObjectStore("manifesti", { keyPath: "id" });
-      man.createIndex("by-ateneo", "ateneo_id");
-      man.createIndex("by-corso", "corso_id");
+      if (!db.objectStoreNames.contains("news")) {
+        const news = db.createObjectStore("news", { keyPath: "id" });
+        news.createIndex("by-source", "sourceId");
+      }
+      if (!db.objectStoreNames.contains("syncMeta")) {
+        db.createObjectStore("syncMeta", { keyPath: "sourceId" });
+      }
+      if (!db.objectStoreNames.contains("changeNotices")) {
+        const notices = db.createObjectStore("changeNotices", { keyPath: "id" });
+        notices.createIndex("by-detected", "detectedAt");
+      }
+      if (!db.objectStoreNames.contains("libretto")) {
+        db.createObjectStore("libretto", { keyPath: "id" });
+      }
+      if (!db.objectStoreNames.contains("notes")) {
+        const notes = db.createObjectStore("notes", { keyPath: "id" });
+        notes.createIndex("by-updated", "updatedAt");
+      }
+      if (!db.objectStoreNames.contains("studyTasks")) {
+        const tasks = db.createObjectStore("studyTasks", { keyPath: "id" });
+        tasks.createIndex("by-status", "status");
+      }
+      if (!db.objectStoreNames.contains("focusSessions")) {
+        const focus = db.createObjectStore("focusSessions", { keyPath: "id" });
+        focus.createIndex("by-started", "startedAt");
+      }
+      if (!db.objectStoreNames.contains("settings")) {
+        db.createObjectStore("settings");
+      }
+      if (!db.objectStoreNames.contains("secrets")) {
+        db.createObjectStore("secrets");
+      }
+      if (!db.objectStoreNames.contains("insegnamenti")) {
+        const ins = db.createObjectStore("insegnamenti", { keyPath: "id" });
+        ins.createIndex("by-ateneo", "ateneo_id");
+        ins.createIndex("by-corso", "corso_id");
+      }
+      if (!db.objectStoreNames.contains("manifesti")) {
+        const man = db.createObjectStore("manifesti", { keyPath: "id" });
+        man.createIndex("by-ateneo", "ateneo_id");
+        man.createIndex("by-corso", "corso_id");
+      }
     },
   });
   return dbPromise;
