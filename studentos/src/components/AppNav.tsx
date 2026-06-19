@@ -2,6 +2,7 @@
 
 import {
   Bell,
+  BookOpen,
   CalendarClock,
   CalendarDays,
   GraduationCap,
@@ -26,12 +27,13 @@ import { useAlerts } from "@/lib/state/alerts";
 import { useSearchPalette } from "@/lib/state/searchPalette";
 import { useSynced } from "@/lib/state/synced";
 
-// Sei voci principali. Impostazioni vive nel cluster in alto a destra (icona
+// Sette voci principali. Impostazioni vive nel cluster in alto a destra (icona
 // ingranaggio), l'Assistente è una bubble flottante: nessuno dei due è una voce
 // di barra. La landing (/) è pubblica, non una sezione dell'app.
 const LINKS = [
   { href: "/panoramica", label: "Panoramica", short: "Crusc.", icon: LayoutDashboard },
   { href: "/orario", label: "Orario", short: "Orario", icon: CalendarDays },
+  { href: "/insegnamenti", label: "Insegnamenti", short: "Materie", icon: BookOpen },
   { href: "/appelli", label: "Appelli", short: "Esami", icon: CalendarClock },
   { href: "/libretto", label: "Libretto", short: "Voti", icon: GraduationCap },
   { href: "/note", label: "Note", short: "Note", icon: NotebookPen },
