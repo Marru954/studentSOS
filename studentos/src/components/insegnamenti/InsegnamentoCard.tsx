@@ -113,7 +113,9 @@ export function InsegnamentoCard({
           open ? "grid-rows-[1fr]" : "grid-rows-[0fr]",
         )}
       >
-        <div className="overflow-hidden">
+        {/* `inert` quando chiuso: il contenuto clippato resta fuori dal tab
+            order e dallo screen reader, ma l'animazione CSS continua a girare. */}
+        <div className="overflow-hidden" inert={!open}>
           <div className="flex flex-col gap-4 border-t border-line px-[1.2rem] py-4">
             <dl className="grid grid-cols-2 gap-x-4 gap-y-3">
               {ins.codice && (

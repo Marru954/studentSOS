@@ -156,7 +156,8 @@ export function InsegnamentoTable({
                           isOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]",
                         )}
                       >
-                        <div className="overflow-hidden">
+                        {/* inert da chiuso: fuori dal tab order/SR, animazione viva */}
+                        <div className="overflow-hidden" inert={!isOpen}>
                           <div className="flex flex-col gap-3 border-b border-line/60 bg-night-950/40 px-3 py-3">
                             <div className="flex flex-wrap items-center gap-2">
                               {ins.inserito_manualmente ? (
