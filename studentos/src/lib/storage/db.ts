@@ -15,6 +15,7 @@ import type {
   StudyTask,
 } from "@/lib/domain/types";
 import type { ChangeNotice, SyncMeta } from "./types";
+import type { Insegnamento, ManifestoInsegnamenti } from "@/types/insegnamenti";
 
 export interface StudentOSDB extends DBSchema {
   classEvents: {
@@ -44,16 +45,42 @@ export interface StudentOSDB extends DBSchema {
    *  unlocks it. The key is a CryptoKey with extractable:false, so even a
    *  full dump of this store cannot recover the password off-device. */
   secrets: { key: string; value: unknown };
+  /** Piano di studi: insegnamenti del corso (obbligatori, a scelta, altri). */
+  insegnamenti: {
+    key: string;
+    value: Insegnamento;
+    indexes: { "by-ateneo": string; "by-corso": string };
+  };
+  /** Metadati del manifesto degli studi per corso/anno accademico. */
+  manifesti: {
+    key: string;
+    value: ManifestoInsegnamenti;
+    indexes: { "by-ateneo": string; "by-corso": string };
+  };
 }
 
 const DB_NAME = "studentos";
-const DB_VERSION = 2;
+const DB_VERSION = 3;
 
 let dbPromise: Promise<IDBPDatabase<StudentOSDB>> | undefined;
 
 export function getDb(): Promise<IDBPDatabase<StudentOSDB>> {
   dbPromise ??= openDB<StudentOSDB>(DB_NAME, DB_VERSION, {
     upgrade(db, oldVersion) {
+      // v3 adds insegnamenti + manifesti stores.
+      if (oldVersion >= 2) {
+        if (!db.objectStoreNames.contains("insegnamenti")) {
+          const ins = db.createObjectStore("insegnamenti", { keyPath: "id" });
+          ins.createIndex("by-ateneo", "ateneo_id");
+          ins.createIndex("by-corso", "corso_id");
+        }
+        if (!db.objectStoreNames.contains("manifesti")) {
+          const man = db.createObjectStore("manifesti", { keyPath: "id" });
+          man.createIndex("by-ateneo", "ateneo_id");
+          man.createIndex("by-corso", "corso_id");
+        }
+        return;
+      }
       // v2 adds the secrets store; guard each store so upgrades from any
       // prior version create only what's missing.
       if (oldVersion >= 1) {
@@ -91,6 +118,14 @@ export function getDb(): Promise<IDBPDatabase<StudentOSDB>> {
 
       db.createObjectStore("settings");
       db.createObjectStore("secrets");
+
+      const ins = db.createObjectStore("insegnamenti", { keyPath: "id" });
+      ins.createIndex("by-ateneo", "ateneo_id");
+      ins.createIndex("by-corso", "corso_id");
+
+      const man = db.createObjectStore("manifesti", { keyPath: "id" });
+      man.createIndex("by-ateneo", "ateneo_id");
+      man.createIndex("by-corso", "corso_id");
     },
   });
   return dbPromise;
