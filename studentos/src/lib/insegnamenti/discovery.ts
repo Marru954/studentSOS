@@ -56,8 +56,19 @@ interface AteneoSource {
  * simply yields manual mode. Real domains only, never invented endpoints.
  */
 const ATENEI: Record<string, AteneoSource> = {
-  // Roma "Tor Vergata" — didattica web is JS-driven; kept for STEP B probing.
-  uniroma2: { base: "https://didattica.uniroma2.it" },
+  // Roma "Tor Vergata" — didattica.uniroma2.it è JS-driven, ma il dipartimento
+  // di Informatica pubblica il manifesto (triennale/magistrale) come pagina
+  // WordPress server-rendered con una vera tabella CFU su
+  // informatica.uniroma2.it: puntiamo lì. La corsoUrls scatta solo per i corsi
+  // di Informatica; gli altri corsi di Tor Vergata restano in manuale.
+  uniroma2: {
+    base: "https://informatica.uniroma2.it",
+    corsoUrls: (slug) => {
+      if (!slug.includes("informatica")) return [];
+      const livello = slug.includes("magistr") ? "magistrale" : "triennale";
+      return [`https://informatica.uniroma2.it/home/${livello}/studiare/insegnamenti/`];
+    },
+  },
   // Politecnico di Torino — "Guida dello studente" is server-rendered per cds/aa
   // but corso-keyed by numeric code we don't hold; probe generic paths only.
   polito: { base: "https://didattica.polito.it" },
