@@ -144,14 +144,15 @@ export function TrophyGrid({
               {entry.cfu} CFU · {fmtPlainDate(entry.date)}
             </div>
 
-            {/* azioni: appaiono al hover (gli esami sincronizzati non si toccano) */}
+            {/* azioni: su mobile (niente hover) sempre visibili e con tap target
+                ≥36px; da sm in su tornano a comparire all'hover, compatte. */}
             {!synced && (
-              <div className="absolute right-2 top-2 flex gap-1 opacity-0 transition-opacity focus-within:opacity-100 group-hover:opacity-100">
+              <div className="absolute right-2 top-2 flex gap-1 opacity-100 transition-opacity sm:opacity-0 sm:focus-within:opacity-100 sm:group-hover:opacity-100">
                 <button
                   type="button"
                   onClick={() => onEdit(entry.id)}
                   aria-label={`Modifica ${entry.courseName}`}
-                  className="glass-2 rounded-full p-1.5 text-ink-mute transition-colors hover:text-ink"
+                  className="glass-2 flex size-9 items-center justify-center rounded-full text-ink-mute transition-colors hover:text-ink sm:size-auto sm:p-1.5"
                 >
                   <Pencil aria-hidden="true" className="size-3.5" />
                 </button>
@@ -164,7 +165,7 @@ export function TrophyGrid({
                       : `Elimina ${entry.courseName}`
                   }
                   className={cn(
-                    "glass-2 rounded-full p-1.5 transition-colors",
+                    "glass-2 flex size-9 items-center justify-center rounded-full transition-colors sm:size-auto sm:p-1.5",
                     armedId === entry.id
                       ? "bg-danger/20 text-danger ring-1 ring-danger"
                       : "text-ink-mute hover:text-danger",
