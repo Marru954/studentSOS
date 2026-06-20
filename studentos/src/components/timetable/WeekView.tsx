@@ -15,6 +15,7 @@ import type { ClassEvent } from "@/lib/domain/types";
 import { extractCourseNames } from "@/lib/domain/notes";
 import { matchesYear } from "@/lib/domain/sources";
 import { addDays, fmtTime, localDayOf, localToday, mondayOf } from "@/lib/format";
+import { useIsMobile } from "@/lib/hooks/useIsMobile";
 import { useNowMinute } from "@/lib/hooks/useNowMinute";
 import { useSettings } from "@/lib/state/settings";
 import { useSynced } from "@/lib/state/synced";
@@ -316,7 +317,11 @@ export function WeekView() {
   const [weekOffset, setWeekOffset] = useState(0);
   // "auto" = mostra l'anno impostato nelle settings finché l'utente non sceglie.
   const [yearFilter, setYearFilter] = useState<number | "all" | "auto">("auto");
-  const [view, setView] = useState<"grid" | "list">("grid");
+  // null = nessuna scelta esplicita: segui il viewport (lista su mobile, griglia
+  // su desktop). Un click sul toggle fissa la preferenza dell'utente.
+  const [view, setView] = useState<"grid" | "list" | null>(null);
+  const isMobile = useIsMobile();
+  const effectiveView: "grid" | "list" = view ?? (isMobile ? "list" : "grid");
 
   const ready = now !== null && hydrated && settingsHydrated;
   const weekStart = ready ? addDays(mondayOf(now), weekOffset * 7) : null;
@@ -430,9 +435,9 @@ export function WeekView() {
               <button
                 type="button"
                 onClick={() => setView("grid")}
-                aria-pressed={view === "grid"}
+                aria-pressed={effectiveView === "grid"}
                 className={
-                  view === "grid"
+                  effectiveView === "grid"
                     ? "grad-fill rounded-full px-3 py-1 text-xs font-semibold text-white shadow-soft"
                     : "chip transition-colors hover:border-line-strong"
                 }
@@ -442,9 +447,9 @@ export function WeekView() {
               <button
                 type="button"
                 onClick={() => setView("list")}
-                aria-pressed={view === "list"}
+                aria-pressed={effectiveView === "list"}
                 className={
-                  view === "list"
+                  effectiveView === "list"
                     ? "grad-fill rounded-full px-3 py-1 text-xs font-semibold text-white shadow-soft"
                     : "chip transition-colors hover:border-line-strong"
                 }
@@ -453,27 +458,29 @@ export function WeekView() {
               </button>
             </div>
           )}
-          <Button
-            size="sm"
-            aria-label="Settimana precedente"
-            onClick={() => setWeekOffset((w) => w - 1)}
-          >
-            <ChevronLeft aria-hidden="true" className="size-4" />
-          </Button>
-          <Button
-            size="sm"
-            disabled={weekOffset === 0}
-            onClick={() => setWeekOffset(0)}
-          >
-            Oggi
-          </Button>
-          <Button
-            size="sm"
-            aria-label="Settimana successiva"
-            onClick={() => setWeekOffset((w) => w + 1)}
-          >
-            <ChevronRight aria-hidden="true" className="size-4" />
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              size="sm"
+              aria-label="Settimana precedente"
+              onClick={() => setWeekOffset((w) => w - 1)}
+            >
+              <ChevronLeft aria-hidden="true" className="size-4" />
+            </Button>
+            <Button
+              size="sm"
+              disabled={weekOffset === 0}
+              onClick={() => setWeekOffset(0)}
+            >
+              Oggi
+            </Button>
+            <Button
+              size="sm"
+              aria-label="Settimana successiva"
+              onClick={() => setWeekOffset((w) => w + 1)}
+            >
+              <ChevronRight aria-hidden="true" className="size-4" />
+            </Button>
+          </div>
         </div>
       </header>
 
@@ -513,11 +520,14 @@ export function WeekView() {
           />
           <ManualLessonForm courses={allCourses} />
           <ImportIcalForm />
-          {view === "grid" ? (
+          {effectiveView === "grid" ? (
             weekEvents.length === 0 ? (
               emptyState
             ) : (
               <div className="glass gradient-ring reveal overflow-x-auto p-5">
+                <p className="mb-3 text-xs text-ink-faint md:hidden" aria-hidden="true">
+                  ← scorri per vedere tutta la settimana →
+                </p>
                 <WeekGrid events={weekEvents} weekStart={weekStart!} now={now} />
               </div>
             )
