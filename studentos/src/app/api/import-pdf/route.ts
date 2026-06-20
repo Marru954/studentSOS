@@ -6,7 +6,7 @@
  * and preview before anything is saved. GROQ_API_KEY stays on the server;
  * nothing is persisted here. Mirrors the existing /api/assistente proxy.
  */
-import { guardPost } from "@/lib/api/guard";
+import { guardAiPost } from "@/lib/api/aiGuard";
 import { apiLog } from "@/lib/api/logger";
 
 const GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
@@ -53,7 +53,7 @@ function systemPrompt(kind: Kind): string {
 }
 
 export async function POST(req: Request): Promise<Response> {
-  const { response: blocked, remaining, setCookie } = guardPost(req, "import-pdf", {
+  const { response: blocked, remaining, setCookie } = await guardAiPost(req, "import-pdf", {
     limit: 10,
     windowMs: 60_000,
   });
