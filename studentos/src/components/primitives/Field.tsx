@@ -2,7 +2,8 @@ import { cn } from "@/lib/cn";
 
 /** Shared control styling: clean white inputs with a hairline border. */
 export const inputClass = cn(
-  "h-9 w-full rounded-sm border border-line bg-night-800 px-3 text-sm text-ink",
+  // 44px di altezza su mobile (touch target), 36px da sm in su (densità desktop).
+  "h-11 sm:h-9 w-full rounded-sm border border-line bg-night-800 px-3 text-sm text-ink",
   "placeholder:text-ink-faint hover:border-line-strong disabled:opacity-45",
 );
 

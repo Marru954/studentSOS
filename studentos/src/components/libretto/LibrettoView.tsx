@@ -85,7 +85,7 @@ function ViewTabs({
             onClick={() => onChange(t.id)}
             onKeyDown={(e) => onKeyDown(e, i)}
             className={cn(
-              "flex-1 rounded-lg py-1.5 text-sm font-medium transition-colors",
+              "flex-1 rounded-lg py-3 text-sm font-medium transition-colors sm:py-1.5",
               active ? "bg-primary-gradient text-white" : "text-ink-mute",
             )}
           >
@@ -243,7 +243,7 @@ export function LibrettoView() {
                   id="anno-filter"
                   value={yearFilter}
                   onChange={(e) => setYearFilter(e.target.value)}
-                  className="h-8 rounded-sm border border-line bg-night-800 px-2 text-xs text-ink transition-[border-color] hover:border-line-strong"
+                  className="h-11 rounded-sm border border-line bg-night-800 px-2 text-xs text-ink transition-[border-color] hover:border-line-strong sm:h-8"
                 >
                   <option value="all">Tutti gli anni</option>
                   {years.map((y) => (
@@ -447,7 +447,7 @@ export function LibrettoView() {
                   type="button"
                   onClick={() => setTab("trofei")}
                   className={cn(
-                    "flex-1 rounded-lg py-1.5 text-sm font-medium transition-colors",
+                    "flex-1 rounded-lg py-3 text-sm font-medium transition-colors",
                     tab === "trofei"
                       ? "bg-primary-gradient text-white"
                       : "text-ink-mute",
@@ -459,7 +459,7 @@ export function LibrettoView() {
                   type="button"
                   onClick={() => setTab("analisi")}
                   className={cn(
-                    "flex-1 rounded-lg py-1.5 text-sm font-medium transition-colors",
+                    "flex-1 rounded-lg py-3 text-sm font-medium transition-colors",
                     tab === "analisi"
                       ? "bg-primary-gradient text-white"
                       : "text-ink-mute",

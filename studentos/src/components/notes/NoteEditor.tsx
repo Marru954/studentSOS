@@ -193,7 +193,7 @@ export function NoteEditor({
               aria-selected={mobilePane === pane}
               onClick={() => setMobilePane(pane)}
               className={cn(
-                "border-b-2 px-3 py-1.5 text-label font-medium transition-colors",
+                "border-b-2 px-3 py-3 text-label font-medium transition-colors",
                 mobilePane === pane
                   ? "border-signal text-ink"
                   : "border-transparent text-ink-mute hover:text-ink",
