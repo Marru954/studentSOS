@@ -22,7 +22,7 @@ import type { UniversityPreset } from "@/lib/sync/provider";
 import { UNIVERSITY_PRESETS, getPreset, liveProgramFor } from "@/lib/sync/universities";
 import { ATENEO_COURSES, coursesFor } from "@/lib/sync/universities/ateneo-courses";
 
-const STEP_TITLES = ["Ateneo", "Corso", "Anno e CFU", "Conferma"];
+const STEP_TITLES = ["Ateneo", "Corso", "Anno", "Conferma"];
 
 type DegreeType = "triennale" | "magistrale" | "ciclo5" | "ciclo6";
 
@@ -286,7 +286,7 @@ export function OnboardingFlow() {
                 }`}
               />
               <span
-                className={`text-[0.7rem] ${
+                className={`truncate text-[0.7rem] ${
                   active ? "text-ink" : "text-ink-faint"
                 }`}
               >
@@ -312,7 +312,7 @@ export function OnboardingFlow() {
                 onChange={(e) => setEmailInput(e.target.value)}
                 placeholder="nome@studenti.uniroma2.it"
                 aria-describedby="onb-email-hint"
-                className="h-10 w-full rounded-xl border border-line bg-night-800 px-3 text-sm text-ink placeholder:text-ink-faint hover:border-line-strong focus:border-signal focus:outline-none"
+                className="h-11 w-full rounded-xl border border-line bg-night-800 px-3 text-sm text-ink placeholder:text-ink-faint hover:border-line-strong focus:border-signal focus:outline-none"
               />
               <p id="onb-email-hint" className="text-xs text-ink-faint">
                 La usiamo solo per trovare il tuo ateneo. Non stai creando un
@@ -335,7 +335,7 @@ export function OnboardingFlow() {
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   placeholder="Cerca per nome o città…"
-                  className="h-10 w-full rounded-xl border border-line bg-night-800 pl-9 pr-3 text-sm text-ink placeholder:text-ink-faint hover:border-line-strong focus:border-signal focus:outline-none"
+                  className="h-11 w-full rounded-xl border border-line bg-night-800 pl-9 pr-3 text-sm text-ink placeholder:text-ink-faint hover:border-line-strong focus:border-signal focus:outline-none"
                 />
               </div>
             </div>
@@ -401,7 +401,7 @@ export function OnboardingFlow() {
                       onChange={(e) => setCorsoQuery(e.target.value)}
                       placeholder="Cerca il tuo corso…"
                       aria-label="Cerca corso di laurea"
-                      className="h-10 w-full rounded-xl border border-line bg-night-800 pl-9 pr-3 text-sm text-ink placeholder:text-ink-faint hover:border-line-strong focus:border-signal focus:outline-none"
+                      className="h-11 w-full rounded-xl border border-line bg-night-800 pl-9 pr-3 text-sm text-ink placeholder:text-ink-faint hover:border-line-strong focus:border-signal focus:outline-none"
                     />
                   </div>
                 )}
@@ -493,7 +493,7 @@ export function OnboardingFlow() {
                 value={corso}
                 onChange={(e) => setChosenCorso(e.target.value)}
                 placeholder="es. Informatica"
-                className="h-10 w-full rounded-xl border border-line bg-night-800 px-3 text-sm text-ink placeholder:text-ink-faint hover:border-line-strong focus:border-signal focus:outline-none"
+                className="h-11 w-full rounded-xl border border-line bg-night-800 px-3 text-sm text-ink placeholder:text-ink-faint hover:border-line-strong focus:border-signal focus:outline-none"
               />
             )}
           </section>
@@ -509,7 +509,7 @@ export function OnboardingFlow() {
                     key={y}
                     type="button"
                     onClick={() => setYear(y)}
-                    className={`rounded-full border px-4 py-2 text-sm transition-colors ${
+                    className={`min-h-[44px] rounded-full border px-4 py-2 text-sm transition-colors ${
                       effectiveYear === y
                         ? "border-signal/60 bg-signal-dim text-ink"
                         : "border-line bg-night-800 text-ink-mute hover:border-line-strong"
@@ -539,7 +539,7 @@ export function OnboardingFlow() {
                   value={totalCfu}
                   onChange={(e) => setCfuOverride({ corso, cfu: Number(e.target.value) || 0 })}
                   aria-label="CFU totali"
-                  className="font-num h-9 w-24 rounded-xl border border-line bg-night-800 px-3 text-sm text-ink hover:border-line-strong focus:border-signal focus:outline-none"
+                  className="font-num h-11 w-24 rounded-xl border border-line bg-night-800 px-3 text-sm text-ink hover:border-line-strong focus:border-signal focus:outline-none"
                 />
               </div>
             </div>
@@ -577,6 +577,7 @@ export function OnboardingFlow() {
         {/* nav */}
         <div className="mt-6 flex items-center justify-between gap-2">
           <Button
+            size="lg"
             onClick={() => setStep((s) => Math.max(1, s - 1))}
             disabled={step === 1}
           >
@@ -585,6 +586,7 @@ export function OnboardingFlow() {
           </Button>
           {step < 4 ? (
             <Button
+              size="lg"
               variant="primary"
               disabled={!canNext}
               onClick={() => setStep((s) => Math.min(4, s + 1))}
@@ -593,7 +595,7 @@ export function OnboardingFlow() {
               <ArrowRight aria-hidden="true" className="size-3.5" />
             </Button>
           ) : (
-            <Button variant="primary" loading={saving} onClick={() => void finish()}>
+            <Button size="lg" variant="primary" loading={saving} onClick={() => void finish()}>
               Attiva e sincronizza
               <Check aria-hidden="true" className="size-3.5" />
             </Button>

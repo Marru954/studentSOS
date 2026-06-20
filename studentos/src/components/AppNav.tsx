@@ -118,11 +118,11 @@ export function AppNav() {
           </Link>
           <Link
             href="/login"
-            className="rounded-full px-3 py-1.5 text-xs font-medium text-ink-mute transition-colors hover:bg-night-700 hover:text-ink"
+            className="inline-flex min-h-[44px] items-center rounded-full px-3 text-xs font-medium text-ink-mute transition-colors hover:bg-night-700 hover:text-ink"
           >
             Accedi
           </Link>
-          <Link href="/onboarding" className="btn btn-primary px-4 py-1.5 text-xs">
+          <Link href="/onboarding" className="btn btn-primary inline-flex min-h-[44px] items-center whitespace-nowrap px-4 text-xs">
             Inizia ora
           </Link>
           <ThemeToggle />
@@ -245,7 +245,7 @@ export function AppNav() {
       {/* Mobile bottom tab bar — replaces the inline link overflow under sm. */}
       <nav
         aria-label="Navigazione"
-        className="no-print fixed bottom-0 left-0 right-0 z-40 flex justify-around gap-1 overflow-x-auto border-t border-line bg-night-800/90 px-1 py-2 backdrop-blur-md xl:hidden"
+        className="no-print fixed bottom-0 left-0 right-0 z-40 flex justify-around gap-1 overflow-x-auto border-t border-line bg-night-800/90 px-1 backdrop-blur-md xl:hidden"
       >
         {LINKS.map(({ href, short, icon: Icon }) => {
           const active = pathname.startsWith(href);
@@ -256,7 +256,7 @@ export function AppNav() {
               href={href}
               aria-current={active ? "page" : undefined}
               className={cn(
-                "flex shrink-0 flex-col items-center gap-0.5 px-2 text-[0.62rem] font-medium transition-colors",
+                "flex min-h-[44px] shrink-0 flex-col items-center justify-center gap-0.5 px-2 py-2 text-[0.62rem] font-medium transition-colors",
                 active ? "text-signal" : "text-ink-mute",
               )}
             >

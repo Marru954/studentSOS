@@ -14,7 +14,7 @@ export function HeroPreview() {
   return (
     <div
       aria-hidden="true"
-      className="reveal mx-auto mt-14 w-full max-w-[920px] select-none"
+      className="reveal mx-auto mt-10 hidden w-full max-w-[920px] select-none sm:mt-14 sm:block"
     >
       <div className="glass gradient-ring shadow-soft relative overflow-hidden rounded-xl">
         {/* glow locale (l'.atmosphere globale è fixed e non riusabile qui) */}
