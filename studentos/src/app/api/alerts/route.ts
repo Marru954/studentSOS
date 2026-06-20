@@ -44,7 +44,7 @@ function asArray(value: unknown): unknown[] | null {
 }
 
 export async function POST(req: Request): Promise<Response> {
-  const { response: blocked, remaining } = guardPost(req, "alerts", {
+  const { response: blocked, remaining, setCookie } = guardPost(req, "alerts", {
     limit: 30,
     windowMs: 60_000,
   });
@@ -106,6 +106,8 @@ export async function POST(req: Request): Promise<Response> {
     "Cache-Control": "no-store",
     "X-Content-Type-Options": "nosniff",
   };
+  // Persisti il contatore del rate-limit cross-istanza nel cookie firmato.
+  if (setCookie) headers["Set-Cookie"] = setCookie;
   // Debug only in sviluppo: non esporre lo stato del rate-limit in produzione.
   if (process.env.NODE_ENV !== "production") {
     headers["X-RateLimit-Remaining"] = String(remaining);
