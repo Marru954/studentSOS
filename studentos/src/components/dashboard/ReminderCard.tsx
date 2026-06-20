@@ -15,10 +15,18 @@ import {
 } from "@/lib/notifications";
 import { useToast } from "@/lib/state/toast";
 import { useSynced } from "@/lib/state/synced";
+import { useLibretto } from "@/lib/state/manual";
+import { passedCourseKeys } from "@/lib/domain/examStatus";
+import { useMemo } from "react";
 
 export function ReminderCard({ className }: { className?: string }) {
   const classEvents = useSynced((s) => s.classEvents);
   const examCalls = useSynced((s) => s.examCalls);
+  const librettoItems = useLibretto((s) => s.items);
+  const passedCourses = useMemo(
+    () => passedCourseKeys(librettoItems),
+    [librettoItems],
+  );
   const now = useNowMinute();
   const perm = useSyncExternalStore(
     subscribePermission,
@@ -28,13 +36,14 @@ export function ReminderCard({ className }: { className?: string }) {
 
   // when reminders are on, re-check on each tick (deduped per day)
   useEffect(() => {
-    if (perm === "granted" && now) runReminderCheck(classEvents, examCalls, now);
-  }, [perm, now, classEvents, examCalls]);
+    if (perm === "granted" && now)
+      runReminderCheck(classEvents, examCalls, now, passedCourses);
+  }, [perm, now, classEvents, examCalls, passedCourses]);
 
   async function enable() {
     const res = await requestNotifyPermission();
     if (res === "granted" && now) {
-      const n = runReminderCheck(classEvents, examCalls, now);
+      const n = runReminderCheck(classEvents, examCalls, now, passedCourses);
       useToast.getState().show(
         n > 0 ? `Promemoria attivi · ${n} avvisi inviati.` : "Promemoria attivi.",
         "ok",

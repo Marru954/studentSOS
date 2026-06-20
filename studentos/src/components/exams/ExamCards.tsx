@@ -11,6 +11,7 @@ import { Badge } from "@/components/primitives/Badge";
 import { ConfirmButton } from "@/components/primitives/ConfirmButton";
 import { cn } from "@/lib/cn";
 import { bookingState } from "@/lib/domain/booking";
+import { isExamPassed } from "@/lib/domain/examStatus";
 import type { ExamCall, ExamKind, IsoDate } from "@/lib/domain/types";
 import { daysBetweenIso } from "@/lib/format";
 
@@ -47,19 +48,25 @@ function ExamCard({
   exam,
   today,
   index,
+  passed = false,
   onDelete,
 }: {
   exam: ExamCall;
   today: IsoDate;
   index: number;
+  /** Course already in the libretto: shows a "già superato" badge and is never
+   *  styled as urgent — the student passed it, it shouldn't nag. */
+  passed?: boolean;
   onDelete?: (id: string) => void;
 }) {
   const days = daysBetweenIso(today, exam.date);
   const month = MONTH_ABBR[Number(exam.date.slice(5, 7)) - 1];
   const dayNum = exam.date.slice(8, 10);
   const booking = bookingState(exam.booking, today);
-  const chip = statusChip(days);
-  const urgent = days >= 0 && days <= 7;
+  const chip = passed
+    ? { cls: "chip chip-ok", label: "già superato" }
+    : statusChip(days);
+  const urgent = !passed && days >= 0 && days <= 7;
   const barWidth = days < 0 ? 100 : Math.max(8, 100 - days * 2.5);
   // Manually-added appelli carry a `manual-…` sentinel sourceId; only these
   // are deletable. Synced exams expose no delete control. PDF-imported ones use
@@ -167,10 +174,14 @@ function ExamCard({
 export function ExamCards({
   exams,
   today,
+  passedCourses,
   onDelete,
 }: {
   exams: ExamCall[];
   today: IsoDate;
+  /** Course keys already in the libretto (from `passedCourseKeys`); matching
+   *  appelli render a "già superato" badge instead of an urgency chip. */
+  passedCourses?: Set<string>;
   /** When provided, manual appelli (sourceId starting with "manual") show a
    *  confirm-to-delete control; synced exams never do. */
   onDelete?: (id: string) => void;
@@ -191,6 +202,7 @@ export function ExamCards({
           exam={exam}
           today={today}
           index={i}
+          passed={passedCourses ? isExamPassed(exam, passedCourses) : false}
           onDelete={onDelete}
         />
       ))}
