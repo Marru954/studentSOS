@@ -190,7 +190,7 @@ export function NotesView({ initialQuery }: { initialQuery?: string }) {
                   type="button"
                   onClick={() => setSelectedId(null)}
                   className="btn self-start lg:hidden"
-                  style={{ padding: "0.5rem 1rem", fontSize: "0.82rem" }}
+                  style={{ padding: "0.65rem 1rem", fontSize: "0.82rem" }}
                 >
                   ← Tutte le note
                 </button>
