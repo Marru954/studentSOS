@@ -23,6 +23,7 @@ import {
   localToday,
 } from "@/lib/format";
 import { getTrophy } from "@/lib/domain/achievements";
+import { filterUnpassedExams } from "@/lib/domain/examStatus";
 import { useNowMinute } from "@/lib/hooks/useNowMinute";
 import { useLibretto } from "@/lib/state/manual";
 import { useSettings } from "@/lib/state/settings";
@@ -212,14 +213,15 @@ export function Dashboard() {
   }, [ready, classEvents, pinnedCourses, now]);
 
   // the student's own exams: the merged feed narrowed to the pinned courses
-  // ("I miei esami"), so the hero + timeline match /appelli and /calendario.
+  // ("I miei esami"), with appelli of already-passed exams dropped so the hero
+  // "prossimo esame" + timeline never highlight an exam already in the libretto.
   const myExamCalls = useMemo(() => {
     if (!ready) return [];
     const pinned = pinnedCourses;
-    return examCalls.filter(
+    return filterUnpassedExams(examCalls, librettoItems).filter(
       (e) => pinned.length === 0 || pinned.includes(e.courseName),
     );
-  }, [ready, examCalls, pinnedCourses]);
+  }, [ready, examCalls, pinnedCourses, librettoItems]);
 
   // exams within the next 7 days, for the hero sub-stat
   const examsThisWeek = useMemo(() => {

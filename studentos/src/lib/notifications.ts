@@ -70,10 +70,11 @@ export function runReminderCheck(
   classEvents: ClassEvent[],
   examCalls: ExamCall[],
   now: Date,
+  passedCourses?: Set<string>,
 ): number {
   if (getPermissionSnapshot() !== "granted") return 0;
   const seen = seenToday();
-  const due = computeUrgencies(classEvents, examCalls, now).filter(
+  const due = computeUrgencies(classEvents, examCalls, now, { passedCourses }).filter(
     (u) => u.severity === "critical" || u.severity === "warning",
   );
   let fired = 0;

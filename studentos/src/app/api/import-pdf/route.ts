@@ -53,7 +53,7 @@ function systemPrompt(kind: Kind): string {
 }
 
 export async function POST(req: Request): Promise<Response> {
-  const { response: blocked, remaining } = guardPost(req, "import-pdf", {
+  const { response: blocked, remaining, setCookie } = guardPost(req, "import-pdf", {
     limit: 10,
     windowMs: 60_000,
   });
@@ -173,6 +173,8 @@ export async function POST(req: Request): Promise<Response> {
     "Cache-Control": "no-store",
     "X-Content-Type-Options": "nosniff",
   };
+  // Persisti il contatore del rate-limit cross-istanza nel cookie firmato.
+  if (setCookie) headers["Set-Cookie"] = setCookie;
   // Solo per debug in sviluppo: non esporre lo stato del rate-limit in produzione.
   if (process.env.NODE_ENV !== "production") {
     headers["X-RateLimit-Remaining"] = String(remaining);

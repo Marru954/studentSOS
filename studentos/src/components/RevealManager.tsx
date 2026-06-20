@@ -21,6 +21,14 @@ export function RevealManager() {
     // with nothing left to reveal it. Leave the SSR markup fully visible.
     if (typeof IntersectionObserver !== "function") return;
 
+    // Reveal what's already in view up-front, in the SAME tick we arm
+    // `.anim-ready`. Two reasons: the hero fades in without waiting on the async
+    // observer callback, and — if the CSS 2s failsafe already showed everything
+    // (very slow hydration) — switching the gate to `.anim-ready` can't briefly
+    // re-hide above-fold content. Below-fold nodes stay hidden for scroll-in.
+    for (const el of document.querySelectorAll<HTMLElement>(".reveal:not(.in)")) {
+      if (el.getBoundingClientRect().top < window.innerHeight) el.classList.add("in");
+    }
     document.documentElement.classList.add("anim-ready");
 
     const io = new IntersectionObserver(

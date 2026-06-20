@@ -21,6 +21,7 @@ import { Wordmark } from "@/components/Wordmark";
 import { cn } from "@/lib/cn";
 import { isAlertActive } from "@/lib/domain/alerts";
 import { computeUrgencies } from "@/lib/domain/urgency";
+import { passedCourseKeys } from "@/lib/domain/examStatus";
 import { useNowMinute } from "@/lib/hooks/useNowMinute";
 import { useScrolled } from "@/lib/hooks/useScrolled";
 import { useAlerts } from "@/lib/state/alerts";
@@ -55,13 +56,18 @@ export function AppNav() {
   const classEvents = useSynced((s) => s.classEvents);
   const examCalls = useSynced((s) => s.examCalls);
   const hydrated = useSynced((s) => s.hydrated);
+  const librettoItems = useLibretto((s) => s.items);
+  const passedCourses = useMemo(
+    () => passedCourseKeys(librettoItems),
+    [librettoItems],
+  );
   const now = useNowMinute();
   const criticalCount = useMemo(() => {
     if (!hydrated || now === null) return 0;
-    return computeUrgencies(classEvents, examCalls, now).filter(
+    return computeUrgencies(classEvents, examCalls, now, { passedCourses }).filter(
       (u) => u.severity === "critical",
     ).length;
-  }, [hydrated, now, classEvents, examCalls]);
+  }, [hydrated, now, classEvents, examCalls, passedCourses]);
 
   // Primo avvio: nessun dato proprio ancora. Gli avvisi critici al primo accesso
   // vengono tutti dagli appelli del corso intero (non sono i suoi); mostrare il
@@ -69,7 +75,6 @@ export function AppNav() {
   // un orario personalizzato (corsi selezionati). Nota: `classEvents` non basta —
   // dopo un sync live contiene SEMPRE l'intero orario del corso, quindi sarebbe
   // sempre pieno; serve il segnale di personalizzazione (`pinnedCourses`).
-  const librettoItems = useLibretto((s) => s.items);
   const pinnedCourses = useSettings((s) => s.pinnedCourses);
   const hasOwnData = librettoItems.length > 0 || pinnedCourses.length > 0;
 

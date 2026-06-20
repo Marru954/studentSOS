@@ -56,6 +56,12 @@ export const viewport: Viewport = {
 // Apply the saved theme before first paint to avoid a flash. Dark is default.
 const THEME_INIT = `(function(){try{var t=localStorage.getItem('studentos-theme');document.documentElement.dataset.theme=(t==='light'||t==='dark')?t:'dark';}catch(e){document.documentElement.dataset.theme='dark';}})();`;
 
+// Mark the document JS-capable before first paint: scroll-reveal sections only
+// take their hidden start state under `.js-enabled`, so JS-off visitors and bots
+// always get the full page immediately (progressive enhancement). A pure-CSS 2s
+// failsafe (globals.css) reveals everything anyway if the bundle never hydrates.
+const JS_INIT = `document.documentElement.classList.add('js-enabled');`;
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -70,6 +76,7 @@ export default function RootLayout({
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT }} />
+        <script dangerouslySetInnerHTML={{ __html: JS_INIT }} />
       </head>
       <body className="min-h-full flex flex-col pb-[68px] xl:pb-0">
         {/* drifting aurora behind the glass UI */}
