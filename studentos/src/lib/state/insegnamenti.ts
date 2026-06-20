@@ -45,6 +45,10 @@ interface InsegnamentiState {
   syncInsegnamenti(ateneoId: string, corsoId: string): Promise<SyncResult>;
   /** Stamp identity + timestamps, persist, then mirror into state. */
   addInsegnamentoManuale(draft: DraftInsegnamento): Promise<void>;
+  /** Apply a partial edit to one row. Identity/provenance/created_at are kept
+   *  from the existing row; the row is flagged `modificato_manualmente` so a
+   *  later sync leaves it intact (see `lib/insegnamenti/sync`). */
+  updateInsegnamento(id: string, patch: Partial<DraftInsegnamento>): Promise<void>;
   /** Remove one row (manual or synced) from disk + state. */
   deleteInsegnamento(id: string): Promise<void>;
   /** Wipe the store (e.g. account switch). Local only. */
@@ -148,6 +152,31 @@ export const useInsegnamenti = create<InsegnamentiState>()((set, get) => ({
     const db = await getDb();
     await db.put("insegnamenti", row);
     set({ insegnamenti: ordina([...get().insegnamenti, row]) });
+  },
+
+  async updateInsegnamento(id, patch) {
+    const current = get().insegnamenti.find((i) => i.id === id);
+    if (!current) return;
+    // The patch fills content fields; identity, provenance and created_at always
+    // come from the existing row so an edit can never re-home or re-provenance it.
+    const updated: Insegnamento = {
+      ...current,
+      ...patch,
+      id: current.id,
+      ateneo_id: current.ateneo_id,
+      corso_id: current.corso_id,
+      inserito_manualmente: current.inserito_manualmente,
+      modificato_manualmente: true,
+      created_at: current.created_at,
+      updated_at: new Date().toISOString(),
+    };
+    const db = await getDb();
+    await db.put("insegnamenti", updated);
+    set({
+      insegnamenti: ordina(
+        get().insegnamenti.map((i) => (i.id === id ? updated : i)),
+      ),
+    });
   },
 
   async deleteInsegnamento(id) {

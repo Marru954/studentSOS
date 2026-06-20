@@ -15,6 +15,11 @@ export interface Insegnamento {
   tipo: TipoInsegnamento;
   inserito_manualmente: boolean;
   superata?: boolean;
+  /** Note personali dello studente (facoltative). */
+  note?: string;
+  /** True quando lo studente ha modificato questa materia (manuale o da sync):
+   *  da quel momento il sync non la sovrascrive più (vedi `lib/insegnamenti/sync`). */
+  modificato_manualmente?: boolean;
   created_at: string;
   updated_at: string;
 }

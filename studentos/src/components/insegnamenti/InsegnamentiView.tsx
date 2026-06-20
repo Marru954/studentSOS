@@ -23,6 +23,8 @@ import {
 } from "@/lib/state/insegnamenti";
 import { useLibretto } from "@/lib/state/manual";
 import { useSettings } from "@/lib/state/settings";
+import { useToast } from "@/lib/state/toast";
+import type { Insegnamento } from "@/types/insegnamenti";
 
 /** Fold a course name to a comparison key: drop accents/case/punctuation so
  *  "Analisi Matematica I" ↔ "analisi matematica i" still match. */
@@ -49,10 +51,14 @@ export function InsegnamentiView() {
   const loadInsegnamenti = useInsegnamenti((s) => s.loadInsegnamenti);
   const syncInsegnamenti = useInsegnamenti((s) => s.syncInsegnamenti);
   const addInsegnamentoManuale = useInsegnamenti((s) => s.addInsegnamentoManuale);
+  const updateInsegnamento = useInsegnamenti((s) => s.updateInsegnamento);
+  const deleteInsegnamento = useInsegnamenti((s) => s.deleteInsegnamento);
 
   const librettoItems = useLibretto((s) => s.items);
+  const showToast = useToast((s) => s.show);
 
   const [showForm, setShowForm] = useState(false);
+  const [editing, setEditing] = useState<Insegnamento | null>(null);
 
   // Load once the onboarded corso is known (this store isn't hydrated by
   // StoreProvider). Re-runs if the account/corso changes.
@@ -77,13 +83,39 @@ export function InsegnamentiView() {
   async function handleSync() {
     if (!canSync || !ateneo || !corso) return;
     const res = await syncInsegnamenti(ateneo, corso);
-    // No manifesto → land the student straight on the manual form (see banner).
-    if (res.status === "manual") setShowForm(true);
+    if (res.status === "ok") {
+      showToast(
+        `${res.count} ${res.count === 1 ? "materia aggiornata" : "materie aggiornate"}`,
+        "ok",
+      );
+    } else if (res.status === "manual") {
+      showToast(
+        "Non riusciamo a sincronizzare automaticamente il tuo ateneo. Puoi aggiungere le materie a mano.",
+        "warn",
+      );
+      // Niente materie ancora → portiamo lo studente direttamente sul form.
+      if (insegnamenti.length === 0) setShowForm(true);
+    } else {
+      showToast(res.error || "Sincronizzazione non riuscita.", "danger");
+    }
   }
 
   async function handleAdd(draft: DraftInsegnamento) {
     await addInsegnamentoManuale(draft);
     setShowForm(false);
+    showToast("Insegnamento aggiunto.", "ok");
+  }
+
+  async function handleUpdate(draft: DraftInsegnamento) {
+    if (!editing) return;
+    await updateInsegnamento(editing.id, draft);
+    setEditing(null);
+    showToast("Modifiche salvate.", "ok");
+  }
+
+  async function handleDelete(ins: Insegnamento) {
+    await deleteInsegnamento(ins.id);
+    showToast("Insegnamento eliminato.", "ok");
   }
 
   const lastSync = manifesto?.last_sync
@@ -108,7 +140,32 @@ export function InsegnamentiView() {
     );
   }
 
-  // ── Manual form ───────────────────────────────────────────────────────────
+  // ── Form: modifica ────────────────────────────────────────────────────────
+  if (editing) {
+    return (
+      <div className="flex flex-col gap-4">
+        <header className="flex flex-col gap-1">
+          <h1 className="text-2xl font-bold text-ink">Modifica insegnamento</h1>
+        </header>
+        <InsegnamentoManualForm
+          initial={editing}
+          onSubmit={handleUpdate}
+          onCancel={() => setEditing(null)}
+          ateneo_id={ateneo}
+          corso_id={corso}
+          title="Modifica insegnamento"
+          submitLabel="Salva modifiche"
+          notice={
+            editing.inserito_manualmente
+              ? undefined
+              : "Questa materia viene dal sync. Le tue modifiche resteranno anche dopo un nuovo aggiornamento."
+          }
+        />
+      </div>
+    );
+  }
+
+  // ── Form: aggiunta manuale ────────────────────────────────────────────────
   if (showForm) {
     return (
       <div className="flex flex-col gap-4">
@@ -180,6 +237,8 @@ export function InsegnamentiView() {
           insegnamenti={insegnamenti}
           materieSuperate={materieSuperate}
           onAggiungiManuale={() => setShowForm(true)}
+          onEdit={(ins) => setEditing(ins)}
+          onDelete={handleDelete}
         />
       </div>
     );
