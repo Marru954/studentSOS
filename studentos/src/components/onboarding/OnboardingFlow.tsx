@@ -7,7 +7,7 @@
  * link we already know their email → detect the ateneo and skip straight to the
  * course step. Pure public data, no credentials.
  */
-import { ArrowLeft, ArrowRight, Check, GraduationCap, Search } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, ChevronDown, GraduationCap, Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { Wordmark } from "@/components/Wordmark";
@@ -52,6 +52,20 @@ function detectDegreeType(name: string): DegreeType {
     return "ciclo5";
   // Default: triennale (L-*)
   return "triennale";
+}
+
+/** Collapsible buckets for the course step (one decision per group). */
+const CORSO_GROUP_ORDER = ["Triennale", "Magistrale", "Altro"] as const;
+
+/** Map a course to its collapsible group (ciclo unico falls under "Altro"). */
+function corsoGroupOf(name: string): string {
+  const t = detectDegreeType(name);
+  return t === "triennale" ? "Triennale" : t === "magistrale" ? "Magistrale" : "Altro";
+}
+
+/** Char-truncate a long course name for display; full name stays in title/aria. */
+function truncateName(name: string, max = 60): string {
+  return name.length > max ? `${name.slice(0, max).trimEnd()}…` : name;
 }
 
 function programmesOf(p: UniversityPreset | undefined): string[] {
@@ -101,6 +115,8 @@ export function OnboardingFlow() {
   const [chosenPreset, setChosenPreset] = useState<string | null>(null);
   const [chosenCorso, setChosenCorso] = useState<string | null>(null);
   const [corsoQuery, setCorsoQuery] = useState("");
+  /** Which corso groups are expanded; {} → fall back to the default-open group. */
+  const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({});
 
   // Ensure the optional auth session is loaded even on a direct /onboarding
   // visit. This only nudges the external store — no React setState in the effect.
@@ -119,10 +135,19 @@ export function OnboardingFlow() {
   const corsi = programmesOf(preset);
   const corso = chosenCorso ?? corsi[0] ?? "";
   const corsoLive = isLiveCourse(preset, corso);
+  const corsoSearchActive = corsoQuery.trim().length > 0;
   const filteredCorsi = (() => {
     const q = corsoQuery.trim().toLowerCase();
     return q ? corsi.filter((c) => c.toLowerCase().includes(q)) : corsi;
   })();
+  // Bucket the (filtered) courses into collapsible groups, dropping empties.
+  const groupedCorsi = CORSO_GROUP_ORDER.map((name) => ({
+    name,
+    items: filteredCorsi.filter((c) => corsoGroupOf(c) === name),
+  })).filter((g) => g.items.length > 0);
+  // Triennale opens by default; if this ateneo has none, the first group does.
+  const defaultOpenGroup =
+    groupedCorsi.find((g) => g.name === "Triennale")?.name ?? groupedCorsi[0]?.name;
 
   // Derive year list and CFU chip purely from the chosen course name.
   const degreeType = detectDegreeType(corso);
@@ -157,6 +182,11 @@ export function OnboardingFlow() {
     setChosenPreset(id);
     setChosenCorso(null);
     setCorsoQuery("");
+    setOpenGroups({});
+  }
+
+  function toggleGroup(name: string) {
+    setOpenGroups((g) => ({ ...g, [name]: !(g[name] ?? name === defaultOpenGroup) }));
   }
 
   const canNext =
@@ -375,43 +405,79 @@ export function OnboardingFlow() {
                     />
                   </div>
                 )}
-                <div className="no-scrollbar flex max-h-72 flex-col gap-1.5 overflow-y-auto">
-                  {filteredCorsi.map((c) => {
-                    const live = isLiveCourse(preset, c);
+                <div className="no-scrollbar flex max-h-72 flex-col gap-2 overflow-y-auto">
+                  {groupedCorsi.map((group) => {
+                    // Search reveals every match; otherwise honour the toggle,
+                    // defaulting Triennale (or the first group) to open.
+                    const open =
+                      corsoSearchActive ||
+                      (openGroups[group.name] ?? group.name === defaultOpenGroup);
+                    const panelId = `corso-group-${group.name}`;
                     return (
-                      <button
-                        key={c}
-                        type="button"
-                        onClick={() => setChosenCorso(c)}
-                        className={`flex items-center justify-between gap-2 rounded-xl border px-3 py-2.5 text-left text-sm transition-colors ${
-                          corso === c
-                            ? "border-signal/60 bg-signal-dim text-ink"
-                            : "border-line bg-night-800 text-ink-mute hover:border-line-strong"
-                        }`}
-                      >
-                        <span className="min-w-0">
-                          <span className="block truncate">{c}</span>
-                          <span className="block text-[0.65rem] text-ink-faint/70">
-                            {live
-                              ? "Orario e appelli aggiornati automaticamente"
-                              : "Inserisci tu le informazioni del tuo corso"}
+                      <div key={group.name} className="flex flex-col gap-1.5">
+                        <button
+                          type="button"
+                          onClick={() => toggleGroup(group.name)}
+                          aria-expanded={open}
+                          aria-controls={panelId}
+                          className="flex items-center justify-between rounded-lg px-1 py-1.5 text-left text-xs font-medium text-ink-mute transition-colors hover:text-ink"
+                        >
+                          <span>
+                            {group.name}
+                            <span className="ml-1.5 text-ink-faint">{group.items.length}</span>
                           </span>
-                        </span>
-                        <span className="flex shrink-0 items-center gap-1.5">
-                          <span
-                            className={`rounded-full px-2 py-0.5 text-[0.6rem] font-medium ${
-                              live
-                                ? "bg-signal-dim text-signal"
-                                : "bg-night-900 text-ink-faint"
+                          <ChevronDown
+                            aria-hidden="true"
+                            className={`size-4 shrink-0 transition-transform ${
+                              open ? "" : "-rotate-90"
                             }`}
-                          >
-                            {live ? "sync live" : "manuale"}
-                          </span>
-                          {corso === c && (
-                            <Check aria-hidden="true" className="size-4 text-signal" />
-                          )}
-                        </span>
-                      </button>
+                          />
+                        </button>
+                        {open && (
+                          <div id={panelId} className="flex flex-col gap-1.5">
+                            {group.items.map((c) => {
+                              const live = isLiveCourse(preset, c);
+                              return (
+                                <button
+                                  key={c}
+                                  type="button"
+                                  onClick={() => setChosenCorso(c)}
+                                  title={c}
+                                  aria-label={c}
+                                  className={`flex items-center justify-between gap-2 rounded-xl border px-3 py-2.5 text-left text-sm transition-colors ${
+                                    corso === c
+                                      ? "border-signal/60 bg-signal-dim text-ink"
+                                      : "border-line bg-night-800 text-ink-mute hover:border-line-strong"
+                                  }`}
+                                >
+                                  <span className="min-w-0">
+                                    <span className="block truncate">{truncateName(c)}</span>
+                                    <span className="block text-[0.65rem] text-ink-faint/70">
+                                      {live
+                                        ? "Orario e appelli aggiornati automaticamente"
+                                        : "Inserisci tu le informazioni del tuo corso"}
+                                    </span>
+                                  </span>
+                                  <span className="flex shrink-0 items-center gap-1.5">
+                                    <span
+                                      className={`rounded-full px-2 py-0.5 text-[0.6rem] font-medium ${
+                                        live
+                                          ? "bg-signal-dim text-signal"
+                                          : "bg-night-900 text-ink-faint"
+                                      }`}
+                                    >
+                                      {live ? "sync live" : "manuale"}
+                                    </span>
+                                    {corso === c && (
+                                      <Check aria-hidden="true" className="size-4 text-signal" />
+                                    )}
+                                  </span>
+                                </button>
+                              );
+                            })}
+                          </div>
+                        )}
+                      </div>
                     );
                   })}
                   {filteredCorsi.length === 0 && (
