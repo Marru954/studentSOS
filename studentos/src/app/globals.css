@@ -536,16 +536,30 @@ input[type="radio"]:active {
 @keyframes drift-2 { 0%,100% { transform: translate(0,0) scale(1.1); } 50% { transform: translate(-6vw,8vh) scale(0.95); } }
 @keyframes drift-3 { 0%,100% { transform: translate(0,0) scale(0.9); } 50% { transform: translate(-8vw,-6vh) scale(1.2); } }
 
-/* ── Scroll reveal — visible by default; hidden only once JS arms `.anim-ready`,
-   so no-JS / reduced-motion / print always show content. ── */
+/* ── Scroll reveal ───────────────────────────────────────────────────────────
+   Visible by default. Hidden only once the inline <head> script confirms JS is
+   live by adding `.js-enabled` to <html> — set before first paint, so no-JS
+   visitors, bots and `prefers-reduced-motion` always get the full page with no
+   flash. ── */
 .reveal {
   transition: opacity 0.8s var(--ease), transform 0.8s var(--ease);
   transition-delay: var(--d, 0s);
   will-change: opacity, transform;
 }
-.anim-ready .reveal:not(.in) {
+.js-enabled .reveal:not(.in) {
   opacity: 0;
   transform: translateY(28px);
+}
+/* Safety net: if the bundle stalls or the IntersectionObserver never fires, a
+   pure-CSS animation forces every section fully visible after 2s — the page can
+   never stay half-blank. RevealManager adds `.anim-ready` the instant its
+   observer is armed and takes over the reveal (scroll-in + its own JS failsafe),
+   which lifts this fallback so the scroll animation isn't cut short. */
+.js-enabled:not(.anim-ready) .reveal:not(.in) {
+  animation: reveal-failsafe 0.8s var(--ease) 2s forwards;
+}
+@keyframes reveal-failsafe {
+  to { opacity: 1; transform: none; }
 }
 
 /* immersive chip / badge — base then tints (base must precede so tints win) */
@@ -774,7 +788,7 @@ html[data-density="compact"] { font-size: 93.75%; } /* 15px from a 16px base */
   .float, .float-slow, .buoy-spin { animation: none !important; }
   .anim-ready .word .mid { animation: none !important; }
   .urgent-card { animation: none !important; }
-  .reveal { opacity: 1 !important; transform: none !important; transition: none; }
+  .reveal { opacity: 1 !important; transform: none !important; transition: none; animation: none !important; }
   /* scenic stays as a static appearance: no glow pulse, no sparks */
   .trophy-buoy { animation: none !important; }
   .celebrate-spark { display: none !important; }
