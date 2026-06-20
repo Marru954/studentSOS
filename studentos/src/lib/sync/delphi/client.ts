@@ -8,11 +8,15 @@
  * Credentials live only as function arguments here: never logged, never
  * persisted, gone when the request returns.
  */
+import { lookup } from "node:dns/promises";
+import { isIP } from "node:net";
 import * as cheerio from "cheerio";
 import type { LibrettoEntry } from "@/lib/domain/types";
+import { isPrivateIp } from "@/lib/sync/validateUrl";
 import { parseLibretto } from "./parse";
 
-const BASE = "https://delphi.uniroma2.it/totem/jsp";
+const DELPHI_HOST = "delphi.uniroma2.it";
+const BASE = `https://${DELPHI_HOST}/totem/jsp`;
 const AUTH_PAGE = `${BASE}/Iscrizioni/autenticazione.jsp?language=IT`;
 const LOGIN_ACTION = `${BASE}/Iscrizioni/sStudentiLoginIntro.jsp`;
 const UA =
@@ -25,6 +29,38 @@ export class DelphiError extends Error {
   ) {
     super(message);
   }
+}
+
+/**
+ * SSRF guard for every Delphi fetch hop.
+ * Ensures host is DELPHI_HOST, protocol is https, and no resolved IP is private.
+ * Returns the absolute URL string; throws DelphiError on any violation.
+ */
+async function assertDelphiUrl(raw: string, base?: string): Promise<string> {
+  let parsed: URL;
+  try {
+    parsed = base ? new URL(raw, base) : new URL(raw);
+  } catch {
+    throw new DelphiError("URL Delphi non valido", "unavailable");
+  }
+  if (parsed.protocol !== "https:") {
+    throw new DelphiError("Protocollo non consentito", "unavailable");
+  }
+  const host = parsed.hostname.toLowerCase();
+  if (host !== DELPHI_HOST) {
+    throw new DelphiError("Host non consentito", "unavailable");
+  }
+  // DNS rebinding defence: resolve and reject private addresses.
+  const bare = host.startsWith("[") ? host.slice(1, -1) : host;
+  const isLiteral = isIP(bare) !== 0;
+  const addresses = isLiteral
+    ? [bare]
+    : (await lookup(host, { all: true })).map((r) => r.address);
+  if (addresses.length === 0) throw new DelphiError("Host non risolvibile", "unavailable");
+  for (const addr of addresses) {
+    if (isPrivateIp(addr)) throw new DelphiError("Indirizzo interno non consentito", "unavailable");
+  }
+  return parsed.toString();
 }
 
 /** Minimal cookie jar: name→value, updated from every Set-Cookie. */
@@ -50,7 +86,8 @@ async function jarFetch(
   url: string,
   init: RequestInit & { signal: AbortSignal },
 ): Promise<Response> {
-  const res = await fetch(url, {
+  const safeUrl = await assertDelphiUrl(url);
+  const res = await fetch(safeUrl, {
     ...init,
     redirect: "manual",
     headers: {
@@ -61,12 +98,20 @@ async function jarFetch(
     },
   });
   rememberCookies(jar, res);
-  // follow up to 5 redirects, carrying the jar
+  // follow up to 5 redirects; validate each hop before fetching
   let current = res;
+  let currentUrl = safeUrl;
   for (let i = 0; i < 5 && current.status >= 300 && current.status < 400; i++) {
     const loc = current.headers.get("location");
     if (!loc) break;
-    const next = new URL(loc, url).toString();
+    let next: string;
+    try {
+      next = await assertDelphiUrl(loc, currentUrl);
+    } catch {
+      // off-host or internal redirect → abort chain, return last response
+      break;
+    }
+    // cookies stay on DELPHI_HOST only (assertDelphiUrl already enforces this)
     current = await fetch(next, {
       redirect: "manual",
       headers: {
@@ -76,7 +121,7 @@ async function jarFetch(
       signal: init.signal,
     });
     rememberCookies(jar, current);
-    url = next;
+    currentUrl = next;
   }
   return current;
 }
