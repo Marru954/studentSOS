@@ -67,8 +67,42 @@ let dbPromise: Promise<IDBPDatabase<StudentOSDB>> | undefined;
 export function getDb(): Promise<IDBPDatabase<StudentOSDB>> {
   dbPromise ??= openDB<StudentOSDB>(DB_NAME, DB_VERSION, {
     upgrade(db, oldVersion) {
-      // v3 adds insegnamenti + manifesti stores.
-      if (oldVersion >= 2) {
+      if (oldVersion < 1) {
+        const classEvents = db.createObjectStore("classEvents", { keyPath: "id" });
+        classEvents.createIndex("by-source", "sourceId");
+        classEvents.createIndex("by-start", "start");
+
+        const examCalls = db.createObjectStore("examCalls", { keyPath: "id" });
+        examCalls.createIndex("by-source", "sourceId");
+        examCalls.createIndex("by-date", "date");
+
+        const news = db.createObjectStore("news", { keyPath: "id" });
+        news.createIndex("by-source", "sourceId");
+
+        db.createObjectStore("syncMeta", { keyPath: "sourceId" });
+
+        const notices = db.createObjectStore("changeNotices", { keyPath: "id" });
+        notices.createIndex("by-detected", "detectedAt");
+
+        db.createObjectStore("libretto", { keyPath: "id" });
+
+        const notes = db.createObjectStore("notes", { keyPath: "id" });
+        notes.createIndex("by-updated", "updatedAt");
+
+        const tasks = db.createObjectStore("studyTasks", { keyPath: "id" });
+        tasks.createIndex("by-status", "status");
+
+        const focus = db.createObjectStore("focusSessions", { keyPath: "id" });
+        focus.createIndex("by-started", "startedAt");
+
+        db.createObjectStore("settings");
+      }
+      if (oldVersion < 2) {
+        if (!db.objectStoreNames.contains("secrets")) {
+          db.createObjectStore("secrets");
+        }
+      }
+      if (oldVersion < 3) {
         if (!db.objectStoreNames.contains("insegnamenti")) {
           const ins = db.createObjectStore("insegnamenti", { keyPath: "id" });
           ins.createIndex("by-ateneo", "ateneo_id");
@@ -79,53 +113,7 @@ export function getDb(): Promise<IDBPDatabase<StudentOSDB>> {
           man.createIndex("by-ateneo", "ateneo_id");
           man.createIndex("by-corso", "corso_id");
         }
-        return;
       }
-      // v2 adds the secrets store; guard each store so upgrades from any
-      // prior version create only what's missing.
-      if (oldVersion >= 1) {
-        if (!db.objectStoreNames.contains("secrets")) {
-          db.createObjectStore("secrets");
-        }
-        return;
-      }
-      const classEvents = db.createObjectStore("classEvents", { keyPath: "id" });
-      classEvents.createIndex("by-source", "sourceId");
-      classEvents.createIndex("by-start", "start");
-
-      const examCalls = db.createObjectStore("examCalls", { keyPath: "id" });
-      examCalls.createIndex("by-source", "sourceId");
-      examCalls.createIndex("by-date", "date");
-
-      const news = db.createObjectStore("news", { keyPath: "id" });
-      news.createIndex("by-source", "sourceId");
-
-      db.createObjectStore("syncMeta", { keyPath: "sourceId" });
-
-      const notices = db.createObjectStore("changeNotices", { keyPath: "id" });
-      notices.createIndex("by-detected", "detectedAt");
-
-      db.createObjectStore("libretto", { keyPath: "id" });
-
-      const notes = db.createObjectStore("notes", { keyPath: "id" });
-      notes.createIndex("by-updated", "updatedAt");
-
-      const tasks = db.createObjectStore("studyTasks", { keyPath: "id" });
-      tasks.createIndex("by-status", "status");
-
-      const focus = db.createObjectStore("focusSessions", { keyPath: "id" });
-      focus.createIndex("by-started", "startedAt");
-
-      db.createObjectStore("settings");
-      db.createObjectStore("secrets");
-
-      const ins = db.createObjectStore("insegnamenti", { keyPath: "id" });
-      ins.createIndex("by-ateneo", "ateneo_id");
-      ins.createIndex("by-corso", "corso_id");
-
-      const man = db.createObjectStore("manifesti", { keyPath: "id" });
-      man.createIndex("by-ateneo", "ateneo_id");
-      man.createIndex("by-corso", "corso_id");
     },
   });
   return dbPromise;
