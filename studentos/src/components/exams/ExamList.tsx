@@ -34,6 +34,7 @@ import {
   filterExams,
 } from "@/lib/domain/calendar";
 import { eventsToIcs, type IcsEvent } from "@/lib/domain/ical";
+import { isExamPassed, passedCourseKeys } from "@/lib/domain/examStatus";
 import { extractCourseNames } from "@/lib/domain/notes";
 import { matchesYear } from "@/lib/domain/sources";
 import type { ExamCall, ExamKind } from "@/lib/domain/types";
@@ -64,11 +65,13 @@ const GROUPS: { id: GroupId; label: string; icon: LucideIcon }[] = [
   { id: "futuri", label: "Futuri", icon: CalendarClock },
 ];
 
-/** Bucket an exam by its own date/booking state — drives the accordion. */
-function groupOf(exam: ExamCall, today: string): GroupId {
+/** Bucket an exam by its own date/booking state — drives the accordion. A
+ *  passed exam (already in the libretto) is never "urgenti": it keeps its
+ *  "già superato" badge but drops to prenotabili/futuri so it doesn't nag. */
+function groupOf(exam: ExamCall, today: string, passed: boolean): GroupId {
   const days = daysBetweenIso(today, exam.date);
   if (days < 0) return "passati";
-  if (days <= 2) return "urgenti";
+  if (!passed && days <= 2) return "urgenti";
   const b = bookingState(exam.booking, today).kind;
   if (b === "open" || b === "closing" || b === "opens") return "prenotabili";
   return "futuri";
@@ -97,6 +100,12 @@ export function ExamList() {
   const examCalls = useSynced((s) => s.examCalls);
   const classEvents = useSynced((s) => s.classEvents);
   const librettoEntries = useLibretto((s) => s.items);
+  // Course keys already in the libretto: their appelli get a "già superato"
+  // badge and stay out of "Urgenti" (see groupOf / counts below).
+  const passedCourses = useMemo(
+    () => passedCourseKeys(librettoEntries),
+    [librettoEntries],
+  );
   const hydrated = useSynced((s) => s.hydrated);
   const settingsHydrated = useSettings((s) => s.hydrated);
   const hasSources = useSettings((s) => s.enabledSourceIds.length > 0);
@@ -207,9 +216,15 @@ export function ExamList() {
   const counts = useMemo(() => {
     if (!today) return {} as Record<ExamFilter, number>;
     return Object.fromEntries(
-      FILTERS.map((f) => [f.id, filterExams(scopedCalls, f.id, today).length]),
+      FILTERS.map((f) => {
+        let list = filterExams(scopedCalls, f.id, today);
+        // "Urgenti" never counts a passed exam — matches the urgenti accordion.
+        if (f.id === "urgenti")
+          list = list.filter((e) => !isExamPassed(e, passedCourses));
+        return [f.id, list.length];
+      }),
     ) as Record<ExamFilter, number>;
-  }, [scopedCalls, today]);
+  }, [scopedCalls, today, passedCourses]);
 
   // the filtered cards, bucketed into the accordion groups (empty groups drop)
   const grouped = useMemo(() => {
@@ -220,11 +235,12 @@ export function ExamList() {
       futuri: [],
       passati: [],
     };
-    for (const e of cards) buckets[groupOf(e, today)].push(e);
+    for (const e of cards)
+      buckets[groupOf(e, today, isExamPassed(e, passedCourses))].push(e);
     return GROUPS.map((g) => ({ ...g, items: buckets[g.id] })).filter(
       (g) => g.items.length > 0,
     );
-  }, [cards, today]);
+  }, [cards, today, passedCourses]);
 
   // Urgenti open by default; others closed. "Mostra altri" expands per group.
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({
@@ -433,6 +449,7 @@ export function ExamList() {
                           <ExamCards
                             exams={shown}
                             today={today!}
+                            passedCourses={passedCourses}
                             onDelete={handleDelete}
                           />
                           {extra > 0 && (

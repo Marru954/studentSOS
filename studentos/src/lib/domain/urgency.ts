@@ -5,6 +5,7 @@
  * touches storage or network.
  */
 import { stableId } from "@/lib/sync/util";
+import { isExamPassed } from "./examStatus";
 import type {
   ClassEvent,
   ExamCall,
@@ -17,6 +18,10 @@ export interface UrgencyOptions {
   /** IANA zone for day/time labels and "today" resolution. Defaults to the
    *  runtime's local zone; tests pass "UTC" for determinism. */
   timeZone?: string;
+  /** Course keys already in the libretto (from `passedCourseKeys`). Appelli of
+   *  a passed exam are dropped before any exam rule runs, so a verbalized exam
+   *  never surfaces as urgent/overlapping/booking-due. Absent → no filtering. */
+  passedCourses?: Set<string>;
 }
 
 const DAY_MS = 86_400_000;
@@ -40,12 +45,18 @@ export function computeUrgencies(
   options: UrgencyOptions = {},
 ): Urgency[] {
   const ctx = makeContext(now, options.timeZone);
+  // Passed exams (already in the libretto) never nag: drop their appelli before
+  // any exam-based rule. Class rules are untouched.
+  const exams =
+    options.passedCourses && options.passedCourses.size > 0
+      ? examCalls.filter((e) => !isExamPassed(e, options.passedCourses!))
+      : examCalls;
   const all = [
     ...classOverlaps(classEvents, ctx),
-    ...examOverlaps(examCalls, ctx),
-    ...bookingDeadlines(examCalls, ctx),
+    ...examOverlaps(exams, ctx),
+    ...bookingDeadlines(exams, ctx),
     ...roomChanges(classEvents, ctx),
-    ...imminentExams(examCalls, ctx),
+    ...imminentExams(exams, ctx),
   ];
 
   const unique = new Map<string, Urgency>();
