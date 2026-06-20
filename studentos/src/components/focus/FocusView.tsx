@@ -10,6 +10,7 @@ import { Panel } from "@/components/primitives/Panel";
 import { PanelSkeleton } from "@/components/primitives/Skeleton";
 import { extractCourseNames } from "@/lib/domain/notes";
 import { bestDay, longestSession } from "@/lib/domain/focus";
+import { filterUnpassedExams } from "@/lib/domain/examStatus";
 import type { FocusSession } from "@/lib/domain/types";
 import { daysFromToday, localDayOf, localToday } from "@/lib/format";
 import { useNowMinute } from "@/lib/hooks/useNowMinute";
@@ -62,17 +63,18 @@ export function FocusView({ initialCourse }: { initialCourse?: string }) {
     [classEvents, examCalls],
   );
 
-  // motivation inputs
+  // motivation inputs — appelli of passed exams are excluded so the banner
+  // never nudges to study for an exam already in the libretto.
   const nextExam = useMemo(() => {
     if (!now) return undefined;
     const today = localToday(now);
-    const soon = examCalls
+    const soon = filterUnpassedExams(examCalls, libretto.items)
       .filter((e) => e.date >= today)
       .sort((a, b) => a.date.localeCompare(b.date))[0];
     return soon
       ? { courseName: soon.courseName, days: daysFromToday(soon.date, now) }
       : undefined;
-  }, [examCalls, now]);
+  }, [examCalls, libretto.items, now]);
 
   const streak = useMemo(() => {
     if (!now) return 0;

@@ -76,7 +76,7 @@ export async function guardAiPost(
   req: Request,
   name: string,
   opts: { limit: number; windowMs: number },
-): Promise<{ response: Response | null; remaining: number }> {
+): Promise<{ response: Response | null; remaining: number; setCookie: string | null }> {
   // Level A — auth gate (attivo solo se Supabase è configurato)
   if (process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
     try {
@@ -93,6 +93,7 @@ export async function guardAiPost(
           return {
             response: jsonErr("Accedi per usare l'assistente AI.", 401),
             remaining: 0,
+            setCookie: null,
           };
         }
       }
@@ -104,6 +105,7 @@ export async function guardAiPost(
           503,
         ),
         remaining: 0,
+        setCookie: null,
       };
     }
   }
@@ -118,6 +120,7 @@ export async function guardAiPost(
         cb.retryAfter,
       ),
       remaining: 0,
+      setCookie: null,
     };
   }
 
@@ -126,6 +129,7 @@ export async function guardAiPost(
     return {
       response: jsonErr("Limite giornaliero raggiunto. Riprova domani.", 429),
       remaining: 0,
+      setCookie: null,
     };
   }
 
