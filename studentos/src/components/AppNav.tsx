@@ -24,7 +24,9 @@ import { computeUrgencies } from "@/lib/domain/urgency";
 import { useNowMinute } from "@/lib/hooks/useNowMinute";
 import { useScrolled } from "@/lib/hooks/useScrolled";
 import { useAlerts } from "@/lib/state/alerts";
+import { useLibretto } from "@/lib/state/manual";
 import { useSearchPalette } from "@/lib/state/searchPalette";
+import { useSettings } from "@/lib/state/settings";
 import { useSynced } from "@/lib/state/synced";
 
 // Sette voci principali. Impostazioni vive nel cluster in alto a destra (icona
@@ -60,6 +62,16 @@ export function AppNav() {
       (u) => u.severity === "critical",
     ).length;
   }, [hydrated, now, classEvents, examCalls]);
+
+  // Primo avvio: nessun dato proprio ancora. Gli avvisi critici al primo accesso
+  // vengono tutti dagli appelli del corso intero (non sono i suoi); mostrare il
+  // badge spaventa senza motivo. "Dati tuoi" = almeno un voto nel libretto OPPURE
+  // un orario personalizzato (corsi selezionati). Nota: `classEvents` non basta —
+  // dopo un sync live contiene SEMPRE l'intero orario del corso, quindi sarebbe
+  // sempre pieno; serve il segnale di personalizzazione (`pinnedCourses`).
+  const librettoItems = useLibretto((s) => s.items);
+  const pinnedCourses = useSettings((s) => s.pinnedCourses);
+  const hasOwnData = librettoItems.length > 0 || pinnedCourses.length > 0;
 
   // Avvisi attivi (non letti, non scaduti) per il badge sulla campanella.
   // Sottoscrive l'array `alerts` e ricalcola il conteggio attivo a ogni minuto
@@ -141,7 +153,8 @@ export function AppNav() {
           <div className="hidden items-center gap-1 xl:flex">
             {LINKS.map(({ href, label, icon: Icon }) => {
               const active = pathname.startsWith(href);
-              const alert = href === "/panoramica" && criticalCount > 0;
+              const alert =
+              href === "/panoramica" && criticalCount > 0 && hasOwnData;
               return (
                 <Link
                   key={href}

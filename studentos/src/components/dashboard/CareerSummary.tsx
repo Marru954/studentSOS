@@ -1,4 +1,4 @@
-import { ArrowRight, Gauge, TrendingUp, Trophy } from "lucide-react";
+import { ArrowRight, Gauge, Plus, TrendingUp, Trophy } from "lucide-react";
 import Link from "next/link";
 import { CountUp } from "@/components/primitives/CountUp";
 import { ProgressRing } from "@/components/primitives/ProgressRing";
@@ -19,11 +19,15 @@ import { fmtNum } from "@/lib/format";
 export function CareerStrip({
   entries,
   lastTrophy,
+  firstRun,
   className,
 }: {
   entries: LibrettoEntry[];
   /** Most recent unlocked trophy, if any. */
   lastTrophy?: { title: string };
+  /** Primo avvio (nessun voto ancora): sotto la riga "Carriera" mostra un invito
+   *  caldo a registrare il primo voto invece del freddo "— nessun voto" da solo. */
+  firstRun?: boolean;
   className?: string;
 }) {
   const average = weightedAverage(entries);
@@ -64,6 +68,21 @@ export function CareerStrip({
           className="ml-auto size-4 shrink-0 text-ink-faint transition-transform group-hover:translate-x-0.5"
         />
       </Link>
+      {firstRun && average === undefined && (
+        <Link
+          href="/libretto"
+          aria-label="Aggiungi il tuo primo voto per iniziare a tracciare la tua carriera"
+          className="mx-2 mb-2 flex items-center gap-1.5 rounded-lg px-2 py-1 text-xs text-ink-mute transition-colors hover:bg-night-800"
+        >
+          <Plus
+            aria-hidden="true"
+            className="size-3.5 shrink-0 text-[var(--signal-2)]"
+          />
+          <span>
+            Aggiungi il tuo primo voto per iniziare a tracciare la tua carriera.
+          </span>
+        </Link>
+      )}
       {lastTrophy && (
         <Link
           href="/libretto#trofei"
