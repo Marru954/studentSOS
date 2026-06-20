@@ -245,7 +245,7 @@ export function AppNav() {
       {/* Mobile bottom tab bar — replaces the inline link overflow under sm. */}
       <nav
         aria-label="Navigazione"
-        className="no-print fixed bottom-0 left-0 right-0 z-40 flex justify-around gap-1 overflow-x-auto border-t border-line bg-night-800/90 px-1 py-2 backdrop-blur-md xl:hidden"
+        className="no-print fixed bottom-0 left-0 right-0 z-40 flex gap-0.5 border-t border-line bg-night-800/90 px-0.5 py-2 backdrop-blur-md xl:hidden"
       >
         {LINKS.map(({ href, short, icon: Icon }) => {
           const active = pathname.startsWith(href);
@@ -256,7 +256,7 @@ export function AppNav() {
               href={href}
               aria-current={active ? "page" : undefined}
               className={cn(
-                "flex shrink-0 flex-col items-center gap-0.5 px-2 text-[0.62rem] font-medium transition-colors",
+                "flex min-w-0 flex-1 flex-col items-center justify-center gap-0.5 min-h-[44px] px-0.5 text-[0.66rem] font-medium transition-colors",
                 active ? "text-signal" : "text-ink-mute",
               )}
             >
@@ -269,7 +269,7 @@ export function AppNav() {
                   />
                 )}
               </span>
-              {short}
+              <span className="max-w-full truncate">{short}</span>
               {alert && (
                 <span className="sr-only"> ({criticalCount} avvisi critici)</span>
               )}
