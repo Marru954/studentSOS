@@ -14,9 +14,13 @@ const KIND_LABEL: Partial<Record<ClassEventKind, string>> = {
 /** Today's lessons in chronological order, with live change flags. */
 export function TodayTimeline({
   events,
+  firstRun,
   className,
 }: {
   events: ClassEvent[];
+  /** Primo avvio (nessun dato proprio): tono caldo e orientativo invece del
+   *  neutro "goditi la pausa", che da solo sembra un'app vuota. */
+  firstRun?: boolean;
   className?: string;
 }) {
   // Niente lezioni oggi → messaggio positivo, non un buco nel panoramica.
@@ -24,7 +28,9 @@ export function TodayTimeline({
     return (
       <Panel title="Oggi" icon={<Clock />} className={className}>
         <p className="text-sm text-ink-mute">
-          Nessuna lezione oggi: goditi la pausa.
+          {firstRun
+            ? "Nessuna lezione oggi — il tuo orario si aggiornerà automaticamente ogni giorno."
+            : "Nessuna lezione oggi: goditi la pausa."}
         </p>
       </Panel>
     );

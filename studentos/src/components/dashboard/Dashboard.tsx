@@ -243,6 +243,21 @@ export function Dashboard() {
     return exam ? { exam, days: daysFromToday(exam.date, now) } : null;
   }, [ready, myExamCalls, now]);
 
+  // "Primo avvio": nessun voto registrato E nessuna lezione nelle prossime due
+  // settimane. In questo stato gli empty state freddi (0 CFU, nessuna lezione)
+  // fanno sembrare l'app rotta — i figli mostrano allora messaggi caldi e
+  // orientativi anziché il vuoto neutro. (Durante la sessione estiva "nessuna
+  // lezione" resta corretto: cambia solo il tono del messaggio.)
+  const firstRun = useMemo(() => {
+    if (!ready || now === null) return false;
+    if (librettoItems.length > 0) return false;
+    const hasUpcomingLesson = classEvents.some((e) => {
+      const d = daysFromToday(localDayOf(e.start), now);
+      return d >= 0 && d <= 14;
+    });
+    return !hasUpcomingLesson;
+  }, [ready, now, librettoItems, classEvents]);
+
   return (
     <div className="flex flex-col gap-5">
       {/* Tour guidato al primo accesso (si auto-gestisce: gating + localStorage). */}
@@ -316,7 +331,11 @@ export function Dashboard() {
               stima laurea, simulatore) vivono SOLO nel Libretto; qui una riga
               che ci linka, così il Panoramica resta glanceable e non duplica. */}
           <div className="flex flex-col justify-between gap-4 lg:col-span-2">
-            <CareerStrip entries={librettoItems} lastTrophy={lastTrophy} />
+            <CareerStrip
+              entries={librettoItems}
+              lastTrophy={lastTrophy}
+              firstRun={firstRun}
+            />
             <CfuMini
               entries={librettoItems}
               totalCfu={degreePlan.totalCfu}
@@ -324,7 +343,11 @@ export function Dashboard() {
           </div>
 
           {/* Riga media: oggi + appelli in arrivo. */}
-          <TodayTimeline events={todayEvents} className="lg:col-span-3" />
+          <TodayTimeline
+            events={todayEvents}
+            firstRun={firstRun}
+            className="lg:col-span-3"
+          />
           <ExamTimeline
             exams={myExamCalls}
             now={now}

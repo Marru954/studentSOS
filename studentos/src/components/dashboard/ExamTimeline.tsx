@@ -1,6 +1,7 @@
 "use client";
 
 import { CalendarClock, ChevronDown, TriangleAlert } from "lucide-react";
+import Link from "next/link";
 import { useMemo, useState } from "react";
 import { Badge } from "@/components/primitives/Badge";
 import { Panel } from "@/components/primitives/Panel";
@@ -156,6 +157,16 @@ export function ExamTimeline({
         </p>
       ) : (
         <div className="flex flex-col gap-3">
+          {/* Riga di contesto: il counter conta TUTTI gli appelli del corso, non
+              solo i propri — chiarirlo evita che il numero alto sembri un carico
+              personale. Il filtro per anno/materia vive in /appelli. */}
+          <p className="text-xs text-ink-faint">
+            Tutti gli appelli del tuo corso ·{" "}
+            <Link href="/appelli" className="text-signal hover:underline">
+              filtra in /appelli
+            </Link>
+          </p>
+
           {/* Conflitti di orario: rosso (pericolo reale) ma collassati in UNA
               riga espandibile, così non impilano N banner rossi in cima. */}
           {clashes.length > 0 && (
@@ -178,6 +189,12 @@ export function ExamTimeline({
                   className={`size-3.5 shrink-0 transition-transform ${clashesOpen ? "rotate-180" : ""}`}
                 />
               </button>
+              {/* Riga esplicativa, sempre visibile e non allarmistica: i conflitti
+                  sono sovrapposizioni nel calendario del corso intero, non errori
+                  dello studente. */}
+              <p className="px-3 pb-1.5 text-[0.7rem] text-danger/70">
+                Sovrapposizioni nel calendario del corso — non dipendono da te
+              </p>
               {clashesOpen && (
                 <ul className="flex flex-col gap-1 border-t border-danger/25 px-3 py-1.5">
                   {clashes.map((c) => (
