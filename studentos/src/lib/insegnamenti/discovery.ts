@@ -88,6 +88,94 @@ const ATENEI: Record<string, AteneoSource> = {
   unipd: { base: "https://didattica.unipd.it" },
   // Genova.
   unige: { base: "https://corsi.unige.it" },
+  // Perugia — il catalogo "Offerta Formativa 2025/26" su www.unipg.it è
+  // server-rendered (tab Insegnamenti = vera tabella CFU), ma è keyed da un
+  // `idcorso` NUMERICO OPACO non derivabile dal nome. Mappa nome→idcorso
+  // verificata via curl 2026-06-22 (HTTP 200 + <table> + CFU). corsoUrls è
+  // corso-gated: solo i corsi mappati risolvono, gli altri cadono in manuale —
+  // mai la pagina di un altro corso (la lista `urls` ateneo-wide servirebbe lo
+  // stesso corso a tutti, sbagliato, quindi NON usata).
+  unipg: {
+    base: "https://www.unipg.it",
+    corsoUrls: (slug) => {
+      const idcorso: Record<string, string> = {
+        informatica: "8647",
+        chimica: "8023",
+        biotecnologie: "8437",
+        "scienze-biologiche": "8024",
+        "valutazione-del-funzionamento-individuale-in-psicologia-clinica-e-della-salute": "8037",
+      };
+      const id = idcorso[slug];
+      return id
+        ? [
+            `https://www.unipg.it/didattica/corsi-di-laurea-e-laurea-magistrale/archivio/offerta-formativa-2025-26?view=elenco&idcorso=${id}&annoregolamento=2025&tab=INS`,
+          ]
+        : [];
+    },
+  },
+  // Piemonte Orientale — of.uniupo.it/syllabus è server-rendered con tabella CFU
+  // ricca, keyed da un id numerico opaco (anno 2024). Mappa nome→id verificata
+  // 2026-06-22 (corsi sede-ambigui omessi: solo i flagship univoci).
+  uniupo: {
+    base: "https://of.uniupo.it",
+    corsoUrls: (slug) => {
+      const id: Record<string, string> = { informatica: "1932", chimica: "1930" };
+      return id[slug] ? [`https://of.uniupo.it/syllabus/didattica.php/it/2024/${id[slug]}`] : [];
+    },
+  },
+  // Stranieri di Siena — dipartimento.unistrasi.it/sezione è server-rendered con
+  // la tabella insegnamenti (≈57 righe: INSEGNAMENTO/DOCENTE/SEMESTRE/CFU/SSD).
+  // URL keyed da pds_id+Codice opachi → mappa nome→URL verificata 2026-06-22.
+  unistrasi: {
+    base: "https://dipartimento.unistrasi.it",
+    corsoUrls: (slug) => {
+      const url: Record<string, string> = {
+        "mediazione-linguistica-e-culturale":
+          "https://dipartimento.unistrasi.it/sezione?lng=1&sez=231&pds_id=10000&Codice=L2_MC&anno=2025&n=Mediazione",
+        "lingua-e-cultura-italiana-per-l-insegnamento-agli-stranieri-e-per-la-scuola":
+          "https://dipartimento.unistrasi.it/sezione?lng=1&sez=232&pds_id=10000&Codice=L2_LN&anno=2025&n=Insegnamento",
+      };
+      return url[slug] ? [url[slug]] : [];
+    },
+  },
+  // Tuscia (Viterbo) — NESSUN preset EasyAcademy live (orari non pubblicati), ma
+  // il manifesto vive su GOMP (unitus-public.gomp.it/manifesti/render.aspx?UID=
+  // <GUID>), server-rendered con vera tabella CFU. URL keyed da GUID opachi →
+  // mappa nome→UID verificata 2026-06-22. DORMIENTE finché Tuscia resta manual
+  // (resolveAteneo non riceverà "unitus-…"): tenuta per documentazione + futuro.
+  unitus: {
+    base: "https://unitus-public.gomp.it",
+    corsoUrls: (slug) => {
+      const uid: Record<string, string> = {
+        "scienze-biologiche": "47c74e8f-d219-4f17-b641-85555885cf18",
+        "scienze-agrarie-e-ambientali": "58b51ee9-37b6-4951-906a-f828764e7b34",
+        "scienze-biologiche-ambientali": "adf02c48-e821-472a-aa26-466b33c708ad",
+        "scienze-naturali-e-ambientali": "0fa7898d-bfce-4703-9952-7a0981fcb536",
+        "scienze-politiche-e-delle-relazioni-internazionali": "b03b38df-26b7-42c0-9fe5-45bc10a97557",
+      };
+      return uid[slug] ? [`https://unitus-public.gomp.it/manifesti/render.aspx?UID=${uid[slug]}`] : [];
+    },
+  },
+  // Roma Tre — NESSUN preset live. Il dip. di Matematica e Fisica pubblica la
+  // tabella insegnamenti+CFU server-rendered su matematicafisica.uniroma3.it;
+  // il catalogo centrale (GOMP) usa CUIN opachi non mappabili dal nome. Solo
+  // Fisica/Matematica, e DORMIENTE finché Roma Tre resta manual. Verif. 2026-06-22.
+  uniroma3: {
+    base: "https://matematicafisica.uniroma3.it",
+    corsoUrls: (slug) => {
+      const sez: Record<string, string> = {
+        fisica: "fisica",
+        "fisica-triennale": "fisica",
+        "fisica-magistrale": "fisica",
+        matematica: "matematica",
+        "matematica-triennale": "matematica",
+        "matematica-magistrale": "matematica",
+      };
+      return sez[slug]
+        ? [`https://matematicafisica.uniroma3.it/didattica/lezioni-aule-e-orari/${sez[slug]}/`]
+        : [];
+    },
+  },
 };
 
 /** STEP B: generic relative paths probed against a known ateneo base when no
