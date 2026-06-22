@@ -59,6 +59,12 @@ function parseGrade(esito: Row): Grade | undefined {
   return undefined; // non sostenuta / non valutabile
 }
 
+/**
+ * Converte le righe grezze del libretto Esse3 in LibrettoEntry di StudentOS,
+ * scartando le righe non superate o senza nome insegnamento.
+ * @param raw Payload e3rest atteso come array di righe (qualunque altra cosa → []).
+ * @returns Solo gli esami superati, marcati `source: "delphi"`.
+ */
 export function parseEsse3Libretto(raw: unknown): LibrettoEntry[] {
   const rows = Array.isArray(raw) ? (raw as Row[]) : [];
   const out: LibrettoEntry[] = [];

@@ -8,6 +8,7 @@
 import type { ClassEvent, ExamCall } from "@/lib/domain/types";
 import { computeUrgencies } from "@/lib/domain/urgency";
 
+/** Notification permission, plus `"unsupported"` for platforms without the API. */
 export type PermissionState = NotificationPermission | "unsupported";
 
 const SEEN_KEY = "studentos-notified";
@@ -21,17 +22,26 @@ const listeners = new Set<() => void>();
 function emit() {
   for (const l of listeners) l();
 }
+/** Register a listener fired whenever the permission state changes.
+ *  @param cb Callback invoked on every permission change.
+ *  @returns An unsubscribe function. */
 export function subscribePermission(cb: () => void): () => void {
   listeners.add(cb);
   return () => listeners.delete(cb);
 }
+/** Current permission state, or `"unsupported"` when the API is missing.
+ *  @returns The live permission snapshot for `useSyncExternalStore`. */
 export function getPermissionSnapshot(): PermissionState {
   return supported() ? Notification.permission : "unsupported";
 }
+/** Server-render fallback snapshot, before the browser API is reachable.
+ *  @returns Always `"default"`. */
 export function getPermissionServerSnapshot(): PermissionState {
   return "default";
 }
 
+/** Prompt the user for notification permission and broadcast the result.
+ *  @returns The resulting permission state (`"unsupported"`/`"denied"` on failure). */
 export async function requestNotifyPermission(): Promise<PermissionState> {
   if (!supported()) return "unsupported";
   try {

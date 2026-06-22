@@ -16,6 +16,8 @@ interface SyncApiResult {
   error?: string;
 }
 
+/** Outcome of one sync pass: when it ran, how many sources succeeded/failed,
+ *  the per-source failure reasons, and the change notices the diff produced. */
 export interface SyncSummary {
   syncedAt: string;
   okCount: number;
@@ -24,6 +26,13 @@ export interface SyncSummary {
   notices: ChangeNotice[];
 }
 
+/**
+ * Run a sync pass: POST the enabled sources to /api/sync, apply each result to
+ * IndexedDB (atomic per source), and collect the change notices.
+ * @param sources The enabled sync sources to fetch.
+ * @param range The date window to request from each source.
+ * @returns A summary of the pass (counts, failures, notices).
+ */
 export async function runSync(sources: SyncSource[], range: DateRange): Promise<SyncSummary> {
   const res = await fetch("/api/sync", {
     method: "POST",

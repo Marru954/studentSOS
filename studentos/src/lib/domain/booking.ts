@@ -7,6 +7,8 @@
 import { daysBetweenIso } from "@/lib/format";
 import type { ExamCall, IsoDate } from "./types";
 
+/** Resolved booking-window state for an exam call: no window, not yet open,
+ *  open, about to close, or already closed. */
 export type BookingState =
   | { kind: "none" }
   | { kind: "opens"; opensAt: IsoDate }
@@ -17,6 +19,13 @@ export type BookingState =
 /** Within this many days of closing, "open" escalates to "closing". */
 const CLOSING_DAYS = 3;
 
+/**
+ * Resolves an exam call's booking window into a `BookingState` relative to
+ * today, escalating "open" to "closing" within `CLOSING_DAYS` of the deadline.
+ * @param booking The exam call's booking window (open/close dates), if any.
+ * @param today Today's date as an IsoDate, supplied by the caller.
+ * @returns The current booking-window state.
+ */
 export function bookingState(
   booking: ExamCall["booking"],
   today: IsoDate,

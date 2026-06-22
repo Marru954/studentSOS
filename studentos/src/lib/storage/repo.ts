@@ -25,6 +25,7 @@ const CAPABILITY_STORE = {
   news: "news",
 } as const;
 
+/** Union of the synced entity kinds whose caches are replaced wholesale per source. */
 export type SyncedEntity = ClassEvent | ExamCall | NewsItem;
 
 /** Atomically replace one source's cache; returns fresh change notices. */
@@ -62,6 +63,13 @@ export async function replaceSourceData(
   return notices;
 }
 
+/**
+ * Record a failed sync attempt for a source, preserving its last success time.
+ * @param capability which capability the source serves
+ * @param sourceId the source whose sync failed
+ * @param error the failure message to store
+ * @param now ISO timestamp of the attempt
+ */
 export async function recordSyncFailure(
   capability: SyncCapability,
   sourceId: string,
@@ -84,6 +92,8 @@ export async function recordSyncFailure(
 
 // ── synced reads ────────────────────────────────────────────────────────────
 
+/** All class events, ordered by start time.
+ * @returns the stored class events */
 export async function getClassEvents(): Promise<ClassEvent[]> {
   return (await getDb()).getAllFromIndex("classEvents", "by-start");
 }
@@ -111,6 +121,8 @@ export async function deleteClassEventSeries(seriesId: string): Promise<void> {
   await tx.done;
 }
 
+/** All exam calls, ordered by date.
+ * @returns the stored exam calls */
 export async function getExamCalls(): Promise<ExamCall[]> {
   return (await getDb()).getAllFromIndex("examCalls", "by-date");
 }
@@ -128,19 +140,29 @@ export async function deleteExamCall(id: string): Promise<void> {
   await (await getDb()).delete("examCalls", id);
 }
 
+/** All cached news items.
+ * @returns the stored news items */
 export async function getNews(): Promise<NewsItem[]> {
   return (await getDb()).getAll("news");
 }
 
+/** Per-source sync metadata (last attempt/success, ok flag, item count).
+ * @returns the stored sync meta records */
 export async function getSyncMeta(): Promise<SyncMeta[]> {
   return (await getDb()).getAll("syncMeta");
 }
 
+/** All change notices, newest first.
+ * @returns the stored change notices in reverse detection order */
 export async function getChangeNotices(): Promise<ChangeNotice[]> {
   const all = await (await getDb()).getAllFromIndex("changeNotices", "by-detected");
   return all.reverse(); // newest first
 }
 
+/**
+ * Mark the given change notices as seen, in one transaction.
+ * @param ids ids of the notices to mark seen
+ */
 export async function markNoticesSeen(ids: string[]): Promise<void> {
   const db = await getDb();
   const tx = db.transaction("changeNotices", "readwrite");
@@ -173,9 +195,13 @@ function crud<T extends { id: string }>(
   };
 }
 
+/** CRUD repository for the manual libretto entries. */
 export const librettoRepo = crud<LibrettoEntry>("libretto");
+/** CRUD repository for the user's notes. */
 export const notesRepo = crud<Note>("notes");
+/** CRUD repository for the user's study tasks. */
 export const tasksRepo = crud<StudyTask>("studyTasks");
+/** CRUD repository for the user's focus sessions. */
 export const focusRepo = crud<FocusSession>("focusSessions");
 
 /** Replace all Delphi-sourced libretto rows with a fresh scrape, in one
@@ -197,11 +223,17 @@ export async function replaceDelphiLibretto(
 
 const SETTINGS_KEY = "app";
 
+/** App settings, merged over the defaults so new fields always have a value.
+ * @returns the stored settings filled in with defaults */
 export async function getSettings(): Promise<AppSettings> {
   const stored = await (await getDb()).get("settings", SETTINGS_KEY);
   return { ...DEFAULT_SETTINGS, ...((stored as Partial<AppSettings>) ?? {}) };
 }
 
+/**
+ * Persist the app settings.
+ * @param settings the settings to store
+ */
 export async function saveSettings(settings: AppSettings): Promise<void> {
   await (await getDb()).put("settings", settings, SETTINGS_KEY);
 }
@@ -214,11 +246,17 @@ export async function saveSettings(settings: AppSettings): Promise<void> {
 
 const TROPHIES_KEY = "trophies";
 
+/** The append-only ledger of when each trophy was first earned.
+ * @returns the stored trophy ledger, empty if none */
 export async function getTrophyLedger(): Promise<TrophyLedger> {
   const stored = await (await getDb()).get("settings", TROPHIES_KEY);
   return (stored as TrophyLedger) ?? {};
 }
 
+/**
+ * Persist the trophy ledger.
+ * @param ledger the ledger to store
+ */
 export async function saveTrophyLedger(ledger: TrophyLedger): Promise<void> {
   await (await getDb()).put("settings", ledger, TROPHIES_KEY);
 }
@@ -228,11 +266,17 @@ export async function saveTrophyLedger(ledger: TrophyLedger): Promise<void> {
 
 const RELOCK_KEY = "trophy-relock";
 
+/** The relock log driving the 1h anti-repeat window for scenic unlock animations.
+ * @returns the stored relock log, empty if none */
 export async function getRelockLog(): Promise<Record<string, string>> {
   const stored = await (await getDb()).get("settings", RELOCK_KEY);
   return (stored as Record<string, string>) ?? {};
 }
 
+/**
+ * Persist the relock log.
+ * @param log the relock log to store
+ */
 export async function saveRelockLog(log: Record<string, string>): Promise<void> {
   await (await getDb()).put("settings", log, RELOCK_KEY);
 }
@@ -246,11 +290,14 @@ export async function saveRelockLog(log: Record<string, string>): Promise<void> 
 
 const ALERTS_KEY = "alerts";
 
+/** The persisted smart-alerts state: the derived alerts plus when they were last checked. */
 export interface StoredAlerts {
   alerts: Alert[];
   lastCheckedAt: Date | null;
 }
 
+/** The stored smart-alerts state, with defaults when nothing has been saved yet.
+ * @returns the stored alerts and last-checked timestamp */
 export async function getStoredAlerts(): Promise<StoredAlerts> {
   const stored = await (await getDb()).get("settings", ALERTS_KEY);
   const value = stored as Partial<StoredAlerts> | undefined;
@@ -260,6 +307,10 @@ export async function getStoredAlerts(): Promise<StoredAlerts> {
   };
 }
 
+/**
+ * Persist the smart-alerts state.
+ * @param state the alerts state to store
+ */
 export async function saveStoredAlerts(state: StoredAlerts): Promise<void> {
   await (await getDb()).put("settings", state, ALERTS_KEY);
 }

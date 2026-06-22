@@ -17,12 +17,14 @@ import type {
 import type { AppSettings } from "@/lib/storage/types";
 import { getSupabase } from "./client";
 
+/** Names of the per-user territory tables that hold `{ user_id, id, data }` rows. */
 export type RemoteTable =
   | "libretto_entries"
   | "notes"
   | "tasks"
   | "focus_sessions";
 
+/** One round-trip's worth of a whole account: every personal territory plus the profile. */
 export interface RemoteSnapshot {
   libretto: LibrettoEntry[];
   notes: Note[];
@@ -31,6 +33,7 @@ export interface RemoteSnapshot {
   profile: RemoteProfile | null;
 }
 
+/** The onboarding/profile facts stored in the `profiles` row (the cloud source of truth for "onboarded"). */
 export interface RemoteProfile {
   preset_id: string | null;
   programme: string | null;
@@ -129,6 +132,12 @@ export async function pushMany(
   if (error) console.warn(`[sync] pushMany ${table} failed:`, error.message);
 }
 
+/**
+ * Delete one record from a territory table. Best-effort.
+ * @param table The territory table to delete from.
+ * @param userId The owning user's id (also enforced by RLS).
+ * @param id The record id to remove.
+ */
 export async function deleteItem(
   table: RemoteTable,
   userId: string,

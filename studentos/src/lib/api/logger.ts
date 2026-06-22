@@ -30,6 +30,13 @@ const SINK: Record<Level, (...args: unknown[]) => void> = {
   error: console.error,
 };
 
+/**
+ * Emit one structured log line: JSON in production, a coloured human line in dev.
+ * @param level Severity, selects both the console sink and the dev colour.
+ * @param route The API route or subsystem the line belongs to.
+ * @param message Short human-readable message; never put secrets or PII here.
+ * @param meta Optional extra fields; never pass URLs, credentials, or env values.
+ */
 export function apiLog(
   level: Level,
   route: string,

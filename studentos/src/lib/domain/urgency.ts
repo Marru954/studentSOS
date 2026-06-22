@@ -14,6 +14,8 @@ import type {
   UrgencySeverity,
 } from "./types";
 
+/** Tuning knobs for `computeUrgencies`: the time zone for date/time resolution
+ *  and the set of already-passed courses to exclude. */
 export interface UrgencyOptions {
   /** IANA zone for day/time labels and "today" resolution. Defaults to the
    *  runtime's local zone; tests pass "UTC" for determinism. */
@@ -38,6 +40,16 @@ const SEVERITY_RANK: Record<UrgencySeverity, number> = {
   info: 2,
 };
 
+/**
+ * Computes the deduplicated, severity-sorted list of urgencies (class/exam
+ * overlaps, booking deadlines, room changes, imminent exams), dropping appelli
+ * of already-passed courses and any urgency already expired at `now`.
+ * @param classEvents The timetable class events to evaluate.
+ * @param examCalls The exam calls to evaluate.
+ * @param now The reference clock, supplied by the caller for determinism.
+ * @param options Optional time zone and set of passed courses to exclude.
+ * @returns The active urgencies, sorted by severity then expiry.
+ */
 export function computeUrgencies(
   classEvents: ClassEvent[],
   examCalls: ExamCall[],

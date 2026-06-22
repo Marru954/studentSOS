@@ -24,6 +24,18 @@ export type SyncResult =
   | { status: "manual" }
   | { status: "error"; error: string };
 
+/** Sync a corso's insegnamenti end-to-end: ask the server proxy to discover +
+ *  fetch the manifesto HTML, parse it client-side (`DOMParser`), then persist the
+ *  rows idempotently into IndexedDB via `persist`. Returns `{status:"manual"}`
+ *  when the corso has no live source or the manifesto yields no rows, and
+ *  `{status:"error"}` on a network/API failure. The protection rule is enforced
+ *  downstream in `persist`: rows with `inserito_manualmente === true` or
+ *  `modificato_manualmente === true` are NEVER overwritten or removed, and an
+ *  incoming row colliding (by `logicalKey`) with a protected one is discarded so
+ *  the sync can't create duplicates.
+ *  @param ateneo_id ateneo identifier the corso belongs to
+ *  @param corso_id corso whose insegnamenti are synced
+ *  @returns the outcome: ok (with synced count + manifesto url), manual, or error */
 export async function syncInsegnamenti(
   ateneo_id: string,
   corso_id: string,

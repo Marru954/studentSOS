@@ -15,6 +15,7 @@ interface StoredCredentials {
   savedAt: string;
 }
 
+/** A decrypted Delphi credential pair, as handed to the authenticating caller. */
 export interface DelphiCredentials {
   login: string;
   password: string;
@@ -28,6 +29,11 @@ export async function getDelphiStatus(): Promise<{ login: string } | null> {
   return stored ? { login: stored.login } : null;
 }
 
+/**
+ * Persist Delphi credentials: login in clear, password AES-GCM sealed under the
+ * local key. Overwrites any previously saved pair.
+ * @param creds The login and plaintext password to store.
+ */
 export async function saveDelphiCredentials(
   creds: DelphiCredentials,
 ): Promise<void> {
@@ -39,6 +45,10 @@ export async function saveDelphiCredentials(
   await (await getDb()).put("secrets", stored, CRED_KEY);
 }
 
+/**
+ * Load and decrypt the saved Delphi credentials, if any.
+ * @returns The decrypted login/password pair, or null when none are stored.
+ */
 export async function loadDelphiCredentials(): Promise<DelphiCredentials | null> {
   const stored = (await (await getDb()).get("secrets", CRED_KEY)) as
     | StoredCredentials
@@ -47,6 +57,7 @@ export async function loadDelphiCredentials(): Promise<DelphiCredentials | null>
   return { login: stored.login, password: await unseal(stored.password) };
 }
 
+/** Delete the stored Delphi credentials from the secrets store. */
 export async function clearDelphiCredentials(): Promise<void> {
   await (await getDb()).delete("secrets", CRED_KEY);
 }

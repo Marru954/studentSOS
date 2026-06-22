@@ -20,6 +20,7 @@
 import { earnedCfu, gradedCount, weightedAverage } from "./libretto";
 import type { Grade, IsoDateTime, LibrettoEntry } from "./types";
 
+/** Whether a trophy is a one-shot fact ("event") or a measured milestone ("threshold"). */
 export type TrophyNature = "event" | "threshold";
 
 interface BaseTrophy {
@@ -53,8 +54,10 @@ export interface ThresholdTrophy extends BaseTrophy {
   minGradedExams?: number;
 }
 
+/** Any trophy definition — an event or a threshold. */
 export type TrophyDef = EventTrophy | ThresholdTrophy;
 
+/** Progress of a threshold trophy toward its target, with a drawable fraction. */
 export interface TrophyProgress {
   current: number;
   target: number;
@@ -62,6 +65,7 @@ export interface TrophyProgress {
   fraction: number;
 }
 
+/** Live status of a single trophy: locked/unlocked, plus progress for thresholds. */
 export interface TrophyStatus {
   id: string;
   nature: TrophyNature;
@@ -82,6 +86,7 @@ function isThirtyLode(grade: Grade): boolean {
 
 // ── the declarative catalogue ────────────────────────────────────────────────
 
+/** The declarative catalogue of every trophy, in canonical display order. */
 export const TROPHIES: TrophyDef[] = [
   {
     id: "first-exam",
@@ -158,6 +163,12 @@ export function getTrophy(id: string): TrophyDef | undefined {
 
 // ── evaluation (pure, live from the libretto) ────────────────────────────────
 
+/**
+ * Compute the live status of a single trophy from the libretto entries.
+ * @param def The trophy definition to evaluate.
+ * @param entries The libretto entries to measure against.
+ * @returns The locked/unlocked status, with progress for threshold trophies.
+ */
 export function evaluateTrophy(
   def: TrophyDef,
   entries: LibrettoEntry[],
@@ -183,14 +194,21 @@ export function evaluateTrophy(
   };
 }
 
+/**
+ * Evaluate every trophy in the catalogue against the libretto entries.
+ * @param entries The libretto entries to measure against.
+ * @returns One status per trophy, in canonical order.
+ */
 export function evaluateAll(entries: LibrettoEntry[]): TrophyStatus[] {
   return TROPHIES.map((def) => evaluateTrophy(def, entries));
 }
 
 // ── ledger: append-only record of first-unlock moments ───────────────────────
 
+/** Append-only record of when each trophy was first unlocked, keyed by id. */
 export type TrophyLedger = Record<string, { firstUnlockedAt: IsoDateTime }>;
 
+/** Outcome of stamping newly unlocked trophies into the ledger. */
 export interface ApplyResult {
   /** The ledger after stamping (a new object; the input is never mutated). */
   ledger: TrophyLedger;

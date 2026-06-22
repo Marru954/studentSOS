@@ -25,6 +25,7 @@ interface BackupFile {
   settings: unknown;
 }
 
+/** Export every manual territory + settings to a single downloadable JSON file. */
 export async function exportBackup(): Promise<void> {
   const [libretto, notes, tasks, focus, settings] = await Promise.all([
     librettoRepo.getAll(),
@@ -52,6 +53,7 @@ export async function exportBackup(): Promise<void> {
   URL.revokeObjectURL(url);
 }
 
+/** Count of rows restored per manual territory by {@link importBackup}. */
 export interface ImportResult {
   libretto: number;
   notes: number;

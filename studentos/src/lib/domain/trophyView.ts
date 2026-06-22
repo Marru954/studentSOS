@@ -9,6 +9,7 @@ import { gradedCount } from "./libretto";
 import type { IsoDateTime, LibrettoEntry } from "./types";
 import { fmtNum } from "../format";
 
+/** View model for a single trophy card in the vetrina (unlocked or locked). */
 export interface TrophyCardModel {
   id: string;
   title: string;
@@ -24,6 +25,7 @@ export interface TrophyCardModel {
   bar?: { fraction: number };
 }
 
+/** The trophy vetrina split into unlocked (newest first) and locked cards. */
 export interface TrophyView {
   unlocked: TrophyCardModel[];
   locked: TrophyCardModel[];
@@ -57,6 +59,14 @@ function thresholdDetail(
   return `sei a ${current}/${def.target}`;
 }
 
+/**
+ * Build the trophy vetrina view models: unlocked cards (newest first, with their
+ * earned date) and locked cards (canonical order, with threshold detail/bar).
+ * @param statuses Live unlock statuses for every trophy.
+ * @param ledger Append-only record of first-unlock moments, for earned dates.
+ * @param entries The libretto entries, used to compute the graded-exam gate copy.
+ * @returns The unlocked/locked split ready for the UI.
+ */
 export function buildTrophyView(
   statuses: TrophyStatus[],
   ledger: TrophyLedger,

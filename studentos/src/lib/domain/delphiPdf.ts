@@ -20,6 +20,8 @@
 import type { Grade, IsoDate, LibrettoEntry } from "./types";
 import { stableId } from "@/lib/sync/util";
 
+/** Outcome of parsing the Delphi PDF text: the validated entries plus counters
+ *  for how many were imported, skipped, rejected, and any errors encountered. */
 export interface DelphiPdfResult {
   entries: LibrettoEntry[];
   imported: number;
@@ -118,6 +120,13 @@ function cleanName(window: string): string {
   return titleCase(words).trim();
 }
 
+/**
+ * Parses the text extracted from the Delphi "Esami verbalizzati" PDF into
+ * libretto entries, keeping only valid grades and reconstructing each course
+ * name from its record window.
+ * @param text The raw text already extracted from the PDF via pdfjs.
+ * @returns The parsed entries with import/skip/reject counters and errors.
+ */
 export function parseDelphiPdfText(text: string): DelphiPdfResult {
   // 1. Filtra le righe di contorno e tronca al riepilogo.
   const lines: string[] = [];

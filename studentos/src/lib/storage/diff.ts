@@ -35,6 +35,14 @@ function notice(
 const dayOf = (event: ClassEvent) => event.start.slice(0, 10);
 const timeOf = (iso: string) => iso.slice(11, 16);
 
+/**
+ * Compare two timetable caches and emit notices for room moves, cancellations,
+ * and lessons shifted to a new start time. Disappearance alone is not flagged.
+ * @param prev The previously cached events.
+ * @param next The freshly synced events.
+ * @param now ISO timestamp stamped on each emitted notice.
+ * @returns The change notices detected between the two caches.
+ */
 export function diffClassEvents(
   prev: ClassEvent[],
   next: ClassEvent[],
@@ -78,6 +86,14 @@ export function diffClassEvents(
   return notices;
 }
 
+/**
+ * Emit a notice for every exam call in the fresh sync that wasn't in the
+ * previous cache. A first sync (empty prev) emits nothing.
+ * @param prev The previously cached exam calls.
+ * @param next The freshly synced exam calls.
+ * @param now ISO timestamp stamped on each emitted notice.
+ * @returns One "new exam" notice per previously unseen call.
+ */
 export function diffExamCalls(prev: ExamCall[], next: ExamCall[], now: string): ChangeNotice[] {
   // an empty previous cache means first sync — everything would be "new"
   if (prev.length === 0) return [];

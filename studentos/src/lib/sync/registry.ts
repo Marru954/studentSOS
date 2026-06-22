@@ -19,10 +19,19 @@ const PROVIDERS: SyncProvider<never>[] = [
 
 const byId = new Map(PROVIDERS.map((p) => [p.id, p]));
 
+/**
+ * Look up a registered sync provider by its stable id.
+ * @param id The provider id referenced from a university preset.
+ * @returns The matching provider, or undefined if no provider has that id.
+ */
 export function getProvider(id: string): SyncProvider<never> | undefined {
   return byId.get(id);
 }
 
+/**
+ * List every registered sync provider.
+ * @returns The full, read-only registry of providers.
+ */
 export function listProviders(): readonly SyncProvider<never>[] {
   return PROVIDERS;
 }

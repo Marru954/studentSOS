@@ -6,6 +6,7 @@
  */
 import type { ClassEvent } from "./types";
 
+/** One event placed into a horizontal lane within its day column. */
 export interface LaidOutEvent {
   event: ClassEvent;
   /** 0-based horizontal slot within the day column. */
@@ -14,6 +15,12 @@ export interface LaidOutEvent {
   laneCount: number;
 }
 
+/**
+ * Assign overlapping lessons of one day to side-by-side lanes, so a cluster of
+ * (transitively) overlapping events shares a lane count and divides the column.
+ * @param events The day's class events (any order).
+ * @returns Each event with its `lane` and the cluster's `laneCount`.
+ */
 export function layoutDayLanes(events: ClassEvent[]): LaidOutEvent[] {
   const sorted = [...events].sort(
     (a, b) => a.start.localeCompare(b.start) || a.end.localeCompare(b.end),

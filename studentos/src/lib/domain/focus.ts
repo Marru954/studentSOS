@@ -16,6 +16,13 @@ const isoDay = new Intl.DateTimeFormat("en-CA", {
 /** Bucket label for sessions without a linked course. */
 export const NO_COURSE = "Senza corso";
 
+/**
+ * Sum the minutes of sessions started within the half-open range `[from, to)`.
+ * @param sessions The focus sessions to consider.
+ * @param from Inclusive lower bound on `startedAt`.
+ * @param to Exclusive upper bound on `startedAt`.
+ * @returns Total focused minutes in the range.
+ */
 export function minutesInRange(
   sessions: FocusSession[],
   from: IsoDateTime,
@@ -26,6 +33,7 @@ export function minutesInRange(
     .reduce((sum, s) => sum + s.minutes, 0);
 }
 
+/** Focused minutes for one course, joined with its libretto grade when present. */
 export interface CourseFocus {
   courseName: string;
   minutes: number;

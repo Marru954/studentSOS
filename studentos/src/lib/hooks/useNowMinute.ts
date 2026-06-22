@@ -20,6 +20,9 @@ function subscribeMinute(onTick: () => void): () => void {
   };
 }
 
+/** Reactive hook giving the current wall-clock time at minute resolution,
+ *  re-rendering once per minute.
+ *  @returns the current `Date`, or null on the server snapshot. */
 export function useNowMinute(): Date | null {
   return useSyncExternalStore(
     subscribeMinute,

@@ -22,6 +22,7 @@ const BOOKING_WINDOW_HOURS = 48;
 const TITLE_MAX = 60;
 const MESSAGE_MAX = 120;
 
+/** Inputs to one detection pass: the current synced + manual data plus the clock. */
 export interface DetectAlertsParams {
   classEvents: ClassEvent[];
   examCalls: ExamCall[];
@@ -34,6 +35,12 @@ export interface DetectAlertsParams {
   now: Date;
 }
 
+/**
+ * Run every detector over the current data and return all alerts that should be
+ * raised right now. Deterministic for a given `params` (including `params.now`).
+ * @param params The synced + manual data plus the clock to evaluate against.
+ * @returns The alerts to raise, with stable ids for store-side deduplication.
+ */
 export function detectAlerts(params: DetectAlertsParams): Alert[] {
   return [
     ...bookingDeadlineAlerts(params),

@@ -9,6 +9,7 @@ import type { Grade, LibrettoEntry } from "./types";
 import { normalizeAcademicYear } from "./academicYear";
 import { stableId } from "@/lib/sync/util";
 
+/** Esito di un import CSV: le righe valide più il conteggio e gli errori dello scarto. */
 export interface CsvImportResult {
   entries: LibrettoEntry[];
   imported: number;
@@ -86,6 +87,13 @@ function parseDate(raw: string): string | undefined {
   return undefined;
 }
 
+/**
+ * Effettua il parsing del testo CSV del libretto in voci validate.
+ * Rileva il separatore, riconosce gli alias d'intestazione e scarta le righe
+ * non valide segnalandole senza interrompere l'import.
+ * @param text Il contenuto grezzo del file CSV.
+ * @returns Le voci importate con i conteggi di importate/scartate e gli errori.
+ */
 export function parseLibrettoCsv(text: string): CsvImportResult {
   const errors: string[] = [];
   const entries: LibrettoEntry[] = [];

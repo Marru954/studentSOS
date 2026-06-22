@@ -22,6 +22,9 @@ function getServerSnapshot(): boolean {
   return false;
 }
 
+/** Reactive hook reporting whether the user prefers reduced motion;
+ *  re-renders when the media-query state changes.
+ *  @returns true when reduced motion is requested (false on the server snapshot). */
 export function usePrefersReducedMotion(): boolean {
   return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 }

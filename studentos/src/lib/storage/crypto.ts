@@ -23,11 +23,18 @@ async function getOrCreateKey(): Promise<CryptoKey> {
   return key;
 }
 
+/** Ciphertext bundle: the random IV plus the AES-GCM bytes, both as plain
+ *  number arrays so the pair survives IndexedDB structured-clone storage. */
 export interface Sealed {
   iv: number[];
   data: number[];
 }
 
+/**
+ * Encrypt a string under the local non-extractable AES-GCM key.
+ * @param plaintext The text to seal.
+ * @returns The IV + ciphertext bundle.
+ */
 export async function seal(plaintext: string): Promise<Sealed> {
   const key = await getOrCreateKey();
   const iv = crypto.getRandomValues(new Uint8Array(12));
@@ -39,6 +46,11 @@ export async function seal(plaintext: string): Promise<Sealed> {
   return { iv: [...iv], data: [...new Uint8Array(data)] };
 }
 
+/**
+ * Decrypt a bundle produced by {@link seal} using the local AES-GCM key.
+ * @param sealed The IV + ciphertext bundle to open.
+ * @returns The recovered plaintext.
+ */
 export async function unseal(sealed: Sealed): Promise<string> {
   const key = await getOrCreateKey();
   const plaintext = await crypto.subtle.decrypt(

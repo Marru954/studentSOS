@@ -107,6 +107,10 @@ export function mondayOf(date: Date): Date {
   return d;
 }
 
+/** A new Date `days` after `date` (negative goes back).
+ *  @param date Base date (not mutated).
+ *  @param days Number of days to add.
+ *  @returns The shifted Date. */
 export function addDays(date: Date, days: number): Date {
   const d = new Date(date);
   d.setDate(d.getDate() + days);

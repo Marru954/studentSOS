@@ -22,6 +22,7 @@ let cached: SupabaseClient | null | undefined;
 
 const isProd = process.env.NODE_ENV === "production";
 
+/** True when both NEXT_PUBLIC_SUPABASE_* env vars are present (the online layer is enabled). */
 export function supabaseConfigured(): boolean {
   return Boolean(
     process.env.NEXT_PUBLIC_SUPABASE_URL &&

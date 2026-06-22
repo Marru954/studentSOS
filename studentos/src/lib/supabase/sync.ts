@@ -172,6 +172,7 @@ function profileKey(): string {
   return JSON.stringify([s.presetId, s.programme, s.yearOfStudy, s.degreePlan]);
 }
 
+/** Detach all live mirror/profile subscriptions started by startCloudSync. */
 export function stopCloudSync(): void {
   for (const stop of stopFns) stop();
   stopFns = [];

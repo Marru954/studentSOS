@@ -23,6 +23,9 @@ function getServerSnapshot(): boolean {
   return false;
 }
 
+/** Reactive hook reporting whether the viewport is phone-width (Tailwind `md`,
+ *  768px); re-renders on resize/rotation.
+ *  @returns true on phone-width viewports (false on the server snapshot). */
 export function useIsMobile(): boolean {
   return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 }
