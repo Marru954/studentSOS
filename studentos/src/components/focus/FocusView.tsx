@@ -40,9 +40,15 @@ function ddmm(iso: string): string {
 }
 
 export function FocusView({ initialCourse }: { initialCourse?: string }) {
-  const tasks = useTasks();
-  const focus = useFocusSessions();
-  const libretto = useLibretto();
+  const taskItems = useTasks((s) => s.items);
+  const tasksHydrated = useTasks((s) => s.hydrated);
+  const upsertTask = useTasks((s) => s.upsert);
+  const removeTask = useTasks((s) => s.remove);
+  const focusItems = useFocusSessions((s) => s.items);
+  const focusHydrated = useFocusSessions((s) => s.hydrated);
+  const upsertFocus = useFocusSessions((s) => s.upsert);
+  const librettoItems = useLibretto((s) => s.items);
+  const librettoHydrated = useLibretto((s) => s.hydrated);
   const classEvents = useSynced((s) => s.classEvents);
   const examCalls = useSynced((s) => s.examCalls);
   const syncedHydrated = useSynced((s) => s.hydrated);
@@ -53,9 +59,9 @@ export function FocusView({ initialCourse }: { initialCourse?: string }) {
 
   const ready =
     now !== null &&
-    tasks.hydrated &&
-    focus.hydrated &&
-    libretto.hydrated &&
+    tasksHydrated &&
+    focusHydrated &&
+    librettoHydrated &&
     syncedHydrated;
 
   const courses = useMemo(
@@ -68,17 +74,17 @@ export function FocusView({ initialCourse }: { initialCourse?: string }) {
   const nextExam = useMemo(() => {
     if (!now) return undefined;
     const today = localToday(now);
-    const soon = filterUnpassedExams(examCalls, libretto.items)
+    const soon = filterUnpassedExams(examCalls, librettoItems)
       .filter((e) => e.date >= today)
       .sort((a, b) => a.date.localeCompare(b.date))[0];
     return soon
       ? { courseName: soon.courseName, days: daysFromToday(soon.date, now) }
       : undefined;
-  }, [examCalls, libretto.items, now]);
+  }, [examCalls, librettoItems, now]);
 
   const streak = useMemo(() => {
     if (!now) return 0;
-    const days = new Set(focus.items.map((s) => localDayOf(s.startedAt)));
+    const days = new Set(focusItems.map((s) => localDayOf(s.startedAt)));
     let count = 0;
     const cursor = new Date(now);
     if (!days.has(localToday(cursor))) cursor.setDate(cursor.getDate() - 1);
@@ -87,15 +93,15 @@ export function FocusView({ initialCourse }: { initialCourse?: string }) {
       cursor.setDate(cursor.getDate() - 1);
     }
     return count;
-  }, [focus.items, now]);
+  }, [focusItems, now]);
 
   // Memoizzati: il componente si ri-renderizza ogni minuto (useNowMinute) ma
-  // questi scan su tutte le sessioni dipendono solo da focus.items.
-  const longest = useMemo(() => longestSession(focus.items), [focus.items]);
-  const best = useMemo(() => bestDay(focus.items), [focus.items]);
+  // questi scan su tutte le sessioni dipendono solo da focusItems.
+  const longest = useMemo(() => longestSession(focusItems), [focusItems]);
+  const best = useMemo(() => bestDay(focusItems), [focusItems]);
 
   function recordSession(session: Omit<FocusSession, "id">) {
-    void focus.upsert({ ...session, id: crypto.randomUUID() });
+    void upsertFocus({ ...session, id: crypto.randomUUID() });
   }
 
   return (
@@ -164,11 +170,11 @@ export function FocusView({ initialCourse }: { initialCourse?: string }) {
             {!sessionActive && (
               <div className="flex flex-col gap-5 lg:col-span-7">
                 <FocusStats
-                  sessions={focus.items}
-                  libretto={libretto.items}
+                  sessions={focusItems}
+                  libretto={librettoItems}
                   now={now}
                 />
-                {focus.items.length === 0 && (
+                {focusItems.length === 0 && (
                   <EmptyState
                     compact
                     icon={<Rocket />}
@@ -207,8 +213,8 @@ export function FocusView({ initialCourse }: { initialCourse?: string }) {
                   </div>
                 )}
                 <FocusInsights
-                  sessions={focus.items}
-                  libretto={libretto.items}
+                  sessions={focusItems}
+                  libretto={librettoItems}
                 />
               </div>
             )}
@@ -221,16 +227,16 @@ export function FocusView({ initialCourse }: { initialCourse?: string }) {
               headingLevel={2}
               className="reveal"
             >
-              <FocusHeatmap sessions={focus.items} now={now} />
+              <FocusHeatmap sessions={focusItems} now={now} />
             </Panel>
           )}
           {!sessionActive && (
             <TaskBoard
-              tasks={tasks.items}
+              tasks={taskItems}
               courses={courses}
               today={localToday(now)}
-              onUpsert={(t) => void tasks.upsert(t)}
-              onRemove={(id) => void tasks.remove(id)}
+              onUpsert={(t) => void upsertTask(t)}
+              onRemove={(id) => void removeTask(id)}
             />
           )}
         </>

@@ -80,7 +80,10 @@ function NoteSearch({
 }
 
 export function NotesView({ initialQuery }: { initialQuery?: string }) {
-  const notes = useNotes();
+  const noteItems = useNotes((s) => s.items);
+  const notesHydrated = useNotes((s) => s.hydrated);
+  const upsertNote = useNotes((s) => s.upsert);
+  const removeNote = useNotes((s) => s.remove);
   const classEvents = useSynced((s) => s.classEvents);
   const examCalls = useSynced((s) => s.examCalls);
   const syncedHydrated = useSynced((s) => s.hydrated);
@@ -88,17 +91,17 @@ export function NotesView({ initialQuery }: { initialQuery?: string }) {
   const [query, setQuery] = useState(initialQuery ?? "");
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
-  const ready = notes.hydrated && syncedHydrated;
+  const ready = notesHydrated && syncedHydrated;
   const courses = useMemo(
     () => extractCourseNames(classEvents, examCalls),
     [classEvents, examCalls],
   );
   const results = useMemo(
-    () => searchNotes(notes.items, query),
-    [notes.items, query],
+    () => searchNotes(noteItems, query),
+    [noteItems, query],
   );
   const selected = selectedId
-    ? notes.items.find((n) => n.id === selectedId)
+    ? noteItems.find((n) => n.id === selectedId)
     : undefined;
 
   function createFromTemplate(content: string) {
@@ -111,7 +114,7 @@ export function NotesView({ initialQuery }: { initialQuery?: string }) {
       createdAt: now,
       updatedAt: now,
     };
-    void notes.upsert(note);
+    void upsertNote(note);
     setSelectedId(note.id);
     useToast.getState().show("Nota creata.", "ok");
   }
@@ -123,10 +126,10 @@ export function NotesView({ initialQuery }: { initialQuery?: string }) {
       key={selected.id}
       note={selected}
       courses={courses}
-      onSave={(n) => void notes.upsert(n)}
+      onSave={(n) => void upsertNote(n)}
       onDelete={(id) => {
         setSelectedId(null);
-        void notes.remove(id);
+        void removeNote(id);
       }}
     />
   ) : null;
@@ -169,7 +172,7 @@ export function NotesView({ initialQuery }: { initialQuery?: string }) {
           >
             <TemplateButtons onPick={createFromTemplate} />
             <NoteSearch id="cerca-note" value={query} onChange={setQuery} />
-            {notes.items.length === 0 ? (
+            {noteItems.length === 0 ? (
               <p className="muted text-sm">
                 Nessuna nota. Usa un template o crea da zero.
               </p>
