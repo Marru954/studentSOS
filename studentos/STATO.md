@@ -1,8 +1,37 @@
 # Stato attuale StudentOS
 
-Aggiornato: 2026-06-18 (perf landing: bundle più leggero)
+Aggiornato: 2026-06-22 (hardening: coerenza, test, jsdoc, rate-limit distribuito)
 
 ## Completati
+
+### Sessione 2026-06-22 — hardening 4 blocchi (3 commit su main + 1 su branch)
+✅ Blocco 1 (perf, commit efc84cf) — audit: il predicato "onboarded" era GIÀ
+   consolidato nell'helper unico isOnboarded.ts (usato dai 3 gate FirstRunGate/
+   PanoramicaTour/AuthCallback) e Dashboard/Libretto GIÀ su field selector. Gli
+   unici consumatori whole-store rimasti erano FocusView e NotesView: convertiti
+   a selettori per-campo (meno re-render, comportamento identico)
+✅ Blocco 2 (test, commit b5271eb) — +11 file, +202 casi. Priorità protezione
+   manuale sync insegnamenti: insegnamentiSync testa l'invariante (righe
+   inserito/modificato_manualmente mai sovrascritte né rimosse; collisione
+   logicalKey → riga in arrivo scartata; created_at preservato sui re-sync).
+   + parser (helper puri; parseManifestoHTML resta non testabile headless = no
+   DOMParser), discovery (slugify/isManifestoHtml/guardia SSRF), libretto,
+   sources, academicYear, emailToAteneo, booking, storage/diff, sync/util,
+   state/manual. Aggiunti solo `export` per testabilità (runtime invariato)
+✅ Blocco 3 (jsdoc, commit 8fcdcf0) — JSDoc a ~85 export prima non documentati
+   in 29 file di src/lib (solo commenti, zero modifiche al codice). Regola di
+   protezione manuale documentata esplicitamente. Cleanup = no-op verificato:
+   1 solo console.log (intenzionale, logger.ts), 0 import inutilizzati, 0 TODO
+✅ Blocco 4 (rate-limit, branch fix/groq-ratelimit, commit 4b61b54, NON merged)
+   — contatori globali del proxy AI (cb/minuto + cap/giorno) spostati da
+   in-memory per-istanza a contatore DISTRIBUITO su Supabase: migration 0002
+   (tabella rate_limits + funzione SECURITY DEFINER rate_limit_hit, UPSERT
+   atomico, RLS deny-by-default) + distributedRateLimit.ts wired in aiGuard.
+   Chiavi server-side non spoofabili; fixed-window; fail-open-verso-backstop
+   in-memory. Migration da applicare a deploy
+   → ogni blocco build+test+tsc+lint verde prima del commit
+
+
 
 ### Sessione 2026-06-18 — audit performance landing (1 commit)
 ✅ Finding A: la landing spediva l'intero catalogo atenei come JS client
@@ -124,4 +153,8 @@ Aggiornato: 2026-06-18 (perf landing: bundle più leggero)
   SearchPalette; lazy-load AssistantChat; inert/scroll-lock sfondo Overlay.
 
 ## Prossimi obiettivi
+- Rate-limit distribuito: rivedere e mergiare il branch fix/groq-ratelimit, poi
+  applicare la migration 0002_rate_limits.sql su Supabase (SQL editor / db push)
+  PRIMA del deploy. Possibile estensione: portare anche il bucket per-IP sullo
+  store distribuito (oggi resta cookie-HMAC + in-memory).
 - Adapter Cineca-UP o GOMP (Sapienza, Bologna, PoliTo...)
