@@ -138,16 +138,19 @@ const UNKNOWN_IP_LIMIT = 3;
 // ── Layer persistente cross-istanza: fixed-window firmato in un cookie ────────
 
 /** Chiave di firma del cookie: env dedicata, con fallback sulla GROQ_API_KEY
- *  (le route AI funzionano solo se è impostata). `null` → layer cookie spento. */
-function signingSecret(): string | null {
+ *  (le route AI funzionano solo se è impostata). `null` → layer cookie spento.
+ *  Esportata anche per il rate-limit distribuito (`distributedRateLimit`), che
+ *  riusa lo stesso segreto per saltare le proprie chiavi. */
+export function signingSecret(): string | null {
   return process.env.RATE_LIMIT_SECRET || process.env.GROQ_API_KEY || null;
 }
 
 /** Versione del formato cookie, per poter invalidare in blocco i vecchi token. */
 const COOKIE_VERSION = "v1";
 
-/** HMAC-SHA256 base64url del payload. A senso unico: non rivela mai la chiave. */
-function sign(payload: string, secret: string): string {
+/** HMAC-SHA256 base64url del payload. A senso unico: non rivela mai la chiave.
+ *  Esportata e riusata dal rate-limit distribuito per derivare chiavi opache. */
+export function sign(payload: string, secret: string): string {
   return createHmac("sha256", secret).update(payload).digest("base64url");
 }
 
