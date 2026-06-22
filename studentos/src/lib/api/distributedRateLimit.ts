@@ -9,12 +9,17 @@
  * funzione SECURITY DEFINER `rate_limit_hit` (migration 0002): un solo contatore
  * per tutte le istanze.
  *
- * CHIAVE NON FALSIFICABILE: le chiavi usate per i limiti globali ("ai:cb",
- * "ai:daily") sono decise dal server e non contengono input del client, quindi
- * non sono spoofabili. (Il layer per-IP resta in `guard.ts`, che usa l'ultimo
- * hop di `x-forwarded-for` — quello scritto dal proxy di fiducia — e non il
- * primo dichiarato dal client; limite residuo: client dietro lo stesso proxy/NAT
- * condividono il bucket per-IP.)
+ * CHIAVE NON FALSIFICABILE: le chiavi logiche dei limiti globali ("ai:cb",
+ * "ai:daily") sono decise dal server e non contengono input del client. Prima di
+ * raggiungere la tabella vengono SALTATE con HMAC(`RATE_LIMIT_SECRET`) tramite
+ * `hashKey` (stesso pattern di `guard.ts`): la chiave reale in `rate_limits`
+ * diventa "ai:cb:<digest>", non riproducibile senza il segreto server-side.
+ * Questo chiude il DoS via RPC diretta: la anon key è pubblica, quindi senza il
+ * salt chiunque potrebbe chiamare `rate_limit_hit('ai:cb', …)` e saturare il
+ * circuit-breaker globale per tutti. (Il layer per-IP resta in `guard.ts`, che
+ * usa l'ultimo hop di `x-forwarded-for` — quello scritto dal proxy di fiducia —
+ * e non il primo dichiarato dal client; limite residuo: client dietro lo stesso
+ * proxy/NAT condividono il bucket per-IP.)
  *
  * FINESTRA: fixed-window (la più semplice che regge il caso d'uso, come il
  * `rateLimit` in guard.ts). La finestra riparte dal primo colpo e si azzera alla
@@ -33,6 +38,22 @@
  */
 import { getServerSupabase } from "@/lib/supabase/server";
 import { apiLog } from "@/lib/api/logger";
+import { sign, signingSecret } from "@/lib/api/guard";
+
+/**
+ * Salta la chiave logica con HMAC(secret) per renderla opaca nella tabella
+ * `rate_limits`. Riusa `sign`/`signingSecret` di `guard.ts` (HMAC-SHA256
+ * base64url, segreto `RATE_LIMIT_SECRET` con fallback `GROQ_API_KEY`). Senza
+ * segreto (build locale/offline, dove Supabase non è comunque configurato) la
+ * chiave resta in chiaro: nessun layer distribuito da proteggere. A senso unico:
+ * il digest non rivela mai il segreto.
+ * @param key chiave logica decisa dal server (es. "ai:cb")
+ * @returns "ai:cb:<digest>" se c'è un segreto, altrimenti la chiave invariata
+ */
+export function hashKey(key: string): string {
+  const secret = signingSecret();
+  return secret ? `${key}:${sign(key, secret)}` : key;
+}
 
 /** Esito di una valutazione di rate-limit. */
 export interface RateDecision {
@@ -159,15 +180,17 @@ export async function distributedRateLimit(
 ): Promise<RateDecision> {
   const now = deps.now ?? Date.now();
   const windowSeconds = Math.max(1, Math.ceil(opts.windowMs / 1000));
+  // Chiave opaca: né l'RPC né il backstop vedono mai la chiave logica in chiaro.
+  const fullKey = hashKey(key);
 
   const rpc =
     deps.rpc !== undefined ? deps.rpc : supabaseConfigured() ? defaultRpc : null;
 
   // Nessuno store distribuito → backstop per-istanza (normale in locale/offline).
-  if (!rpc) return fallbackStep(key, now, opts.limit, opts.windowMs, deps.fallback);
+  if (!rpc) return fallbackStep(fullKey, now, opts.limit, opts.windowMs, deps.fallback);
 
   try {
-    return await rpc(key, opts.limit, windowSeconds);
+    return await rpc(fullKey, opts.limit, windowSeconds);
   } catch (err) {
     // FAIL-OPEN-VERSO-BACKSTOP: errore transitorio del contatore distribuito →
     // si degrada al limite in-memory per-istanza (ancora un limite, non azzerato).
@@ -175,6 +198,6 @@ export async function distributedRateLimit(
       key,
       error: err instanceof Error ? err.message : String(err),
     });
-    return fallbackStep(key, now, opts.limit, opts.windowMs, deps.fallback);
+    return fallbackStep(fullKey, now, opts.limit, opts.windowMs, deps.fallback);
   }
 }
