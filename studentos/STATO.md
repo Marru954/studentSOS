@@ -1,8 +1,32 @@
 # Stato attuale StudentOS
 
-Aggiornato: 2026-06-22 (hardening: coerenza, test, jsdoc, rate-limit distribuito)
+Aggiornato: 2026-06-22 (batch-4 atenei + insegnamenti)
 
 ## Completati
+
+### Sessione 2026-06-22 — batch-4 atenei + manifesto discovery (2 commit, branch feature/atenei-e-insegnamenti-batch-4)
+✅ PARTE A — preset EasyAcademy (commit b5c9ec5): **Politecnica Marche LIVE**
+   (`univpm-economia`, aule.univpm.it/agendastudenti). Combo 119 corsi sondati
+   end-to-end con l'adapter reale → **55 programmi live, 35 con esami**
+   (Economia/Scienze/Medicina/Agraria). Riforma 2025/26 "- primo anno" + corso
+   base unite per-anno; esami PER-ANNO (blocco exams:true + blocco solo-orario).
+   Ingegneria (41 corsi): 0 celle su ogni corso → manual. Atenei live: 18 → **19**.
+   - Roma Tre: combo 33 corsi pieni ma 0/33 celle (`contains_data:0`) → manual
+   - Tuscia: 0/51 celle → manual
+   - unicampania: 12 corsi scoperti sondati, nessuna espansione pulita (8 celle=0,
+     3 varianti riforma/coorte duplicate) → 17 invariati
+✅ PARTE B — manifesto discovery (commit 3313426): fan-out 20 atenei (web+curl),
+   5 con manifesto HTML server-rendered (isManifestoHtml, ri-verificato col
+   contratto reale redirect:manual). Tutti id-corso OPACHI → corsoUrls mappa
+   nome→URL CORSO-GATED (mai pagina di altro corso; niente `urls` ateneo-wide).
+   - live+funzionanti: **unipg** (5 corsi), **uniupo** (2), **unistrasi** (2)
+   - dormienti (no preset): unitus (GOMP, 5), uniroma3 (Fisica/Matematica)
+   - 15/20 manual: SPA/Plone/Liferay/Joomla/Drupal-opachi, manutenzione (unitn),
+     Radware bot-manager (uniba), Cineca-SPA (uniss) — dettagli in _coverage.md
+   Confermato end-to-end: Informatica≠Chimica risolvono pagine diverse, corso
+   ignoto → null (fallback manuale sicuro).
+   → entrambi i commit build+test+tsc+lint verdi
+
 
 ### Sessione 2026-06-22 — hardening 4 blocchi (3 commit su main + 1 su branch)
 ✅ Blocco 1 (perf, commit efc84cf) — audit: il predicato "onboarded" era GIÀ

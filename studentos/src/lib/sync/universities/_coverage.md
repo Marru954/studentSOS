@@ -44,6 +44,7 @@ use manual entry / PDF import.
 | Salento (Lecce) | unisalento.it | unisalento-economia | Whole ateneo (81 corsi live, 31 con esami, verif. 2026-06-17) | logistica.unisalento.it/PortaleStudenti |
 | Campania "Vanvitelli" 🟢 | unicampania.it | unicampania-ingegneria | Ingegneria (17 corsi live, 10 con esami, verif. 2026-06-17) | easyacademy.easystaff.it/agendastudenti |
 | Bari Aldo Moro | uniba.it | uniba-giurisprudenza | Giurisprudenza + Scienze Politiche (12 corsi live, 4 con esami, verif. 2026-06-17) | easyacademy.ict.uniba.it/PortaleStudenti |
+| Politecnica Marche | univpm.it | univpm-economia | Economia/Scienze/Medicina/Agraria (55 corsi live, 35 con esami, verif. 2026-06-22; Ingegneria NON pubblicata → manual) | aule.univpm.it/agendastudenti |
 
 🟢 = timetable verified, exams not published via EasyAcademy (kept in Esse3).
 
@@ -52,10 +53,9 @@ use manual entry / PDF import.
 | ateneo | email domain | base url | why not live |
 |---|---|---|---|
 | Padova | unipd.it | agendastudentiunipd.easystaff.it | grid is semester-keyed, `grid_call.php` returns celle=0 for every course/date (corso codes valid — exams work, timetable not exposed) |
-| Roma Tre | uniroma3.it | easystaff.uniroma3.it/agendaweb | instance live but publishes NO grid/exam data (celle=0 everywhere) |
-| Tuscia (Viterbo) | unitus.it | orari.unitus.it/agendaweb | timetables organised by sede, not the standard course-grid contract → celle=0 |
+| Roma Tre | uniroma3.it | easystaff.uniroma3.it/agendaweb | combo OK (33 corsi, elenco_anni pieno) ma **adapter end-to-end** → 0/33 corsi con celle>0 (grid_call `contains_data:0`, anche a novembre); esami in shape `Insegnamenti:[]` (array, incompat. adapter). Ri-verificato batch-4 2026-06-22 col metodo affidabile → NON pubblica orari |
+| Tuscia (Viterbo) | unitus.it | orari.unitus.it/agendaweb | combo 51 corsi (scuola vuota, sede-keyed); **adapter end-to-end** → 0/51 con celle>0. Ri-verificato batch-4 2026-06-22 → manual |
 | Chieti-Pescara | unich.it | easystaff.unich.it/agendaweb | catalogue is health/medical only — no Informatica/Ingegneria/Matematica; grid empty |
-| Politecnica Marche | univpm.it | aule.univpm.it/agendastudenti | Ingegneria grid not published (other schools work); exams verify but timetable doesn't |
 
 ## ⚪ Other public atenei — manual (system has no adapter)
 
@@ -186,3 +186,65 @@ combo-confirmed candidates to verify the same way next batch.
 - **GOMP:** Sapienza.
 - **In-house / login-walled (no adapter):** Bologna, PoliMi, PoliTo, Bocconi,
   Politecnico Bari, Macerata.
+
+## Batch-4 (2026-06-22) — sonda EasyAcademy adapter-end-to-end + manifesto discovery
+
+Metodo orari: adapter reale end-to-end (mai curl grezzo — vedi caveat celle=0).
+Metodo manifesto: fan-out di 20 agenti (web research + curl), bar = isManifestoHtml
+(HTTP 200 + `<table>` + CFU/crediti), ri-verificato col contratto reale di discovery
+(redirect:manual, no `-L`).
+
+### Nuovi preset EasyAcademy
+- **univpm** (`univpm-economia`) — Politecnica delle Marche, aule.univpm.it/agendastudenti:
+  combo 119 corsi → **55 programmi live, 35 con esami** (Economia/Scienze/Medicina/Agraria).
+  Ingegneria (41 corsi) sondata corso-per-corso: 0 celle → manual. Esami per-anno.
+
+### Preset espansi
+- **unicampania** — combo 40 corsi, preset già a 17. I 12 corsi scoperti sono stati
+  sondati end-to-end: 8 tornano celle=0 (Scienze Agrarie/Ambientali/STAT, year-1
+  Biologia/Sc.Biologiche/Alimenti), 3 (A48 Farmacia y4-5, B13 Ing. Biomedica y1,
+  V17 Ing. Gestionale y1) sono varianti riforma/coorte duplicate di degree già
+  presenti → conflitto anno-duplicato. **Nessuna espansione pulita**: i 17 restano
+  il set verificato-completo per questo host. (Dato duplicato/sbagliato è peggio di nessuno.)
+
+### Atenei sondati EasyAcademy e falliti (adapter end-to-end, non più curl)
+- **Roma Tre** (easystaff.uniroma3.it/agendaweb): combo 33 corsi con `elenco_anni`
+  pieno, ma **0/33 con celle>0** (grid_call `contains_data:0` anche a novembre);
+  esami in shape `Insegnamenti:[]` (array, incompat. adapter). → NON pubblica orari.
+- **Tuscia** (orari.unitus.it/agendaweb): combo 51 corsi (scuola vuota, sede-keyed),
+  **0/51 con celle>0**. → manual.
+
+### Manifesto discovery AGGIUNTO a discovery.ts (corsoUrls corso-gated, mai `urls` ateneo-wide)
+- **unipg** (live) — www.unipg.it offerta-formativa, mappa nome→idcorso: Informatica,
+  Chimica, Biotecnologie, Scienze Biologiche, Valutazione funz. psicologia.
+- **uniupo** (live) — of.uniupo.it/syllabus, mappa nome→id: Informatica, Chimica.
+- **unistrasi** (live) — dipartimento.unistrasi.it (tabella ~57 insegnamenti): Mediazione
+  Linguistica e Culturale, Lingua e Cultura Italiana per l'insegnamento.
+- **unitus** (DORMIENTE — nessun preset live) — GOMP unitus-public.gomp.it/manifesti,
+  5 corsi area scienze (GUID opachi). Tenuto per futuro.
+- **uniroma3** (DORMIENTE — nessun preset live) — matematicafisica.uniroma3.it, Fisica/Matematica.
+
+### Manifesto discovery FALLITO (15/20) — motivo
+| ateneo | motivo |
+|---|---|
+| univpm | pagine corso SPA/JS, niente tabella CFU statica (orari EasyAcademy LIVE, manifesto no) |
+| unica | pagine corso www.unica.it senza `<table>`+CFU |
+| unitn | offertaformativa.unitn.it interamente in manutenzione (ogni URL down) |
+| unina | nessun manifesto server-rendered uniforme verificabile |
+| unife | Plone, contenuto frammentato (mai `<table>`+CFU insieme) |
+| unipr | Drupal, path con codici interni opachi non derivabili dal nome |
+| unisa | slug-dal-nome ma pagina senza tabella CFU statica |
+| uniss | catalogo Cineca coursecatalogue = SPA Angular |
+| unive | codici numerici opachi senza relazione col nome, nessun URL utile |
+| unisalento | Liferay, pagina dettaglio corso senza `<table>` |
+| unicampania | decentralizzato, ogni dip. ha un sottodominio Joomla proprio |
+| uniba | www.uniba.it dietro Radware Bot Manager (anti-bot challenge) → curl bloccato |
+| unifi | dati insegnamenti in 3 posti, nessuno valido per isManifestoHtml |
+| units | nessuna pagina con il token `<table>` |
+| unige | un solo MF-code di corso ignoto, non mappabile dal nome → manual |
+
+### Totali dopo batch-4
+- Atenei EasyAcademy live: **19** (18 + Politecnica Marche).
+- Atenei con manifesto discovery in discovery.ts: **12** (uniroma2, unibo + i 5 base-only
+  unifi/units/unipd/unige/polito preesistenti, + i 5 nuovi unipg/uniupo/unistrasi/unitus/uniroma3).
+  Di questi, **corso-gated funzionanti su preset live**: uniroma2, unibo, unipg, uniupo, unistrasi.
