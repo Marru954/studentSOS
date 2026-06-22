@@ -61,7 +61,7 @@ export async function syncInsegnamenti(
  *  course code when present, otherwise normalised name + anno. Used to decide
  *  whether an incoming synced row corresponds to one the student already
  *  protected (so we never overwrite it nor create a duplicate). */
-function logicalKey(row: Pick<Insegnamento, "codice" | "nome" | "anno">): string {
+export function logicalKey(row: Pick<Insegnamento, "codice" | "nome" | "anno">): string {
   const codice = row.codice?.trim().toLowerCase();
   if (codice) return `c:${codice}`;
   const nome = row.nome
@@ -76,7 +76,7 @@ function logicalKey(row: Pick<Insegnamento, "codice" | "nome" | "anno">): string
 
 /** True for any row the student has made their own — manual entries and synced
  *  rows they have edited. Sync must leave these completely intact. */
-function isProtected(row: Insegnamento): boolean {
+export function isProtected(row: Insegnamento): boolean {
   return row.inserito_manualmente === true || row.modificato_manualmente === true;
 }
 
@@ -84,7 +84,7 @@ function isProtected(row: Insegnamento): boolean {
  *  Rows the student added or edited (see `isProtected`) are never overwritten or
  *  removed, and an incoming row matching one of them (by `logicalKey`) is skipped
  *  to avoid duplicates. Returns the number of synced rows written this run. */
-async function persist(
+export async function persist(
   ateneo_id: string,
   corso_id: string,
   parsed: Insegnamento[],

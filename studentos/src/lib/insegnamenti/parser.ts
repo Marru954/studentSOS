@@ -72,23 +72,26 @@ function mapColumns(headerRow: Element | undefined): ColMap {
   return map;
 }
 
-/** "6", "6,0", "6 CFU", "6/9" → 6. Undefined when no number is present. */
-function parseCfu(raw: string): number | undefined {
+/** "6", "6,0", "6 CFU", "6/9" → 6. Undefined when no number is present.
+ *  Exported for unit testing (pure, no DOM). */
+export function parseCfu(raw: string): number | undefined {
   const m = raw.replace(",", ".").match(/\d+(?:\.\d+)?/);
   if (!m) return undefined;
   const n = Number(m[0]);
   return Number.isFinite(n) ? n : undefined;
 }
 
-/** "1° semestre" → 1; "Annuale" → "Annuale"; "" → undefined. */
-function parseSemestre(raw: string): number | string | undefined {
+/** "1° semestre" → 1; "Annuale" → "Annuale"; "" → undefined.
+ *  Exported for unit testing (pure, no DOM). */
+export function parseSemestre(raw: string): number | string | undefined {
   if (!raw) return undefined;
   const m = raw.match(/\b([12])\b/);
   return m ? Number(m[1]) : raw;
 }
 
-/** Split a propedeuticità cell on commas / semicolons / slashes. */
-function parseList(raw: string): string[] | undefined {
+/** Split a propedeuticità cell on commas / semicolons / slashes.
+ *  Exported for unit testing (pure, no DOM). */
+export function parseList(raw: string): string[] | undefined {
   if (!raw) return undefined;
   const parts = raw
     .split(/[;,/]/)
@@ -97,7 +100,9 @@ function parseList(raw: string): string[] | undefined {
   return parts.length ? parts : undefined;
 }
 
-function inferTipo(tipoCell: string, nome: string): TipoInsegnamento {
+/** Infer the insegnamento kind from its "tipo" cell + name.
+ *  Exported for unit testing (pure, no DOM). */
+export function inferTipo(tipoCell: string, nome: string): TipoInsegnamento {
   const hay = `${tipoCell} ${nome}`.toLowerCase();
   if (/scelt|opzional|elective|libero/.test(hay)) return "scelta";
   if (/tirocin|stage|prova final|tesi|lingua|abilit|altre attività|crediti liberi/.test(hay)) {
@@ -118,8 +123,9 @@ const PAROLA_ANNO: Record<string, string> = {
  * year ("I Anno", "Anno 1", "Secondo anno"). Returns the year as "1".."6", or
  * undefined when the text isn't an anno header. Used to give the rows that
  * follow an `anno` when the table has no dedicated anno column.
+ * Exported for unit testing (pure, no DOM).
  */
-function annoFromHeader(text: string): string | undefined {
+export function annoFromHeader(text: string): string | undefined {
   const t = text.trim().toLowerCase();
   if (!/\banno\b|\banni\b/.test(t)) return undefined;
   for (const [parola, n] of Object.entries(PAROLA_ANNO)) {

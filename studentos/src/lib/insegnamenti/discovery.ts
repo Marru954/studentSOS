@@ -131,8 +131,9 @@ function resolveAteneo(ateneo: string): AteneoSource | undefined {
   return undefined;
 }
 
-/** "Ingegneria Informatica" → "ingegneria-informatica" (diacritics stripped). */
-function slugify(corso: string): string {
+/** "Ingegneria Informatica" → "ingegneria-informatica" (diacritics stripped).
+ *  Exported for unit testing (pure). */
+export function slugify(corso: string): string {
   return corso
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
@@ -150,8 +151,9 @@ function buildCandidates(entry: AteneoSource, corso?: string): string[] {
   return [...new Set(out)];
 }
 
-/** A manifesto page must carry a real table and the CFU/crediti token. */
-function isManifestoHtml(html: string): boolean {
+/** A manifesto page must carry a real table and the CFU/crediti token.
+ *  Exported for unit testing (pure). */
+export function isManifestoHtml(html: string): boolean {
   return /<table[\s>]/i.test(html) && /\bCFU\b|crediti/i.test(html);
 }
 
