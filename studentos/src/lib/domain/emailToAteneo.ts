@@ -104,6 +104,9 @@ const DOMAIN_TO_PRESET: Record<string, string> = {
   // Bari Aldo Moro — live EasyAcademy preset (Giurisprudenza + Scienze Politiche)
   "uniba.it": "uniba-giurisprudenza",
   "studenti.uniba.it": "uniba-giurisprudenza",
+  // Politecnica delle Marche — live EasyAcademy preset (whole ateneo escl. Ingegneria)
+  "univpm.it": "univpm-economia",
+  "studenti.univpm.it": "univpm-economia",
 };
 
 /** Valid Italian academic domains WITHOUT a preset yet — login allowed, the
@@ -116,8 +119,6 @@ const EXTRA_ACADEMIC_DOMAINS = new Set<string>([
   "student.univaq.it",
   "unich.it",
   "unite.it",
-  "univpm.it",
-  "studenti.univpm.it",
   "unica.it",
   "uniss.it",
   "unisannio.it",

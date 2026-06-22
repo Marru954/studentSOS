@@ -34,6 +34,7 @@ import { unive } from "./unive";
 import { unisalento } from "./unisalento";
 import { unicampania } from "./unicampania";
 import { uniba } from "./uniba";
+import { univpm } from "./univpm";
 
 
 
@@ -67,4 +68,5 @@ export const easyAcademyLivePresets: UniversityPreset[] = [
   unisalento,
   unicampania,
   uniba,
+  univpm,
 ];
