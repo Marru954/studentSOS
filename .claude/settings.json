@@ -1,0 +1,26 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node /home/marru954/Documents/StudentOS/studentos/scripts/hooks/check-invented-data.mjs",
+            "timeout": 10000
+          }
+        ]
+      },
+      {
+        "matcher": "Write|Edit|Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node /home/marru954/Documents/StudentOS/studentos/scripts/hooks/check-new-deps.mjs",
+            "timeout": 10000
+          }
+        ]
+      }
+    ]
+  }
+}
