@@ -118,6 +118,11 @@ async function postForm(
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: body.toString(),
     signal,
+    // SSRF: non seguire i 3xx. La guardia host/DNS/IP a monte (validateSources)
+    // valida solo l'URL dichiarato; un redirect verso un IP interno lo scavalcherebbe.
+    // `redirect: "manual"` → un 3xx arriva con res.ok=false e viene trattato come
+    // fallimento della sorgente, stesso pattern degli altri adapter (ical, news).
+    redirect: "manual",
   });
   if (!res.ok) throw new Error(`EasyAcademy ${url} responded ${res.status}`);
   return res.json();
