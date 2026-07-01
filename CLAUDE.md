@@ -56,12 +56,12 @@ Tests use `node:test` + `tsx` + `fake-indexeddb` (no Jest/Vitest). The suite is 
 
 ## Git workflow
 
-- `main` is the production branch and this repo's working branch — commits land directly on `main` (the established flow here).
+- **Il lavoro nasce sempre su un branch dedicato, mai direttamente su `main`.** `main` è protetto: ci si arriva **solo** via `./scripts/safe-merge.sh`. Niente `git push origin main` diretto, niente merge a mano.
 - Commit subject: `<ateneo|feature|fix|docs>: <short description in Italian>` (e.g. `fix: calendario appelli filtrato per anno`).
-- Push to GitHub after each significant work session.
-- **Auto-push after every objective:** the cycle is build+test green → commit → push. The push is **automatic** — never wait for user confirmation, never need a separate "carica su github" prompt.
-- **Tight sessions:** max 5–6 objectives per session. When a big block is done, commit+push then start a fresh session. Don't compact — a clean restart beats a compacted context.
-- **Aggiorna STATO.md dopo ogni sessione:** prima del push finale, riscrivi STATO.md con i task completati oggi, quelli in sospeso e i prossimi obiettivi. Data in cima al file.
+- **Merge su `main` solo a gate verde:** dal branch di lavoro lancia `./scripts/safe-merge.sh`. Esegue build + test + tsc --noEmit + lint; solo se tutto passa fa il merge, crea un tag `rollback/<data-ora>` sullo stato di `main` precedente al merge e lo pusha su origin insieme a `main` (fast-forward se possibile, altrimenti merge commit).
+- Lo script **fallisce in modo esplicito** se sei su `main`, se il working tree è sporco, se `main` locale diverge da `origin/main`, o se il gate non è verde: nessun merge su stato incoerente. Rollback: `git reset --hard rollback/<data-ora>`.
+- **Tight sessions:** max 5–6 objectives per session. Quando un blocco è chiuso, `safe-merge.sh` poi apri una sessione fresca. Don't compact — a clean restart beats a compacted context.
+- **Aggiorna `docs/stato/STATO.md` dopo ogni sessione:** prima del merge, riscrivi STATO.md con i task completati oggi, quelli in sospeso e i prossimi obiettivi. Data in cima al file.
 
 ## StudentOS architecture (the big picture)
 
