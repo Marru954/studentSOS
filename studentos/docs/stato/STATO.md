@@ -1,8 +1,49 @@
 # Stato attuale StudentOS
 
-Aggiornato: 2026-06-22 (batch-4 atenei + insegnamenti)
+Aggiornato: 2026-07-02 (audit sicurezza + remediation)
 
 ## Completati
+
+### Sessione 2026-07-02 — audit sicurezza + remediation (5 commit, branch security/audit-remediation-2026-07-01, NON merged)
+Audit difensivo Fase 0-1 (sola lettura, 4 agenti in parallelo: SSRF, XSS,
+Supabase RLS, tracker) → report → Fase 2 fix solo sui finding approvati
+dall'utente. Ogni commit build+test+tsc+lint verde. safe-merge NON lanciato
+(diff revisionato dall'utente prima del merge).
+✅ #1 SSRF redirect (commit 2479e70, **muro `easyacademy.ts` toccato su
+   autorizzazione esplicita**): aggiunto `redirect:"manual"` all'unico fetch
+   server-side che lo ometteva. Un 3xx da host allowlisted non può più
+   rimbalzare su IP interno (169.254.169.254 ecc.); ora tratta il 3xx come
+   fallimento sorgente, stesso pattern di ical/wordpress-news.
+✅ #3 Auth Hook email istituzionale (commit 39d272a, **migration NON applicata
+   live**): nuova `supabase/migrations/0003_restrict_signup_domains.sql` —
+   funzione Before User Created Hook che rifiuta il signup se il dominio non è
+   nell'allowlist accademica (112 domini ESTRATTI da emailToAteneo.ts, suffix
+   matching fedele a isUniversityEmail). Contratto verificato dai docs Supabase.
+   Chiude il bypass del gate email lato client (anon key pubblica → signup
+   diretto con @gmail.com). ⚠️ Attivazione MANUALE (Dashboard → Authentication
+   → Hooks → Before User Created) + ⚠️ DRIFT: liste JS/SQL da tenere allineate
+   a mano — istruzioni in testa al file.
+✅ #2 Allowlist SSRF su host[:port] (commit 9b6befc): la membership confrontava
+   solo `url.hostname`, ignorando la porta → `preset-host:9999` passava (host/IP
+   identici), usabile come oracolo di port-scan. Ora usa `url.host`; il check
+   DNS/IP resta sul bare hostname. In validateUrl.ts + insegnamenti/discovery.ts.
+   +3 test tests/validateUrlPort.test.ts.
+✅ #5 Allowlist SSRF scoped per providerId (commit ae34fff): tutti gli host di
+   ogni provider erano in un unico Set → si poteva guidare un host allowlisted
+   di un provider come sorgente di un altro (relay via adapter sbagliato). Ora
+   `Map<providerId, Set<host>>`; validateSources valida ogni URL contro il set
+   del providerId della sua stessa sorgente. allowedHosts() resta union per la
+   discovery insegnamenti. +6 test tests/validateUrlProvider.test.ts (reiezione
+   cross-provider deterministica).
+✅ #4 undici CVE HIGH (commit 83df048): npm audit fix → undici 7.27.2 → 7.28.0
+   (TLS bypass SOCKS5, header injection, cache poisoning). Solo package-lock.json,
+   package.json intatto. 2 moderate postcss (via next) escluse: downgrade Next
+   rompente.
+Suite 448 → 454 test (+9 su 2 file nuovi). Verificati PULITI/GIÀ RISOLTI in
+audit: rate-limit Groq (cookie HMAC + contatore Supabase 0002), .mcp.json (no
+segreti), NEXT_PUBLIC_* (solo pubbliche), XSS (no rehype-raw, KaTeX trust:false,
+sempre text-node), RLS Supabase (USING+WITH CHECK su ogni tabella), i 2 item del
+tracker (selettori field + isOnboarded coerente).
 
 ### Sessione 2026-06-22 — batch-4 atenei + manifesto discovery (2 commit, branch feature/atenei-e-insegnamenti-batch-4)
 ✅ PARTE A — preset EasyAcademy (commit b5c9ec5): **Politecnica Marche LIVE**
@@ -166,6 +207,19 @@ Aggiornato: 2026-06-22 (batch-4 atenei + insegnamenti)
    manual.upsert preserva ordine; memo FocusView + ExamTimeline
 
 ## In sospeso
+- **Auth Hook #3 da attivare a mano** (post-merge): applicare
+  0003_restrict_signup_domains.sql al progetto Supabase, poi collegarlo in
+  Dashboard → Authentication → Hooks → Before User Created → Postgres →
+  `public.hook_restrict_signup_to_university_domains`. La sola migration non
+  cambia il comportamento auth finché l'hook non è collegato.
+- **Finding audit non ancora fixati** (decisione utente): #7 postcss moderate
+  (richiede downgrade Next rompente → sconsigliato); #8 verifica grant Supabase
+  live (`information_schema.role_table_grants` sulle 5 tabelle, read-only, fuori
+  codice); XSS hardening LOW (img component esplicito in NotePreview/AssistantChat,
+  ordine strip/decode in htmlToText — difesa in profondità, non bug).
+- **DNS-rebinding TOCTOU (#6, skip esplicito)**: lookup di validazione ≠ lookup
+  di fetch; fix pieno = IP pinning + dispatcher custom = dipendenza nuova
+  (vietata). Rischio residuo accettato.
 - ProgressRing: id gradiente duplicato per ring stesso size+stroke (HTML non
   valido ma innocuo — gradienti identici). Fix corretto = useId, ma rompe i
   server component che lo usano (CareerSummary/CareerPanels). Lasciato così.
