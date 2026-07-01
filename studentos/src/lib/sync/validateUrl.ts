@@ -12,6 +12,10 @@
  *     to port-scan or reach an off-port internal service on the same host.
  *     Every legitimate URL the app ever fetches is declared there, so the
  *     allowlist is exhaustive by construction (derived, never hand-maintained).
+ *     It is also scoped PER PROVIDER: a host is only reachable under the
+ *     `providerId` that shipped it, so a caller can't borrow one provider's
+ *     allowlisted host to relay arbitrary params through another provider's
+ *     adapter (e.g. a news host driven as an easyacademy timetable endpoint).
  *  2. IP CHECK — before trusting an allowlisted host we resolve it and reject
  *     any answer that lands in a private/internal range (defence against DNS
  *     rebinding / a hijacked university DNS record).
@@ -60,15 +64,22 @@ export function sourceUrls(source: SyncSource): string[] {
   return out;
 }
 
-function collectAllowedHosts(): Set<string> {
-  const hosts = new Set<string>();
+/** Build `providerId → Set<host[:port]>` from the shipped presets: a host is
+ *  registered ONLY under the provider whose source declared it. */
+function collectAllowed(): Map<string, Set<string>> {
+  const byProvider = new Map<string, Set<string>>();
+  const add = (providerId: string, host: string) => {
+    let set = byProvider.get(providerId);
+    if (!set) byProvider.set(providerId, (set = new Set<string>()));
+    set.add(host);
+  };
   const addFrom = (sources: readonly SyncSource[]) => {
     for (const source of sources) {
       for (const raw of sourceUrls(source)) {
         try {
           // `host` = hostname[:port]; presets omit the port (default 443/80),
           // so an entry is bare hostname unless a preset pins a non-default port.
-          hosts.add(new URL(raw).host.toLowerCase());
+          add(source.providerId, new URL(raw).host.toLowerCase());
         } catch {
           // a malformed preset URL simply doesn't widen the allowlist
         }
@@ -79,14 +90,33 @@ function collectAllowedHosts(): Set<string> {
     addFrom(preset.sources ?? []);
     for (const lp of preset.livePrograms ?? []) addFrom(lp.sources);
   }
-  return hosts;
+  return byProvider;
 }
 
-let cachedHosts: Set<string> | undefined;
+let cachedByProvider: Map<string, Set<string>> | undefined;
+let cachedUnion: Set<string> | undefined;
 
-/** The set of host[:port] entries any sync source is allowed to reach (lowercased). */
+const EMPTY_HOSTS: ReadonlySet<string> = new Set<string>();
+
+function allowedByProvider(): Map<string, Set<string>> {
+  return (cachedByProvider ??= collectAllowed());
+}
+
+/** The host[:port] entries reachable under a given `providerId` (lowercased);
+ *  empty for an unknown provider. */
+export function allowedHostsFor(providerId: string): ReadonlySet<string> {
+  return allowedByProvider().get(providerId) ?? EMPTY_HOSTS;
+}
+
+/** Union of every provider's host[:port] entries (lowercased). Kept for the
+ *  insegnamenti discovery guard, which is not provider-scoped. */
 export function allowedHosts(): ReadonlySet<string> {
-  return (cachedHosts ??= collectAllowedHosts());
+  if (!cachedUnion) {
+    const union = new Set<string>();
+    for (const set of allowedByProvider().values()) for (const h of set) union.add(h);
+    cachedUnion = union;
+  }
+  return cachedUnion;
 }
 
 // ── private / internal IP detection ────────────────────────────────────────────
@@ -171,14 +201,27 @@ export async function validateSyncUrl(
 /**
  * Validate every URL carried by a batch of sources, de-duplicated. Throws on the
  * first offending URL. Used by `/api/sync` before handing sources to the engine.
+ *
+ * Each URL is checked against the allowlist scoped to its OWN source's
+ * `providerId` (unless `opts.allowlist` overrides it, for tests), so a host
+ * shipped for one provider can't be relayed through another's adapter.
  */
 export async function validateSources(
   sources: readonly SyncSource[],
   opts: { allowlist?: ReadonlySet<string>; resolve?: DnsResolver } = {},
 ): Promise<void> {
   const seen = new Set<string>();
+  const tasks: Promise<URL>[] = [];
   for (const source of sources) {
-    for (const raw of sourceUrls(source)) seen.add(raw);
+    const allowlist = opts.allowlist ?? allowedHostsFor(source.providerId);
+    for (const raw of sourceUrls(source)) {
+      // De-dup per (provider, url): the same host may be legitimate under one
+      // provider and forbidden under another, so the key can't be the URL alone.
+      const key = `${source.providerId}\n${raw}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      tasks.push(validateSyncUrl(raw, { allowlist, resolve: opts.resolve }));
+    }
   }
-  await Promise.all([...seen].map((raw) => validateSyncUrl(raw, opts)));
+  await Promise.all(tasks);
 }
