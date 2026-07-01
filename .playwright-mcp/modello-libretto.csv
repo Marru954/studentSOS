@@ -1,5 +1,0 @@
-# Formati accettati: voto da 18 a 30, "30L" per la lode, "Idoneo" per le idoneità, data in formato gg/mm/aaaa. Sostituisci le righe di esempio con i tuoi esami.
-corso,cfu,voto,data,anno_accademico
-Analisi Matematica,9,28,16/02/2026,2025/2026
-Ricerca Operativa,6,Idoneo,19/05/2026,2025/2026
-Programmazione,9,30L,27/09/2025,2024/2025

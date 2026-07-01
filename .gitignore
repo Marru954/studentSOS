@@ -16,6 +16,9 @@ build/
 # testing
 coverage/
 
+# playwright-mcp browser snapshots (accidental MCP dumps, not test infra)
+.playwright-mcp/
+
 # environment & secrets (keep the example, drop real values and keys)
 .env
 .env.*
