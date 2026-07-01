@@ -12,7 +12,7 @@ Git repo at this root; it holds the product plus design mockups:
 
 Run all commands **inside `studentos/`**, not from this root.
 
-Inside `studentos/`, supporting (non-source) material worth knowing: `STATO.md` (the rolling session log — keep it current, see Git workflow), `AGENTS.md` (the Next.js-version warning, mirrored by `studentos/CLAUDE.md` which is just `@AGENTS.md`), `_coverage.md` + the per-ateneo `_<id>_coverage.md` and `_qa_report_*.md` files (sync/QA status), `supabase/migrations/` (the cloud schema), and `docs/superpowers/{plans,specs}/` (dated design specs for in-flight features).
+Inside `studentos/`, supporting (non-source) material worth knowing: `docs/stato/STATO.md` (the rolling session log — keep it current, see Git workflow), `AGENTS.md` (the Next.js-version warning, mirrored by `studentos/CLAUDE.md` which is just `@AGENTS.md`), `_coverage.md` + the per-ateneo `_<id>_coverage.md` files (sync status, in `src/lib/sync/universities/`), the QA reports under `docs/stato/qa/`, `supabase/migrations/` (the cloud schema), and `docs/superpowers/{plans,specs}/` (dated design specs for in-flight features).
 
 > History note: a `uniportal/` scaffold (Express + React) once proved a full SAML 2.0 SP flow against Tor Vergata's Delphi/IDEM-GARR, and its SAML logic was briefly adapted into `studentos`. Both the scaffold **and** the SAML subsystem have since been removed (dead experiment); StudentOS is the only project, and its sign-in is Supabase email+password (see the online-layer note below).
 
