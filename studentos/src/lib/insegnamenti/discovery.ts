@@ -258,14 +258,17 @@ async function tryFetch(rawUrl: string, signal: AbortSignal): Promise<string | n
   }
   if (url.protocol !== "https:" && url.protocol !== "http:") return null;
 
-  const host = url.hostname.toLowerCase();
-  if (!allowedHosts().has(host)) return null; // SSRF: curated hosts only
+  // Allowlist keyed on host[:port] so a smuggled `:9999` fails; the IP check
+  // below uses the bare hostname for DNS resolution.
+  const hostKey = url.host.toLowerCase();
+  const hostname = url.hostname.toLowerCase();
+  if (!allowedHosts().has(hostKey)) return null; // SSRF: curated hosts only
 
   // Resolve + reject private/internal addresses (DNS-rebinding defence).
   let addresses: string[];
   try {
-    const bare = host.startsWith("[") && host.endsWith("]") ? host.slice(1, -1) : host;
-    addresses = isIP(bare) ? [bare] : (await lookup(host, { all: true })).map((r) => r.address);
+    const bare = hostname.startsWith("[") && hostname.endsWith("]") ? hostname.slice(1, -1) : hostname;
+    addresses = isIP(bare) ? [bare] : (await lookup(hostname, { all: true })).map((r) => r.address);
   } catch {
     return null;
   }

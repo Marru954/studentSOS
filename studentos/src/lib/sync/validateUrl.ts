@@ -6,7 +6,10 @@
  * `http://169.254.169.254/` (cloud metadata), `127.0.0.1`, or any private host.
  *
  * Two independent layers:
- *  1. ALLOWLIST — the host must be one already shipped in a university preset.
+ *  1. ALLOWLIST — the host *and its port* must be one already shipped in a
+ *     university preset. Matching on `URL.host` (hostname[:port]), not just the
+ *     hostname, stops a caller from smuggling `preset-host:9999` past the check
+ *     to port-scan or reach an off-port internal service on the same host.
  *     Every legitimate URL the app ever fetches is declared there, so the
  *     allowlist is exhaustive by construction (derived, never hand-maintained).
  *  2. IP CHECK — before trusting an allowlisted host we resolve it and reject
@@ -63,7 +66,9 @@ function collectAllowedHosts(): Set<string> {
     for (const source of sources) {
       for (const raw of sourceUrls(source)) {
         try {
-          hosts.add(new URL(raw).hostname.toLowerCase());
+          // `host` = hostname[:port]; presets omit the port (default 443/80),
+          // so an entry is bare hostname unless a preset pins a non-default port.
+          hosts.add(new URL(raw).host.toLowerCase());
         } catch {
           // a malformed preset URL simply doesn't widen the allowlist
         }
@@ -79,7 +84,7 @@ function collectAllowedHosts(): Set<string> {
 
 let cachedHosts: Set<string> | undefined;
 
-/** The set of hostnames any sync source is allowed to reach (lowercased). */
+/** The set of host[:port] entries any sync source is allowed to reach (lowercased). */
 export function allowedHosts(): ReadonlySet<string> {
   return (cachedHosts ??= collectAllowedHosts());
 }
@@ -141,16 +146,19 @@ export async function validateSyncUrl(
     throw new SyncUrlError("protocollo non consentito");
   }
 
-  const host = url.hostname.toLowerCase();
+  // Allowlist is keyed on host[:port] (`URL.host`) so a smuggled `:9999` fails;
+  // the IP check below runs on the bare `hostname` (no port) for DNS resolution.
+  const hostKey = url.host.toLowerCase();
+  const hostname = url.hostname.toLowerCase();
   const allowlist = opts.allowlist ?? allowedHosts();
-  if (!allowlist.has(host)) {
+  if (!allowlist.has(hostKey)) {
     throw new SyncUrlError("host non consentito");
   }
 
   // IPv6 literals arrive bracketed from `URL.hostname` ("[::1]"); strip for isIP.
-  const bare = host.startsWith("[") && host.endsWith("]") ? host.slice(1, -1) : host;
+  const bare = hostname.startsWith("[") && hostname.endsWith("]") ? hostname.slice(1, -1) : hostname;
   const literal = isIP(bare) !== 0;
-  const addresses = literal ? [bare] : await (opts.resolve ?? defaultResolver)(host);
+  const addresses = literal ? [bare] : await (opts.resolve ?? defaultResolver)(hostname);
 
   if (addresses.length === 0) throw new SyncUrlError("host non risolvibile");
   for (const address of addresses) {
