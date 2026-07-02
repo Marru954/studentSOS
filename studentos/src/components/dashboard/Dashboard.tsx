@@ -9,7 +9,7 @@
 import { CalendarClock, CheckCircle2, Settings2, Timer } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/primitives/Button";
 import { cn } from "@/lib/cn";
 import { PanelSkeleton } from "@/components/primitives/Skeleton";
@@ -151,6 +151,12 @@ function NextExamHero({
   );
 }
 
+// L'entrance stagger del bento vale solo la PRIMA volta per sessione: il
+// template rimonta la pagina a ogni navigazione e 0,7s di coda animata al
+// decimo rientro sono attrito, non delizia. Stato a livello di modulo: vive
+// quanto la sessione JS, azzerato da un reload.
+let dashboardStaggeredOnce = false;
+
 /** Hero fallback when no exam is ahead. */
 function NoExamHero({ className }: { className?: string }) {
   return (
@@ -206,6 +212,10 @@ export function Dashboard() {
   const yearScope: number | "all" =
     allYears || !yearOfStudy ? "all" : yearOfStudy;
 
+  // Catturato al mount (lazy initializer, niente scritture su ref in render);
+  // il flag di modulo si arma quando la griglia è stata mostrata davvero.
+  const [staggerEntrance] = useState(() => !dashboardStaggeredOnce);
+
   // Most recently earned trophy, for the one-line nod inside the Carriera card.
   const lastTrophy = useMemo(() => {
     const earned = trophyStatuses.filter(
@@ -223,6 +233,10 @@ export function Dashboard() {
 
   const ready =
     now !== null && syncedHydrated && settingsHydrated && librettoHydrated;
+
+  useEffect(() => {
+    if (ready) dashboardStaggeredOnce = true;
+  }, [ready]);
 
   // the merged all-years feed narrows to the year scope + pinned courses
   const todayEvents = useMemo(() => {
@@ -374,19 +388,29 @@ export function Dashboard() {
       </header>
 
       {!ready ? (
+        // Speculare alla griglia reale (cols-6: hero 4/2, riga media 3/3,
+        // riga piccola 3/3): lo skeleton non deve promettere una composizione
+        // diversa da quella che arriva.
         <div
           role="status"
           aria-busy="true"
-          className="grid grid-cols-1 gap-4 lg:grid-cols-12"
+          className="grid grid-cols-1 gap-4 lg:grid-cols-6"
         >
           <span className="sr-only">Caricamento dei dati locali…</span>
-          <PanelSkeleton className="lg:col-span-7" />
-          <PanelSkeleton className="lg:col-span-5" />
-          <PanelSkeleton className="lg:col-span-8" />
           <PanelSkeleton className="lg:col-span-4" />
+          <PanelSkeleton className="lg:col-span-2" />
+          <PanelSkeleton className="lg:col-span-3" />
+          <PanelSkeleton className="lg:col-span-3" />
+          <PanelSkeleton className="lg:col-span-3" />
+          <PanelSkeleton className="lg:col-span-3" />
         </div>
       ) : (
-        <div className="stagger-children grid grid-cols-1 gap-4 lg:grid-cols-6">
+        <div
+          className={cn(
+            "grid grid-cols-1 gap-4 lg:grid-cols-6",
+            staggerEntrance && "stagger-children",
+          )}
+        >
           {/* Banner a tutta larghezza (condizionali) + scorciatoie. Il promemoria
               appelli rispetta l'interruttore «Notifiche» nelle impostazioni. */}
           {(examReminders ?? true) && (

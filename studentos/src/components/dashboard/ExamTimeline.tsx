@@ -305,6 +305,22 @@ export function ExamTimeline({
               );
             })}
           </ul>
+
+          {/* Affordance di scorrimento: la scrollbar è invisibile a riposo e
+              la lista taglia a 360px — senza questa riga gli appelli oltre la
+              piega non esistono visivamente. */}
+          {groups.length > 5 && (
+            <p className="border-t border-line pt-2.5 text-xs text-ink-mute">
+              {upcoming.length} appelli in {groups.length} corsi — scorri la
+              lista o{" "}
+              <Link
+                href="/appelli"
+                className="font-medium text-signal-text hover:underline"
+              >
+                vedi tutti in /appelli
+              </Link>
+            </p>
+          )}
         </div>
       )}
     </Panel>
