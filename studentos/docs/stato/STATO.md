@@ -1,8 +1,19 @@
 # Stato attuale StudentOS
 
-Aggiornato: 2026-07-02 (audit sicurezza + remediation)
+Aggiornato: 2026-07-02 (review Panoramica doppia voce + audit sicurezza)
 
 ## Completati
+
+### Sessione 2026-07-02 — review Panoramica, voce studente + voce esperta (solo report, 1 commit)
+Review indipendente di /panoramica dal vivo (Playwright: onboarding TV/Informatica
+2° anno, sync reale 39 appelli, firstRun estivo, dark/light, desktop/mobile, confronto
+HeroPreview) → report `_review_panoramica_2026-07-02.md` in root. Voti: studente 7/10,
+esperto 6,5/10. Top finding: 🐞 tour/Overlay mis-ancorato (containing block da
+.anim-page → dialog full-width sotto il fold), anno del profilo ignorato da hero/
+timeline/conflitti, notice "nuovo appello" su date passate al re-sync, empty state
+estivi che sfondano il bento (Oggi vuoto 534px), micro-contrasti AA su glass, /design
+stantia. Lista prioritizzata 12 voci con fix concreti nel report. Nessun fix applicato
+(scope: sola analisi).
 
 ### Sessione 2026-07-02 — audit sicurezza + remediation (5 commit, branch security/audit-remediation-2026-07-01, NON merged)
 Audit difensivo Fase 0-1 (sola lettura, 4 agenti in parallelo: SSRF, XSS,
