@@ -44,15 +44,20 @@ import { SyncStatus } from "./SyncStatus";
 import { TodayTimeline } from "./TodayTimeline";
 
 /** Bento hero: the soonest exam with a big countdown, tone-graded by proximity
- *  (rosso < 7 giorni, arancione < 14). */
+ *  (ambra ≤ 2 giorni, viola oltre — il rosso resta ai pericoli reali). */
 function NextExamHero({
   exam,
   days,
+  started,
   examsThisWeek,
   className,
 }: {
   exam: ExamCall;
   days: number;
+  /** L'appello di oggi è già iniziato (ora corrente oltre exam.time): il
+   *  countdown resta "Oggi" ma il CTA "studia" sparisce — suonerebbe beffardo
+   *  a esame in corso. */
+  started?: boolean;
   examsThisWeek: number;
   className?: string;
 }) {
@@ -106,6 +111,11 @@ function NextExamHero({
           {exam.time ? ` · ore ${exam.time}` : ""}
           {exam.room ? ` · ${exam.room}` : ""}
         </p>
+        {started && (
+          <p className="mt-1 text-sm font-medium" style={{ color: "var(--warn)" }}>
+            Iniziato alle {exam.time} — in bocca al lupo!
+          </p>
+        )}
         {exam.teacher && (
           <p className="muted mt-1 text-sm">{exam.teacher}</p>
         )}
@@ -126,13 +136,15 @@ function NextExamHero({
               ? `${examsThisWeek} ${examsThisWeek === 1 ? "appello" : "appelli"} questa settimana`
               : "Nessun altro appello nei prossimi 7 giorni"}
           </p>
-          <Link
-            href={`/focus?course=${encodeURIComponent(exam.courseName)}`}
-            className="btn btn-primary shrink-0"
-          >
-            <Timer aria-hidden="true" className="size-4" />
-            Studia per questo esame
-          </Link>
+          {!started && (
+            <Link
+              href={`/focus?course=${encodeURIComponent(exam.courseName)}`}
+              className="btn btn-primary shrink-0"
+            >
+              <Timer aria-hidden="true" className="size-4" />
+              Studia per questo esame
+            </Link>
+          )}
         </div>
       </div>
     </section>
@@ -256,6 +268,17 @@ export function Dashboard() {
     return exam ? { exam, days: daysFromToday(exam.date, now) } : null;
   }, [ready, myExamCalls, now]);
 
+  // L'appello di oggi è già iniziato? Confronto HH:MM locale — exam.time è già
+  // in ora locale dell'ateneo. Senza orario si resta prudenti: non iniziato.
+  const nextExamStarted = useMemo(() => {
+    if (!nextExam || nextExam.days !== 0 || !nextExam.exam.time || now === null)
+      return false;
+    const hhmm = `${String(now.getHours()).padStart(2, "0")}:${String(
+      now.getMinutes(),
+    ).padStart(2, "0")}`;
+    return nextExam.exam.time <= hhmm;
+  }, [nextExam, now]);
+
   // "Primo avvio": nessun voto registrato E nessuna lezione nelle prossime due
   // settimane. In questo stato gli empty state freddi (0 CFU, nessuna lezione)
   // fanno sembrare l'app rotta — i figli mostrano allora messaggi caldi e
@@ -334,6 +357,7 @@ export function Dashboard() {
             <NextExamHero
               exam={nextExam.exam}
               days={nextExam.days}
+              started={nextExamStarted}
               examsThisWeek={examsThisWeek}
               className="lg:col-span-4"
             />
