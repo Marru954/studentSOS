@@ -107,10 +107,14 @@ function buildClashes(upcoming: ExamCall[]): Clash[] {
 export function ExamTimeline({
   exams,
   now,
+  yearScope,
   className,
 }: {
   exams: ExamCall[];
   now: Date;
+  /** Scope per anno del profilo (Dashboard): anno attivo + toggle. Assente →
+   *  nessun controllo in riga di contesto (comportamento storico). */
+  yearScope?: { year: number; all: boolean; onToggle(): void };
   className?: string;
 }) {
   const [openDates, setOpenDates] = useState<Set<string>>(new Set());
@@ -157,11 +161,31 @@ export function ExamTimeline({
         </p>
       ) : (
         <div className="flex flex-col gap-3">
-          {/* Riga di contesto: il counter conta TUTTI gli appelli del corso, non
-              solo i propri — chiarirlo evita che il numero alto sembri un carico
-              personale. Il filtro per anno/materia vive in /appelli. */}
+          {/* Riga di contesto: dichiara la portata del counter (solo il mio
+              anno vs corso intero) e offre il toggle. Il filtro fine per
+              anno/materia vive in /appelli. */}
           <p className="text-xs text-ink-faint">
-            Tutti gli appelli del tuo corso ·{" "}
+            {yearScope
+              ? yearScope.all
+                ? "Tutti gli appelli del corso"
+                : `Appelli del ${yearScope.year}° anno`
+              : "Tutti gli appelli del tuo corso"}
+            {yearScope && (
+              <>
+                {" · "}
+                <button
+                  type="button"
+                  onClick={yearScope.onToggle}
+                  aria-pressed={yearScope.all}
+                  className="font-medium text-signal hover:underline"
+                >
+                  {yearScope.all
+                    ? `solo il ${yearScope.year}° anno`
+                    : "mostra tutto il corso"}
+                </button>
+              </>
+            )}
+            {" · "}
             <Link href="/appelli" className="text-signal hover:underline">
               filtra in /appelli
             </Link>

@@ -9,7 +9,7 @@
 import { CalendarClock, CheckCircle2, Settings2, Timer } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Button } from "@/components/primitives/Button";
 import { cn } from "@/lib/cn";
 import { PanelSkeleton } from "@/components/primitives/Skeleton";
@@ -24,6 +24,7 @@ import {
 } from "@/lib/format";
 import { getTrophy } from "@/lib/domain/achievements";
 import { filterUnpassedExams } from "@/lib/domain/examStatus";
+import { matchesYear } from "@/lib/domain/sources";
 import { useNowMinute } from "@/lib/hooks/useNowMinute";
 import { useLibretto } from "@/lib/state/manual";
 import { useSettings } from "@/lib/state/settings";
@@ -170,6 +171,7 @@ export function Dashboard() {
   const dismissNotices = useSynced((s) => s.dismissNotices);
 
   const settingsHydrated = useSettings((s) => s.hydrated);
+  const yearOfStudy = useSettings((s) => s.yearOfStudy);
   const pinnedCourses = useSettings((s) => s.pinnedCourses);
   const examReminders = useSettings((s) => s.examReminders);
   const degreePlan = useSettings((s) => s.degreePlan);
@@ -183,6 +185,14 @@ export function Dashboard() {
 
   const now = useNowMinute();
   const router = useRouter();
+
+  // L'anno dichiarato all'onboarding scopa di default hero, timeline, "Oggi"
+  // e conflitti: i numeri del panoramica sono i MIEI, non quelli dell'intero
+  // corso (che restano a un toggle di distanza). Senza anno nel profilo si
+  // mostra tutto, come prima.
+  const [allYears, setAllYears] = useState(false);
+  const yearScope: number | "all" =
+    allYears || !yearOfStudy ? "all" : yearOfStudy;
 
   // Most recently earned trophy, for the one-line nod inside the Carriera card.
   const lastTrophy = useMemo(() => {
@@ -202,15 +212,16 @@ export function Dashboard() {
   const ready =
     now !== null && syncedHydrated && settingsHydrated && librettoHydrated;
 
-  // the merged all-years feed narrows to the pinned courses when set
+  // the merged all-years feed narrows to the year scope + pinned courses
   const todayEvents = useMemo(() => {
     if (!ready) return [];
     const today = localToday(now);
     const pinned = pinnedCourses;
     return classEvents
       .filter((e) => localDayOf(e.start) === today)
+      .filter((e) => matchesYear(e.sourceId, yearScope))
       .filter((e) => pinned.length === 0 || pinned.includes(e.courseName));
-  }, [ready, classEvents, pinnedCourses, now]);
+  }, [ready, classEvents, pinnedCourses, now, yearScope]);
 
   // the student's own exams: the merged feed narrowed to the pinned courses
   // ("I miei esami"), with appelli of already-passed exams dropped so the hero
@@ -218,10 +229,10 @@ export function Dashboard() {
   const myExamCalls = useMemo(() => {
     if (!ready) return [];
     const pinned = pinnedCourses;
-    return filterUnpassedExams(examCalls, librettoItems).filter(
-      (e) => pinned.length === 0 || pinned.includes(e.courseName),
-    );
-  }, [ready, examCalls, pinnedCourses, librettoItems]);
+    return filterUnpassedExams(examCalls, librettoItems)
+      .filter((e) => matchesYear(e.sourceId, yearScope))
+      .filter((e) => pinned.length === 0 || pinned.includes(e.courseName));
+  }, [ready, examCalls, pinnedCourses, librettoItems, yearScope]);
 
   // exams within the next 7 days, for the hero sub-stat
   const examsThisWeek = useMemo(() => {
@@ -353,6 +364,15 @@ export function Dashboard() {
           <ExamTimeline
             exams={myExamCalls}
             now={now}
+            yearScope={
+              yearOfStudy
+                ? {
+                    year: yearOfStudy,
+                    all: allYears,
+                    onToggle: () => setAllYears((v) => !v),
+                  }
+                : undefined
+            }
             className="panel-hero accent-top lg:col-span-3"
           />
 
