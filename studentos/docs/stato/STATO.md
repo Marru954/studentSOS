@@ -1,8 +1,33 @@
 # Stato attuale StudentOS
 
-Aggiornato: 2026-07-02 (ricognizione Cineca-UP/GOMP 6 atenei + review Panoramica + audit sicurezza)
+Aggiornato: 2026-07-02 (fix review Panoramica 12/12 + ricognizione Cineca-UP/GOMP + audit sicurezza)
 
 ## Completati
+
+### Sessione 2026-07-02 (pomeriggio) — fix review Panoramica, 12/12 (8 commit, branch fix/panoramica-review-fixes)
+Implementati TUTTI i finding del report `_review_panoramica_2026-07-02.md`,
+un commit per obiettivo, gate verde e verifica visiva Playwright su ognuno:
+✅ #1 Overlay in portal su document.body (containing block da .anim-page →
+   dialog sotto il fold), max-w sul dialog, scroll-lock; scoperto e chiuso
+   anche un bug di build: il -webkit-backdrop-filter scritto a mano faceva
+   scartare a lightningcss la proprietà standard → GLASS SENZA BLUR in
+   tutta l'app (dev) / solo -webkit- (prod). Ora blur verificato nel bundle.
+✅ #2 Panoramica scoped sull'anno del profilo (matchesYear) con toggle
+   "mostra tutto il corso": badge 39→14, conflitti cross-anno non più
+   segnalati come personali. #3 diffExamCalls scarta appelli passati
+   (+4 test, package.json solo entry test). #4 hero "Iniziato alle HH:MM"
+   senza CTA studia + badge sync relativo ("agg. 5 min fa") accessibile.
+✅ #5 empty estivi: "Oggi" con prossima lezione/appello + self-start;
+   "Scadenze prenotazione" montata solo se la fonte espone booking.
+   #6 contrasti AA su glass (--ink-faint dark, --warn light, chip-warn
+   light, nuovo token --signal-text per micro-link). #7 skeleton speculare
+   alla griglia reale. #8 footer "N appelli in M corsi" sotto la lista.
+   #9 tab mobile stesso vocabolario del desktop (Home/Materie/Appelli/
+   Libretto) + pallino avvisi mobile ora rispetta hasOwnData + CLAUDE.md
+   a 7 voci. #10 /design riscritta sui token immersive. #12 stagger solo
+   alla prima visita per sessione.
+Nota di metodo: mai lanciare `next build` con `next dev` attivo sullo
+stesso .next — chunk serviti stantii (perso tempo su un falso negativo).
 
 ### Sessione 2026-07-02 — ricognizione Cineca-UP/GOMP sui 6 atenei target (solo docs, 1 commit)
 Recon read-only (curl, robots-first, zero codice) su Sapienza/Bologna/PoliMi/PoliTo/
