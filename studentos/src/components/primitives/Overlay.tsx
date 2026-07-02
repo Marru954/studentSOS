@@ -4,9 +4,14 @@
  *  backdrop above the Toast/AppNav z-ladder (z-50+), a centered glass panel with
  *  role="dialog" aria-modal. Handles Esc to close, backdrop-click to close,
  *  moves focus into the panel on open and restores it to the previously focused
- *  element on close, and traps Tab within the panel. Pure-CSS entrance reuses
- *  the existing `overlay-in`/`dialog-in` classes (reduced-motion safe). */
+ *  element on close, traps Tab within the panel, and locks the page scroll while
+ *  open. Rendered in a portal on document.body: any ancestor with a transform
+ *  (es. l'entrance animation di template.tsx) diventerebbe containing block per
+ *  `position:fixed` e ancorerebbe l'overlay al box della pagina invece che al
+ *  viewport (dialog sotto il fold — bug reale del tour). Pure-CSS entrance
+ *  reuses the existing `overlay-in`/`dialog-in` classes (reduced-motion safe). */
 import { useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import { cn } from "@/lib/cn";
 
 const FOCUSABLE =
@@ -49,6 +54,17 @@ export function Overlay({
     };
   }, [open]);
 
+  // Scroll-lock: mentre l'overlay è aperto la pagina dietro non scorre.
+  // Ripristina il valore precedente alla chiusura (non svuota alla cieca).
+  useEffect(() => {
+    if (!open) return;
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previous;
+    };
+  }, [open]);
+
   // Esc to close + Tab focus trap, scoped to while the overlay is open.
   useEffect(() => {
     if (!open) return;
@@ -84,7 +100,9 @@ export function Overlay({
 
   if (!open) return null;
 
-  return (
+  // `open` è sempre false lato server (gli store client decidono l'apertura),
+  // quindi qui document esiste: il portal non gira mai in SSR.
+  return createPortal(
     <div
       className={cn(
         "no-print overlay-in fixed inset-0 z-50 flex justify-center bg-black/50 px-4 backdrop-blur-sm",
@@ -108,6 +126,7 @@ export function Overlay({
       >
         {children}
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }

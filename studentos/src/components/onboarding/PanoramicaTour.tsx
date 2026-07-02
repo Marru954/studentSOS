@@ -155,8 +155,17 @@ export function PanoramicaTour() {
   const current = STEPS[step];
 
   return (
-    <Overlay open={open} onClose={close} label="Tour del panoramica" align="center">
-      <div className="max-w-md p-6">
+    // max-w sul dialog stesso (non sul contenuto): con w-full + contenuto
+    // max-w-md il pannello copriva l'intera larghezza col testo incollato a
+    // sinistra.
+    <Overlay
+      open={open}
+      onClose={close}
+      label="Tour del panoramica"
+      align="center"
+      className="max-w-md"
+    >
+      <div className="p-6">
         <div className="mb-4 flex items-start justify-between gap-3">
           <h2 className="flex items-center gap-2 text-lg font-semibold text-ink">
             <Compass aria-hidden="true" className="size-5 text-[var(--signal-2)]" />

@@ -168,8 +168,11 @@
      markup re-skins without edits) */
   .glass {
     background: var(--surface);
+    /* Solo la proprietà standard: il -webkit- scritto a mano mandava in
+       confusione il merge dei prefissi di lightningcss, che scartava la
+       standard (prod: solo -webkit-; dev: nessuna delle due → glass piatto).
+       L'autoprefix per i target configurati resta compito della pipeline. */
     backdrop-filter: blur(20px) saturate(1.4);
-    -webkit-backdrop-filter: blur(20px) saturate(1.4);
     border: 1px solid var(--hairline);
     border-radius: var(--radius-lg); /* reference default; rounded-* utilities still override */
   }
