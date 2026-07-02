@@ -1,4 +1,5 @@
-import { Clock } from "lucide-react";
+import { ArrowRight, Clock } from "lucide-react";
+import Link from "next/link";
 import { Badge } from "@/components/primitives/Badge";
 import { Panel } from "@/components/primitives/Panel";
 import { cn } from "@/lib/cn";
@@ -15,23 +16,45 @@ const KIND_LABEL: Partial<Record<ClassEventKind, string>> = {
 export function TodayTimeline({
   events,
   firstRun,
+  nextUp,
   className,
 }: {
   events: ClassEvent[];
   /** Primo avvio (nessun dato proprio): tono caldo e orientativo invece del
    *  neutro "goditi la pausa", che da solo sembra un'app vuota. */
   firstRun?: boolean;
+  /** La prossima cosa reale in calendario (lezione o appello), mostrata nello
+   *  stato vuoto: d'estate "nessuna lezione" da solo lascia una card morta. */
+  nextUp?: { label: string; href: string };
   className?: string;
 }) {
-  // Niente lezioni oggi → messaggio positivo, non un buco nel panoramica.
+  // Niente lezioni oggi → messaggio positivo + il prossimo evento reale, non
+  // un buco nel panoramica. self-start: la card vuota non si stira all'altezza
+  // della timeline accanto (534px di vuoto misurati nella review estiva).
   if (events.length === 0) {
     return (
-      <Panel title="Oggi" icon={<Clock />} className={className}>
+      <Panel
+        title="Oggi"
+        icon={<Clock />}
+        className={cn("lg:self-start", className)}
+      >
         <p className="text-sm text-ink-mute">
           {firstRun
             ? "Nessuna lezione oggi — il tuo orario si aggiornerà automaticamente ogni giorno."
             : "Nessuna lezione oggi: goditi la pausa."}
         </p>
+        {nextUp && (
+          <Link
+            href={nextUp.href}
+            className="group mt-3 flex items-center gap-1.5 text-sm font-medium text-ink transition-colors hover:text-signal"
+          >
+            <span className="min-w-0 truncate">{nextUp.label}</span>
+            <ArrowRight
+              aria-hidden="true"
+              className="size-4 shrink-0 text-ink-faint transition-transform group-hover:translate-x-0.5"
+            />
+          </Link>
+        )}
       </Panel>
     );
   }

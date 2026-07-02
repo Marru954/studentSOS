@@ -279,6 +279,50 @@ export function Dashboard() {
     return nextExam.exam.time <= hhmm;
   }, [nextExam, now]);
 
+  // La prossima cosa reale in calendario per lo stato vuoto di "Oggi":
+  // prima lezione futura nota, altrimenti il prossimo appello. D'estate
+  // "nessuna lezione" da solo lasciava una card morta.
+  const nextUp = useMemo(() => {
+    if (!ready) return undefined;
+    const today = localToday(now);
+    const pinned = pinnedCourses;
+    const lesson = classEvents
+      .filter((e) => localDayOf(e.start) > today)
+      .filter((e) => matchesYear(e.sourceId, yearScope))
+      .filter((e) => pinned.length === 0 || pinned.includes(e.courseName))
+      .sort((a, b) => a.start.localeCompare(b.start))[0];
+    if (lesson) {
+      const day = localDayOf(lesson.start);
+      return {
+        label: `Prossima lezione: ${fmtDayOfMonth(day)} ${fmtMonthAbbr(day)} · ${lesson.courseName}`,
+        href: "/orario",
+      };
+    }
+    const exam = myExamCalls
+      .filter((e) => daysFromToday(e.date, now) > 0)
+      .sort(
+        (a, b) =>
+          a.date.localeCompare(b.date) ||
+          (a.time ?? "").localeCompare(b.time ?? ""),
+      )[0];
+    if (exam) {
+      return {
+        label: `Prossimo appello: ${fmtDayOfMonth(exam.date)} ${fmtMonthAbbr(exam.date)} · ${exam.courseName}`,
+        href: "/appelli",
+      };
+    }
+    return undefined;
+  }, [ready, classEvents, myExamCalls, pinnedCourses, now, yearScope]);
+
+  // Le finestre di prenotazione arrivano solo da fonti che le espongono
+  // (Esse3/Delphi — EasyAcademy no): senza nemmeno una, la card "Scadenze
+  // prenotazione" resterebbe vuota per sempre. Meglio non montarla e dare
+  // il suo spazio alle card vicine.
+  const hasBookingWindows = useMemo(
+    () => examCalls.some((e) => e.booking?.closesAt),
+    [examCalls],
+  );
+
   // "Primo avvio": nessun voto registrato E nessuna lezione nelle prossime due
   // settimane. In questo stato gli empty state freddi (0 CFU, nessuna lezione)
   // fanno sembrare l'app rotta — i figli mostrano allora messaggi caldi e
@@ -383,6 +427,7 @@ export function Dashboard() {
           <TodayTimeline
             events={todayEvents}
             firstRun={firstRun}
+            nextUp={nextUp}
             className="lg:col-span-3"
           />
           <ExamTimeline
@@ -408,10 +453,19 @@ export function Dashboard() {
             />
           )}
 
-          {/* Riga piccola: obiettivo settimana, scadenze, link utili. */}
-          <WeeklyGoalCard className="lg:col-span-2" />
-          <BookingDeadlines className="lg:col-span-2" />
-          <LinksPanel className="h-full lg:col-span-2" />
+          {/* Riga piccola: obiettivo settimana, scadenze (solo se la fonte le
+              espone), link utili. Senza scadenze le due card restanti si
+              dividono la riga. */}
+          <WeeklyGoalCard
+            className={hasBookingWindows ? "lg:col-span-2" : "lg:col-span-3"}
+          />
+          {hasBookingWindows && <BookingDeadlines className="lg:col-span-2" />}
+          <LinksPanel
+            className={cn(
+              "h-full",
+              hasBookingWindows ? "lg:col-span-2" : "lg:col-span-3",
+            )}
+          />
         </div>
       )}
     </div>
