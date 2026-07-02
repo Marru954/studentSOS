@@ -8,16 +8,30 @@ import { Stat } from "@/components/primitives/Stat";
 
 export const metadata: Metadata = { title: "Design system" };
 
+// I nomi legacy night-* rimappano sui token immersive ([data-theme] in
+// globals.css): night-950→--bg-2, 900→--bg, 800→--surface, 700→--hover.
 const SWATCHES = [
-  ["night-950", "bg-night-950", "pozzi, blocchi di codice"],
-  ["night-900", "bg-night-900", "fondo applicazione"],
-  ["night-800", "bg-night-800", "pannello"],
-  ["night-700", "bg-night-700", "overlay, hover"],
+  ["night-950 (--bg-2)", "bg-night-950", "pozzi, blocchi di codice"],
+  ["night-900 (--bg)", "bg-night-900", "fondo applicazione"],
+  ["night-800 (--surface)", "bg-night-800", "superficie glass"],
+  ["night-700 (--hover)", "bg-night-700", "overlay, hover"],
   ["line", "bg-line", "bordi"],
   ["signal", "bg-signal", "interazione, live"],
+  ["signal-2", "bg-[var(--signal-2)]", "accento display, icone"],
+  ["signal-3", "bg-[var(--signal-3)]", "accento freddo, aurora"],
+  ["signal-text", "bg-signal-text", "micro-link AA"],
   ["warn", "bg-warn", "scadenze"],
   ["danger", "bg-danger", "critico"],
   ["ok", "bg-ok", "esito positivo"],
+] as const;
+
+// Le superfici del bento: la gerarchia si fa con l'elevazione, non con
+// colori per-componente.
+const SURFACES = [
+  ["glass", "glass", "card base: blur + hairline"],
+  ["panel-hero accent-top", "glass panel-hero accent-top", "card primaria: ombra profonda + filo gradiente"],
+  ["gradient-ring", "glass gradient-ring", "bordo gradiente 1px, edge premium"],
+  ["card-glow", "glass card-glow", "alone radiale interno, superfici CTA"],
 ] as const;
 
 export default function DesignPage() {
@@ -27,8 +41,11 @@ export default function DesignPage() {
         <p className="text-label font-medium text-signal">StudentOS / design system</p>
         <h1 className="mt-2 text-2xl font-semibold">Strumento</h1>
         <p className="mt-1 max-w-xl text-sm text-ink-mute">
-          Strumentazione di precisione per la carriera universitaria: superfici al
-          carbonio, un solo colore di segnale, dati sempre in colonna.
+          Strumentazione di precisione per la carriera universitaria: superfici
+          glass su un&rsquo;aurora in deriva, segnale indigo→violetto, display
+          Bricolage Grotesque, dati sempre in colonna. Tutto è token CSS
+          (&nbsp;<code className="font-mono">[data-theme]</code> in
+          globals.css&nbsp;): il reskin si fa lì, mai per-componente.
         </p>
       </header>
 
@@ -69,10 +86,23 @@ export default function DesignPage() {
               </Button>
             </div>
             <p className="text-xs text-ink-mute">
-              Hover, attivo e focus da tastiera (anello chartreuse) sono definiti per
+              Hover, attivo e focus da tastiera (anello indigo{" "}
+              <code className="font-mono">--signal</code>) sono definiti per
               ogni variante; lo stato di caricamento blocca l&apos;interazione e imposta{" "}
               <code className="font-mono">aria-busy</code>.
             </p>
+          </div>
+        </Panel>
+
+        <Panel title="Superfici immersive">
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            {SURFACES.map(([name, cls, use]) => (
+              <div key={name} className="flex flex-col gap-1.5">
+                <div className={`${cls} h-24 rounded-xl`} aria-hidden="true" />
+                <span className="font-mono text-xs text-ink">.{name.replace(/ /g, ".")}</span>
+                <span className="text-xs text-ink-mute">{use}</span>
+              </div>
+            ))}
           </div>
         </Panel>
 
