@@ -19,8 +19,9 @@
   --color-ink-mute: var(--ink-mute);
   --color-ink-faint: var(--ink-faint);
 
-  /* accent — indigo→violet signal */
+  /* accent — indigo→violet signal (+ variante testo AA per micro-link) */
   --color-signal: var(--signal);
+  --color-signal-text: var(--signal-text);
   --color-signal-dim: var(--signal-dim);
 
   /* status */
@@ -58,7 +59,7 @@
   --bg-2: #110f1d;
   --ink: #f3f2fb;
   --ink-mute: #a9a7c4;
-  --ink-faint: #7c7a98; /* WCAG AA (4.74:1) su --bg; era #6f6d8c (3.95, sotto soglia) */
+  --ink-faint: #8b89a8; /* AA anche sui pannelli .glass (≈4.6:1 su bg+10% bianco); era #7c7a98 (4.74 su --bg ma ≈3.8 su glass) */
   --surface: rgba(255, 255, 255, 0.1); /* era 0.07: i pannelli glass affogavano nello scuro */
   --hover: rgba(255, 255, 255, 0.14);
   --hairline: rgba(255, 255, 255, 0.12); /* era 0.09: bordi quasi invisibili */
@@ -66,6 +67,9 @@
   --signal: #6d6bff;
   --signal-2: #a78bfa;
   --signal-3: #38bdf8;
+  /* variante testo del signal per micro-link (xs/sm): --signal puro è ≈3.9:1
+     sui pannelli glass scuri, sotto AA per testo piccolo */
+  --signal-text: #a78bfa; /* ≈5.7:1 su glass scuro */
   --signal-dim: rgba(109, 107, 255, 0.18);
   --glow-1: rgba(109, 107, 255, 0.55);
   --glow-2: rgba(167, 139, 250, 0.45);
@@ -90,13 +94,14 @@
   --signal: #6d6bff;
   --signal-2: #a78bfa;
   --signal-3: #38bdf8;
+  --signal-text: #5754d8; /* ≈5.7:1 su bianco — --signal puro era ≈4.05 */
   --signal-dim: rgba(109, 107, 255, 0.12);
   --glow-1: rgba(109, 107, 255, 0.3);
   --glow-2: rgba(167, 139, 250, 0.28);
   --glow-3: rgba(56, 189, 248, 0.22);
   --shadow: 0 2px 8px rgba(60, 50, 120, 0.06), 0 20px 50px -20px rgba(60, 50, 120, 0.22);
   --ok: #16a34a;
-  --warn: #d97706;
+  --warn: #b45309; /* AA su bianco (≈5:1); era #d97706 (≈3.2, sotto soglia per testo piccolo) */
   --danger: #e11d48;
 }
 
@@ -576,6 +581,9 @@ input[type="radio"]:active {
 .chip-signal { color: var(--signal-2); border-color: color-mix(in oklch, var(--signal) 40%, transparent); background: color-mix(in oklch, var(--signal) 14%, transparent); }
 .chip-ok { color: var(--ok); border-color: color-mix(in oklch, var(--ok) 38%, transparent); background: color-mix(in oklch, var(--ok) 13%, transparent); }
 .chip-warn { color: var(--warn); border-color: color-mix(in oklch, var(--warn) 38%, transparent); background: color-mix(in oklch, var(--warn) 13%, transparent); }
+/* in chiaro il testo delle chip warn scende ancora (fondo ambrato, 11.5px/600):
+   ambra più scura per restare ≥4.5:1 */
+[data-theme="light"] .chip-warn { color: #92400e; }
 .chip-danger { color: var(--danger); border-color: color-mix(in oklch, var(--danger) 40%, transparent); background: color-mix(in oklch, var(--danger) 14%, transparent); }
 
 /* ── Reference layout helpers (ported 1:1 from design-reference/immersive.css) ── */

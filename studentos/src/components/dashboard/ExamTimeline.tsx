@@ -164,7 +164,7 @@ export function ExamTimeline({
           {/* Riga di contesto: dichiara la portata del counter (solo il mio
               anno vs corso intero) e offre il toggle. Il filtro fine per
               anno/materia vive in /appelli. */}
-          <p className="text-xs text-ink-faint">
+          <p className="text-xs text-ink-mute">
             {yearScope
               ? yearScope.all
                 ? "Tutti gli appelli del corso"
@@ -177,7 +177,7 @@ export function ExamTimeline({
                   type="button"
                   onClick={yearScope.onToggle}
                   aria-pressed={yearScope.all}
-                  className="font-medium text-signal hover:underline"
+                  className="font-medium text-signal-text hover:underline"
                 >
                   {yearScope.all
                     ? `solo il ${yearScope.year}° anno`
@@ -186,7 +186,7 @@ export function ExamTimeline({
               </>
             )}
             {" · "}
-            <Link href="/appelli" className="text-signal hover:underline">
+            <Link href="/appelli" className="font-medium text-signal-text hover:underline">
               filtra in /appelli
             </Link>
           </p>
@@ -276,7 +276,7 @@ export function ExamTimeline({
                         <button
                           type="button"
                           onClick={() => toggleDates(g.course)}
-                          className="mt-1 text-xs font-medium text-signal hover:underline"
+                          className="mt-1 text-xs font-medium text-signal-text hover:underline"
                         >
                           {datesOpen
                             ? "Nascondi date"
