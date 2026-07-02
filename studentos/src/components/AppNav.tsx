@@ -33,12 +33,17 @@ import { useSynced } from "@/lib/state/synced";
 // Sette voci principali. Impostazioni vive nel cluster in alto a destra (icona
 // ingranaggio), l'Assistente è una bubble flottante: nessuno dei due è una voce
 // di barra. La landing (/) è pubblica, non una sezione dell'app.
+// `short` = etichetta della tab bar mobile: dove non ci sta il nome intero si
+// abbrevia, ma senza cambiare vocabolario — "Esami" che apriva una pagina
+// intitolata "Appelli" (e "Voti"→Libretto, "Crusc."→Panoramica) costringeva a
+// imparare due nomi per la stessa sezione. "Home" è la sola concessione:
+// "Panoramica" non entra in una tab da ~55px.
 const LINKS = [
-  { href: "/panoramica", label: "Panoramica", short: "Crusc.", icon: LayoutDashboard },
+  { href: "/panoramica", label: "Panoramica", short: "Home", icon: LayoutDashboard },
   { href: "/orario", label: "Orario", short: "Orario", icon: CalendarDays },
   { href: "/insegnamenti", label: "Insegnamenti", short: "Materie", icon: BookOpen },
-  { href: "/appelli", label: "Appelli", short: "Esami", icon: CalendarClock },
-  { href: "/libretto", label: "Libretto", short: "Voti", icon: GraduationCap },
+  { href: "/appelli", label: "Appelli", short: "Appelli", icon: CalendarClock },
+  { href: "/libretto", label: "Libretto", short: "Libretto", icon: GraduationCap },
   { href: "/note", label: "Note", short: "Note", icon: NotebookPen },
   { href: "/focus", label: "Focus", short: "Focus", icon: Timer },
 ];
@@ -249,7 +254,10 @@ export function AppNav() {
       >
         {LINKS.map(({ href, short, icon: Icon }) => {
           const active = pathname.startsWith(href);
-          const alert = href === "/panoramica" && criticalCount > 0;
+          // stesso gating della barra desktop: al primo avvio gli "urgenti"
+          // sono del corso intero, non dello studente — niente pallino rosso
+          const alert =
+            href === "/panoramica" && criticalCount > 0 && hasOwnData;
           return (
             <Link
               key={href}
