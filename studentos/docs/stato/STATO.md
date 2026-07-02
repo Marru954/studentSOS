@@ -1,8 +1,21 @@
 # Stato attuale StudentOS
 
-Aggiornato: 2026-07-02 (review Panoramica doppia voce + audit sicurezza)
+Aggiornato: 2026-07-02 (ricognizione Cineca-UP/GOMP 6 atenei + review Panoramica + audit sicurezza)
 
 ## Completati
+
+### Sessione 2026-07-02 — ricognizione Cineca-UP/GOMP sui 6 atenei target (solo docs, 1 commit)
+Recon read-only (curl, robots-first, zero codice) su Sapienza/Bologna/PoliMi/PoliTo/
+Padova/Pisa → report `_recon_cineca-gomp_2026-07-02.md` in root. Verificati live:
+**Padova appelli funziona GIÀ con l'adapter EasyAcademy esistente** (test_call 200,
+18 appelli reali — serve solo variante exams-only di degreeSources + decisione robots
+`Disallow:/`); **Pisa Cineca UP contratto pubblico completo** (cercaPerDominio →
+clienteId, POST getImpegniCalendarioPubblico → 760KB; parità confermata su unito,
+enumerazione calendari 401 → GUID da censire a mano); **Sapienza pubblica** orario
+JSON (`services/gomp/timetable-data/<id>`) + appelli HTML; Bologna endpoint JSON vivo
+ma vuoto off-season (rivalidare a settembre), appelli HTML pubblici; PoliTo pubblico
+ma WebForms/VIEWSTATE; PoliMi gated. Ordine di attacco consigliato: Padova → adapter
+UP (Pisa) → Sapienza → Bologna (sett.) → PoliTo → PoliMi.
 
 ### Sessione 2026-07-02 — review Panoramica, voce studente + voce esperta (solo report, 1 commit)
 Review indipendente di /panoramica dal vivo (Playwright: onboarding TV/Informatica
