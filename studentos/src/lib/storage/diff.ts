@@ -88,18 +88,24 @@ export function diffClassEvents(
 
 /**
  * Emit a notice for every exam call in the fresh sync that wasn't in the
- * previous cache. A first sync (empty prev) emits nothing.
+ * previous cache. A first sync (empty prev) emits nothing. Calls whose date
+ * is already past are never announced: the sync window scorre col tempo (o
+ * una sorgente rientra dopo un errore) e può far "apparire" appelli vecchi
+ * che non sono una novità per lo studente — "nuovo appello il 21/05" sei
+ * settimane dopo è rumore che erode la fiducia, non un avviso.
  * @param prev The previously cached exam calls.
  * @param next The freshly synced exam calls.
- * @param now ISO timestamp stamped on each emitted notice.
- * @returns One "new exam" notice per previously unseen call.
+ * @param now ISO timestamp stamped on each emitted notice; its date part is
+ *   the cutoff below which a call is considered past.
+ * @returns One "new exam" notice per previously unseen future call.
  */
 export function diffExamCalls(prev: ExamCall[], next: ExamCall[], now: string): ChangeNotice[] {
   // an empty previous cache means first sync — everything would be "new"
   if (prev.length === 0) return [];
+  const today = now.slice(0, 10);
   const known = new Set(prev.map((e) => e.id));
   return next
-    .filter((exam) => !known.has(exam.id))
+    .filter((exam) => !known.has(exam.id) && exam.date >= today)
     .map((exam) =>
       notice(
         "new-exam",
