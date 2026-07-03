@@ -1,0 +1,16 @@
+# verified-endpoints.txt — allowlist degli endpoint/URL EasyAcademy VERIFICATI a mano.
+#
+# Questo file È l'atto di verifica: aggiungere una riga qui significa dichiarare
+# "ho fatto davvero il GET/POST reale su questo endpoint e ho visto tornare
+# celle/Appelli" (muro #4 del progetto — vedi CLAUDE.md). Wrong data is worse
+# than none: non aggiungere nulla che non hai verificato con una richiesta reale.
+#
+# Formato: una voce per riga. `#` = commento, righe vuote ignorate.
+# Il match è per sottostringa: una voce vale come verificata se compare (senza
+# schema http/https) dentro l'URL o il token combo.php trovato nel diff.
+# Esempi validi:
+#   host/percorso                      (senza schema — copre sia http che https)
+#   https://host/combo.php?sw=ec_&...  (URL combo.php completo, con i suoi codici)
+#
+# ── endpoint verificati ────────────────────────────────────────────────────
+informatica.uniroma2.it/home/triennale/studiare/insegnamenti/
