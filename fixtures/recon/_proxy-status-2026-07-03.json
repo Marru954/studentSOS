@@ -1,0 +1,110 @@
+{
+  "enabled": true,
+  "port": 40587,
+  "caBundlePath": "/root/.ccr/ca-bundle.crt",
+  "hasSystemCa": true,
+  "noProxy": "localhost,127.0.0.1,::1,127.0.0.0/8,0.0.0.0/8,::,169.254.0.0/16,anthropic.com,.anthropic.com,*.anthropic.com,registry.npmjs.org,jsr.io,npm.jsr.io,pypi.org,files.pythonhosted.org,index.crates.io,proxy.golang.org,host.docker.internal,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,100.64.0.0/10,.svc.cluster.local,*.svc.cluster.local",
+  "standalone": false,
+  "javaTrustStorePath": "/root/.ccr/java-truststore.p12",
+  "readmePath": "/root/.ccr/README.md",
+  "gitConfigInjection": true,
+  "gitSshRewrite": true,
+  "recentRelayFailures": [
+    {
+      "ts": "2026-07-03T16:14:17.611Z",
+      "kind": "connect_rejected",
+      "detail": "gateway answered 403 to CONNECT (policy denial or upstream failure)",
+      "host": "corsidilaurea.uniroma1.it:443"
+    },
+    {
+      "ts": "2026-07-03T16:14:17.935Z",
+      "kind": "connect_rejected",
+      "detail": "gateway answered 403 to CONNECT (policy denial or upstream failure)",
+      "host": "corsi.unibo.it:443"
+    },
+    {
+      "ts": "2026-07-03T16:14:18.236Z",
+      "kind": "connect_rejected",
+      "detail": "gateway answered 403 to CONNECT (policy denial or upstream failure)",
+      "host": "unipi.prod.up.cineca.it:443"
+    },
+    {
+      "ts": "2026-07-03T16:15:17.340Z",
+      "kind": "connect_rejected",
+      "detail": "gateway answered 403 to CONNECT (policy denial or upstream failure)",
+      "host": "www.uniroma1.it:443"
+    },
+    {
+      "ts": "2026-07-03T16:15:17.644Z",
+      "kind": "connect_rejected",
+      "detail": "gateway answered 403 to CONNECT (policy denial or upstream failure)",
+      "host": "corsidilaurea.uniroma1.it:443"
+    },
+    {
+      "ts": "2026-07-03T16:15:17.938Z",
+      "kind": "connect_rejected",
+      "detail": "gateway answered 403 to CONNECT (policy denial or upstream failure)",
+      "host": "www.unibo.it:443"
+    },
+    {
+      "ts": "2026-07-03T16:15:18.235Z",
+      "kind": "connect_rejected",
+      "detail": "gateway answered 403 to CONNECT (policy denial or upstream failure)",
+      "host": "corsi.unibo.it:443"
+    },
+    {
+      "ts": "2026-07-03T16:15:18.544Z",
+      "kind": "connect_rejected",
+      "detail": "gateway answered 403 to CONNECT (policy denial or upstream failure)",
+      "host": "www.polimi.it:443"
+    },
+    {
+      "ts": "2026-07-03T16:15:18.815Z",
+      "kind": "connect_rejected",
+      "detail": "gateway answered 403 to CONNECT (policy denial or upstream failure)",
+      "host": "onlineservices.polimi.it:443"
+    },
+    {
+      "ts": "2026-07-03T16:15:19.124Z",
+      "kind": "connect_rejected",
+      "detail": "gateway answered 403 to CONNECT (policy denial or upstream failure)",
+      "host": "didattica.polito.it:443"
+    },
+    {
+      "ts": "2026-07-03T16:15:19.427Z",
+      "kind": "connect_rejected",
+      "detail": "gateway answered 403 to CONNECT (policy denial or upstream failure)",
+      "host": "swas.polito.it:443"
+    },
+    {
+      "ts": "2026-07-03T16:15:19.742Z",
+      "kind": "connect_rejected",
+      "detail": "gateway answered 403 to CONNECT (policy denial or upstream failure)",
+      "host": "www.unipd.it:443"
+    },
+    {
+      "ts": "2026-07-03T16:15:20.054Z",
+      "kind": "connect_rejected",
+      "detail": "gateway answered 403 to CONNECT (policy denial or upstream failure)",
+      "host": "agendastudentiunipd.easystaff.it:443"
+    },
+    {
+      "ts": "2026-07-03T16:15:20.352Z",
+      "kind": "connect_rejected",
+      "detail": "gateway answered 403 to CONNECT (policy denial or upstream failure)",
+      "host": "www.unipi.it:443"
+    },
+    {
+      "ts": "2026-07-03T16:15:20.634Z",
+      "kind": "connect_rejected",
+      "detail": "gateway answered 403 to CONNECT (policy denial or upstream failure)",
+      "host": "unipi.prod.up.cineca.it:443"
+    },
+    {
+      "ts": "2026-07-03T16:15:20.957Z",
+      "kind": "connect_rejected",
+      "detail": "gateway answered 403 to CONNECT (policy denial or upstream failure)",
+      "host": "agendaweb.unipi.prod.up.cineca.it:443"
+    }
+  ]
+}
