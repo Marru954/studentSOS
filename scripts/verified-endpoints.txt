@@ -14,3 +14,24 @@
 #
 # ── endpoint verificati ────────────────────────────────────────────────────
 informatica.uniroma2.it/home/triennale/studiare/insegnamenti/
+
+# ── ricognizione Cineca-UP / GOMP — verificati con richieste reali il 2026-07-02 ──
+# (status HTTP + payload registrati in _recon_cineca-gomp_2026-07-02.md e
+# docs/recon-cineca-gomp.md). NOTA: il 2026-07-03 questi host sono risultati
+# IRRAGGIUNGIBILI da questo ambiente (403 CONNECT, policy di egress) — quindi NON
+# ri-verificati oggi: da RICONFERMARE alla prima cattura fixture riuscita.
+# Sapienza — GOMP dietro Drupal (orario JSON + appelli HTML pubblici):
+corsidilaurea.uniroma1.it/it/services/gomp/timetable-data/
+corsidilaurea.uniroma1.it/it/course/
+# Bologna — Plone (appelli HTML pubblici; orario JSON vuoto fuori semestre):
+corsi.unibo.it/laurea/
+# PoliMi — solo manifesti pubblici (orario/appelli gated):
+onlineservices.polimi.it/manifesti/manifesti/controller/ManifestoPublic.do
+# PoliTo — orario pubblico WebForms (griglia via __doPostBack/__VIEWSTATE):
+swas.polito.it/dotnet/orari_lezione_pub/
+# Padova — EasyAcademy, exams-only (test_call.php ritorna Appelli; combo elenco_anni vuoto):
+agendastudentiunipd.easystaff.it/test_call.php
+agendastudentiunipd.easystaff.it/combo.php?sw=ec_&aa=2025&page=corsi
+# Pisa — Cineca University Planner (REST pubblico POST):
+unipi.prod.up.cineca.it/api/Clienti/cercaPerDominio
+unipi.prod.up.cineca.it/api/Impegni/getImpegniCalendarioPubblico
