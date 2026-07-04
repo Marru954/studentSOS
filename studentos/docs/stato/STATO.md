@@ -1,8 +1,35 @@
 # Stato attuale StudentOS
 
-Aggiornato: 2026-07-04 (consolidamento safe-merge + chiusura branch pendenti + verifica Supabase live + allineamento docs)
+Aggiornato: 2026-07-04 (backport migration drift + consolidamento safe-merge + chiusura branch pendenti + verifica Supabase live + allineamento docs)
 
 ## Completati
+
+### Sessione 2026-07-04 — backport migration drift 0004/0005 (1 commit)
+✅ Le 2 modifiche di sicurezza applicate live il 2026-06-15 ma senza file nel
+   repo ora esistono come migration, nella convenzione sequenziale del repo:
+   - `0004_revoke_execute_handle_new_user.sql` — revoca EXECUTE su
+     handle_new_user() da anon/authenticated/public (verbatim dallo statement
+     registrato in tracking history 20260615214056).
+   - `0005_rls_initplan_wrap_auth_uid.sql` — riscrive le 5 policy owner nel
+     pattern initplan-safe `(select auth.uid())`; DROP POLICY IF EXISTS +
+     CREATE POLICY con le definizioni ESATTE osservate in pg_policies (for all,
+     ruolo public, using=with_check), sintassi identica a 0001_init.
+   Nomi 000N (non timestamp): il repo NON usa timestamp, usa la sequenza
+   0001/0002/0003 — i backport sono la loro naturale prosecuzione.
+✅ Fase 3 (registrare le migration nella tracking history di produzione) è
+   risultata MOOT: la produzione le traccia GIÀ (list_migrations mostra
+   20260615214056 + 20260615214229 da giugno). Nessuna scrittura su produzione.
+   Il drift era di sola DOCUMENTAZIONE (file mancanti nel repo), non di tracking.
+⚠️ Verifica su branch dev IMPOSSIBILE: il branching Supabase richiede piano Pro
+   (create_branch → PaymentRequiredException); nessun Postgres/Docker locale.
+   Fedeltà stabilita per equivalenza statica contro 3 fonti concordi: statement
+   registrati in tracking + pg_policies live + sintassi provata di 0001_init.
+   Zero DDL eseguito su produzione (i file sono documentazione inerte: nessun
+   processo li applica in automatico, la produzione ha già tutto).
+⚠️ get_advisors (letto, NON toccato — fuori scope): rate_limits RLS senza
+   policy (INFO, deny-by-default voluto); rate_limit_hit eseguibile da
+   anon/authenticated (WARN, RPC del rate-limit AI intenzionale); Leaked
+   Password Protection off (WARN, azione dashboard utente già nota).
 
 ### Sessione 2026-07-04 — consolidamento safe-merge.sh in wrapper (1 commit)
 ✅ `studentos/scripts/safe-merge.sh` non è più una copia divergente: sostituito
@@ -50,7 +77,8 @@ Aggiornato: 2026-07-04 (consolidamento safe-merge + chiusura branch pendenti + v
    solo gate). → CONSOLIDATO il 2026-07-04 (v. sessione in cima: ora wrapper).
 ⚠️ Drift migrations: 2 migration applicate live il 2026-06-15
    (revoke_execute_handle_new_user, rls_initplan_wrap_auth_uid) non hanno
-   file corrispondente in supabase/migrations/ — da backportare.
+   file corrispondente in supabase/migrations/. → BACKPORTATO il 2026-07-04
+   come 0004/0005 (v. sessione in cima).
 
 ### Sessione 2026-07-02 (pomeriggio) — fix review Panoramica, 12/12 (9 commit + 1 docs, branch fix/panoramica-review-fixes)
 Implementati TUTTI i finding del report `_review_panoramica_2026-07-02.md`,
@@ -310,10 +338,13 @@ tracker (selettori field + isOnboarded coerente).
   `studentos/scripts/safe-merge.sh` è ora un wrapper che fa `exec` sul canonico
   `scripts/safe-merge.sh` (root, con muri #4/#5). Nessun percorso bypassa più
   i muri.
-- **Backport migration live nel repo**: `revoke_execute_handle_new_user` e
-  `rls_initplan_wrap_auth_uid` (applicate live il 2026-06-15 via MCP) non
-  hanno file in `supabase/migrations/` — la storia migration del repo non è
-  ricostruibile da zero.
+- ~~Backport migration live nel repo~~ **FATTO il 2026-07-04**:
+  `revoke_execute_handle_new_user` e `rls_initplan_wrap_auth_uid` ora esistono
+  come `0004`/`0005` in `supabase/migrations/`. NB residuo minore: il repo usa
+  la sequenza `000N` mentre la tracking history di produzione usa timestamp
+  (20260615…/20260701…), e non c'è entry di tracking per `0001_init` — i due
+  schemi di naming restano su binari diversi (il repo è documentazione di
+  schema, non una sorgente `db push` sincronizzata 1:1 con il tracking).
 - **Finding audit non ancora fixati** (decisione utente): #7 postcss moderate
   (richiede downgrade Next rompente → sconsigliato); XSS hardening LOW (img
   component esplicito in NotePreview/AssistantChat, ordine strip/decode in
