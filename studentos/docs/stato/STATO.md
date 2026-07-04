@@ -1,10 +1,41 @@
 # Stato attuale StudentOS
 
-Aggiornato: 2026-07-02 (fix review Panoramica 12/12 + ricognizione Cineca-UP/GOMP + audit sicurezza)
+Aggiornato: 2026-07-04 (chiusura branch pendenti + verifica Supabase live + allineamento docs)
 
 ## Completati
 
-### Sessione 2026-07-02 (pomeriggio) — fix review Panoramica, 12/12 (8 commit, branch fix/panoramica-review-fixes)
+### Sessione 2026-07-04 — chiusura branch pendenti + allineamento docs (1 commit)
+✅ auto/hook-muri-4-5 mergiato su main (fast-forward dc33d26..9640ec3, tag
+   rollback/20260704-112314): hook PreToolUse per i muri #4 (dati EA inventati)
+   e #5 (nuove dep npm) — .claude/settings.json + 2 script deterministici in
+   scripts/hooks/ + 19 test (runner ora a 42 file). STRICT su branch auto/*,
+   WARN su branch supervisionati. Rebase su main con conflitto package.json
+   risolto (riga test di main + append hooks-muri.test.ts). Gate verde via
+   safe-merge, branch locale eliminato (remoto lasciato: delete negato in
+   auto-mode).
+✅ Constatati GIÀ mergiati su GitHub prima della sessione (PR #22/#23/#24):
+   muri #4/#5 dentro scripts/safe-merge.sh alla root repo + allowlist
+   scripts/verified-endpoints.txt; copia semplice studentos/scripts/
+   safe-merge.sh (solo gate, senza muri); recon Cineca-UP/GOMP.
+✅ fix/groq-ratelimit: nei "Prossimi obiettivi" risultava da mergiare → in
+   realtà GIÀ su main (4b61b54 + 8ba369f via merge 7643d78) e branch sparito
+   da origin.
+✅ Verificato live su Supabase (SQL read-only, 2026-07-04): migration
+   rate_limits (20260701224925) e restrict_signup_domains (20260701225001)
+   APPLICATE; tabella rate_limits + funzioni rate_limit_hit e
+   hook_restrict_signup_to_university_domains presenti; RLS attiva su 6/6
+   tabelle public (rate_limits 0 policy = deny-by-default via API). Chiuso
+   anche il check grant #8: anon/authenticated hanno i grant DEFAULT di
+   Supabase (tutti i privilegi) su ogni tabella — il muro effettivo è la RLS,
+   com'è da progetto; revoke di hardening opzionale, non un bug.
+⚠️ Scoperto e NON toccato (muro scripts/): doppio safe-merge.sh divergente —
+   root repo (176 righe, CON muri #4/#5, repo-aware: da usare) vs
+   studentos/scripts (64 righe, solo gate). Da consolidare.
+⚠️ Drift migrations: 2 migration applicate live il 2026-06-15
+   (revoke_execute_handle_new_user, rls_initplan_wrap_auth_uid) non hanno
+   file corrispondente in supabase/migrations/ — da backportare.
+
+### Sessione 2026-07-02 (pomeriggio) — fix review Panoramica, 12/12 (9 commit + 1 docs, branch fix/panoramica-review-fixes)
 Implementati TUTTI i finding del report `_review_panoramica_2026-07-02.md`,
 un commit per obiettivo, gate verde e verifica visiva Playwright su ognuno:
 ✅ #1 Overlay in portal su document.body (containing block da .anim-page →
@@ -53,7 +84,7 @@ estivi che sfondano il bento (Oggi vuoto 534px), micro-contrasti AA su glass, /d
 stantia. Lista prioritizzata 12 voci con fix concreti nel report. Nessun fix applicato
 (scope: sola analisi).
 
-### Sessione 2026-07-02 — audit sicurezza + remediation (5 commit, branch security/audit-remediation-2026-07-01, NON merged)
+### Sessione 2026-07-02 — audit sicurezza + remediation (5 commit, branch security/audit-remediation-2026-07-01, mergiato su main il 2026-07-02)
 Audit difensivo Fase 0-1 (sola lettura, 4 agenti in parallelo: SSRF, XSS,
 Supabase RLS, tracker) → report → Fase 2 fix solo sui finding approvati
 dall'utente. Ogni commit build+test+tsc+lint verde. safe-merge NON lanciato
@@ -63,15 +94,16 @@ dall'utente. Ogni commit build+test+tsc+lint verde. safe-merge NON lanciato
    server-side che lo ometteva. Un 3xx da host allowlisted non può più
    rimbalzare su IP interno (169.254.169.254 ecc.); ora tratta il 3xx come
    fallimento sorgente, stesso pattern di ical/wordpress-news.
-✅ #3 Auth Hook email istituzionale (commit 39d272a, **migration NON applicata
-   live**): nuova `supabase/migrations/0003_restrict_signup_domains.sql` —
+✅ #3 Auth Hook email istituzionale (commit 39d272a; migration poi applicata
+   live e hook attivato il 2026-07-02): `supabase/migrations/0003_restrict_signup_domains.sql` —
    funzione Before User Created Hook che rifiuta il signup se il dominio non è
    nell'allowlist accademica (112 domini ESTRATTI da emailToAteneo.ts, suffix
    matching fedele a isUniversityEmail). Contratto verificato dai docs Supabase.
    Chiude il bypass del gate email lato client (anon key pubblica → signup
-   diretto con @gmail.com). ⚠️ Attivazione MANUALE (Dashboard → Authentication
-   → Hooks → Before User Created) + ⚠️ DRIFT: liste JS/SQL da tenere allineate
-   a mano — istruzioni in testa al file.
+   diretto con @gmail.com). Attivazione manuale ESEGUITA il 2026-07-02
+   (Dashboard → Authentication → Hooks → Before User Created, verificato
+   end-to-end in produzione). ⚠️ DRIFT residuo: liste JS/SQL da tenere
+   allineate a mano — istruzioni in testa al file.
 ✅ #2 Allowlist SSRF su host[:port] (commit 9b6befc): la membership confrontava
    solo `url.hostname`, ignorando la porta → `preset-host:9999` passava (host/IP
    identici), usabile come oracolo di port-scan. Ora usa `url.host`; il check
@@ -136,13 +168,14 @@ tracker (selettori field + isOnboarded coerente).
    in 29 file di src/lib (solo commenti, zero modifiche al codice). Regola di
    protezione manuale documentata esplicitamente. Cleanup = no-op verificato:
    1 solo console.log (intenzionale, logger.ts), 0 import inutilizzati, 0 TODO
-✅ Blocco 4 (rate-limit, branch fix/groq-ratelimit, commit 4b61b54, NON merged)
-   — contatori globali del proxy AI (cb/minuto + cap/giorno) spostati da
-   in-memory per-istanza a contatore DISTRIBUITO su Supabase: migration 0002
-   (tabella rate_limits + funzione SECURITY DEFINER rate_limit_hit, UPSERT
-   atomico, RLS deny-by-default) + distributedRateLimit.ts wired in aiGuard.
-   Chiavi server-side non spoofabili; fixed-window; fail-open-verso-backstop
-   in-memory. Migration da applicare a deploy
+✅ Blocco 4 (rate-limit, branch fix/groq-ratelimit, commit 4b61b54, mergiato
+   su main via 7643d78) — contatori globali del proxy AI (cb/minuto +
+   cap/giorno) spostati da in-memory per-istanza a contatore DISTRIBUITO su
+   Supabase: migration 0002 (tabella rate_limits + funzione SECURITY DEFINER
+   rate_limit_hit, UPSERT atomico, RLS deny-by-default) + distributedRateLimit.ts
+   wired in aiGuard. Chiavi server-side non spoofabili; fixed-window;
+   fail-open-verso-backstop in-memory. Migration 0002 applicata live il
+   2026-07-01 (verificata via SQL il 2026-07-04)
    → ogni blocco build+test+tsc+lint verde prima del commit
 
 
@@ -256,16 +289,20 @@ tracker (selettori field + isOnboarded coerente).
    manual.upsert preserva ordine; memo FocusView + ExamTimeline
 
 ## In sospeso
-- **Auth Hook #3 da attivare a mano** (post-merge): applicare
-  0003_restrict_signup_domains.sql al progetto Supabase, poi collegarlo in
-  Dashboard → Authentication → Hooks → Before User Created → Postgres →
-  `public.hook_restrict_signup_to_university_domains`. La sola migration non
-  cambia il comportamento auth finché l'hook non è collegato.
+- **Doppio safe-merge.sh da consolidare** (file sotto muro scripts/, serve
+  sessione autorizzata): root repo `scripts/safe-merge.sh` (176 righe, con
+  muri #4/#5 e allowlist verified-endpoints.txt — il canonico) vs
+  `studentos/scripts/safe-merge.sh` (64 righe, solo gate, arrivato con PR #23).
+  Finché convivono, usare quello alla ROOT del repo.
+- **Backport migration live nel repo**: `revoke_execute_handle_new_user` e
+  `rls_initplan_wrap_auth_uid` (applicate live il 2026-06-15 via MCP) non
+  hanno file in `supabase/migrations/` — la storia migration del repo non è
+  ricostruibile da zero.
 - **Finding audit non ancora fixati** (decisione utente): #7 postcss moderate
-  (richiede downgrade Next rompente → sconsigliato); #8 verifica grant Supabase
-  live (`information_schema.role_table_grants` sulle 5 tabelle, read-only, fuori
-  codice); XSS hardening LOW (img component esplicito in NotePreview/AssistantChat,
-  ordine strip/decode in htmlToText — difesa in profondità, non bug).
+  (richiede downgrade Next rompente → sconsigliato); XSS hardening LOW (img
+  component esplicito in NotePreview/AssistantChat, ordine strip/decode in
+  htmlToText — difesa in profondità, non bug). Il check grant #8 è stato
+  chiuso il 2026-07-04 (v. sessione in cima).
 - **DNS-rebinding TOCTOU (#6, skip esplicito)**: lookup di validazione ≠ lookup
   di fetch; fix pieno = IP pinning + dispatcher custom = dipendenza nuova
   (vietata). Rischio residuo accettato.
@@ -280,8 +317,10 @@ tracker (selettori field + isOnboarded coerente).
   SearchPalette; lazy-load AssistantChat; inert/scroll-lock sfondo Overlay.
 
 ## Prossimi obiettivi
-- Rate-limit distribuito: rivedere e mergiare il branch fix/groq-ratelimit, poi
-  applicare la migration 0002_rate_limits.sql su Supabase (SQL editor / db push)
-  PRIMA del deploy. Possibile estensione: portare anche il bucket per-IP sullo
-  store distribuito (oggi resta cookie-HMAC + in-memory).
-- Adapter Cineca-UP o GOMP (Sapienza, Bologna, PoliTo...)
+- Estensione opzionale rate-limit: portare anche il bucket per-IP sullo store
+  distribuito (oggi resta cookie-HMAC + in-memory). Il grosso è FATTO:
+  branch mergiato e migration 0002 applicata live.
+- Adapter Cineca-UP o GOMP, sessione supervisionata dedicata — ordine
+  consigliato dal recon 2026-07-02: Padova (exams-only via adapter EA
+  esistente) → Pisa/UP → Sapienza → Bologna (rivalidare a settembre) →
+  PoliTo → PoliMi
