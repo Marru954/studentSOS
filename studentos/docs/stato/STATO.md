@@ -1,8 +1,25 @@
 # Stato attuale StudentOS
 
-Aggiornato: 2026-07-04 (chiusura branch pendenti + verifica Supabase live + allineamento docs)
+Aggiornato: 2026-07-04 (consolidamento safe-merge + chiusura branch pendenti + verifica Supabase live + allineamento docs)
 
 ## Completati
+
+### Sessione 2026-07-04 — consolidamento safe-merge.sh in wrapper (1 commit)
+✅ `studentos/scripts/safe-merge.sh` non è più una copia divergente: sostituito
+   il contenuto (64 righe, solo gate, SENZA muri) con un wrapper minimo che
+   risolve la root (`git rev-parse --show-toplevel`) e fa `exec` sullo script
+   canonico `scripts/safe-merge.sh` (176 righe, con muri #4/#5). Bit eseguibile
+   preservato (100755). Ora non esiste più un percorso che mergia su main
+   bypassando i muri. Divergenze prima presenti (tutte a favore del canonico,
+   che il wrapper eredita): muri #4/#5, args via env DRY_RUN/SKIP_GATE/ALLOW_*,
+   fetch --tags, tag annotato, push atomico main+tag, cleanup_tag su fallimento.
+✅ Verifica comportamentale: su branch di prova con un URL non verificato
+   aggiunto in src/, il wrapper lanciato da `studentos/` con DRY_RUN=1
+   SKIP_GATE=1 riporta `muro #4: FAIL` ed esce 1 — identico allo script root.
+   Caso pulito (nessuna violazione): muri #4/#5 PASS. Branch di prova scartato.
+✅ CLAUDE.md aggiornato: la nota "copia più vecchia SENZA muri, non usarla" →
+   "wrapper che fa exec sul canonico, lanciarlo da studentos/ o root è
+   equivalente".
 
 ### Sessione 2026-07-04 — chiusura branch pendenti + allineamento docs (1 commit)
 ✅ auto/hook-muri-4-5 mergiato su main (fast-forward dc33d26..9640ec3, tag
@@ -28,9 +45,9 @@ Aggiornato: 2026-07-04 (chiusura branch pendenti + verifica Supabase live + alli
    anche il check grant #8: anon/authenticated hanno i grant DEFAULT di
    Supabase (tutti i privilegi) su ogni tabella — il muro effettivo è la RLS,
    com'è da progetto; revoke di hardening opzionale, non un bug.
-⚠️ Scoperto e NON toccato (muro scripts/): doppio safe-merge.sh divergente —
-   root repo (176 righe, CON muri #4/#5, repo-aware: da usare) vs
-   studentos/scripts (64 righe, solo gate). Da consolidare.
+⚠️ Scoperto (muro scripts/): doppio safe-merge.sh divergente — root repo
+   (176 righe, CON muri #4/#5, repo-aware) vs studentos/scripts (64 righe,
+   solo gate). → CONSOLIDATO il 2026-07-04 (v. sessione in cima: ora wrapper).
 ⚠️ Drift migrations: 2 migration applicate live il 2026-06-15
    (revoke_execute_handle_new_user, rls_initplan_wrap_auth_uid) non hanno
    file corrispondente in supabase/migrations/ — da backportare.
@@ -289,11 +306,10 @@ tracker (selettori field + isOnboarded coerente).
    manual.upsert preserva ordine; memo FocusView + ExamTimeline
 
 ## In sospeso
-- **Doppio safe-merge.sh da consolidare** (file sotto muro scripts/, serve
-  sessione autorizzata): root repo `scripts/safe-merge.sh` (176 righe, con
-  muri #4/#5 e allowlist verified-endpoints.txt — il canonico) vs
-  `studentos/scripts/safe-merge.sh` (64 righe, solo gate, arrivato con PR #23).
-  Finché convivono, usare quello alla ROOT del repo.
+- ~~Doppio safe-merge.sh da consolidare~~ **FATTO il 2026-07-04**:
+  `studentos/scripts/safe-merge.sh` è ora un wrapper che fa `exec` sul canonico
+  `scripts/safe-merge.sh` (root, con muri #4/#5). Nessun percorso bypassa più
+  i muri.
 - **Backport migration live nel repo**: `revoke_execute_handle_new_user` e
   `rls_initplan_wrap_auth_uid` (applicate live il 2026-06-15 via MCP) non
   hanno file in `supabase/migrations/` — la storia migration del repo non è
