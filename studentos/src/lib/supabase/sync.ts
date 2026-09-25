@@ -237,6 +237,9 @@ export async function resetLocalData(): Promise<void> {
  * settings are left untouched.
  */
 export async function clearSyncedCaches(): Promise<void> {
+  // A pass still in flight belongs to the ateneo being dropped: cancel it so it
+  // can't write its rows back after the clear (and so the next sync can start).
+  useSynced.getState().invalidate();
   const db = await getDb();
   await Promise.all([
     db.clear("classEvents"),
