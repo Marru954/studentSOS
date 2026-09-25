@@ -1,6 +1,37 @@
 # Stato attuale StudentOS
 
-Aggiornato: 2026-09-25 (ri-cattura codici EasyAcademy 2026/27 + regola esami rigida, uniroma2/unifi/unina)
+Aggiornato: 2026-09-25 (ri-cattura codici EasyAcademy 2026/27 su 3 atenei + fix conflitti orario + fix sync stantia al cambio ateneo)
+
+## Stato di fine sessione 2026-09-25 (ter) — leggere prima
+
+Branch `claude/easyacademy-preset-codes-2026-b21e85`, NON mergiato su main, nessun push. Gate verde (build, tsc, lint, npm test) sull'ultimo commit di codice.
+
+**Fatto in questa fase** (dopo la ri-cattura dei 3 atenei, descritta sotto):
+- `87d6ce1` + `b105de6` — falsi conflitti d'orario. Causa: `scheduleConflictAlerts` (`domain/detectAlerts.ts`) confrontava tutte le lezioni dello
+  stesso giorno. Ora salta le coppie di anni diversi (`yearOfSource`) e quelle con tag di canale diverso nel nome
+  ("... (SG1:A-I)" vs "... (SG2:J-Z)"): sono alternative, lo studente ne segue una. Verificato in app: Tor Vergata (36 avvisi -> 0)
+  e Federico II Ing. Informatica (169+ -> 0). Test: `tests/alertsConflictYear.test.ts` (nuovo, registrato in package.json).
+  Restano possibili falsi conflitti tra curriculum diversi dello stesso anno senza tag (es. "Algoritmi per i Big Data" vs corso generico).
+- `26b92ec` — sync in volo che riscriveva i dati del vecchio ateneo dopo il cambio. Causa: la sync partita al mount col vecchio preset finiva
+  DOPO `clearSyncedCaches()` e riscriveva le sue righe; il guard `if (syncing) return` scartava la sync del nuovo preset.
+  Fix: `useSynced.invalidate()` (contatore di generazione) chiamato da `clearSyncedCaches()`; `runSync(sources, range, shouldApply)`
+  scarta i risultati obsoleti. Test: `tests/syncedInvalidate.test.ts` (nuovo, registrato). Non riprodotta dal vivo con un caso
+  pulito: causa dedotta da log + timeline, fix coperto da test che falliscono senza la guardia.
+- Verificati in app (browser, dati reali): Tor Vergata Informatica, Firenze Informatica, Federico II Ing. Informatica triennale.
+  Federico II Ing. Informatica: solo orari (esami su Esse3), 192 lezioni, 14-set..23-ott.
+
+**In sospeso**
+- BUG adapter `test_call.php` con `Insegnamenti: []` -> "expected record, received array" -> sorgente in errore / badge "1 fonte in errore"
+  (visto dal vivo su Firenze `informatica-esami-anno-2`). Fix pronto ma NON applicato: modificare `adapters/easyacademy.ts` e' stato
+  bloccato dal classificatore dei permessi della sessione. Fix: in `examsResponse` avvolgere `Insegnamenti` con
+  `z.preprocess((v) => (Array.isArray(v) && v.length === 0 ? {} : v), <schema attuale>)` + test dedicato per il caso `[]`.
+  Serve una regola di permesso esplicita su quel file nelle impostazioni Claude Code.
+- Replica della ri-cattura sugli altri 15 atenei EasyAcademy (stesso criterio: 10 POST settimanali per sorgente, un commit per ateneo);
+  dipende dal fix dell'adapter. Uniba resta a 2025.
+- Merge su main: `scripts/verified-endpoints.txt` non contiene gli host dei 3 atenei ricatturati (muro #4 di `safe-merge.sh`);
+  servira' `ALLOW_UNVERIFIED_URLS=1` oppure aggiornare l'elenco a mano (scripts/ e' in area protetta: decisione dell'utente).
+- Certificato di `easyacademy.unina.it`: `curl` fallisce con CRYPT_E_REVOKED (Node fetch funziona); da controllare.
+- Riattivare esami/Lettere Tor Vergata/Informatica Federico II anni 1-2 quando pubblicano calendari e orari.
 
 ## Completati
 
