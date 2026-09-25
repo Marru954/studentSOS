@@ -156,15 +156,8 @@ const livePrograms: LiveProgram[] = [
     ]),
   },
   {
-    programme: "Biotecnologie Agrarie",
-    sources: degreeSources("biotecnologie-agrarie", "FacoltadiScienzeMatematiche-FisicheeNaturali", [
-      { year: 1, corso: "AB3", anno2: ["comune|1"] },
-    ], false),
-  },
-  {
     programme: "Chemical Nano-Engineering",
     sources: degreeSources("chemical-nano-engineering", "FacoltadiIngegneria", [
-      { year: 1, corso: "W46", anno2: ["comune|1"] },
       { year: 2, corso: "W46", anno2: ["comune|2"] },
     ], false),
   },

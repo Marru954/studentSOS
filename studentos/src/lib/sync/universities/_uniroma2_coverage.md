@@ -13,6 +13,27 @@ Sorgente: GET reale `https://easyutv.uniroma2.it/agendaweb/combo.php?sw=ec_&aa=2
 - Programmi rimasti live solo in parte (alcuni anni rimossi): **0**
 - Le tabelle per scuola più sotto sono lo **storico della verifica 2025/26** e NON sono state rigenerate: fa fede questa sezione.
 
+### Ri-controllo settimanale 28-09..30-11-2026 (criterio live: celle > 0 in almeno una delle 10 settimane)
+
+Un POST a `grid_call.php` (anno=2026) per ciascuna delle 10 settimane (lunedì 28-09, 05-10, 12-10, 19-10, 26-10, 02-11, 09-11, 16-11, 23-11, 30-11), con concorrenza 3 e pausa tra le richieste. Una cella isolata fuori finestra (dicembre/marzo) non basta.
+
+- Sorgenti orario controllate: **111** · restano live: **109** · rimosse: **2** (programmi rimossi per intero: 1)
+- La tabella "Corsi live verificati" qui sotto e le sezioni precedenti sono anteriori a questo ri-controllo: per gli anni elencati nella tabella seguente fa fede questa sezione (sono stati rimossi da `livePrograms`).
+
+| Corso | scuola | Anno | corso originale | anno2 originale | Motivo |
+|---|---|---|---|---|---|
+| Biotecnologie Agrarie | FacoltadiScienzeMatematiche-FisicheeNaturali | 1 | `AB3` | `comune\|1` | 0 celle in tutte le 10 settimane 28-09..30-11-2026 (ripristinare quando pubblicano gli orari) |
+| Chemical Nano-Engineering | FacoltadiIngegneria | 1 | `W46` | `comune\|1` | 0 celle in tutte le 10 settimane 28-09..30-11-2026 (ripristinare quando pubblicano gli orari) |
+
+Campione celle per settimana (28-09 … 30-11):
+
+- Informatica (triennale) (anno 1, `H02`): 0, 12, 12, 12, 12, 12, 12, 12, 12, 12
+- Biotechnology for Industry and Health (anno 1, `AB6`): 12, 14, 14, 16, 16, 16, 16, 16, 16, 16
+- Chimica (magistrale) (anno 2, `J63`): 9, 9, 9, 9, 9, 9, 9, 9, 9, 9
+- Engineering Sciences (anno 2, `K73`): 9, 9, 9, 9, 9, 9, 9, 9, 9, 9
+- ICT and Internet Engineering - Ingegneria di Internet e delle Tecnologie per l'Informazione e la Comunicazione (anno 2, `Q66`): 27, 27, 27, 27, 27, 27, 27, 27, 27, 27
+- Ingegneria dell'Automazione (anno 1, `H31`): 29, 29, 29, 29, 29, 29, 29, 29, 29, 29
+
 ### Corsi passati a solo-orari (exams:false) — 13
 
 Regola rigida: `exams:false` se `test_call.php` non restituisce appelli nella finestra 2026/27 (01-09-2026..30-09-2027). Da riattivare (ultimo argomento `false` di `degreeSources`) quando i calendari esami vengono pubblicati. 'Nel 2025/26' = il codice risponde con appelli della finestra precedente (calendario nuovo non ancora pubblicato); 'mai' = nessun appello neanche nel 2025/26.
