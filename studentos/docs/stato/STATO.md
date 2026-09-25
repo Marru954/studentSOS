@@ -1,6 +1,6 @@
 # Stato attuale StudentOS
 
-Aggiornato: 2026-09-25 (ri-cattura codici 2026 su 18 atenei; pulizia gate/esse3/easyAcademyPreset/Delphi; hook muri #1 e #2)
+Aggiornato: 2026-09-25 (client HTTP sync rispettoso; hook muro #1 + NotebookEdit; ri-cattura codici 2026 su 18 atenei; hook muri #1 e #2)
 
 ## Completati
 ### Sessione 2026-09-25 (quater) — merge su main + controllo conflitti con altri branch
@@ -28,6 +28,26 @@ Autorizzazioni esplicite dell'utente su package.json / tests/esse3.test.ts (solo
 ✅ Fase 6: `.gitignore` e CLAUDE.md allineati (uniportal, *.html e design-reference/ già cancellati: commit c09a303 / a96cbcf).
 Gate verde prima di ogni commit. Nessun push, nessun safe-merge.
 
+
+### Sessione 2026-09-25 (notte) — hook muro #1 + sync rispettoso (2 commit, branch chore/hook-muro1-sync-etico, NON mergiato)
+✅ Muro #1 esisteva già (PR #26): aggiunta solo la copertura di NotebookEdit
+   (`notebook_path`) in hook + matcher `.claude/settings.json` + 7 test
+   (`hooks-muri-1-2`: 59). Autorizzato dall'utente in chat (scripts/, test esistente).
+✅ Nuovo `src/lib/sync/http.ts` (`politeFetch`): User-Agent descrittivo, GET
+   condizionali (ETag/Last-Modified salvati in cache di processo; 304 → corpo
+   in cache servito come 200, mai un errore), 429/503 con Retry-After o backoff
+   esponenziale (1s/2s/4s, max 3 retry, attesa > 10s = rinuncia), timeout/rete
+   caduta: max 2 retry semplici. `redirect:"manual"` resta il default (SSRF).
+   Cablato in `ical`, `wordpress-news` e `insegnamenti/discovery`. Test:
+   `tests/http.test.ts` (11, nel runner).
+✅ Cablato anche `easyacademy.ts` (`postForm` → `politeFetch`, unica riga di sync core,
+   autorizzata dall'utente) + pausa per host (250ms tra richieste allo stesso
+   ateneo, retry inclusi; verificato live su Tor Vergata: 3 POST a +199/+462/+659ms,
+   UA inviato). I POST EasyAcademy e il WordPress di Tor Vergata non rispondono con
+   ETag/Last-Modified/Cache-Control: un 304 live oggi non esiste (provato solo su
+   server locale).
+⚠️ Contatto nello User-Agent: placeholder `DA-DEFINIRE` da sostituire con un
+   indirizzo reale (l'URL del repo `Marru954/studentSOS` è quello attuale).
 
 ### Sessione 2026-09-25 (sera) — hook muri #1 e #2 (2 commit, branch claude/hooks-muri-1-2-57b54d)
 ✅ Muro #1 (file intoccabili) → `scripts/hooks/check-protected-files.mjs`,
@@ -436,3 +456,4 @@ tracker (selettori field + isOnboarded coerente).
 ## Registro decisioni
 
 - **2026-09-25 — muro #1 e #2: STRICT sempre** (non STRICT-solo-auto/WARN come #4/#5). Override esplicito solo per #1 via `ALLOW_PROTECTED_EDIT=1` (caso per caso, es. migration di db.ts autorizzata); nessun override per #2 (unica via: `scripts/safe-merge.sh` o PR).
+- **2026-09-25 — sync rispettoso: client condiviso senza toccare il sync core.** `http.ts` cablato solo dove non serve editare muro #1; la cache dei validatori è in memoria di processo (il server è stateless, IndexedDB/db.ts intoccabili). Aperto: contatto reale nello UA; wiring in easyacademy.ts (+ pausa per-ateneo) da autorizzare. Semantica di `tests/` invariata (file esistenti bloccati, nuovi liberi; `package.json` resta bloccato: aggiunte al runner via patch fuori-tool).

@@ -8,6 +8,7 @@ import { z } from "zod";
 import type { NewsItem } from "@/lib/domain/types";
 import type { FetchContext, SyncProvider } from "../provider";
 import { htmlToText, stableId } from "../util";
+import { politeFetch } from "../http";
 
 const paramsSchema = z.object({
   /** Site root, e.g. "https://informatica.uniroma2.it". */
@@ -33,7 +34,7 @@ async function fetchNews(params: WordPressNewsParams, ctx: FetchContext): Promis
   url.searchParams.set("_fields", "id,date_gmt,link,title,excerpt");
   if (params.categories?.length) url.searchParams.set("categories", params.categories.join(","));
 
-  const res = await fetch(url, {
+  const res = await politeFetch(url, {
     signal: ctx.signal,
     redirect: "manual",
     headers: { Accept: "application/json" },

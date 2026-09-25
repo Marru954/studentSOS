@@ -11,6 +11,7 @@ import { z } from "zod";
 import type { ClassEvent, ClassEventKind, ExamCall, ExamKind } from "@/lib/domain/types";
 import type { FetchContext, SyncProvider } from "../provider";
 import { italianDateToIso, minutesBetween, splitRoomLabel, stableId } from "../util";
+import { politeFetch } from "../http";
 
 const timetableParams = z.object({
   kind: z.literal("timetable"),
@@ -113,7 +114,7 @@ async function postForm(
     if (Array.isArray(value)) for (const v of value) body.append(key, v);
     else body.append(key, value);
   }
-  const res = await fetch(url, {
+  const res = await politeFetch(url, {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: body.toString(),
