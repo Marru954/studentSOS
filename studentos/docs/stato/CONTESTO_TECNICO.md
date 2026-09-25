@@ -1,6 +1,6 @@
 # Contesto tecnico StudentOS
 
-Data: 2026-09-25 — generato da sessione Claude Code, **solo lettura** (nessun file applicativo modificato; unico file nuovo: questo). Branch: `chore/contesto-tecnico`.
+Data: 2026-09-25 (sezioni 6 e 7 aggiornate dopo la PR #29) — generato da sessione Claude Code, **solo lettura** (nessun file applicativo modificato; unico file nuovo: questo). Branch: `chore/contesto-tecnico`.
 
 Scopo: contesto per la pianificazione futura. Gli output sotto sono reali (comandi lanciati in `studentos/`); dove un comando non ha trovato nulla o uno strumento manca, è scritto esplicitamente.
 
@@ -1033,26 +1033,35 @@ Lo script **esiste** in `package.json` (sezione scripts):
   },
 ```
 
-`npm run gate` = `npm run build && npm test && tsc --noEmit && npm run lint` — i 4 comandi (build / test / tsc / lint) in sequenza fail-fast. `npm test` è una lista esplicita di `tsx tests/*.test.ts` concatenati con `&&` (NON un glob): un test nuovo gira solo se aggiunto allo script. Esito del gate su questo branch: vedi sezione 10.
+`npm run gate` = `npm run build && npm test && tsc --noEmit && npm run lint` — i 4 comandi (build / test / tsc / lint) in sequenza fail-fast. `npm test` è una lista esplicita di `tsx tests/*.test.ts` concatenati con `&&` (NON un glob): un test nuovo gira solo se aggiunto allo script. Nota: lo snapshot dello script `test` qui sopra è precedente alla PR #29, che vi ha aggiunto `&& tsx tests/http.test.ts`. Esito del gate su questo branch: vedi sezione 10.
 
 ## 6. Rate limiting / attese nei sync
 
-Comando richiesto: `grep -rn "setTimeout\|delay(\|sleep(" src/lib --include="*.ts" | grep -i sync`
+> **Aggiornato dopo la PR #29** (`3711e2f`, `src/lib/sync/http.ts`, nuovo). Nello snapshot iniziale di questa sessione non c'era nessun delay a runtime; ora c'è.
 
-Output: **nessun risultato** (nessuna attesa tra richieste nel codice runtime di sync in `src/lib`). Stesso grep senza il filtro `sync`, su `*.ts` e `*.tsx`:
+Comando richiesto: `grep -rn "setTimeout\|delay(\|sleep(" src/lib --include="*.ts" | grep -i sync`. Rilanciato dopo la PR #29 (con `grep -rnE "setTimeout|sleep|delay"` su `src/lib/sync`) trova ora `src/lib/sync/http.ts` (`defaultSleep` con `setTimeout`, più `sleep(...)` alle righe 108, 123, 137).
 
-```
-src/lib/hooks/useNowMinute.ts:12:  const kick = setTimeout(onTick, 0);
-```
+### 6.1 Runtime: `politeFetch` (`src/lib/sync/http.ts`)
 
-(non c'entra col sync: è il tick dell'orologio UI.) Ricerca di throttling/concorrenza nel percorso di sync (`grep -rnE "Promise\.all|concurren|pLimit|throttle|retry|retries" src/lib/sync src/lib/storage/syncClient.ts`):
+Client HTTP condiviso per tutti i fetch server-side verso i portali. Usato da `adapters/easyacademy.ts`, `adapters/ical.ts`, `adapters/wordpress-news.ts` e `insegnamenti/discovery.ts`. Il client di Delphi (`sync/delphi/client.ts`) ha un proprio `User-Agent` e non passa da qui. Costanti reali:
 
-```
-src/lib/sync/engine.ts:16:  return Promise.all(sources.map((source) => runSource(source, range)));
-src/lib/sync/validateUrl.ts:226:  await Promise.all(tasks);
-```
+| Costante | Valore | Effetto |
+|---|---|---|
+| `HOST_GAP_MS` | 250 ms | spaziatura minima tra richieste allo stesso host (slot per host, retry inclusi; opzione `hostGapMs`) |
+| `MAX_RETRIES_STATUS` | 3 | retry su 429/503 |
+| `MAX_RETRIES_NETWORK` | 2 | retry su timeout/connessione caduta |
+| `BACKOFF_BASE_MS` | 1000 ms | backoff esponenziale `1000 × 2^n + jitter(0–250 ms)` |
+| `MAX_WAIT_MS` | 10 000 ms | un `Retry-After` (o backoff) più lungo → si rinuncia e il chiamante vede il 429/503 |
+| `ATTEMPT_TIMEOUT_MS` | 15 000 ms | timeout per tentativo (combinato con il signal del chiamante) |
+| `CACHE_MAX_ENTRIES` / `CACHE_MAX_BODY_BYTES` | 64 / 2 000 000 | cache per-processo di validatori + body |
 
-Quindi a runtime l'engine lancia **tutte le sorgenti in parallelo** (`Promise.all`, con isolamento dei fallimenti per sorgente), senza delay né limite di concorrenza. I valori concreti esistono solo negli script di ricognizione in `scripts/` (sola lettura), usati per i sync "di massa" sui 19 atenei:
+Comportamento: `User-Agent` identificabile (`StudentOS/1.0 (+https://github.com/Marru954/studentSOS; contatto: DA-DEFINIRE)`); GET condizionali (`If-None-Match`/`If-Modified-Since` quando la risposta precedente aveva `ETag`/`Last-Modified`, un 304 è servito come 200 dalla cache); rispetto di `Retry-After` (secondi o data HTTP); `redirect: "manual"` di default; l'SSRF resta a carico del chiamante. La cache è per-processo (le istanze serverless sono effimere: best effort). Test: `tests/http.test.ts`, aggiunto allo script `test`.
+
+Rimane invariato che `engine.ts:16` lancia **tutte le sorgenti in parallelo** con `Promise.all` (isolamento dei fallimenti per sorgente), senza limite di concorrenza globale: il limite è solo la spaziatura per host di `politeFetch`.
+
+### 6.2 Script di ricognizione (`scripts/`, sola lettura, non toccati)
+
+Hanno una propria logica, separata da `politeFetch`:
 
 ```
 scripts/audit-codes.ts:34:      await new Promise((r) => setTimeout(r, 500 * (i + 1)));
@@ -1063,13 +1072,19 @@ scripts/audit-codes.ts:16:const PER_HOST = 4;
 scripts/audit-exams.ts:16:const PER_HOST = 4;
 ```
 
-Sintesi: retry con backoff lineare **500 ms × (tentativo+1)** (`tries = 3`, timeout 30 s per richiesta, `redirect: "manual"`) e **concorrenza massima 4 richieste per host** (`PER_HOST = 4`, helper `pool`). Non c'è un delay fisso tra richieste. Il rate limiting lato server (cookie HMAC + limite globale distribuito) riguarda le API proxy, non la cadenza dei fetch verso gli atenei (v. CLAUDE.md "Server-proxy security").
+Retry con backoff lineare 500 ms × (tentativo+1) (`tries = 3`, timeout 30 s, `redirect: "manual"`) e concorrenza massima 4 per host (`PER_HOST = 4`, helper `pool`). Il rate limiting lato server per gli endpoint (cookie HMAC + limite globale distribuito) riguarda le API proxy, non la cadenza dei fetch verso gli atenei (v. CLAUDE.md "Server-proxy security").
 
 ## 7. Debito tecnico esteso
 
 Comando: `grep -rn "TODO\|FIXME\|XXX\|@deprecated" src --include="*.ts*"`
 
-Output: **nessun risultato** (0 occorrenze in `src/`). Il debito noto è tracciato a mano in "In sospeso" di `docs/stato/STATO.md`: finding audit non fixati (postcss #7, XSS hardening LOW, DNS-rebinding TOCTOU #6); ProgressRing id gradiente duplicato; validazione ManualExamForm/ManualLessonForm non allineata all'inline-error; deferred UX (filtri in URL, deep-link SearchPalette, inert/scroll-lock Overlay).
+Snapshot iniziale: nessun risultato. **Dopo la PR #29** c'è una occorrenza:
+
+```
+src/lib/sync/http.ts:18:/** Descriptive UA. TODO: replace the contact placeholder with a real address. */
+```
+
+Il `contatto: DA-DEFINIRE` nello `USER_AGENT` è un segnaposto da sostituire con un indirizzo reale prima di considerarlo un client "educato" verso i portali. Il resto del debito noto è tracciato a mano in "In sospeso" di `docs/stato/STATO.md`: finding audit non fixati (postcss #7, XSS hardening LOW, DNS-rebinding TOCTOU #6); ProgressRing id gradiente duplicato; validazione ManualExamForm/ManualLessonForm non allineata all'inline-error; deferred UX (filtri in URL, deep-link SearchPalette, inert/scroll-lock Overlay).
 
 ## 8. Dettagli stack
 
