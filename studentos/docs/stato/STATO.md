@@ -1,10 +1,17 @@
 # Stato attuale StudentOS
 
-Aggiornato: 2026-09-25 (client HTTP sync rispettoso; hook muro #1 + NotebookEdit; ri-cattura codici 2026 su 18 atenei; hook muri #1 e #2)
+Aggiornato: 2026-09-25 (preset unifi/unina/uniroma2 con regola esami rigida; client HTTP sync rispettoso; hook muro #1 + NotebookEdit; ri-cattura codici 2026 su 18 atenei; hook muri #1 e #2)
 
 ## Completati
 ### Sessione 2026-09-25 (quinquies) — contesto tecnico per pianificazione
 ✅ `docs/stato/CONTESTO_TECNICO.md` (solo lettura, nessun file applicativo toccato): albero `src/`, schema IndexedDB v3, preset Tor Vergata integrale, gate, rate limit (runtime: nessun delay, `Promise.all`; script: backoff 500ms×n, 4/host), 0 TODO, stack `idb` + Zustand senza `persist`. Mergiato su main (eb5f3eb, safe-merge, tag rollback/2026-09-25-192524). Nessun nuovo conflitto con altri branch (i conflitti di `easyacademy-preset-codes-2026-b21e85` sono quelli già noti).
+
+### Sessione 2026-09-25 (sexies) — preset unifi/unina/uniroma2 con regola esami rigida (branch sync/regola-esami-3-atenei)
+✅ Rigenerati con la stessa pipeline di `recapture-codes.ts` (orari rivalidati con POST reali, 6 settimane campione) + **regola esami rigida**: un anno tiene la sorgente esami solo se `test_call.php` ha appelli nel 2026/27 (finestra 01-09-2026..31-08-2027), nessun fallback sul 2025/26; un errore di rete non spegne. Granularità per ANNO (non per programma).
+   - `uniroma2.ts`: l'helper locale `degreeSources` accetta ora `exams = true` (come nel branch unifi).
+   - unifi: 173 programmi, esami spenti su 71 anni; unina: 101 programmi, 0 esami spenti (già tutto solo-orari dove serve); uniroma2: 47 programmi, esami spenti su 9 anni. Informatica (triennale) di Tor Vergata (hand-wired) non toccata.
+⚠️ Lo script è una COPIA di `scripts/recapture-codes.ts` con `--exams-rule`, tenuta fuori dal repo (scratchpad): il hook Muro #1 blocca ogni scrittura in `scripts/` e non c'era autorizzazione per `ALLOW_PROTECTED_EDIT=1`. Per renderlo permanente serve l'ok dell'utente (patch: `appelli()` + `--exams-rule`, ~40 righe).
+⚠️ Il branch `claude/easyacademy-preset-codes-2026-b21e85` fa lavoro equivalente su questi 3 preset: conflitti a mano da evitare, rigenerare da main.
 
 ### Sessione 2026-09-25 (quater) — merge su main + controllo conflitti con altri branch
 ✅ `claude/recattura-codici-2026` mergiato su main (508651d, safe-merge da worktree, tag rollback/2026-09-25-191250).

@@ -25,28 +25,36 @@ const livePrograms: LiveProgram[] = [
     programme: "Advanced Molecular Sciences",
     sources: degreeSources(BASE, ANNO, "advanced-molecular-sciences", "ScuoladiScienzeMatematiche-FisicheeNaturali", [
       { year: 2, corso: "B370", anno2: ["GEN|2"] },
-    ]),
+    ], false),
   },
   {
     programme: "Archeologia",
-    sources: degreeSources(BASE, ANNO, "archeologia", "ScuoladiStudiUmanisticiedellaFormazione", [
+    sources: [
+      ...degreeSources(BASE, ANNO, "archeologia", "ScuoladiStudiUmanisticiedellaFormazione", [
       { year: 1, corso: "B347", anno2: ["E32|1", "E33|1", "E31|1", "E30|1"] },
+      ]),
+      ...degreeSources(BASE, ANNO, "archeologia", "ScuoladiStudiUmanisticiedellaFormazione", [
       { year: 2, corso: "B347", anno2: ["E32|2", "E33|2", "E31|2", "E30|2"] },
-    ]),
+      ], false),
+    ],
   },
   {
     programme: "Architettura (magistrale)",
-    sources: degreeSources(BASE, ANNO, "architettura-magistrale", "ScuoladiArchitettura", [
+    sources: [
+      ...degreeSources(BASE, ANNO, "architettura-magistrale", "ScuoladiArchitettura", [
       { year: 1, corso: "B387", anno2: ["GEN|1"] },
+      ]),
+      ...degreeSources(BASE, ANNO, "architettura-magistrale", "ScuoladiArchitettura", [
       { year: 2, corso: "B387", anno2: ["GEN|2"] },
       { year: 3, corso: "B387", anno2: ["GEN|3"] },
-    ]),
+      ], false),
+    ],
   },
   {
     programme: "Architettura (magistrale) (B348)",
     sources: degreeSources(BASE, ANNO, "architettura-magistrale-b348", "ScuoladiArchitettura", [
       { year: 2, corso: "B348", anno2: ["D59|2", "C61|2"] },
-    ]),
+    ], false),
   },
   {
     programme: "Architettura (ciclo unico)",
@@ -58,10 +66,14 @@ const livePrograms: LiveProgram[] = [
   },
   {
     programme: "Architettura del Paesaggio (magistrale)",
-    sources: degreeSources(BASE, ANNO, "architettura-del-paesaggio-magistrale", "ScuoladiArchitettura", [
+    sources: [
+      ...degreeSources(BASE, ANNO, "architettura-del-paesaggio-magistrale", "ScuoladiArchitettura", [
       { year: 1, corso: "B409", anno2: ["GEN|1"] },
+      ]),
+      ...degreeSources(BASE, ANNO, "architettura-del-paesaggio-magistrale", "ScuoladiArchitettura", [
       { year: 2, corso: "B409", anno2: ["GEN|2"] },
-    ]),
+      ], false),
+    ],
   },
   {
     programme: "Assistenza Sanitaria (abilitante alla Professione Sanitaria di Assistente Sanitario)",
@@ -73,17 +85,25 @@ const livePrograms: LiveProgram[] = [
   },
   {
     programme: "Biologia Dell'ambiente e del Comportamento (magistrale)",
-    sources: degreeSources(BASE, ANNO, "biologia-dell-ambiente-e-del-comportamento-magistrale", "ScuoladiScienzeMatematiche-FisicheeNaturali", [
+    sources: [
+      ...degreeSources(BASE, ANNO, "biologia-dell-ambiente-e-del-comportamento-magistrale", "ScuoladiScienzeMatematiche-FisicheeNaturali", [
       { year: 1, corso: "B350", anno2: ["E86|1", "E85|1"] },
+      ]),
+      ...degreeSources(BASE, ANNO, "biologia-dell-ambiente-e-del-comportamento-magistrale", "ScuoladiScienzeMatematiche-FisicheeNaturali", [
       { year: 2, corso: "B350", anno2: ["E86|2", "E85|2"] },
-    ]),
+      ], false),
+    ],
   },
   {
     programme: "Biologia Molecolare e Applicata",
-    sources: degreeSources(BASE, ANNO, "biologia-molecolare-e-applicata", "ScuoladiScienzeMatematiche-FisicheeNaturali", [
+    sources: [
+      ...degreeSources(BASE, ANNO, "biologia-molecolare-e-applicata", "ScuoladiScienzeMatematiche-FisicheeNaturali", [
       { year: 1, corso: "B351", anno2: ["E65|1", "E63|1", "E64|1"] },
+      ]),
+      ...degreeSources(BASE, ANNO, "biologia-molecolare-e-applicata", "ScuoladiScienzeMatematiche-FisicheeNaturali", [
       { year: 2, corso: "B351", anno2: ["E65|2", "E63|2", "E64|2"] },
-    ]),
+      ], false),
+    ],
   },
   {
     programme: "Biotecnologie",
@@ -104,19 +124,13 @@ const livePrograms: LiveProgram[] = [
     sources: degreeSources(BASE, ANNO, "biotecnologie-molecolari", "ScuoladiScienzeMatematiche-FisicheeNaturali", [
       { year: 1, corso: "B352", anno2: ["GEN|1"] },
       { year: 2, corso: "B352", anno2: ["GEN|2"] },
-    ]),
+    ], false),
   },
   {
     programme: "Biotecnologie per la Gestione Ambientale e L'agricoltura Sostenibile [b422]",
     sources: degreeSources(BASE, ANNO, "biotecnologie-per-la-gestione-ambientale-e-l-agricoltura-sostenibile-b422", "ScuoladiAgraria", [
       { year: 1, corso: "B422", anno2: ["GEN|1"] },
       { year: 2, corso: "B422", anno2: ["GEN|2"] },
-    ]),
-  },
-  {
-    programme: "Chimica",
-    sources: degreeSources(BASE, ANNO, "chimica", "ScuoladiScienzeMatematiche-FisicheeNaturali", [
-      { year: 3, corso: "B025", anno2: ["C78|3", "C79|3"] },
     ]),
   },
   {
@@ -136,10 +150,14 @@ const livePrograms: LiveProgram[] = [
   },
   {
     programme: "Data Science, Calcolo Scientifico and Intelligenza Artificiale",
-    sources: degreeSources(BASE, ANNO, "data-science-calcolo-scientifico-and-intelligenza-artificiale", "ScuoladiScienzeMatematiche-FisicheeNaturali", [
+    sources: [
+      ...degreeSources(BASE, ANNO, "data-science-calcolo-scientifico-and-intelligenza-artificiale", "ScuoladiScienzeMatematiche-FisicheeNaturali", [
       { year: 1, corso: "B343", anno2: ["GEN|1"] },
+      ]),
+      ...degreeSources(BASE, ANNO, "data-science-calcolo-scientifico-and-intelligenza-artificiale", "ScuoladiScienzeMatematiche-FisicheeNaturali", [
       { year: 2, corso: "B343", anno2: ["GEN|2"] },
-    ]),
+      ], false),
+    ],
   },
   {
     programme: "Design of Sustainable Tourism Systems",
@@ -157,29 +175,31 @@ const livePrograms: LiveProgram[] = [
   },
   {
     programme: "Design Sistema Moda",
-    sources: degreeSources(BASE, ANNO, "design-sistema-moda", "ScuoladiArchitettura", [
+    sources: [
+      ...degreeSources(BASE, ANNO, "design-sistema-moda", "ScuoladiArchitettura", [
       { year: 1, corso: "B354", anno2: ["GEN|1"] },
+      ]),
+      ...degreeSources(BASE, ANNO, "design-sistema-moda", "ScuoladiArchitettura", [
       { year: 2, corso: "B354", anno2: ["GEN|2"] },
-    ]),
+      ], false),
+    ],
   },
   {
     programme: "Design Tessile e Moda (magistrale)",
-    sources: degreeSources(BASE, ANNO, "design-tessile-e-moda-magistrale", "ScuoladiArchitettura", [
+    sources: [
+      ...degreeSources(BASE, ANNO, "design-tessile-e-moda-magistrale", "ScuoladiArchitettura", [
       { year: 1, corso: "B404", anno2: ["GEN|1"] },
       { year: 2, corso: "B404", anno2: ["GEN|2"] },
+      ]),
+      ...degreeSources(BASE, ANNO, "design-tessile-e-moda-magistrale", "ScuoladiArchitettura", [
       { year: 3, corso: "B404", anno2: ["GEN|3"] },
-    ]),
+      ], false),
+    ],
   },
   {
     programme: "Design Tessile e Moda (triennale)",
     sources: degreeSources(BASE, ANNO, "design-tessile-e-moda-triennale", "ScuoladiArchitettura", [
       { year: 3, corso: "B246", anno2: ["GEN|3"] },
-    ]),
-  },
-  {
-    programme: "Diagnostica e Materiali per la Conservazione e il Restauro",
-    sources: degreeSources(BASE, ANNO, "diagnostica-e-materiali-per-la-conservazione-e-il-restauro", "ScuoladiScienzeMatematiche-FisicheeNaturali", [
-      { year: 3, corso: "B186", anno2: ["GEN|3"] },
     ]),
   },
   {
@@ -195,14 +215,14 @@ const livePrograms: LiveProgram[] = [
     sources: degreeSources(BASE, ANNO, "dirigenza-scolastica-e-pedagogia-per-l-inclusione", "ScuoladiStudiUmanisticiedellaFormazione", [
       { year: 1, corso: "B431", anno2: ["GEN|1"] },
       { year: 2, corso: "B367", anno2: ["GEN|2"] },
-    ]),
+    ], false),
   },
   {
     programme: "Diritto per le Sostenibilita' e la Sicurezza",
     sources: degreeSources(BASE, ANNO, "diritto-per-le-sostenibilita-e-la-sicurezza", "ScuoladiGiurisprudenza", [
       { year: 1, corso: "B433", anno2: ["F109|1", "F110|1"] },
       { year: 2, corso: "B386", anno2: ["GEN|2"] },
-    ]),
+    ], false),
   },
   {
     programme: "Discipline delle Arti, della Musica e dello Spettacolo",
@@ -215,18 +235,6 @@ const livePrograms: LiveProgram[] = [
     sources: degreeSources(BASE, ANNO, "disegno-e-gestione-degli-interventi-sociali", "ScuoladiScienzePoliticheCesareAlfieri", [
       { year: 1, corso: "B382", anno2: ["GEN|1"] },
       { year: 2, corso: "B382", anno2: ["GEN|2"] },
-    ]),
-  },
-  {
-    programme: "Economia Aziendale",
-    sources: degreeSources(BASE, ANNO, "economia-aziendale", "ScuoladiEconomiaeManagement", [
-      { year: 3, corso: "B009", anno2: ["E94|3", "E95|3"] },
-    ]),
-  },
-  {
-    programme: "Economia e Commercio",
-    sources: degreeSources(BASE, ANNO, "economia-e-commercio", "ScuoladiEconomiaeManagement", [
-      { year: 3, corso: "B034", anno2: ["F013|3", "F011|3", "F012|3", "F04|3"] },
     ]),
   },
   {
@@ -264,21 +272,29 @@ const livePrograms: LiveProgram[] = [
     programme: "Farmacia (ciclo unico) (B054)",
     sources: degreeSources(BASE, ANNO, "farmacia-ciclo-unico-b054", "ScuoladiScienzedellaSaluteUmana", [
       { year: 5, corso: "B054", anno2: ["GEN|5"] },
-    ]),
+    ], false),
   },
   {
     programme: "Filologia Moderna",
-    sources: degreeSources(BASE, ANNO, "filologia-moderna", "ScuoladiStudiUmanisticiedellaFormazione", [
+    sources: [
+      ...degreeSources(BASE, ANNO, "filologia-moderna", "ScuoladiStudiUmanisticiedellaFormazione", [
       { year: 1, corso: "B333", anno2: ["B90|1", "D48|1", "E38|1"] },
+      ]),
+      ...degreeSources(BASE, ANNO, "filologia-moderna", "ScuoladiStudiUmanisticiedellaFormazione", [
       { year: 2, corso: "B333", anno2: ["B90|2", "D48|2", "E38|2"] },
-    ]),
+      ], false),
+    ],
   },
   {
     programme: "Filologia, Letteratura e Storia Dell'antichità",
-    sources: degreeSources(BASE, ANNO, "filologia-letteratura-e-storia-dell-antichita", "ScuoladiStudiUmanisticiedellaFormazione", [
+    sources: [
+      ...degreeSources(BASE, ANNO, "filologia-letteratura-e-storia-dell-antichita", "ScuoladiStudiUmanisticiedellaFormazione", [
       { year: 1, corso: "B334", anno2: ["D92|1", "D93|1"] },
+      ]),
+      ...degreeSources(BASE, ANNO, "filologia-letteratura-e-storia-dell-antichita", "ScuoladiStudiUmanisticiedellaFormazione", [
       { year: 2, corso: "B334", anno2: ["D92|2", "D93|2"] },
-    ]),
+      ], false),
+    ],
   },
   {
     programme: "Filosofia",
@@ -288,24 +304,28 @@ const livePrograms: LiveProgram[] = [
   },
   {
     programme: "Finance and Risk Management",
-    sources: degreeSources(BASE, ANNO, "finance-and-risk-management", "ScuoladiEconomiaeManagement", [
+    sources: [
+      ...degreeSources(BASE, ANNO, "finance-and-risk-management", "ScuoladiEconomiaeManagement", [
       { year: 1, corso: "B358", anno2: ["GEN|1"] },
+      ]),
+      ...degreeSources(BASE, ANNO, "finance-and-risk-management", "ScuoladiEconomiaeManagement", [
       { year: 2, corso: "B358", anno2: ["GEN|2"] },
-    ]),
-  },
-  {
-    programme: "Fisica e Astrofisica",
-    sources: degreeSources(BASE, ANNO, "fisica-e-astrofisica", "ScuoladiScienzeMatematiche-FisicheeNaturali", [
-      { year: 3, corso: "B030", anno2: ["GEN|3"] },
-    ]),
+      ], false),
+    ],
   },
   {
     programme: "Fisioterapia (abilitante alla Professione Sanitaria di Fisioterapista) - Empoli",
-    sources: degreeSources(BASE, ANNO, "fisioterapia-abilitante-alla-professione-sanitaria-di-fisioterapista-empoli", "ScuoladiScienzedellaSaluteUmana", [
+    sources: [
+      ...degreeSources(BASE, ANNO, "fisioterapia-abilitante-alla-professione-sanitaria-di-fisioterapista-empoli", "ScuoladiScienzedellaSaluteUmana", [
       { year: 1, corso: "B165_EMPOLI", anno2: ["GEN|1"] },
+      ]),
+      ...degreeSources(BASE, ANNO, "fisioterapia-abilitante-alla-professione-sanitaria-di-fisioterapista-empoli", "ScuoladiScienzedellaSaluteUmana", [
       { year: 2, corso: "B165_EMPOLI", anno2: ["GEN|2"] },
+      ], false),
+      ...degreeSources(BASE, ANNO, "fisioterapia-abilitante-alla-professione-sanitaria-di-fisioterapista-empoli", "ScuoladiScienzedellaSaluteUmana", [
       { year: 3, corso: "B165_EMPOLI", anno2: ["GEN|3"] },
-    ]),
+      ]),
+    ],
   },
   {
     programme: "Fisioterapia (abilitante alla Professione Sanitaria di Fisioterapista) - Firenze",
@@ -317,11 +337,17 @@ const livePrograms: LiveProgram[] = [
   },
   {
     programme: "Fisioterapia (abilitante alla Professione Sanitaria di Fisioterapista) - Pistoia",
-    sources: degreeSources(BASE, ANNO, "fisioterapia-abilitante-alla-professione-sanitaria-di-fisioterapista-pistoia", "ScuoladiScienzedellaSaluteUmana", [
+    sources: [
+      ...degreeSources(BASE, ANNO, "fisioterapia-abilitante-alla-professione-sanitaria-di-fisioterapista-pistoia", "ScuoladiScienzedellaSaluteUmana", [
       { year: 1, corso: "B165_PISTOIA", anno2: ["GEN|1"] },
+      ]),
+      ...degreeSources(BASE, ANNO, "fisioterapia-abilitante-alla-professione-sanitaria-di-fisioterapista-pistoia", "ScuoladiScienzedellaSaluteUmana", [
       { year: 2, corso: "B165_PISTOIA", anno2: ["GEN|2"] },
+      ], false),
+      ...degreeSources(BASE, ANNO, "fisioterapia-abilitante-alla-professione-sanitaria-di-fisioterapista-pistoia", "ScuoladiScienzedellaSaluteUmana", [
       { year: 3, corso: "B165_PISTOIA", anno2: ["GEN|3"] },
-    ]),
+      ]),
+    ],
   },
   {
     programme: "Food Design e Innovazione dei Prodotti Alimentari [b423]",
@@ -332,17 +358,25 @@ const livePrograms: LiveProgram[] = [
   },
   {
     programme: "Geoengineering",
-    sources: degreeSources(BASE, ANNO, "geoengineering", "ScuoladiIngegneria", [
+    sources: [
+      ...degreeSources(BASE, ANNO, "geoengineering", "ScuoladiIngegneria", [
       { year: 1, corso: "B361", anno2: ["GEN|1"] },
+      ]),
+      ...degreeSources(BASE, ANNO, "geoengineering", "ScuoladiIngegneria", [
       { year: 2, corso: "B361", anno2: ["GEN|2"] },
-    ]),
+      ], false),
+    ],
   },
   {
     programme: "Geography, Spatial Management, Heritage for International Cooperation",
-    sources: degreeSources(BASE, ANNO, "geography-spatial-management-heritage-for-international-cooperation", "ScuoladiStudiUmanisticiedellaFormazione", [
+    sources: [
+      ...degreeSources(BASE, ANNO, "geography-spatial-management-heritage-for-international-cooperation", "ScuoladiStudiUmanisticiedellaFormazione", [
       { year: 1, corso: "B427", anno2: ["GEN|1"] },
+      ]),
+      ...degreeSources(BASE, ANNO, "geography-spatial-management-heritage-for-international-cooperation", "ScuoladiStudiUmanisticiedellaFormazione", [
       { year: 2, corso: "B427", anno2: ["GEN|2"] },
-    ]),
+      ], false),
+    ],
   },
   {
     programme: "Governo e Direzione D'impresa",
@@ -353,19 +387,29 @@ const livePrograms: LiveProgram[] = [
   },
   {
     programme: "Infermieristica (abilitante alla Professione Sanitaria di Infermiere) - Borgo San Lorenzo",
-    sources: degreeSources(BASE, ANNO, "infermieristica-abilitante-alla-professione-sanitaria-di-infermiere-borgo-san-lorenzo", "ScuoladiScienzedellaSaluteUmana", [
+    sources: [
+      ...degreeSources(BASE, ANNO, "infermieristica-abilitante-alla-professione-sanitaria-di-infermiere-borgo-san-lorenzo", "ScuoladiScienzedellaSaluteUmana", [
       { year: 1, corso: "B162_BORGO SAN LORENZO", anno2: ["GEN|1"] },
+      ]),
+      ...degreeSources(BASE, ANNO, "infermieristica-abilitante-alla-professione-sanitaria-di-infermiere-borgo-san-lorenzo", "ScuoladiScienzedellaSaluteUmana", [
       { year: 2, corso: "B162_BORGO SAN LORENZO", anno2: ["GEN|2"] },
+      ], false),
+      ...degreeSources(BASE, ANNO, "infermieristica-abilitante-alla-professione-sanitaria-di-infermiere-borgo-san-lorenzo", "ScuoladiScienzedellaSaluteUmana", [
       { year: 3, corso: "B162_BORGO SAN LORENZO", anno2: ["GEN|3"] },
-    ]),
+      ]),
+    ],
   },
   {
     programme: "Infermieristica (abilitante alla Professione Sanitaria di Infermiere) - Empoli",
-    sources: degreeSources(BASE, ANNO, "infermieristica-abilitante-alla-professione-sanitaria-di-infermiere-empoli", "ScuoladiScienzedellaSaluteUmana", [
+    sources: [
+      ...degreeSources(BASE, ANNO, "infermieristica-abilitante-alla-professione-sanitaria-di-infermiere-empoli", "ScuoladiScienzedellaSaluteUmana", [
       { year: 1, corso: "B162_EMPOLI", anno2: ["GEN|1"] },
+      ]),
+      ...degreeSources(BASE, ANNO, "infermieristica-abilitante-alla-professione-sanitaria-di-infermiere-empoli", "ScuoladiScienzedellaSaluteUmana", [
       { year: 2, corso: "B162_EMPOLI", anno2: ["GEN|2"] },
       { year: 3, corso: "B162_EMPOLI", anno2: ["GEN|3"] },
-    ]),
+      ], false),
+    ],
   },
   {
     programme: "Infermieristica (abilitante alla Professione Sanitaria di Infermiere) - Firenze",
@@ -377,11 +421,15 @@ const livePrograms: LiveProgram[] = [
   },
   {
     programme: "Infermieristica (abilitante alla Professione Sanitaria di Infermiere) - Pistoia",
-    sources: degreeSources(BASE, ANNO, "infermieristica-abilitante-alla-professione-sanitaria-di-infermiere-pistoia", "ScuoladiScienzedellaSaluteUmana", [
+    sources: [
+      ...degreeSources(BASE, ANNO, "infermieristica-abilitante-alla-professione-sanitaria-di-infermiere-pistoia", "ScuoladiScienzedellaSaluteUmana", [
       { year: 1, corso: "B162_PISTOIA", anno2: ["GEN|1"] },
+      ]),
+      ...degreeSources(BASE, ANNO, "infermieristica-abilitante-alla-professione-sanitaria-di-infermiere-pistoia", "ScuoladiScienzedellaSaluteUmana", [
       { year: 2, corso: "B162_PISTOIA", anno2: ["GEN|2"] },
       { year: 3, corso: "B162_PISTOIA", anno2: ["GEN|3"] },
-    ]),
+      ], false),
+    ],
   },
   {
     programme: "Infermieristica (abilitante alla Professione Sanitaria di Infermiere) - Prato",
@@ -389,12 +437,6 @@ const livePrograms: LiveProgram[] = [
       { year: 1, corso: "B162_PRATO", anno2: ["GEN|1"] },
       { year: 2, corso: "B162_PRATO", anno2: ["GEN|2"] },
       { year: 3, corso: "B162_PRATO", anno2: ["GEN|3"] },
-    ]),
-  },
-  {
-    programme: "Informatica",
-    sources: degreeSources(BASE, ANNO, "informatica", "ScuoladiScienzeMatematiche-FisicheeNaturali", [
-      { year: 3, corso: "B032", anno2: ["GEN|3"] },
     ]),
   },
   {
@@ -415,17 +457,25 @@ const livePrograms: LiveProgram[] = [
   },
   {
     programme: "Ingegneria Biomedica (magistrale)",
-    sources: degreeSources(BASE, ANNO, "ingegneria-biomedica-magistrale", "ScuoladiIngegneria", [
+    sources: [
+      ...degreeSources(BASE, ANNO, "ingegneria-biomedica-magistrale", "ScuoladiIngegneria", [
       { year: 1, corso: "B359", anno2: ["F104|1", "F103|1", "F058|1", "F105|1"] },
+      ]),
+      ...degreeSources(BASE, ANNO, "ingegneria-biomedica-magistrale", "ScuoladiIngegneria", [
       { year: 2, corso: "B359", anno2: ["F057|2", "F058|2", "F059|2", "F060|2"] },
-    ]),
+      ], false),
+    ],
   },
   {
     programme: "Ingegneria Civile",
-    sources: degreeSources(BASE, ANNO, "ingegneria-civile", "ScuoladiIngegneria", [
+    sources: [
+      ...degreeSources(BASE, ANNO, "ingegneria-civile", "ScuoladiIngegneria", [
       { year: 1, corso: "B360", anno2: ["E17|1", "E16|1", "E18|1"] },
+      ]),
+      ...degreeSources(BASE, ANNO, "ingegneria-civile", "ScuoladiIngegneria", [
       { year: 2, corso: "B360", anno2: ["E17|2", "E16|2", "E18|2"] },
-    ]),
+      ], false),
+    ],
   },
   {
     programme: "Ingegneria Civile e Edile per la Sostenibilità",
@@ -444,18 +494,28 @@ const livePrograms: LiveProgram[] = [
   },
   {
     programme: "Ingegneria Edile",
-    sources: degreeSources(BASE, ANNO, "ingegneria-edile", "ScuoladiIngegneria", [
+    sources: [
+      ...degreeSources(BASE, ANNO, "ingegneria-edile", "ScuoladiIngegneria", [
       { year: 1, corso: "B408", anno2: ["GEN|1"] },
+      ]),
+      ...degreeSources(BASE, ANNO, "ingegneria-edile", "ScuoladiIngegneria", [
       { year: 2, corso: "B408", anno2: ["GEN|2"] },
-    ]),
+      ], false),
+    ],
   },
   {
     programme: "Ingegneria Elettronica",
-    sources: degreeSources(BASE, ANNO, "ingegneria-elettronica", "ScuoladiIngegneria", [
+    sources: [
+      ...degreeSources(BASE, ANNO, "ingegneria-elettronica", "ScuoladiIngegneria", [
       { year: 1, corso: "B307", anno2: ["GEN|1"] },
+      ]),
+      ...degreeSources(BASE, ANNO, "ingegneria-elettronica", "ScuoladiIngegneria", [
       { year: 2, corso: "B307", anno2: ["F017|2", "F018|2", "F019|2"] },
+      ], false),
+      ...degreeSources(BASE, ANNO, "ingegneria-elettronica", "ScuoladiIngegneria", [
       { year: 3, corso: "B244", anno2: ["F017|3", "F018|3", "F019|3"] },
-    ]),
+      ]),
+    ],
   },
   {
     programme: "Ingegneria Energetica",
@@ -466,11 +526,17 @@ const livePrograms: LiveProgram[] = [
   },
   {
     programme: "Ingegneria Gestionale",
-    sources: degreeSources(BASE, ANNO, "ingegneria-gestionale", "ScuoladiIngegneria", [
+    sources: [
+      ...degreeSources(BASE, ANNO, "ingegneria-gestionale", "ScuoladiIngegneria", [
       { year: 1, corso: "B406", anno2: ["GEN_A-D|1", "GEN_E-N|1", "GEN_O-Z|1"] },
+      ]),
+      ...degreeSources(BASE, ANNO, "ingegneria-gestionale", "ScuoladiIngegneria", [
       { year: 2, corso: "B406", anno2: ["F087|2", "F086|2", "F089|2", "F088|2"] },
+      ], false),
+      ...degreeSources(BASE, ANNO, "ingegneria-gestionale", "ScuoladiIngegneria", [
       { year: 3, corso: "B222", anno2: ["E62|3", "F006|3", "E45|3"] },
-    ]),
+      ]),
+    ],
   },
   {
     programme: "Ingegneria Informatica (magistrale)",
@@ -481,11 +547,17 @@ const livePrograms: LiveProgram[] = [
   },
   {
     programme: "Ingegneria Informatica (triennale)",
-    sources: degreeSources(BASE, ANNO, "ingegneria-informatica-triennale", "ScuoladiIngegneria", [
+    sources: [
+      ...degreeSources(BASE, ANNO, "ingegneria-informatica-triennale", "ScuoladiIngegneria", [
       { year: 1, corso: "B339", anno2: ["F027|1", "F026|1", "F025|1", "F024|1"] },
+      ]),
+      ...degreeSources(BASE, ANNO, "ingegneria-informatica-triennale", "ScuoladiIngegneria", [
       { year: 2, corso: "B339", anno2: ["F027|2", "F026|2", "F025|2", "F024|2"] },
+      ], false),
+      ...degreeSources(BASE, ANNO, "ingegneria-informatica-triennale", "ScuoladiIngegneria", [
       { year: 3, corso: "B047", anno2: ["E70|3", "E69|3"] },
-    ]),
+      ]),
+    ],
   },
   {
     programme: "Ingegneria Meccanica (magistrale)",
@@ -504,10 +576,14 @@ const livePrograms: LiveProgram[] = [
   },
   {
     programme: "Ingegneria per la Tutela Dell'ambiente e del Territorio",
-    sources: degreeSources(BASE, ANNO, "ingegneria-per-la-tutela-dell-ambiente-e-del-territorio", "ScuoladiIngegneria", [
+    sources: [
+      ...degreeSources(BASE, ANNO, "ingegneria-per-la-tutela-dell-ambiente-e-del-territorio", "ScuoladiIngegneria", [
       { year: 1, corso: "B362", anno2: ["F111|1", "F112|1"] },
+      ]),
+      ...degreeSources(BASE, ANNO, "ingegneria-per-la-tutela-dell-ambiente-e-del-territorio", "ScuoladiIngegneria", [
       { year: 2, corso: "B362", anno2: ["E75|2", "E74|2"] },
-    ]),
+      ], false),
+    ],
   },
   {
     programme: "Innovazione Sostenibile in Viticoltura ed Enologia [b424]",
@@ -518,17 +594,25 @@ const livePrograms: LiveProgram[] = [
   },
   {
     programme: "Intelligenza Artificiale",
-    sources: degreeSources(BASE, ANNO, "intelligenza-artificiale", "ScuoladiIngegneria", [
+    sources: [
+      ...degreeSources(BASE, ANNO, "intelligenza-artificiale", "ScuoladiIngegneria", [
       { year: 1, corso: "B340", anno2: ["GEN|1"] },
+      ]),
+      ...degreeSources(BASE, ANNO, "intelligenza-artificiale", "ScuoladiIngegneria", [
       { year: 2, corso: "B340", anno2: ["GEN|2"] },
-    ]),
+      ], false),
+    ],
   },
   {
     programme: "Intermediazione Culturale e Religiosa",
-    sources: degreeSources(BASE, ANNO, "intermediazione-culturale-e-religiosa", "ScuoladiStudiUmanisticiedellaFormazione", [
+    sources: [
+      ...degreeSources(BASE, ANNO, "intermediazione-culturale-e-religiosa", "ScuoladiStudiUmanisticiedellaFormazione", [
       { year: 1, corso: "B342", anno2: ["GEN|1"] },
+      ]),
+      ...degreeSources(BASE, ANNO, "intermediazione-culturale-e-religiosa", "ScuoladiStudiUmanisticiedellaFormazione", [
       { year: 2, corso: "B342", anno2: ["GEN|2"] },
-    ]),
+      ], false),
+    ],
   },
   {
     programme: "Lettere",
@@ -538,17 +622,25 @@ const livePrograms: LiveProgram[] = [
   },
   {
     programme: "Lingue e Civiltà Dell'asia e Dell'africa",
-    sources: degreeSources(BASE, ANNO, "lingue-e-civilta-dell-asia-e-dell-africa", "ScuoladiStudiUmanisticiedellaFormazione", [
+    sources: [
+      ...degreeSources(BASE, ANNO, "lingue-e-civilta-dell-asia-e-dell-africa", "ScuoladiStudiUmanisticiedellaFormazione", [
       { year: 1, corso: "B363", anno2: ["GEN|1"] },
+      ]),
+      ...degreeSources(BASE, ANNO, "lingue-e-civilta-dell-asia-e-dell-africa", "ScuoladiStudiUmanisticiedellaFormazione", [
       { year: 2, corso: "B363", anno2: ["GEN|2"] },
-    ]),
+      ], false),
+    ],
   },
   {
     programme: "Lingue e Letterature Europee e Americane",
-    sources: degreeSources(BASE, ANNO, "lingue-e-letterature-europee-e-americane", "ScuoladiStudiUmanisticiedellaFormazione", [
+    sources: [
+      ...degreeSources(BASE, ANNO, "lingue-e-letterature-europee-e-americane", "ScuoladiStudiUmanisticiedellaFormazione", [
       { year: 1, corso: "B413", anno2: ["F03|1", "LETE1|1", "F01|1", "C35|1", "C81|1", "F02|1"] },
+      ]),
+      ...degreeSources(BASE, ANNO, "lingue-e-letterature-europee-e-americane", "ScuoladiStudiUmanisticiedellaFormazione", [
       { year: 2, corso: "B413", anno2: ["F03|2", "LETE2|2", "F01|2", "C35|2", "C81|2", "F02|2"] },
-    ]),
+      ], false),
+    ],
   },
   {
     programme: "Lingue, Letterature e Studi Interculturali",
@@ -558,10 +650,14 @@ const livePrograms: LiveProgram[] = [
   },
   {
     programme: "Logica, Filosofia delle Scienze e Metodi della Ricerca",
-    sources: degreeSources(BASE, ANNO, "logica-filosofia-delle-scienze-e-metodi-della-ricerca", "ScuoladiStudiUmanisticiedellaFormazione", [
+    sources: [
+      ...degreeSources(BASE, ANNO, "logica-filosofia-delle-scienze-e-metodi-della-ricerca", "ScuoladiStudiUmanisticiedellaFormazione", [
       { year: 1, corso: "B391", anno2: ["GEN|1"] },
+      ]),
+      ...degreeSources(BASE, ANNO, "logica-filosofia-delle-scienze-e-metodi-della-ricerca", "ScuoladiStudiUmanisticiedellaFormazione", [
       { year: 2, corso: "B391", anno2: ["GEN|2"] },
-    ]),
+      ], false),
+    ],
   },
   {
     programme: "Logopedia (abilitante alla Professione Sanitaria di Logopedista)",
@@ -573,52 +669,80 @@ const livePrograms: LiveProgram[] = [
   },
   {
     programme: "Management Engineering",
-    sources: degreeSources(BASE, ANNO, "management-engineering", "ScuoladiIngegneria", [
+    sources: [
+      ...degreeSources(BASE, ANNO, "management-engineering", "ScuoladiIngegneria", [
       { year: 1, corso: "B338", anno2: ["F056|1", "F081|1", "F061|1"] },
+      ]),
+      ...degreeSources(BASE, ANNO, "management-engineering", "ScuoladiIngegneria", [
       { year: 2, corso: "B338", anno2: ["F061|2"] },
-    ]),
+      ], false),
+    ],
   },
   {
     programme: "Matematica (triennale)",
-    sources: degreeSources(BASE, ANNO, "matematica-triennale", "ScuoladiScienzeMatematiche-FisicheeNaturali", [
+    sources: [
+      ...degreeSources(BASE, ANNO, "matematica-triennale", "ScuoladiScienzeMatematiche-FisicheeNaturali", [
       { year: 1, corso: "B364", anno2: ["C76|1", "E24|1", "C75|1"] },
+      ]),
+      ...degreeSources(BASE, ANNO, "matematica-triennale", "ScuoladiScienzeMatematiche-FisicheeNaturali", [
       { year: 2, corso: "B364", anno2: ["C76|2", "E24|2", "C75|2"] },
+      ], false),
+      ...degreeSources(BASE, ANNO, "matematica-triennale", "ScuoladiScienzeMatematiche-FisicheeNaturali", [
       { year: 3, corso: "B036", anno2: ["C76|3", "C75|3"] },
-    ]),
+      ]),
+    ],
   },
   {
     programme: "Mechanical Engineering for Sustainability",
-    sources: degreeSources(BASE, ANNO, "mechanical-engineering-for-sustainability", "ScuoladiIngegneria", [
+    sources: [
+      ...degreeSources(BASE, ANNO, "mechanical-engineering-for-sustainability", "ScuoladiIngegneria", [
       { year: 1, corso: "B341", anno2: ["F029|1", "F030|1", "F031|1"] },
+      ]),
+      ...degreeSources(BASE, ANNO, "mechanical-engineering-for-sustainability", "ScuoladiIngegneria", [
       { year: 2, corso: "B341", anno2: ["F029|2", "F030|2", "F031|2"] },
-    ]),
+      ], false),
+    ],
   },
   {
     programme: "Medicina e Chirurgia",
-    sources: degreeSources(BASE, ANNO, "medicina-e-chirurgia", "ScuoladiScienzedellaSaluteUmana", [
+    sources: [
+      ...degreeSources(BASE, ANNO, "medicina-e-chirurgia", "ScuoladiScienzedellaSaluteUmana", [
       { year: 1, corso: "B414", anno2: ["GEN|1"] },
       { year: 2, corso: "B414", anno2: ["GEN|2"] },
+      ]),
+      ...degreeSources(BASE, ANNO, "medicina-e-chirurgia", "ScuoladiScienzedellaSaluteUmana", [
       { year: 3, corso: "B414", anno2: ["GEN|3"] },
+      ], false),
+      ...degreeSources(BASE, ANNO, "medicina-e-chirurgia", "ScuoladiScienzedellaSaluteUmana", [
       { year: 4, corso: "B240", anno2: ["GEN|4"] },
       { year: 5, corso: "B240", anno2: ["GEN|5"] },
       { year: 6, corso: "B240", anno2: ["GEN|6"] },
-    ]),
+      ]),
+    ],
   },
   {
     programme: "Odontoiatria e Protesi Dentaria (ciclo unico)",
-    sources: degreeSources(BASE, ANNO, "odontoiatria-e-protesi-dentaria-ciclo-unico", "ScuoladiScienzedellaSaluteUmana", [
+    sources: [
+      ...degreeSources(BASE, ANNO, "odontoiatria-e-protesi-dentaria-ciclo-unico", "ScuoladiScienzedellaSaluteUmana", [
       { year: 2, corso: "B365", anno2: ["GEN|2"] },
       { year: 3, corso: "B265", anno2: ["GEN|3"] },
+      ]),
+      ...degreeSources(BASE, ANNO, "odontoiatria-e-protesi-dentaria-ciclo-unico", "ScuoladiScienzedellaSaluteUmana", [
       { year: 4, corso: "B265", anno2: ["GEN|4"] },
       { year: 6, corso: "B265", anno2: ["GEN|6"] },
-    ]),
+      ], false),
+    ],
   },
   {
     programme: "Odontoiatria e Protesi Dentaria (ciclo unico) (B125)",
-    sources: degreeSources(BASE, ANNO, "odontoiatria-e-protesi-dentaria-ciclo-unico-b125", "ScuoladiScienzedellaSaluteUmana", [
+    sources: [
+      ...degreeSources(BASE, ANNO, "odontoiatria-e-protesi-dentaria-ciclo-unico-b125", "ScuoladiScienzedellaSaluteUmana", [
       { year: 5, corso: "B125", anno2: ["GEN|5"] },
+      ]),
+      ...degreeSources(BASE, ANNO, "odontoiatria-e-protesi-dentaria-ciclo-unico-b125", "ScuoladiScienzedellaSaluteUmana", [
       { year: 6, corso: "B125", anno2: ["GEN|6"] },
-    ]),
+      ], false),
+    ],
   },
   {
     programme: "Osteopatia",
@@ -637,12 +761,6 @@ const livePrograms: LiveProgram[] = [
     ]),
   },
   {
-    programme: "Ottica e Optometria",
-    sources: degreeSources(BASE, ANNO, "ottica-e-optometria", "ScuoladiScienzeMatematiche-FisicheeNaturali", [
-      { year: 3, corso: "B031", anno2: ["GEN|3"] },
-    ]),
-  },
-  {
     programme: "Physical and Astrophysical Sciences",
     sources: degreeSources(BASE, ANNO, "physical-and-astrophysical-sciences", "ScuoladiScienzeMatematiche-FisicheeNaturali", [
       { year: 1, corso: "B411", anno2: ["D31|1", "F066|1", "D33|1", "F067|1", "D34|1", "D32|1"] },
@@ -650,11 +768,15 @@ const livePrograms: LiveProgram[] = [
   },
   {
     programme: "Pianificazione della Citta', del Territorio e del Paesaggio (magistrale)",
-    sources: degreeSources(BASE, ANNO, "pianificazione-della-citta-del-territorio-e-del-paesaggio-magistrale", "ScuoladiArchitettura", [
+    sources: [
+      ...degreeSources(BASE, ANNO, "pianificazione-della-citta-del-territorio-e-del-paesaggio-magistrale", "ScuoladiArchitettura", [
       { year: 1, corso: "B317", anno2: ["GEN|1"] },
       { year: 2, corso: "B317", anno2: ["GEN|2"] },
+      ]),
+      ...degreeSources(BASE, ANNO, "pianificazione-della-citta-del-territorio-e-del-paesaggio-magistrale", "ScuoladiArchitettura", [
       { year: 3, corso: "B317", anno2: ["GEN|3"] },
-    ]),
+      ], false),
+    ],
   },
   {
     programme: "Pianificazione della Citta', del Territorio e del Paesaggio (triennale)",
@@ -664,10 +786,14 @@ const livePrograms: LiveProgram[] = [
   },
   {
     programme: "Pianificazione e Progettazione per la Sostenibilità Urbana e Territoriale (magistrale)",
-    sources: degreeSources(BASE, ANNO, "pianificazione-e-progettazione-per-la-sostenibilita-urbana-e-territoriale-magistrale", "ScuoladiArchitettura", [
+    sources: [
+      ...degreeSources(BASE, ANNO, "pianificazione-e-progettazione-per-la-sostenibilita-urbana-e-territoriale-magistrale", "ScuoladiArchitettura", [
       { year: 1, corso: "B366", anno2: ["F068|1", "F069|1"] },
+      ]),
+      ...degreeSources(BASE, ANNO, "pianificazione-e-progettazione-per-la-sostenibilita-urbana-e-territoriale-magistrale", "ScuoladiArchitettura", [
       { year: 2, corso: "B366", anno2: ["F068|2", "F069|2"] },
-    ]),
+      ], false),
+    ],
   },
   {
     programme: "Politica, Istituzioni e Mercato",
@@ -678,17 +804,25 @@ const livePrograms: LiveProgram[] = [
   },
   {
     programme: "Pratiche, Linguaggi e Culture della Comunicazione",
-    sources: degreeSources(BASE, ANNO, "pratiche-linguaggi-e-culture-della-comunicazione", "ScuoladiStudiUmanisticiedellaFormazione", [
+    sources: [
+      ...degreeSources(BASE, ANNO, "pratiche-linguaggi-e-culture-della-comunicazione", "ScuoladiStudiUmanisticiedellaFormazione", [
       { year: 1, corso: "B385", anno2: ["GEN|1"] },
+      ]),
+      ...degreeSources(BASE, ANNO, "pratiche-linguaggi-e-culture-della-comunicazione", "ScuoladiStudiUmanisticiedellaFormazione", [
       { year: 2, corso: "B385", anno2: ["GEN|2"] },
-    ]),
+      ], false),
+    ],
   },
   {
     programme: "Product, Interior, Communication and Eco-social Design (magistrale)",
-    sources: degreeSources(BASE, ANNO, "product-interior-communication-and-eco-social-design-magistrale", "ScuoladiArchitettura", [
+    sources: [
+      ...degreeSources(BASE, ANNO, "product-interior-communication-and-eco-social-design-magistrale", "ScuoladiArchitettura", [
       { year: 1, corso: "B303", anno2: ["GEN|1"] },
+      ]),
+      ...degreeSources(BASE, ANNO, "product-interior-communication-and-eco-social-design-magistrale", "ScuoladiArchitettura", [
       { year: 3, corso: "B303", anno2: ["GEN|3"] },
-    ]),
+      ], false),
+    ],
   },
   {
     programme: "Product, Interior, Communication and Eco-social Design (triennale)",
@@ -731,12 +865,6 @@ const livePrograms: LiveProgram[] = [
     ]),
   },
   {
-    programme: "Scienza dei Materiali",
-    sources: degreeSources(BASE, ANNO, "scienza-dei-materiali", "ScuoladiScienzeMatematiche-FisicheeNaturali", [
-      { year: 3, corso: "B258", anno2: ["GEN|3"] },
-    ]),
-  },
-  {
     programme: "Scienze Agrarie [B020]",
     sources: degreeSources(BASE, ANNO, "scienze-agrarie-b020", "ScuoladiAgraria", [
       { year: 3, corso: "B020", anno2: ["GEN|3"] },
@@ -751,29 +879,25 @@ const livePrograms: LiveProgram[] = [
   },
   {
     programme: "Scienze Archivistiche e Biblioteconomiche",
-    sources: degreeSources(BASE, ANNO, "scienze-archivistiche-e-biblioteconomiche", "ScuoladiStudiUmanisticiedellaFormazione", [
+    sources: [
+      ...degreeSources(BASE, ANNO, "scienze-archivistiche-e-biblioteconomiche", "ScuoladiStudiUmanisticiedellaFormazione", [
       { year: 1, corso: "B349", anno2: ["GEN|1"] },
+      ]),
+      ...degreeSources(BASE, ANNO, "scienze-archivistiche-e-biblioteconomiche", "ScuoladiStudiUmanisticiedellaFormazione", [
       { year: 2, corso: "B349", anno2: ["GEN|2"] },
-    ]),
-  },
-  {
-    programme: "Scienze Biologiche",
-    sources: degreeSources(BASE, ANNO, "scienze-biologiche", "ScuoladiScienzeMatematiche-FisicheeNaturali", [
-      { year: 3, corso: "B005", anno2: ["GEN|3"] },
-    ]),
+      ], false),
+    ],
   },
   {
     programme: "Scienze Chimiche",
-    sources: degreeSources(BASE, ANNO, "scienze-chimiche", "ScuoladiScienzeMatematiche-FisicheeNaturali", [
+    sources: [
+      ...degreeSources(BASE, ANNO, "scienze-chimiche", "ScuoladiScienzeMatematiche-FisicheeNaturali", [
       { year: 1, corso: "B371", anno2: ["D22|1", "D23|1", "D21|1", "D24|1", "D20|1"] },
+      ]),
+      ...degreeSources(BASE, ANNO, "scienze-chimiche", "ScuoladiScienzeMatematiche-FisicheeNaturali", [
       { year: 2, corso: "B371", anno2: ["D22|2", "D23|2", "D21|2", "D24|2", "D20|2"] },
-    ]),
-  },
-  {
-    programme: "Scienze dei Servizi Giuridici",
-    sources: degreeSources(BASE, ANNO, "scienze-dei-servizi-giuridici", "ScuoladiGiurisprudenza", [
-      { year: 3, corso: "B006", anno2: ["C22|3", "C20|3", "C23|3", "C21|3"] },
-    ]),
+      ], false),
+    ],
   },
   {
     programme: "Scienze Dell'alimentazione",
@@ -784,19 +908,29 @@ const livePrograms: LiveProgram[] = [
   },
   {
     programme: "Scienze Dell'architettura",
-    sources: degreeSources(BASE, ANNO, "scienze-dell-architettura", "ScuoladiArchitettura", [
+    sources: [
+      ...degreeSources(BASE, ANNO, "scienze-dell-architettura", "ScuoladiArchitettura", [
       { year: 1, corso: "B313", anno2: ["GEN|1"] },
+      ]),
+      ...degreeSources(BASE, ANNO, "scienze-dell-architettura", "ScuoladiArchitettura", [
       { year: 2, corso: "B313", anno2: ["GEN|2"] },
-      { year: 3, corso: "B008", anno2: ["GEN|3"] },
-    ]),
+      { year: 3, corso: "B313", anno2: ["GEN|3"] },
+      ], false),
+    ],
   },
   {
     programme: "Scienze Dell'educazione e della Formazione",
-    sources: degreeSources(BASE, ANNO, "scienze-dell-educazione-e-della-formazione", "ScuoladiStudiUmanisticiedellaFormazione", [
+    sources: [
+      ...degreeSources(BASE, ANNO, "scienze-dell-educazione-e-della-formazione", "ScuoladiStudiUmanisticiedellaFormazione", [
       { year: 1, corso: "B429", anno2: ["GEN|1"] },
+      ]),
+      ...degreeSources(BASE, ANNO, "scienze-dell-educazione-e-della-formazione", "ScuoladiStudiUmanisticiedellaFormazione", [
       { year: 2, corso: "B315", anno2: ["GEN|2"] },
+      ], false),
+      ...degreeSources(BASE, ANNO, "scienze-dell-educazione-e-della-formazione", "ScuoladiStudiUmanisticiedellaFormazione", [
       { year: 3, corso: "B219", anno2: ["GEN|3"] },
-    ]),
+      ]),
+    ],
   },
   {
     programme: "Scienze della Natura e Dell'uomo",
@@ -807,10 +941,14 @@ const livePrograms: LiveProgram[] = [
   },
   {
     programme: "Scienze dello Spettacolo",
-    sources: degreeSources(BASE, ANNO, "scienze-dello-spettacolo", "ScuoladiStudiUmanisticiedellaFormazione", [
+    sources: [
+      ...degreeSources(BASE, ANNO, "scienze-dello-spettacolo", "ScuoladiStudiUmanisticiedellaFormazione", [
       { year: 1, corso: "B420", anno2: ["D88|1", "D50|1", "B69|1"] },
+      ]),
+      ...degreeSources(BASE, ANNO, "scienze-dello-spettacolo", "ScuoladiStudiUmanisticiedellaFormazione", [
       { year: 2, corso: "B420", anno2: ["D88|2", "D50|2", "B69|2"] },
-    ]),
+      ], false),
+    ],
   },
   {
     programme: "Scienze e Gestione delle Risorse Faunistico-ambientali [b381]",
@@ -821,10 +959,14 @@ const livePrograms: LiveProgram[] = [
   },
   {
     programme: "Scienze e Materiali per la Conservazione e il Restauro",
-    sources: degreeSources(BASE, ANNO, "scienze-e-materiali-per-la-conservazione-e-il-restauro", "ScuoladiScienzeMatematiche-FisicheeNaturali", [
+    sources: [
+      ...degreeSources(BASE, ANNO, "scienze-e-materiali-per-la-conservazione-e-il-restauro", "ScuoladiScienzeMatematiche-FisicheeNaturali", [
       { year: 1, corso: "B407", anno2: ["GEN|1"] },
+      ]),
+      ...degreeSources(BASE, ANNO, "scienze-e-materiali-per-la-conservazione-e-il-restauro", "ScuoladiScienzeMatematiche-FisicheeNaturali", [
       { year: 2, corso: "B407", anno2: ["GEN|2"] },
-    ]),
+      ], false),
+    ],
   },
   {
     programme: "Scienze e Tecniche dello Sport e delle Attività Motorie Preventive e Adattate",
@@ -860,7 +1002,7 @@ const livePrograms: LiveProgram[] = [
     sources: degreeSources(BASE, ANNO, "scienze-e-tecnologie-geologiche", "ScuoladiScienzeMatematiche-FisicheeNaturali", [
       { year: 1, corso: "B376", anno2: ["D25|1", "F001|1", "F002|1", "E48|1"] },
       { year: 2, corso: "B376", anno2: ["D25|2", "F001|2", "F002|2", "E48|2"] },
-    ]),
+    ], false),
   },
   {
     programme: "Scienze e Tecnologie per la Gestione degli Spazi Verdi e del Paesaggio [b235]",
@@ -910,12 +1052,6 @@ const livePrograms: LiveProgram[] = [
     ]),
   },
   {
-    programme: "Scienze Geologiche",
-    sources: degreeSources(BASE, ANNO, "scienze-geologiche", "ScuoladiScienzeMatematiche-FisicheeNaturali", [
-      { year: 3, corso: "B035", anno2: ["GEN|3"] },
-    ]),
-  },
-  {
     programme: "Scienze Infermieristiche e Ostetriche",
     sources: degreeSources(BASE, ANNO, "scienze-infermieristiche-e-ostetriche", "ScuoladiScienzedellaSaluteUmana", [
       { year: 2, corso: "B180", anno2: ["GEN|2"] },
@@ -930,17 +1066,15 @@ const livePrograms: LiveProgram[] = [
     ]),
   },
   {
-    programme: "Scienze Naturali",
-    sources: degreeSources(BASE, ANNO, "scienze-naturali", "ScuoladiScienzeMatematiche-FisicheeNaturali", [
-      { year: 3, corso: "B033", anno2: ["GEN|3"] },
-    ]),
-  },
-  {
     programme: "Scienze Pedagogiche e Management della Formazione per lo Sviluppo Sostenibile",
-    sources: degreeSources(BASE, ANNO, "scienze-pedagogiche-e-management-della-formazione-per-lo-sviluppo-sostenibile", "ScuoladiStudiUmanisticiedellaFormazione", [
+    sources: [
+      ...degreeSources(BASE, ANNO, "scienze-pedagogiche-e-management-della-formazione-per-lo-sviluppo-sostenibile", "ScuoladiStudiUmanisticiedellaFormazione", [
       { year: 1, corso: "B389", anno2: ["GEN|1"] },
+      ]),
+      ...degreeSources(BASE, ANNO, "scienze-pedagogiche-e-management-della-formazione-per-lo-sviluppo-sostenibile", "ScuoladiStudiUmanisticiedellaFormazione", [
       { year: 2, corso: "B389", anno2: ["GEN|2"] },
-    ]),
+      ], false),
+    ],
   },
   {
     programme: "Scienze Politiche (magistrale)",
@@ -957,17 +1091,25 @@ const livePrograms: LiveProgram[] = [
   },
   {
     programme: "Scienze Riabilitative delle Professioni Sanitarie",
-    sources: degreeSources(BASE, ANNO, "scienze-riabilitative-delle-professioni-sanitarie", "ScuoladiScienzedellaSaluteUmana", [
+    sources: [
+      ...degreeSources(BASE, ANNO, "scienze-riabilitative-delle-professioni-sanitarie", "ScuoladiScienzedellaSaluteUmana", [
       { year: 1, corso: "B181", anno2: ["GEN|1"] },
+      ]),
+      ...degreeSources(BASE, ANNO, "scienze-riabilitative-delle-professioni-sanitarie", "ScuoladiScienzedellaSaluteUmana", [
       { year: 2, corso: "B181", anno2: ["GEN|2"] },
-    ]),
+      ], false),
+    ],
   },
   {
     programme: "Scienze Storiche",
-    sources: degreeSources(BASE, ANNO, "scienze-storiche", "ScuoladiStudiUmanisticiedellaFormazione", [
+    sources: [
+      ...degreeSources(BASE, ANNO, "scienze-storiche", "ScuoladiStudiUmanisticiedellaFormazione", [
       { year: 1, corso: "B380", anno2: ["GEN|1"] },
+      ]),
+      ...degreeSources(BASE, ANNO, "scienze-storiche", "ScuoladiStudiUmanisticiedellaFormazione", [
       { year: 2, corso: "B380", anno2: ["GEN|2"] },
-    ]),
+      ], false),
+    ],
   },
   {
     programme: "Scienze Umanistiche per la Comunicazione",
@@ -1004,23 +1146,25 @@ const livePrograms: LiveProgram[] = [
   },
   {
     programme: "Software: Science and Technology",
-    sources: degreeSources(BASE, ANNO, "software-science-and-technology", "ScuoladiScienzeMatematiche-FisicheeNaturali", [
+    sources: [
+      ...degreeSources(BASE, ANNO, "software-science-and-technology", "ScuoladiScienzeMatematiche-FisicheeNaturali", [
       { year: 1, corso: "B335", anno2: ["GEN|1"] },
+      ]),
+      ...degreeSources(BASE, ANNO, "software-science-and-technology", "ScuoladiScienzeMatematiche-FisicheeNaturali", [
       { year: 2, corso: "B335", anno2: ["GEN|2"] },
-    ]),
-  },
-  {
-    programme: "Statistica",
-    sources: degreeSources(BASE, ANNO, "statistica", "ScuoladiEconomiaeManagement", [
-      { year: 3, corso: "B039", anno2: ["GEN|3"] },
-    ]),
+      ], false),
+    ],
   },
   {
     programme: "Statistica e Data Science",
-    sources: degreeSources(BASE, ANNO, "statistica-e-data-science", "ScuoladiEconomiaeManagement", [
+    sources: [
+      ...degreeSources(BASE, ANNO, "statistica-e-data-science", "ScuoladiEconomiaeManagement", [
       { year: 1, corso: "B379", anno2: ["F076|1", "F075|1"] },
+      ]),
+      ...degreeSources(BASE, ANNO, "statistica-e-data-science", "ScuoladiEconomiaeManagement", [
       { year: 2, corso: "B379", anno2: ["F076|2", "F075|2"] },
-    ]),
+      ], false),
+    ],
   },
   {
     programme: "Storia",
@@ -1030,10 +1174,14 @@ const livePrograms: LiveProgram[] = [
   },
   {
     programme: "Storia Dell'arte",
-    sources: degreeSources(BASE, ANNO, "storia-dell-arte", "ScuoladiStudiUmanisticiedellaFormazione", [
+    sources: [
+      ...degreeSources(BASE, ANNO, "storia-dell-arte", "ScuoladiStudiUmanisticiedellaFormazione", [
       { year: 1, corso: "B384", anno2: ["GEN|1"] },
+      ]),
+      ...degreeSources(BASE, ANNO, "storia-dell-arte", "ScuoladiStudiUmanisticiedellaFormazione", [
       { year: 2, corso: "B384", anno2: ["GEN|2"] },
-    ]),
+      ], false),
+    ],
   },
   {
     programme: "Storia e Tutela dei Beni Archeologici, Artistici, Archivistici e Librari",
@@ -1049,24 +1197,16 @@ const livePrograms: LiveProgram[] = [
     ]),
   },
   {
-    programme: "Sustainable Business for Societal Challenges",
-    sources: degreeSources(BASE, ANNO, "sustainable-business-for-societal-challenges", "ScuoladiEconomiaeManagement", [
-      { year: 3, corso: "B247", anno2: ["GEN|3"] },
-    ]),
-  },
-  {
-    programme: "Sviluppo Sostenibile, Cooperazione e Gestione dei Conflitti (magistrale)",
-    sources: degreeSources(BASE, ANNO, "sviluppo-sostenibile-cooperazione-e-gestione-dei-conflitti-magistrale", "ScuoladiEconomiaeManagement", [
-      { year: 3, corso: "B243", anno2: ["F015|3", "F014|3", "F016|3"] },
-    ]),
-  },
-  {
     programme: "Tecniche della Prevenzione Nell'ambiente e Nei Luoghi di Lavoro (abilitante alla Professione Sanitaria di Tecnico della Prevenzione Nell'ambiente e Nei Luoghi di Lavoro)",
-    sources: degreeSources(BASE, ANNO, "tecniche-della-prevenzione-nell-ambiente-e-nei-luoghi-di-lavoro-abilitante-alla-professione-sanitaria-di-tecnico-della-prevenzione-nell-ambiente-e-nei-luoghi-di-lavoro", "ScuoladiScienzedellaSaluteUmana", [
+    sources: [
+      ...degreeSources(BASE, ANNO, "tecniche-della-prevenzione-nell-ambiente-e-nei-luoghi-di-lavoro-abilitante-alla-professione-sanitaria-di-tecnico-della-prevenzione-nell-ambiente-e-nei-luoghi-di-lavoro", "ScuoladiScienzedellaSaluteUmana", [
       { year: 1, corso: "B179", anno2: ["GEN|1"] },
       { year: 2, corso: "B179", anno2: ["GEN|2"] },
+      ]),
+      ...degreeSources(BASE, ANNO, "tecniche-della-prevenzione-nell-ambiente-e-nei-luoghi-di-lavoro-abilitante-alla-professione-sanitaria-di-tecnico-della-prevenzione-nell-ambiente-e-nei-luoghi-di-lavoro", "ScuoladiScienzedellaSaluteUmana", [
       { year: 3, corso: "B179", anno2: ["GEN|3"] },
-    ]),
+      ], false),
+    ],
   },
   {
     programme: "Tecniche di Laboratorio Biomedico (abilitante alla Professione Sanitaria di Tecnico di Laboratorio Biomedico)",
@@ -1078,19 +1218,31 @@ const livePrograms: LiveProgram[] = [
   },
   {
     programme: "Tecniche di Neurofisiopatologia (abilitante alla Professione Sanitaria di Tecnico di Neurofisiopatologia)",
-    sources: degreeSources(BASE, ANNO, "tecniche-di-neurofisiopatologia-abilitante-alla-professione-sanitaria-di-tecnico-di-neurofisiopatologia", "ScuoladiScienzedellaSaluteUmana", [
+    sources: [
+      ...degreeSources(BASE, ANNO, "tecniche-di-neurofisiopatologia-abilitante-alla-professione-sanitaria-di-tecnico-di-neurofisiopatologia", "ScuoladiScienzedellaSaluteUmana", [
       { year: 1, corso: "B202", anno2: ["GEN|1"] },
+      ]),
+      ...degreeSources(BASE, ANNO, "tecniche-di-neurofisiopatologia-abilitante-alla-professione-sanitaria-di-tecnico-di-neurofisiopatologia", "ScuoladiScienzedellaSaluteUmana", [
       { year: 2, corso: "B202", anno2: ["GEN|2"] },
+      ], false),
+      ...degreeSources(BASE, ANNO, "tecniche-di-neurofisiopatologia-abilitante-alla-professione-sanitaria-di-tecnico-di-neurofisiopatologia", "ScuoladiScienzedellaSaluteUmana", [
       { year: 3, corso: "B202", anno2: ["GEN|3"] },
-    ]),
+      ]),
+    ],
   },
   {
     programme: "Tecniche di Radiologia Medica, per Immagini e Radioterapia (abilitante alla Professione Sanitaria di Tecnico di Radiologia Medica)",
-    sources: degreeSources(BASE, ANNO, "tecniche-di-radiologia-medica-per-immagini-e-radioterapia-abilitante-alla-professione-sanitaria-di-tecnico-di-radiologia-medica", "ScuoladiScienzedellaSaluteUmana", [
+    sources: [
+      ...degreeSources(BASE, ANNO, "tecniche-di-radiologia-medica-per-immagini-e-radioterapia-abilitante-alla-professione-sanitaria-di-tecnico-di-radiologia-medica", "ScuoladiScienzedellaSaluteUmana", [
       { year: 1, corso: "B176", anno2: ["GEN|1"] },
+      ]),
+      ...degreeSources(BASE, ANNO, "tecniche-di-radiologia-medica-per-immagini-e-radioterapia-abilitante-alla-professione-sanitaria-di-tecnico-di-radiologia-medica", "ScuoladiScienzedellaSaluteUmana", [
       { year: 2, corso: "B176", anno2: ["GEN|2"] },
+      ], false),
+      ...degreeSources(BASE, ANNO, "tecniche-di-radiologia-medica-per-immagini-e-radioterapia-abilitante-alla-professione-sanitaria-di-tecnico-di-radiologia-medica", "ScuoladiScienzedellaSaluteUmana", [
       { year: 3, corso: "B176", anno2: ["GEN|3"] },
-    ]),
+      ]),
+    ],
   },
   {
     programme: "Tecniche e Tecnologie per le Costruzioni e il Territorio",
@@ -1180,50 +1332,31 @@ const livePrograms: LiveProgram[] = [
   {
     programme: "Chimica (i e )",
     sources: degreeSources(BASE, ANNO, "chimica-i-e", "ScuoladiScienzeMatematiche-FisicheeNaturali", [
-      { year: 1, corso: "B321", anno2: ["C78|1", "C79|1"] },
-      { year: 2, corso: "B321", anno2: ["C78|2", "C79|2"] },
+      { year: 3, corso: "B025", anno2: ["C78|3", "C79|3"] },
     ], false),
   },
   {
     programme: "Diagnostica e Materiali per la Conservazione e il Restauro (i e )",
     sources: degreeSources(BASE, ANNO, "diagnostica-e-materiali-per-la-conservazione-e-il-restauro-i-e", "ScuoladiScienzeMatematiche-FisicheeNaturali", [
-      { year: 1, corso: "B405", anno2: ["GEN|1"] },
-      { year: 2, corso: "B405", anno2: ["GEN|2"] },
-    ], false),
-  },
-  {
-    programme: "Discipline delle Arti, della Musica e dello Spettacolo (i e )",
-    sources: degreeSources(BASE, ANNO, "discipline-delle-arti-della-musica-e-dello-spettacolo-i-e", "ScuoladiStudiUmanisticiedellaFormazione", [
-      { year: 1, corso: "B401", anno2: ["GEN|1"] },
-      { year: 2, corso: "B401", anno2: ["GEN|2"] },
+      { year: 3, corso: "B186", anno2: ["GEN|3"] },
     ], false),
   },
   {
     programme: "Economia Aziendale 1 e",
     sources: degreeSources(BASE, ANNO, "economia-aziendale-1-e", "ScuoladiEconomiaeManagement", [
-      { year: 1, corso: "B395", anno2: ["GEN|1"] },
-      { year: 2, corso: "B395", anno2: ["GEN|2"] },
+      { year: 3, corso: "B009", anno2: ["E94|3", "E95|3"] },
     ], false),
   },
   {
     programme: "Economia e Commercio 1e",
     sources: degreeSources(BASE, ANNO, "economia-e-commercio-1e", "ScuoladiEconomiaeManagement", [
-      { year: 1, corso: "B402", anno2: ["GEN|1"] },
-      { year: 2, corso: "B402", anno2: ["F013|2", "F011|2", "F084|2"] },
-    ], false),
-  },
-  {
-    programme: "Filosofia (i e )",
-    sources: degreeSources(BASE, ANNO, "filosofia-i-e", "ScuoladiStudiUmanisticiedellaFormazione", [
-      { year: 1, corso: "B304", anno2: ["GEN|1"] },
-      { year: 2, corso: "B304", anno2: ["GEN|2"] },
+      { year: 3, corso: "B034", anno2: ["F013|3", "F011|3", "F012|3", "F04|3"] },
     ], false),
   },
   {
     programme: "Fisica e Astrofisica (i e )",
     sources: degreeSources(BASE, ANNO, "fisica-e-astrofisica-i-e", "ScuoladiScienzeMatematiche-FisicheeNaturali", [
-      { year: 1, corso: "B322", anno2: ["GEN|1"] },
-      { year: 2, corso: "B322", anno2: ["GEN|2"] },
+      { year: 3, corso: "B030", anno2: ["GEN|3"] },
     ], false),
   },
   {
@@ -1233,60 +1366,9 @@ const livePrograms: LiveProgram[] = [
     ], false),
   },
   {
-    programme: "Giurisprudenza (1° e )",
-    sources: degreeSources(BASE, ANNO, "giurisprudenza-1-e", "ScuoladiGiurisprudenza", [
-      { year: 1, corso: "B344", anno2: ["GEN_A-D|1", "GEN_E-N|1", "GEN_O-Z|1"] },
-      { year: 2, corso: "B344", anno2: ["GEN_A-G|2", "GEN_H-Z|2"] },
-    ], false),
-  },
-  {
-    programme: "Giurisprudenza (3°,4°, )",
-    sources: degreeSources(BASE, ANNO, "giurisprudenza-3-4", "ScuoladiGiurisprudenza", [
-      { year: 3, corso: "1170", anno2: ["GEN_A-G|3", "GEN_H-Z|3"] },
-      { year: 4, corso: "1170", anno2: ["GEN_A-G|4", "GEN_H-Z|4"] },
-      { year: 5, corso: "1170", anno2: ["GEN|5"] },
-    ], false),
-  },
-  {
-    programme: "Giurisprudenza Italiana e Francese (1° e )",
-    sources: degreeSources(BASE, ANNO, "giurisprudenza-italiana-e-francese-1-e", "ScuoladiGiurisprudenza", [
-      { year: 1, corso: "B345", anno2: ["GEN|1"] },
-      { year: 2, corso: "B345", anno2: ["GEN|2"] },
-    ], false),
-  },
-  {
-    programme: "Giurisprudenza Italiana e Tedesca (1° e )",
-    sources: degreeSources(BASE, ANNO, "giurisprudenza-italiana-e-tedesca-1-e", "ScuoladiGiurisprudenza", [
-      { year: 1, corso: "B346", anno2: ["GEN|1"] },
-      { year: 2, corso: "B346", anno2: ["GEN|2"] },
-    ], false),
-  },
-  {
     programme: "Informatica (i e )",
     sources: degreeSources(BASE, ANNO, "informatica-i-e", "ScuoladiScienzeMatematiche-FisicheeNaturali", [
-      { year: 1, corso: "B324", anno2: ["GEN|1"] },
-      { year: 2, corso: "B324", anno2: ["GEN|2"] },
-    ], false),
-  },
-  {
-    programme: "Lettere (i e )",
-    sources: degreeSources(BASE, ANNO, "lettere-i-e", "ScuoladiStudiUmanisticiedellaFormazione", [
-      { year: 1, corso: "B393", anno2: ["D85|1", "D86|1"] },
-      { year: 2, corso: "B393", anno2: ["D85|2", "D86|2"] },
-    ], false),
-  },
-  {
-    programme: "Lingue, Letterature e Studi Interculturali (i e )",
-    sources: degreeSources(BASE, ANNO, "lingue-letterature-e-studi-interculturali-i-e", "ScuoladiStudiUmanisticiedellaFormazione", [
-      { year: 1, corso: "B394", anno2: ["LETI1|1", "C09|1", "C80|1", "D42|1"] },
-      { year: 2, corso: "B394", anno2: ["LETI2|2", "C09|2", "C80|2", "D42|2"] },
-    ], false),
-  },
-  {
-    programme: "Matematica (i e )",
-    sources: degreeSources(BASE, ANNO, "matematica-i-e", "ScuoladiScienzeMatematiche-FisicheeNaturali", [
-      { year: 1, corso: "B327", anno2: ["GEN|1"] },
-      { year: 2, corso: "B327", anno2: ["GEN|2"] },
+      { year: 3, corso: "B032", anno2: ["GEN|3"] },
     ], false),
   },
   {
@@ -1298,8 +1380,7 @@ const livePrograms: LiveProgram[] = [
   {
     programme: "Ottica e Optometria (i e )",
     sources: degreeSources(BASE, ANNO, "ottica-e-optometria-i-e", "ScuoladiScienzeMatematiche-FisicheeNaturali", [
-      { year: 1, corso: "B323", anno2: ["GEN|1"] },
-      { year: 2, corso: "B323", anno2: ["GEN|2"] },
+      { year: 3, corso: "B031", anno2: ["GEN|3"] },
     ], false),
   },
   {
@@ -1309,38 +1390,21 @@ const livePrograms: LiveProgram[] = [
     ], false),
   },
   {
-    programme: "Progettazione e Gestione di Eventi e Imprese Dell'arte e dello Spettacolo (i e )",
-    sources: degreeSources(BASE, ANNO, "progettazione-e-gestione-di-eventi-e-imprese-dell-arte-e-dello-spettacolo-i-e", "ScuoladiStudiUmanisticiedellaFormazione", [
-      { year: 1, corso: "B302", anno2: ["GEN|1"] },
-      { year: 2, corso: "B302", anno2: ["GEN|2"] },
-    ], false),
-  },
-  {
     programme: "Scienza dei Materiali (i e )",
     sources: degreeSources(BASE, ANNO, "scienza-dei-materiali-i-e", "ScuoladiScienzeMatematiche-FisicheeNaturali", [
-      { year: 1, corso: "B300", anno2: ["GEN|1"] },
-      { year: 2, corso: "B300", anno2: ["GEN|2"] },
+      { year: 3, corso: "B258", anno2: ["GEN|3"] },
     ], false),
   },
   {
     programme: "Scienze Biologiche (i e )",
     sources: degreeSources(BASE, ANNO, "scienze-biologiche-i-e", "ScuoladiScienzeMatematiche-FisicheeNaturali", [
-      { year: 1, corso: "B310", anno2: ["GEN|1"] },
-      { year: 2, corso: "B310", anno2: ["GEN|2"] },
+      { year: 3, corso: "B005", anno2: ["GEN|3"] },
     ], false),
   },
   {
     programme: "Scienze dei Servizi Giuridici (1° e )",
     sources: degreeSources(BASE, ANNO, "scienze-dei-servizi-giuridici-1-e", "ScuoladiGiurisprudenza", [
-      { year: 1, corso: "B311", anno2: ["GEN|1"] },
-      { year: 2, corso: "B311", anno2: ["GEN|2"] },
-    ], false),
-  },
-  {
-    programme: "Scienze della Formazione Primaria (i e )",
-    sources: degreeSources(BASE, ANNO, "scienze-della-formazione-primaria-i-e", "ScuoladiStudiUmanisticiedellaFormazione", [
-      { year: 1, corso: "B198", anno2: ["GEN|1"] },
-      { year: 2, corso: "B198", anno2: ["GEN|2"] },
+      { year: 3, corso: "B006", anno2: ["C22|3", "C20|3", "C23|3", "C21|3"] },
     ], false),
   },
   {
@@ -1368,22 +1432,13 @@ const livePrograms: LiveProgram[] = [
   {
     programme: "Scienze Geologiche (i e )",
     sources: degreeSources(BASE, ANNO, "scienze-geologiche-i-e", "ScuoladiScienzeMatematiche-FisicheeNaturali", [
-      { year: 1, corso: "B326", anno2: ["GEN|1"] },
-      { year: 2, corso: "B326", anno2: ["GEN|2"] },
+      { year: 3, corso: "B035", anno2: ["GEN|3"] },
     ], false),
   },
   {
     programme: "Scienze Naturali (i e )",
     sources: degreeSources(BASE, ANNO, "scienze-naturali-i-e", "ScuoladiScienzeMatematiche-FisicheeNaturali", [
-      { year: 1, corso: "B325", anno2: ["GEN|1"] },
-      { year: 2, corso: "B325", anno2: ["GEN|2"] },
-    ], false),
-  },
-  {
-    programme: "Scienze Umanistiche per la Comunicazione (i e )",
-    sources: degreeSources(BASE, ANNO, "scienze-umanistiche-per-la-comunicazione-i-e", "ScuoladiStudiUmanisticiedellaFormazione", [
-      { year: 1, corso: "B316", anno2: ["GEN|1"] },
-      { year: 2, corso: "B316", anno2: ["GEN|2"] },
+      { year: 3, corso: "B033", anno2: ["GEN|3"] },
     ], false),
   },
   {
@@ -1395,36 +1450,19 @@ const livePrograms: LiveProgram[] = [
   {
     programme: "Statistica 1 e",
     sources: degreeSources(BASE, ANNO, "statistica-1-e", "ScuoladiEconomiaeManagement", [
-      { year: 1, corso: "B331", anno2: ["GEN|1"] },
-      { year: 2, corso: "B331", anno2: ["GEN|2"] },
-    ], false),
-  },
-  {
-    programme: "Storia (i e )",
-    sources: degreeSources(BASE, ANNO, "storia-i-e", "ScuoladiStudiUmanisticiedellaFormazione", [
-      { year: 1, corso: "B332", anno2: ["GEN|1"] },
-      { year: 2, corso: "B332", anno2: ["GEN|2"] },
-    ], false),
-  },
-  {
-    programme: "Storia e Tutela dei Beni Archeologici, Artistici, Archivistici e Librari (i e )",
-    sources: degreeSources(BASE, ANNO, "storia-e-tutela-dei-beni-archeologici-artistici-archivistici-e-librari-i-e", "ScuoladiStudiUmanisticiedellaFormazione", [
-      { year: 1, corso: "B392", anno2: ["B51|1", "B55|1", "B52|1"] },
-      { year: 2, corso: "B392", anno2: ["B51|2", "B55|2", "B52|2"] },
+      { year: 3, corso: "B039", anno2: ["GEN|3"] },
     ], false),
   },
   {
     programme: "Sustainable Business For Societal Challenges 1 e",
     sources: degreeSources(BASE, ANNO, "sustainable-business-for-societal-challenges-1-e", "ScuoladiEconomiaeManagement", [
-      { year: 1, corso: "B314", anno2: ["GEN|1"] },
-      { year: 2, corso: "B314", anno2: ["GEN|2"] },
+      { year: 3, corso: "B247", anno2: ["GEN|3"] },
     ], false),
   },
   {
     programme: "Sviluppo Sostenibile, Cooperazione e Gestione dei Conflitti 1 e",
     sources: degreeSources(BASE, ANNO, "sviluppo-sostenibile-cooperazione-e-gestione-dei-conflitti-1-e", "ScuoladiEconomiaeManagement", [
-      { year: 1, corso: "B328", anno2: ["GEN|1"] },
-      { year: 2, corso: "B328", anno2: ["F015|2", "F014|2", "F016|2"] },
+      { year: 3, corso: "B243", anno2: ["F015|3", "F014|3", "F016|3"] },
     ], false),
   },
 ];

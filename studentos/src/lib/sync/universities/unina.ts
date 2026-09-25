@@ -457,7 +457,7 @@ const livePrograms: LiveProgram[] = [
     programme: "Ingegneria Gestionale delle Costruzioni",
     sources: degreeSources(BASE, ANNO, "ingegneria-gestionale-delle-costruzioni", "Ingegneria-SanGiovanni", [
       { year: 1, corso: "SG_D63", anno2: ["GEN|1"] },
-      { year: 2, corso: "SG_D63", anno2: ["GEN|2"] },
+      { year: 2, corso: "D63", anno2: ["GEN|2"] },
       { year: 3, corso: "SG_D13", anno2: ["GEN|3"] },
     ], false),
   },
@@ -567,9 +567,9 @@ const livePrograms: LiveProgram[] = [
   },
   {
     programme: "Meccatronica",
-    sources: degreeSources(BASE, ANNO, "meccatronica", "Ingegneria-SanGiovanni", [
-      { year: 1, corso: "SG_D36", anno2: ["GEN|1"] },
-      { year: 2, corso: "SG_D36", anno2: ["GEN|2"] },
+    sources: degreeSources(BASE, ANNO, "meccatronica", "Ingegneria-Fuorigrotta", [
+      { year: 1, corso: "D36", anno2: ["GEN|1"] },
+      { year: 2, corso: "D36", anno2: ["GEN|2"] },
       { year: 3, corso: "D36", anno2: ["GEN|3"] },
     ], false),
   },
@@ -721,28 +721,6 @@ const livePrograms: LiveProgram[] = [
     ], false),
   },
   {
-    programme: "Ingegneria Edile-architettura",
-    sources: degreeSources(BASE, ANNO, "ingegneria-edile-architettura", "Ingegneria-Fuorigrotta", [
-      { year: 1, corso: "DE0", anno2: ["GEN|1"] },
-      { year: 2, corso: "DE0", anno2: ["GEN|2"] },
-    ], false),
-  },
-  {
-    programme: "Ingegneria Edile-architettura (terzo, Quarto e )",
-    sources: degreeSources(BASE, ANNO, "ingegneria-edile-architettura-terzo-quarto-e", "Ingegneria-Fuorigrotta", [
-      { year: 3, corso: "P71", anno2: ["GEN|3"] },
-      { year: 4, corso: "P71", anno2: ["GEN|4"] },
-      { year: 5, corso: "P71", anno2: ["GEN|5"] },
-    ], false),
-  },
-  {
-    programme: "Ingegneria Strutturale e Geotecnica",
-    sources: degreeSources(BASE, ANNO, "ingegneria-strutturale-e-geotecnica", "Ingegneria-Fuorigrotta", [
-      { year: 1, corso: "D86", anno2: ["GEN|1"] },
-      { year: 2, corso: "D86", anno2: ["GEN|2"] },
-    ], false),
-  },
-  {
     programme: "Mathematical Engineering",
     sources: degreeSources(BASE, ANNO, "mathematical-engineering", "CollegiodiScienze", [
       { year: 1, corso: "D71", anno2: ["CUA|1", "CUB|1"] },
@@ -762,13 +740,6 @@ const livePrograms: LiveProgram[] = [
     sources: degreeSources(BASE, ANNO, "scienze-dei-sistemi-aerospaziali-per-la-difesa", "Ingegneria-Fuorigrotta", [
       { year: 1, corso: "P61", anno2: ["GEN|1"] },
       { year: 2, corso: "P61", anno2: ["GEN|2"] },
-    ], false),
-  },
-  {
-    programme: "Transportation Engineering And Mobility",
-    sources: degreeSources(BASE, ANNO, "transportation-engineering-and-mobility", "Ingegneria-Fuorigrotta", [
-      { year: 1, corso: "DD7", anno2: ["GEN|1"] },
-      { year: 2, corso: "DD7", anno2: ["GEN|2"] },
     ], false),
   },
 ];

@@ -28,6 +28,7 @@ function degreeSources(
   slug: string,
   scuola: string,
   years: { year: number; corso: string; anno2: string[] }[],
+  exams = true,
 ): SyncSource[] {
   const out: SyncSource[] = [];
   for (const y of years) {
@@ -45,19 +46,21 @@ function degreeSources(
         anno2: y.anno2,
       },
     });
-    out.push({
-      id: `${slug}-esami-anno-${y.year}`,
-      label: `Appelli d'esame — ${y.year}° anno`,
-      capability: "exams",
-      providerId: "easyacademy",
-      params: {
-        kind: "exams",
-        baseUrl: EASY_BASE,
-        scuola,
-        cdl: y.corso,
-        anno2: [String(y.year)],
-      },
-    });
+    if (exams) {
+      out.push({
+        id: `${slug}-esami-anno-${y.year}`,
+        label: `Appelli d'esame — ${y.year}° anno`,
+        capability: "exams",
+        providerId: "easyacademy",
+        params: {
+          kind: "exams",
+          baseUrl: EASY_BASE,
+          scuola,
+          cdl: y.corso,
+          anno2: [String(y.year)],
+        },
+      });
+    }
   }
   return out;
 }
@@ -128,17 +131,25 @@ const livePrograms: LiveProgram[] = [
   },
   {
     programme: "Biologia Cellulare, Molecolare e Ricerca Biomedica",
-    sources: degreeSources("biologia-cellulare-molecolare-e-ricerca-biomedica", "FacoltadiScienzeMatematiche-FisicheeNaturali", [
+    sources: [
+      ...degreeSources("biologia-cellulare-molecolare-e-ricerca-biomedica", "FacoltadiScienzeMatematiche-FisicheeNaturali", [
       { year: 1, corso: "AB7", anno2: ["comune|1"] },
+      ]),
+      ...degreeSources("biologia-cellulare-molecolare-e-ricerca-biomedica", "FacoltadiScienzeMatematiche-FisicheeNaturali", [
       { year: 2, corso: "AB7", anno2: ["comune|2"] },
-    ]),
+      ], false),
+    ],
   },
   {
     programme: "Biotechnology for Industry and Health",
-    sources: degreeSources("biotechnology-for-industry-and-health", "FacoltadiScienzeMatematiche-FisicheeNaturali", [
+    sources: [
+      ...degreeSources("biotechnology-for-industry-and-health", "FacoltadiScienzeMatematiche-FisicheeNaturali", [
       { year: 1, corso: "AB6", anno2: ["clinicalresearch|1", "experimentalbiotechnology|1"] },
+      ]),
+      ...degreeSources("biotechnology-for-industry-and-health", "FacoltadiScienzeMatematiche-FisicheeNaturali", [
       { year: 2, corso: "AB6", anno2: ["clinicalresearch|2", "experimentalbiotechnology|2"] },
-    ]),
+      ], false),
+    ],
   },
   {
     programme: "Biotecnologie",
@@ -150,10 +161,14 @@ const livePrograms: LiveProgram[] = [
   },
   {
     programme: "Biotecnologie Agrarie",
-    sources: degreeSources("biotecnologie-agrarie", "FacoltadiScienzeMatematiche-FisicheeNaturali", [
+    sources: [
+      ...degreeSources("biotecnologie-agrarie", "FacoltadiScienzeMatematiche-FisicheeNaturali", [
       { year: 1, corso: "AB3", anno2: ["comune|1"] },
+      ]),
+      ...degreeSources("biotecnologie-agrarie", "FacoltadiScienzeMatematiche-FisicheeNaturali", [
       { year: 2, corso: "AB3", anno2: ["comune|2"] },
-    ]),
+      ], false),
+    ],
   },
   {
     programme: "Chemical Nano-Engineering",
@@ -418,11 +433,15 @@ const livePrograms: LiveProgram[] = [
   },
   {
     programme: "Scienza dei Materiali",
-    sources: degreeSources("scienza-dei-materiali", "FacoltadiScienzeMatematiche-FisicheeNaturali", [
+    sources: [
+      ...degreeSources("scienza-dei-materiali", "FacoltadiScienzeMatematiche-FisicheeNaturali", [
       { year: 1, corso: "AB1", anno2: ["comune|1"] },
+      ]),
+      ...degreeSources("scienza-dei-materiali", "FacoltadiScienzeMatematiche-FisicheeNaturali", [
       { year: 2, corso: "AB1", anno2: ["comune|2"] },
       { year: 3, corso: "AB1", anno2: ["comune|3"] },
-    ]),
+      ], false),
+    ],
   },
   {
     programme: "Scienza e Tecnologia dei Materiali",
@@ -441,10 +460,14 @@ const livePrograms: LiveProgram[] = [
   },
   {
     programme: "Biologia Ambientale",
-    sources: degreeSources("biologia-ambientale", "FacoltadiScienzeMatematiche-FisicheeNaturali", [
+    sources: [
+      ...degreeSources("biologia-ambientale", "FacoltadiScienzeMatematiche-FisicheeNaturali", [
       { year: 1, corso: "AA7", anno2: ["comune|1"] },
+      ]),
+      ...degreeSources("biologia-ambientale", "FacoltadiScienzeMatematiche-FisicheeNaturali", [
       { year: 2, corso: "AA7", anno2: ["comune|2"] },
-    ]),
+      ], false),
+    ],
   },
   {
     programme: "Matematica Pura e Applicata",
