@@ -31,7 +31,7 @@ interface ComboCourse {
   scuola?: string;
   elenco_anni?: { valore: string }[];
 }
-type Year = { year: number; corso: string; anno2: string[] };
+type Year = { year: number; corso: string; anno2: string[]; ex?: boolean };
 interface Prog {
   programme: string;
   slug: string;
@@ -103,6 +103,10 @@ async function pool<T>(items: T[], n: number, fn: (x: T) => Promise<void>) {
 /** Programmi con id "slug-orario-anno-N" (N anche negativo, es. Unisa). Gli altri (es. Informatica di Tor Vergata, id nudi) restano a mano. */
 const isStd = (lp: LiveProgram) => lp.sources.some((s) => /-orario-anno--?\d+$/.test(s.id));
 
+/** Il timetable `<slug>-orario-anno-N` ha la sorgente esami gemella `<slug>-esami-anno-N`? */
+const hasExam = (lp: LiveProgram, orarioId: string) =>
+  lp.sources.some((x) => x.capability === "exams" && x.id === orarioId.replace("-orario-anno-", "-esami-anno-"));
+
 function toProgs(lps: LiveProgram[]): Prog[] {
   return lps.filter(isStd).map((lp) => {
     const ts = lp.sources.filter((s) => s.capability === "timetable");
@@ -113,10 +117,10 @@ function toProgs(lps: LiveProgram[]): Prog[] {
       slug,
       scuola: p0.scuola,
       anno: p0.anno,
-      exams: lp.sources.some((s) => s.capability === "exams"),
+      exams: ts.every((s) => hasExam(lp, s.id)),
       years: ts.map((s) => {
         const p = s.params as Record<string, unknown>;
-        return { year: Number(/-orario-anno-(-?\d+)$/.exec(s.id)![1]), corso: String(p.corso), anno2: p.anno2 as string[] };
+        return { year: Number(/-orario-anno-(-?\d+)$/.exec(s.id)![1]), corso: String(p.corso), anno2: p.anno2 as string[], ex: hasExam(lp, s.id) };
       }),
     };
   });
@@ -129,14 +133,28 @@ function emit(progs: Prog[], annoConst: (a: string) => string | null, roma2 = fa
     if (!c) return null;
     out.push("  {");
     out.push(`    programme: ${JSON.stringify(p.programme)},`);
-    out.push(
-      roma2
-        ? `    sources: degreeSources(${JSON.stringify(p.slug)}, ${JSON.stringify(p.scuola)}, [`
-        : `    sources: degreeSources(BASE, ${c}, ${JSON.stringify(p.slug)}, ${JSON.stringify(p.scuola)}, [`,
-    );
-    for (const y of p.years)
-      out.push(`      { year: ${y.year}, corso: ${JSON.stringify(y.corso)}, anno2: [${y.anno2.map((a) => JSON.stringify(a)).join(", ")}] },`);
-    out.push(`    ]${p.exams || roma2 ? "" : ", false"}),`);
+    const call = roma2
+      ? `degreeSources(${JSON.stringify(p.slug)}, ${JSON.stringify(p.scuola)}, [`
+      : `degreeSources(BASE, ${c}, ${JSON.stringify(p.slug)}, ${JSON.stringify(p.scuola)}, [`;
+    const yl = (y: Year) => `      { year: ${y.year}, corso: ${JSON.stringify(y.corso)}, anno2: [${y.anno2.map((a) => JSON.stringify(a)).join(", ")}] },`;
+    const exOf = (y: Year) => y.ex ?? p.exams;
+    if (p.years.every((y) => exOf(y) === exOf(p.years[0]))) {
+      out.push(`    sources: ${call}`);
+      for (const y of p.years) out.push(yl(y));
+      out.push(`    ]${exOf(p.years[0]) || roma2 ? "" : ", false"}),`);
+    } else {
+      // esami solo su alcuni anni: un blocco per ogni tratto consecutivo con lo stesso flag
+      out.push("    sources: [");
+      for (let i = 0; i < p.years.length; ) {
+        let j = i;
+        while (j < p.years.length && exOf(p.years[j]) === exOf(p.years[i])) j++;
+        out.push(`      ...${call}`);
+        for (const y of p.years.slice(i, j)) out.push(yl(y));
+        out.push(`      ]${exOf(p.years[i]) ? "" : ", false"}),`);
+        i = j;
+      }
+      out.push("    ],");
+    }
     out.push("  },");
   }
   return out.join("\n");
@@ -186,7 +204,13 @@ async function doPreset(preset: UniversityPreset, write: boolean, report: Record
   const annoConst = (an: string) => annoDefs.get(an) ?? null;
 
   const progs = toProgs(preset.livePrograms!);
-  if (sq(prefix + (emit(progs, annoConst, roma2) ?? "\u0000")) !== sq(body)) return report.push({ id, status: "skip", why: "round-trip diverso: file non uniforme (codice a mano)" });
+  const want = sq(prefix + (emit(progs, annoConst, roma2) ?? "\u0000"));
+  const have = sq(body.replace(/\/\/[^\n]*/g, ""));
+  if (want !== have) {
+    let i = 0;
+    while (i < want.length && want[i] === have[i]) i++;
+    return report.push({ id, status: "skip", why: "round-trip diverso: file non uniforme (codice a mano)", primaDivergenza: { atteso: want.slice(Math.max(0, i - 60), i + 80), file: have.slice(Math.max(0, i - 60), i + 80) } });
+  }
 
   const base = (preset.livePrograms![0].sources[0].params as Record<string, string>).baseUrl;
   const cat = await combo(base, ANNO_TARGET);
@@ -260,7 +284,10 @@ async function doPreset(preset: UniversityPreset, write: boolean, report: Record
     const js = [...m.values()].sort((x, y) => x.year - y.year);
     const scs = js.map((j) => j.scuola);
     const scuola = scs.sort((x, y) => scs.filter((s) => s === y).length - scs.filter((s) => s === x).length)[0];
-    return { ...p, scuola, years: js.map((j) => ({ year: j.year, corso: j.c.valore, anno2: j.anno2 })) };
+    // esami: il flag dell'anno vecchio con lo stesso numero; un anno nuovo eredita il flag solo se il programma era uniforme
+    const uniform = p.years.every((y) => y.ex === p.years[0].ex);
+    const exFor = (year: number) => p.years.find((y) => y.year === year)?.ex ?? (uniform ? p.years[0]?.ex : false);
+    return { ...p, scuola, years: js.map((j) => ({ year: j.year, corso: j.c.valore, anno2: j.anno2, ex: exFor(j.year) })) };
   };
   const final: Prog[] = [];
   for (const p of progs) {

@@ -7,7 +7,9 @@ Aggiornato: 2026-09-25 (pulizia: gate script, esse3/easyAcademyPreset rimossi, D
 🐞 Causa radice del /orario vuoto: i file preset contenevano il catalogo 2025 (codici `corso`/`anno2` rinumerati o corsi chiusi nel combo 2026), con solo `ANNO` bumpato.
 ✅ Nuovi tool (sola lettura di rete, nessuna dipendenza): `scripts/audit-codes.ts` (verifica ogni sorgente: check strutturale sul combo + POST grid_call su settimane campione) e `scripts/recapture-codes.ts` (rigenera i file preset dal combo 2026; continuità per CODICE+etichetta, nomi vecchi mantenuti; tiene solo anni con `celle>0`; aggiunge corsi nuovi verificati, esami spenti).
 ✅ 12 atenei riscritti (unica, unife, unifi, unige, unina, unipg, unipr, uniss, unistrasi, unitn, units, uniupo): audit indipendente dopo la riscrittura = 100% delle sorgenti di orario vive (prima ~55%). Nessun nome/id duplicato. Gate verde.
-✅ Poi ri-catturati anche unive, unisa, uniroma2 (audit dopo: 100% vive; Tor Vergata: 26 corsi su 70 usciti, quasi tutti Lettere/Psicologia → probabile orario 2026/27 non ancora pubblicato: rilanciare `recapture-codes.ts` più avanti). Restano a mano (codice a mano/esami cablati): unicampania, uniba (combo 2026 vuoto), univpm, unisalento.
+✅ Poi ri-catturati anche unive, unisa, uniroma2 (audit dopo: 100% vive; Tor Vergata: 26 corsi su 70 usciti, quasi tutti Lettere/Psicologia → probabile orario 2026/27 non ancora pubblicato: rilanciare `recapture-codes.ts` più avanti). 
+✅ Fatti anche unicampania, unisalento, univpm (tool esteso: esami per anno, commenti ignorati nel confronto; audit dopo: 100% vive). Solo uniba resta sul 2025 (combo 2026 vuoto).
+📊 Nuovo `scripts/audit-exams.ts` (sola lettura): su tutti gli atenei molte sorgenti esami danno 0 appelli sull'anno accademico 2026/27 (es. unisalento 31/78 con appelli, unicampania 12/25): a settembre le sessioni non sono ancora pubblicate → NON spente, da rilanciare a sessione aperta.
 ⚠️ Esami (`test_call`) non ri-verificati sui corsi nuovi (flag esami mantenuto o false).
 
 ### Sessione 2026-09-25 (bis) — pulizia autorizzata (6 commit, branch NON mergiato)
