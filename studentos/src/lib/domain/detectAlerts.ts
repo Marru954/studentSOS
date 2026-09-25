@@ -137,6 +137,12 @@ function bookingDeadlineAlerts({ examCalls, now }: DetectAlertsParams): Alert[] 
 // Two lessons of different courses on the same calendar day whose [start,end)
 // intervals overlap. Each unordered pair is reported once.
 
+/** The trailing "(…)" channel/turn tag of a course name, upper-cased, or null. */
+function channelOf(courseName: string): string | null {
+  const m = /\(([^()]+)\)\s*$/.exec(courseName);
+  return m ? m[1].trim().toUpperCase() : null;
+}
+
 function scheduleConflictAlerts({ classEvents, now }: DetectAlertsParams): Alert[] {
   // Group by UTC calendar day; only days that haven't ended yet can matter.
   const byDay = new Map<string, ClassEvent[]>();
@@ -160,6 +166,12 @@ function scheduleConflictAlerts({ classEvents, now }: DetectAlertsParams): Alert
         const yA = yearOfSource(a.sourceId);
         const yB = yearOfSource(b.sourceId);
         if (yA !== null && yB !== null && yA !== yB) continue;
+        // Parallel channels of the same year ("… (SG1:A-I)" vs "… (SG2:J-Z)"):
+        // a student follows one of them, so lessons from different channels
+        // are alternatives, not a clash.
+        const cA = channelOf(a.courseName);
+        const cB = channelOf(b.courseName);
+        if (cA !== null && cB !== null && cA !== cB) continue;
         const aStart = Date.parse(a.start);
         const aEnd = Date.parse(a.end);
         const bStart = Date.parse(b.start);
