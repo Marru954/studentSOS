@@ -43,3 +43,5 @@ easyacademy.unina.it/agendastudenti/
 easycourse.unisa.it/AgendaStudenti/
 easyutv.uniroma2.it/agendaweb/
 kairos.unifi.it/agendaweb/
+# pattern GET del catalogo corsi 2026/27 (token senza host, come citato nei coverage md): verificato 2026-09-25 su tutti gli atenei EasyAcademy live
+combo.php?sw=ec_&aa=2026&page=corsi
