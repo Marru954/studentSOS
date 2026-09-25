@@ -15,9 +15,9 @@
  * defaults to `redirect: "manual"` so a 3xx can never bounce past that guard.
  */
 
-/** Descriptive UA. TODO: replace the contact placeholder with a real address. */
+/** Descriptive UA: repo URL + a real contact so portal admins can reach us. */
 export const USER_AGENT =
-  "StudentOS/1.0 (+https://github.com/Marru954/studentSOS; contatto: DA-DEFINIRE)";
+  "StudentOS/1.0 (+https://github.com/Marru954/studentSOS; contatto: andre.namir.claude@gmail.com)";
 
 const MAX_RETRIES_STATUS = 3;
 const MAX_RETRIES_NETWORK = 2;
