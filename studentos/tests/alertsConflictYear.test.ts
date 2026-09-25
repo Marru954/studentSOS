@@ -49,3 +49,21 @@ test("CONFLITTO_ORARIO: sorgente senza anno (manuale/iCal) resta confrontata", (
   const b = lesson({ id: "b", courseName: "B", sourceId: "manual", ...overlapB });
   assert.equal(conflicts([a, b]).length, 1);
 });
+
+test("CONFLITTO_ORARIO: canali paralleli (SG1:A-I vs SG2:J-Z) non sono un conflitto", () => {
+  const a = lesson({ id: "a", courseName: "GEOMETRIA (SG1:A-I)" });
+  const b = lesson({ id: "b", courseName: "FONDAMENTI (SG2:J-Z)", ...overlapB });
+  assert.equal(conflicts([a, b]).length, 0);
+});
+
+test("CONFLITTO_ORARIO: stesso canale → conflitto", () => {
+  const a = lesson({ id: "a", courseName: "GEOMETRIA (SG1:A-I)" });
+  const b = lesson({ id: "b", courseName: "FONDAMENTI (SG1:A-I)", ...overlapB });
+  assert.equal(conflicts([a, b]).length, 1);
+});
+
+test("CONFLITTO_ORARIO: un solo corso con canale → resta confrontato", () => {
+  const a = lesson({ id: "a", courseName: "GEOMETRIA (SG1:A-I)" });
+  const b = lesson({ id: "b", courseName: "FISICA", ...overlapB });
+  assert.equal(conflicts([a, b]).length, 1);
+});
