@@ -56,8 +56,7 @@ Gate verde prima di ogni commit. Nessun push, nessun safe-merge.
    UA inviato). I POST EasyAcademy e il WordPress di Tor Vergata non rispondono con
    ETag/Last-Modified/Cache-Control: un 304 live oggi non esiste (provato solo su
    server locale).
-⚠️ Contatto nello User-Agent: placeholder `DA-DEFINIRE` da sostituire con un
-   indirizzo reale (l'URL del repo `Marru954/studentSOS` è quello attuale).
+✅ Contatto nello User-Agent: email del maintainer (andre.namir.claude@gmail.com), su indicazione dell'utente.
 
 ### Sessione 2026-09-25 (sera) — hook muri #1 e #2 (2 commit, branch claude/hooks-muri-1-2-57b54d)
 ✅ Muro #1 (file intoccabili) → `scripts/hooks/check-protected-files.mjs`,
