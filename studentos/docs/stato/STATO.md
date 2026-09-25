@@ -81,7 +81,8 @@ tutte le sorgenti orario rimaste tornano celle (uniroma2 111/111, unifi 397/397,
   "live verificati" dei coverage md sono precedenti al ri-controllo (fa fede la nuova sezione).
 - Uniba (Bari): combo aa=2026 risponde 200 ma con 0 corsi; 35 sorgenti orario x 10 settimane (28-09..30-11-2026), con anno 2025 e con
   2026: 0 celle ovunque; esami 0 appelli (giurisprudenza-esami-anno-1 andrebbe in errore per il bug adapter Insegnamenti:[]).
-  Preset lasciato com'e' (ANNO 2025), solo nota nel coverage: ri-verificare quando compare aa=2026.
+  Preset passato a MODALITA' MANUALE (liveSources:false, senza livePrograms; codici 2025 in UNIBA_LIVE_PROGRAMS_2025_26 per
+  il ripristino): atenei live 19 -> 18, LIVE_PROGRAMME_COUNT -12 (derivati). Ri-verificare quando compare aa=2026.
 - Da fare: stesse ri-catture per gli altri 15 atenei EasyAcademy (Uniba resta a 2025); ripristinare Lettere
   di Tor Vergata quando pubblicano gli orari; scripts/verified-endpoints.txt non contiene gli host di questi
   atenei (i muri #4 di safe-merge.sh potrebbero bloccare i diff con URL combo.php nei coverage md).

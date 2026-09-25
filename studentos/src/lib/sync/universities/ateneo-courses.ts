@@ -32,7 +32,8 @@ export const ATENEO_COURSES: Record<string, string[]> = {
   // (re-verify in October when the term is in session) → manual for now.
   "unicampania-ingegneria": ["Scienze Agrarie e Forestali", "Scienze Ambientali", "Scienze e Tecnologie per L'ambiente e il Territorio"],
   // Bari: the EasyAcademy host publishes only Giurisprudenza + Scienze Politiche
-  // (12 corsi, all live via uniba.ts `livePrograms`); no manual leftovers there.
+  // (12 corsi). MANUAL MODE since 2026-09-25 (2026/27 not published): the preset has no
+  // livePrograms, onboarding lists uniba.ts `programmes` instead; this entry is unused.
   "uniba-giurisprudenza": [],
 };
 
