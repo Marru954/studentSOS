@@ -25,7 +25,6 @@ import { useNowMinute } from "@/lib/hooks/useNowMinute";
 import { useLibretto } from "@/lib/state/manual";
 import { useSettings } from "@/lib/state/settings";
 import { useTrophies } from "@/lib/state/trophies";
-import { DelphiConnect } from "./DelphiConnect";
 import { EntryForm } from "./EntryForm";
 import { EntryTable } from "./EntryTable";
 import { GradeSimulator } from "./GradeSimulator";
@@ -388,7 +387,6 @@ export function LibrettoView() {
         className="no-print"
       />
       <GradeSimulator className="no-print" />
-      <DelphiConnect className="no-print" />
     </>
   );
 
