@@ -25,7 +25,7 @@ import type { LiveProgram, UniversityPreset } from "../provider";
 import { degreeSources } from "./easystaff";
 
 const BASE = "https://logistica.unisalento.it/PortaleStudenti";
-const ANNO = "2025";
+const ANNO = "2026";
 
 const livePrograms: LiveProgram[] = [
   {

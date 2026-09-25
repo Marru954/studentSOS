@@ -11,90 +11,92 @@ import type { LiveProgram, UniversityPreset } from "../provider";
 import { degreeSources } from "./easystaff";
 
 const BASE = "https://aule.unife.it/AgendaStudenti";
-const ANNO = "2025";
+const ANNO = "2026";
+/** Percorsi abilitanti (classi a0xx/ab22/ac22): l'agendaweb li serve ancora sotto l'anno 2025 (verificato 2026-09-25; con 2026 = 0 celle). */
+const ANNO_2025 = "2025";
 
 const livePrograms: LiveProgram[] = [
   {
     programme: "A012 - Discipline Letterarie Nell'istruzione di i e Ii Grado",
-    sources: degreeSources(BASE, ANNO, "a012-discipline-letterarie-nell-istruzione-di-i-e-ii-grado", "", [
+    sources: degreeSources(BASE, ANNO_2025, "a012-discipline-letterarie-nell-istruzione-di-i-e-ii-grado", "", [
       { year: 1, corso: "3298", anno2: ["PDS30B|1", "PDS36E|1", "PDS60A|1"] },
     ]),
   },
   {
     programme: "A018 - Filosofia e Scienze Umane",
-    sources: degreeSources(BASE, ANNO, "a018-filosofia-e-scienze-umane", "", [
+    sources: degreeSources(BASE, ANNO_2025, "a018-filosofia-e-scienze-umane", "", [
       { year: 1, corso: "3226", anno2: ["PDS30B|1", "PDS36E|1", "PDS60A|1"] },
     ]),
   },
   {
     programme: "A020 - Fisica",
-    sources: degreeSources(BASE, ANNO, "a020-fisica", "", [
+    sources: degreeSources(BASE, ANNO_2025, "a020-fisica", "", [
       { year: 1, corso: "3273", anno2: ["PDS30B|1", "PDS36E|1", "PDS60A|1"] },
     ]),
   },
   {
     programme: "A026 - Matematica",
-    sources: degreeSources(BASE, ANNO, "a026-matematica", "", [
+    sources: degreeSources(BASE, ANNO_2025, "a026-matematica", "", [
       { year: 1, corso: "3228", anno2: ["PDS30B|1", "PDS36E|1", "PDS60A|1"] },
     ]),
   },
   {
     programme: "A027 - Matematica e Fisica",
-    sources: degreeSources(BASE, ANNO, "a027-matematica-e-fisica", "", [
+    sources: degreeSources(BASE, ANNO_2025, "a027-matematica-e-fisica", "", [
       { year: 1, corso: "3229", anno2: ["PDS30B|1", "PDS36E|1", "PDS60A|1"] },
     ]),
   },
   {
     programme: "A028 - Matematica e Scienze",
-    sources: degreeSources(BASE, ANNO, "a028-matematica-e-scienze", "", [
+    sources: degreeSources(BASE, ANNO_2025, "a028-matematica-e-scienze", "", [
       { year: 1, corso: "3230", anno2: ["PDS30B|1", "PDS36E|1", "PDS60A|1"] },
     ]),
   },
   {
     programme: "A034 - Scienze e Tecnologie Chimiche",
-    sources: degreeSources(BASE, ANNO, "a034-scienze-e-tecnologie-chimiche", "", [
+    sources: degreeSources(BASE, ANNO_2025, "a034-scienze-e-tecnologie-chimiche", "", [
       { year: 1, corso: "3294", anno2: ["PDS30B|1", "PDS36E|1", "PDS60A|1"] },
     ]),
   },
   {
     programme: "A041 - Scienze e Tecnologie Informatiche",
-    sources: degreeSources(BASE, ANNO, "a041-scienze-e-tecnologie-informatiche", "", [
+    sources: degreeSources(BASE, ANNO_2025, "a041-scienze-e-tecnologie-informatiche", "", [
       { year: 1, corso: "3295", anno2: ["PDS30B|1", "PDS36E|1", "PDS60A|1"] },
     ]),
   },
   {
     programme: "A047 - Scienze Matematiche Applicate",
-    sources: degreeSources(BASE, ANNO, "a047-scienze-matematiche-applicate", "", [
+    sources: degreeSources(BASE, ANNO_2025, "a047-scienze-matematiche-applicate", "", [
       { year: 1, corso: "3231", anno2: ["PDS30B|1", "PDS36E|1", "PDS60A|1"] },
     ]),
   },
   {
     programme: "A048 - Scienze Motorie e Sportive Nell'istruzione Secondaria di i e Ii Grado",
-    sources: degreeSources(BASE, ANNO, "a048-scienze-motorie-e-sportive-nell-istruzione-secondaria-di-i-e-ii-grado", "", [
+    sources: degreeSources(BASE, ANNO_2025, "a048-scienze-motorie-e-sportive-nell-istruzione-secondaria-di-i-e-ii-grado", "", [
       { year: 1, corso: "3302", anno2: ["PDS30B|1", "PDS36E|1", "PDS60A|1"] },
     ]),
   },
   {
     programme: "A050 - Scienze Nat, Chim e Biolog",
-    sources: degreeSources(BASE, ANNO, "a050-scienze-nat-chim-e-biolog", "", [
+    sources: degreeSources(BASE, ANNO_2025, "a050-scienze-nat-chim-e-biolog", "", [
       { year: 1, corso: "3232", anno2: ["PDS30B|1", "PDS36E|1", "PDS60A|1"] },
     ]),
   },
   {
     programme: "A060 - Tecnologia nella Scuola Secondaria di i Grado",
-    sources: degreeSources(BASE, ANNO, "a060-tecnologia-nella-scuola-secondaria-di-i-grado", "", [
+    sources: degreeSources(BASE, ANNO_2025, "a060-tecnologia-nella-scuola-secondaria-di-i-grado", "", [
       { year: 1, corso: "3297", anno2: ["PDS30B|1", "PDS36E|1", "PDS60A|1"] },
     ]),
   },
   {
     programme: "Ab22 - Lingue e Culture Straniere Nell'istruzione Secondaria di i e Ii Grado (inglese)",
-    sources: degreeSources(BASE, ANNO, "ab22-lingue-e-culture-straniere-nell-istruzione-secondaria-di-i-e-ii-grado-inglese", "", [
+    sources: degreeSources(BASE, ANNO_2025, "ab22-lingue-e-culture-straniere-nell-istruzione-secondaria-di-i-e-ii-grado-inglese", "", [
       { year: 1, corso: "3301", anno2: ["PDS30B|1", "PDS36E|1", "PDS60A|1"] },
     ]),
   },
   {
     programme: "Ac22 - Lingue e Culture Straniere Nell'istruzione Secondaria i e Ii Grado (spagnolo)",
-    sources: degreeSources(BASE, ANNO, "ac22-lingue-e-culture-straniere-nell-istruzione-secondaria-i-e-ii-grado-spagnolo", "", [
+    sources: degreeSources(BASE, ANNO_2025, "ac22-lingue-e-culture-straniere-nell-istruzione-secondaria-i-e-ii-grado-spagnolo", "", [
       { year: 1, corso: "3303", anno2: ["PDS30B|1", "PDS36E|1", "PDS60A|1"] },
     ]),
   },

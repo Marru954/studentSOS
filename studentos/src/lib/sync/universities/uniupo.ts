@@ -11,7 +11,7 @@ import type { LiveProgram, UniversityPreset } from "../provider";
 import { degreeSources } from "./easystaff";
 
 const BASE = "https://upoplanner.uniupo.it/timetable";
-const ANNO = "2025";
+const ANNO = "2026";
 
 const livePrograms: LiveProgram[] = [
   {
