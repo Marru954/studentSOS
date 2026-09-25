@@ -8,6 +8,9 @@
  * GET, NEVER invented. Per-course status is in _uniba-giurisprudenza_coverage.md.
  * Re-verify each September and bump ANNO.
  *
+ * STATUS 2026-09-25: MANUAL MODE (liveSources:false) — the 2026/27 system is not published yet
+ * (see UNIBA_LIVE_PROGRAMS_2025_26 below and _uniba-giurisprudenza_coverage.md).
+ *
  * Base host: easyacademy.ict.uniba.it/PortaleStudenti. This is a PARTIAL
  * EasyAcademy deployment: only the Dipartimento di Giurisprudenza and
  * Dipartimento di Scienze Politiche publish their grids here (12 degrees) — the
@@ -31,7 +34,17 @@ import { degreeSources } from "./easystaff";
 const BASE = "https://easyacademy.ict.uniba.it/PortaleStudenti";
 const ANNO = "2025";
 
-const livePrograms: LiveProgram[] = [
+/**
+ * MANUAL MODE since 2026-09-25 — original 2025/26 live wiring kept here, verbatim, ONLY to
+ * restore it later (this constant is not referenced by the preset below).
+ *
+ * Why manual: combo.php?sw=ec_&aa=2026&page=corsi on this host answers 200 with an EMPTY
+ * `elenco_corsi` (no 2026/27 catalogue), and every one of the 35 timetable sources returned
+ * 0 celle (anno 2025 and 2026) in each of the 10 weeks 28-09..30-11-2026, with 0 appelli on
+ * test_call.php. Wrong/empty data is worse than none. RE-VERIFY when the 2026 combo fills up,
+ * then move these back into `livePrograms`, set `liveSources: true` and bump ANNO.
+ */
+export const UNIBA_LIVE_PROGRAMS_2025_26: LiveProgram[] = [
   {
     programme: "Consulente del Lavoro e Operatore D'impresa",
     // Esami: test_call.php non espone appelli per questo corso (verificato
@@ -151,13 +164,16 @@ const livePrograms: LiveProgram[] = [
   },
 ];
 
+/** Degree names shown in onboarding (manual mode). Same 12 degrees of the 2025/26 wiring. */
+const PROGRAMMES = UNIBA_LIVE_PROGRAMS_2025_26.map((lp) => lp.programme);
+
 export const uniba: UniversityPreset = {
+  // Stable id kept: it is the detectAteneo target for *.uniba.it and may be saved in profiles.
   id: "uniba-giurisprudenza",
   name: "Università degli Studi di Bari Aldo Moro",
   shortName: "Università di Bari",
   city: "Bari",
-  programme: "Giurisprudenza",
-  liveSources: true,
+  programmes: PROGRAMMES,
+  liveSources: false,
   sources: [],
-  livePrograms,
 };

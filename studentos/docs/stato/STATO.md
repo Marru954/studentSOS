@@ -1,10 +1,18 @@
 # Stato attuale StudentOS
 
-Aggiornato: 2026-09-25 (preset unifi/unina/uniroma2 con regola esami rigida; client HTTP sync rispettoso; hook muro #1 + NotebookEdit; ri-cattura codici 2026 su 18 atenei; hook muri #1 e #2)
+Aggiornato: 2026-09-25 (portato il branch unifi: fix falsi conflitti e sync in volo, uniba manuale, unisa rigenerata)
 
 ## Completati
+### Sessione 2026-09-25 (septies) — portato su main il branch easyacademy-preset-codes-2026 (branch sync/porta-branch-unifi)
+✅ Portato dal branch (cherry-pick, 3 commit): `detectAlerts` non segnala più falsi conflitti d'orario tra anni diversi o canali paralleli ("(SG1:A-I)" vs "(SG2:J-Z)"); `state/synced.ts` + `storage/syncClient.ts` + `supabase/sync.ts`: una sync in volo non riscrive più i dati del vecchio ateneo dopo il cambio ateneo (contatore di generazione, `invalidate()`); test nuovi `alertsConflictYear`, `syncedInvalidate` registrati in package.json.
+✅ Portati i file: `uniba.ts` in MODALITÀ MANUALE (combo 2026 vuoto e 0 celle in 10 settimane: wiring 2025/26 conservato in `UNIBA_LIVE_PROGRAMS_2025_26` per il ripristino), `ateneo-courses.ts`, i `_*_coverage.md` (unifi, unina, uniroma2, unisa, uniba: sezione "Ri-verifica 2026/27" con codici originali per il ripristino; nota in cima: i conteggi descrivono la ri-cattura manuale del branch).
+✅ Preset unifi/unina/uniroma2: NON presi dal branch (conflitti su 4 file) ma quelli già rigenerati su main con `recapture-codes.ts --exams-rule`. Unisa: rigenerata ora con lo stesso tool (76 programmi, esami spenti su 124 anni).
+   Differenza di criterio: il branch toglieva gli anni senza celle nelle 10 settimane 28-09..30-11 (più severo); main tiene un anno se ha celle in almeno una di 6 settimane campione (12-10, 09-11, 07-12, 02-11, 14-12, 08-03-2027). Anni in più su main = verificati vivi con POST reali, ma con orario potenzialmente pubblicato solo oltre ottobre.
+⏳ In sospeso (dal branch): BUG adapter `test_call.php` con `Insegnamenti: []` → "expected record, received array" (fix pronto: `z.preprocess` in `examsResponse` + test; `adapters/easyacademy.ts` è sync core intoccabile, serve autorizzazione esplicita); certificato di `easyacademy.unina.it` (curl CRYPT_E_REVOKED, Node ok); riattivare esami/Lettere Tor Vergata quando pubblicano.
+
 ### Sessione 2026-09-25 (quinquies) — contesto tecnico per pianificazione
 ✅ `docs/stato/CONTESTO_TECNICO.md` (solo lettura, nessun file applicativo toccato): albero `src/`, schema IndexedDB v3, preset Tor Vergata integrale, gate, rate limit (runtime: nessun delay, `Promise.all`; script: backoff 500ms×n, 4/host), 0 TODO, stack `idb` + Zustand senza `persist`. Mergiato su main (eb5f3eb, safe-merge, tag rollback/2026-09-25-192524). Nessun nuovo conflitto con altri branch (i conflitti di `easyacademy-preset-codes-2026-b21e85` sono quelli già noti).
+
 
 ### Sessione 2026-09-25 (sexies) — preset unifi/unina/uniroma2 con regola esami rigida (branch sync/regola-esami-3-atenei)
 ✅ Rigenerati con la stessa pipeline di `recapture-codes.ts` (orari rivalidati con POST reali, 6 settimane campione) + **regola esami rigida**: un anno tiene la sorgente esami solo se `test_call.php` ha appelli nel 2026/27 (finestra 01-09-2026..31-08-2027), nessun fallback sul 2025/26; un errore di rete non spegne. Granularità per ANNO (non per programma).
