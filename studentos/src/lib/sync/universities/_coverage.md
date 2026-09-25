@@ -8,7 +8,9 @@ the integration status in StudentOS. Compiled 2026-06-15.
   (`adapters/easyacademy.ts`). Public JSON over `grid_call.php` (lessons) +
   `test_call.php` (exams). ~30 atenei use it → highest-leverage integration.
 - **Cineca University Planner (UP)** — `*.up.cineca.it/calendarioPubblico`. A
-  distinct Cineca product (≠ Esse3). ~9 atenei. Adapter not implemented.
+  distinct Cineca product (≠ Esse3). ~13 atenei. Adapter `cineca-up` written
+  2026-09-25 but **dormant** (no preset until a real fixture confirms the
+  contract — `scripts/probe-cineca-up.ts`, spec in `docs/superpowers/specs/`).
 - **GOMP** (Be Smart) — `*-public.gomp.it`. Sapienza, Roma Tre, Catania, Cassino.
 - **Esse3** as timetable (rare — most use Esse3 only for careers): Insubria,
   Teramo, Catanzaro.
@@ -182,7 +184,7 @@ combo-confirmed candidates to verify the same way next batch.
   (combo `elenco_corsi=[]` per ogni aa → login-walled), Macerata (nessun host
   agendaweb pubblico — app/dipartimentale), Roma Tre / Tuscia / Chieti / Politecnica
   Marche (grid non pubblicata).
-- **Cineca University Planner (no adapter):** Siena, Pisa, Torino, Pavia, Verona.
+- **Cineca University Planner (adapter dormiente dal 2026-09-25, nessun preset):** Siena, Pisa, Torino, Pavia, Verona.
 - **GOMP:** Sapienza.
 - **In-house / login-walled (no adapter):** Bologna, PoliMi, PoliTo, Bocconi,
   Politecnico Bari, Macerata.

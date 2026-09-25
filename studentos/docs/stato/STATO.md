@@ -1,14 +1,22 @@
 # Stato attuale StudentOS
 
-Aggiornato: 2026-09-25 (portato il branch unifi: fix falsi conflitti e sync in volo, uniba manuale, unisa rigenerata)
+Aggiornato: 2026-09-25 (fix esami `Insegnamenti: []`, adapter Cineca UP dormiente + probe)
 
 ## Completati
+### Sessione 2026-09-25 (octies) — fix esami `Insegnamenti: []` + adapter Cineca UP dormiente (branch claude/gifted-carson-nkr5yq)
+✅ Fix sync core (autorizzato dall'utente: "tutti i permessi"): `test_call.php` con `Insegnamenti: []` (PHP json_encode di un array associativo vuoto) faceva fallire l'intera sorgente esami ("expected record, received array") invece di dare 0 appelli. Ora `z.preprocess` legge qualsiasi array come il record equivalente; `null` e le altre forme restano un fallimento (una sorgente fallita conserva la cache, un successo vuoto la rimpiazzerebbe). Test `easyacademyExams` (5, riproduce il bug prima del fix). Registrato nel runner anche `examStatus.test.ts` (9 test verdi, mai eseguiti: mancava dallo script `test`).
+✅ Adapter `cineca-up` (Cineca University Planner) DORMIENTE: registrato ma nessun preset → allowlist SSRF vuota per il provider, `/api/sync` rifiuta ogni sorgente UP (testato). Spec `docs/superpowers/specs/2026-09-25-adapter-cineca-up-design.md` con 7 punti da confermare su fixture reale. Scelte: finestre di 28 giorni (max 5 = 140 gg, come le 20 settimane EA) per restare nel budget di 25 s per sorgente; memo di processo 60 s condivisa tra sorgenti per-anno dello stesso calendario, solo forma ridotta degli impegni; orari senza fuso = ora di Roma (DST inclusa, indipendente dal TZ del server); lezioni annullate escluse lato server finché il campo non è confermato; `kind: "other"` finché il campo tipo non è confermato; id seedati con calendario + filtro anno (IndexedDB indicizza per solo `id` su tutte le sorgenti). Helper `upProgramSources` (gemello di `degreeSources`). Test `cinecaUp` (19, payload sintetici dichiarati come tali). Solo lato server: 0 chunk client con codice UP.
+✅ `scripts/probe-cineca-up.ts` (sola lettura, autorizzato): robots, `clienteId`, la POST IDENTICA all'adapter (`impegniRequest`), rilievo dei campi reali (chiavi, docenti/aule, fuso, anni di corso, campi tipo/stato/annullato), esito di `readImpegno`; `--save` fixture grezza + `.sample.json`; `--harvest <pagine orari>` = censimento dei `linkCalendarioId` con data di creazione dall'ObjectId (i calendari ruotano ogni anno: quello "Informatica Triennale" di Pisa trovato online è del 2022). Provato end-to-end contro un server UP finto in locale.
+⚠️ Rete: questo ambiente cloud nega gli host universitari (403 alla CONNECT, anche `easyutv.uniroma2.it` in produzione; WebFetch idem). Nessuna verifica live fatta oggi: né UP né il fix esami sui dati reali.
+📊 Conteggi reali (`LIVE_COUNT`/`LIVE_PROGRAMME_COUNT`): 18 atenei live, 1484 corsi. CLAUDE.md corretto (diceva 19 / "oltre 1600": uniba è tornata manuale).
+Gate verde a ogni commit (587 test, 48 file).
+
 ### Sessione 2026-09-25 (septies) — portato su main il branch easyacademy-preset-codes-2026 (branch sync/porta-branch-unifi)
 ✅ Portato dal branch (cherry-pick, 3 commit): `detectAlerts` non segnala più falsi conflitti d'orario tra anni diversi o canali paralleli ("(SG1:A-I)" vs "(SG2:J-Z)"); `state/synced.ts` + `storage/syncClient.ts` + `supabase/sync.ts`: una sync in volo non riscrive più i dati del vecchio ateneo dopo il cambio ateneo (contatore di generazione, `invalidate()`); test nuovi `alertsConflictYear`, `syncedInvalidate` registrati in package.json.
 ✅ Portati i file: `uniba.ts` in MODALITÀ MANUALE (combo 2026 vuoto e 0 celle in 10 settimane: wiring 2025/26 conservato in `UNIBA_LIVE_PROGRAMS_2025_26` per il ripristino), `ateneo-courses.ts`, i `_*_coverage.md` (unifi, unina, uniroma2, unisa, uniba: sezione "Ri-verifica 2026/27" con codici originali per il ripristino; nota in cima: i conteggi descrivono la ri-cattura manuale del branch).
 ✅ Preset unifi/unina/uniroma2: NON presi dal branch (conflitti su 4 file) ma quelli già rigenerati su main con `recapture-codes.ts --exams-rule`. Unisa: rigenerata ora con lo stesso tool (76 programmi, esami spenti su 124 anni).
    Differenza di criterio: il branch toglieva gli anni senza celle nelle 10 settimane 28-09..30-11 (più severo); main tiene un anno se ha celle in almeno una di 6 settimane campione (12-10, 09-11, 07-12, 02-11, 14-12, 08-03-2027). Anni in più su main = verificati vivi con POST reali, ma con orario potenzialmente pubblicato solo oltre ottobre.
-⏳ In sospeso (dal branch): BUG adapter `test_call.php` con `Insegnamenti: []` → "expected record, received array" (fix pronto: `z.preprocess` in `examsResponse` + test; `adapters/easyacademy.ts` è sync core intoccabile, serve autorizzazione esplicita); certificato di `easyacademy.unina.it` (curl CRYPT_E_REVOKED, Node ok); riattivare esami/Lettere Tor Vergata quando pubblicano.
+⏳ In sospeso (dal branch): ~~BUG adapter `test_call.php` con `Insegnamenti: []`~~ **FATTO 2026-09-25 (octies)**; certificato di `easyacademy.unina.it` (curl CRYPT_E_REVOKED, Node ok); riattivare esami/Lettere Tor Vergata quando pubblicano.
 
 ### Sessione 2026-09-25 (quinquies) — contesto tecnico per pianificazione
 ✅ `docs/stato/CONTESTO_TECNICO.md` (solo lettura, nessun file applicativo toccato): albero `src/`, schema IndexedDB v3, preset Tor Vergata integrale, gate, rate limit (runtime: nessun delay, `Promise.all`; script: backoff 500ms×n, 4/host), 0 TODO, stack `idb` + Zustand senza `persist`. Mergiato su main (eb5f3eb, safe-merge, tag rollback/2026-09-25-192524). Nessun nuovo conflitto con altri branch (i conflitti di `easyacademy-preset-codes-2026-b21e85` sono quelli già noti).
@@ -432,6 +440,14 @@ tracker (selettori field + isOnboarded coerente).
    manual.upsert preserva ordine; memo FocusView + ExamTimeline
 
 ## In sospeso
+- **Adapter Cineca UP — verifica live** (richiede rete verso `*.up.cineca.it` + siti
+  unipi): `probe-cineca-up.ts --harvest` sulle pagine orari di Pisa → calendari 2026/27
+  → probe `--save` → fixture reale committata + test che la parsa → correggere i 7 punti
+  della spec → primo preset `unipi` con poche lauree verificate.
+- Fix `Insegnamenti: []`: coperto da test, non ancora osservato live dopo il fix.
+- Igiene: `src/lib/sync/util.ts` contiene un NUL letterale (separatore di `stableId`),
+  per cui grep lo tratta come binario. L'escape `"\0"` darebbe la stessa stringa (id
+  invariati). Non urgente.
 - ~~Doppio safe-merge.sh da consolidare~~ **FATTO il 2026-07-04**:
   `studentos/scripts/safe-merge.sh` è ora un wrapper che fa `exec` sul canonico
   `scripts/safe-merge.sh` (root, con muri #4/#5). Nessun percorso bypassa più
@@ -462,15 +478,18 @@ tracker (selettori field + isOnboarded coerente).
   SearchPalette; lazy-load AssistantChat; inert/scroll-lock sfondo Overlay.
 
 ## Prossimi obiettivi
+- **Adapter Cineca UP live su Pisa** (poi Torino e gli altri 11 atenei UP): tutto il
+  codice è pronto e dormiente, manca solo la verifica con rete (v. In sospeso).
 - Estensione opzionale rate-limit: portare anche il bucket per-IP sullo store
   distribuito (oggi resta cookie-HMAC + in-memory). Il grosso è FATTO:
   branch mergiato e migration 0002 applicata live.
-- Adapter Cineca-UP o GOMP, sessione supervisionata dedicata — ordine
-  consigliato dal recon 2026-07-02: Padova (exams-only via adapter EA
-  esistente) → Pisa/UP → Sapienza → Bologna (rivalidare a settembre) →
-  PoliTo → PoliMi
+- Dopo UP, dal recon 2026-07-02: Sapienza (GOMP, adapter dedicato) → Bologna
+  (rivalidare `@@orario_reale_json` ora che le lezioni sono partite) → PoliTo →
+  PoliMi. Padova exams-only non richiede un adapter nuovo, ma prima serve una
+  decisione esplicita sul suo `robots.txt` (`Disallow: /`).
 
 ## Registro decisioni
 
+- **2026-09-25 — adapter Cineca UP scritto prima della fixture, ma dormiente.** Senza rete verso gli atenei il contratto non si può verificare: il codice è pronto e testato su payload sintetici dichiarati, ma nessun preset può usarlo finché una risposta reale (probe `--save`) non è committata e parsata da un test. L'inerzia è garantita dall'allowlist SSRF (derivata dai preset) ed è coperta da un test.
 - **2026-09-25 — muro #1 e #2: STRICT sempre** (non STRICT-solo-auto/WARN come #4/#5). Override esplicito solo per #1 via `ALLOW_PROTECTED_EDIT=1` (caso per caso, es. migration di db.ts autorizzata); nessun override per #2 (unica via: `scripts/safe-merge.sh` o PR).
 - **2026-09-25 — sync rispettoso: client condiviso senza toccare il sync core.** `http.ts` cablato solo dove non serve editare muro #1; la cache dei validatori è in memoria di processo (il server è stateless, IndexedDB/db.ts intoccabili). Aperto: contatto reale nello UA; wiring in easyacademy.ts (+ pausa per-ateneo) da autorizzare. Semantica di `tests/` invariata (file esistenti bloccati, nuovi liberi; `package.json` resta bloccato: aggiunte al runner via patch fuori-tool).
