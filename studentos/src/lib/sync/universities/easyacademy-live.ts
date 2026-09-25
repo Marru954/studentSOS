@@ -14,7 +14,7 @@
  * are the volatile part. Never edit a code without re-running grid_call.php.
  *
  * Priority is the informatica / ingegneria area, per ateneo. Adding a course is
- * config, not code — see easystaff.ts `easyAcademyPreset`.
+ * config, not code — see easystaff.ts `degreeSources`.
  */
 import type { UniversityPreset } from "../provider";
 import { unifi } from "./unifi";

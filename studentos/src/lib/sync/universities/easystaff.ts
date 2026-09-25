@@ -20,7 +20,7 @@
  * test_call.php and seeing real `celle` / `Appelli` come back — never guess the
  * codes (wrong data is worse than none).
  */
-import type { SyncSource, UniversityPreset } from "../provider";
+import type { SyncSource } from "../provider";
 
 /** Known, verified base URLs for Italian EasyAcademy agendaweb instances. */
 export const EASYSTAFF_BASES: Record<string, string> = {
@@ -116,61 +116,4 @@ export function degreeSources(
     }
   }
   return out;
-}
-
-/** Wire a verified EasyAcademy course into a full, live UniversityPreset. */
-export function easyAcademyPreset(
-  cfg: EasyAcademyPresetConfig,
-): UniversityPreset {
-  const sources: SyncSource[] = [];
-  for (const y of cfg.years) {
-    sources.push({
-      id: `orario-anno-${y.year}`,
-      label: `Orario ${y.year}° anno`,
-      capability: "timetable",
-      providerId: "easyacademy",
-      params: {
-        kind: "timetable",
-        baseUrl: cfg.baseUrl,
-        anno: cfg.anno,
-        scuola: cfg.scuola,
-        corso: y.corso,
-        anno2: y.anno2,
-      },
-    });
-    if (cfg.exams !== false) {
-      sources.push({
-        id: `esami-anno-${y.year}`,
-        label: `Appelli ${y.year}° anno`,
-        capability: "exams",
-        providerId: "easyacademy",
-        params: {
-          kind: "exams",
-          baseUrl: cfg.baseUrl,
-          scuola: cfg.scuola,
-          cdl: y.examCdl ?? y.corso,
-          anno2: y.examAnno2 ?? [String(y.year)],
-        },
-      });
-    }
-  }
-  if (cfg.newsBaseUrl) {
-    sources.push({
-      id: "avvisi-dipartimento",
-      label: "Avvisi del dipartimento",
-      capability: "news",
-      providerId: "wordpress-news",
-      params: { baseUrl: cfg.newsBaseUrl },
-    });
-  }
-  return {
-    id: cfg.id,
-    name: cfg.name,
-    shortName: cfg.shortName,
-    city: cfg.city,
-    programme: cfg.programme,
-    programmes: cfg.programmes ?? [cfg.programme],
-    liveSources: true,
-    sources,
-  };
 }

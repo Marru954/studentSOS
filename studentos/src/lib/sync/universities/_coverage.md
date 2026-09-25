@@ -111,7 +111,7 @@ use manual entry / PDF import.
 3. Verify timetable: `POST {base}/grid_call.php` with scuola+corso+anno2[]+date
    → must return `celle > 0` on a term Monday.
 4. Verify exams: `POST {base}/test_call.php` with esami_cdl + plain-year anno2[].
-5. Wire with `easyAcademyPreset(...)` in `easyacademy-live.ts`; map the email
+5. Wire with `degreeSources(...)` (easystaff.ts) into `livePrograms`; map the email
    domain in `emailToAteneo.ts`; the array is registered in `index.ts`.
 
 ## Recon 2026-06-17 — sistemi orari atenei manual-mode
