@@ -1,8 +1,14 @@
 # Stato attuale StudentOS
 
-Aggiornato: 2026-09-25 (portato il branch unifi: fix falsi conflitti e sync in volo, uniba manuale, unisa rigenerata)
+Aggiornato: 2026-09-25 (octies: tentativo ri-cattura lotto TV/Firenze/Federico II bloccato dalla rete dell'ambiente, nessuna verifica live nuova)
 
 ## Completati
+### Sessione 2026-09-25 (octies) — tentativo ri-cattura lotto Tor Vergata/Firenze/Federico II, bloccato dalla rete (0 commit sui preset)
+✅ Prima di iniziare: verificato che il lotto richiesto (Tor Vergata=uniroma2, Firenze=unifi, Federico II=unina) risultava **già ricatturato oggi stesso** su questo branch, con verifica reale (sessioni sexies/septies qui sotto, via `scripts/recapture-codes.ts --exams-rule`): coverage doc + `verified-endpoints.txt` già aggiornati. Utente confermato: niente ri-cattura completa duplicata, solo spot-check leggero sullo stato esistente.
+🐞 **Blocco ambientale, non del codice**: questa sessione cloud ha la rete in uscita negata per policy verso tutti e 3 gli host target — `easyutv.uniroma2.it`, `kairos.unifi.it`, `easyacademy.unina.it` (403 dal proxy egress, `connect_rejected`/"organization policy"). Verificato 3 volte (incl. dopo una modifica alla network policy dell'ambiente richiesta all'utente e dopo `npm ci`): sempre 403. Nessuna richiesta reale è stata possibile: **zero nuove verifiche live in questa sessione**, nessun codice preset toccato.
+✅ Gate verde comunque eseguito (dopo `npm ci`, node_modules assente nel container fresco): build/test(497)/tsc/lint tutti verdi, a conferma che lo stato ereditato dal branch resta sano.
+⚠️ Per una prossima sessione: il lotto TV/Firenze/Federico II risulta COMPLETO con dati verificati oggi (v. sessioni sexies/septies) — non serve ripeterlo, a meno che non si voglia una ri-verifica puntuale con un ambiente che abbia questi 3 host in allowlist di rete.
+
 ### Sessione 2026-09-25 (septies) — portato su main il branch easyacademy-preset-codes-2026 (branch sync/porta-branch-unifi)
 ✅ Portato dal branch (cherry-pick, 3 commit): `detectAlerts` non segnala più falsi conflitti d'orario tra anni diversi o canali paralleli ("(SG1:A-I)" vs "(SG2:J-Z)"); `state/synced.ts` + `storage/syncClient.ts` + `supabase/sync.ts`: una sync in volo non riscrive più i dati del vecchio ateneo dopo il cambio ateneo (contatore di generazione, `invalidate()`); test nuovi `alertsConflictYear`, `syncedInvalidate` registrati in package.json.
 ✅ Portati i file: `uniba.ts` in MODALITÀ MANUALE (combo 2026 vuoto e 0 celle in 10 settimane: wiring 2025/26 conservato in `UNIBA_LIVE_PROGRAMS_2025_26` per il ripristino), `ateneo-courses.ts`, i `_*_coverage.md` (unifi, unina, uniroma2, unisa, uniba: sezione "Ri-verifica 2026/27" con codici originali per il ripristino; nota in cima: i conteggi descrivono la ri-cattura manuale del branch).
