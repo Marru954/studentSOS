@@ -56,9 +56,10 @@ const pathOf = (rel: string) =>
   rel.startsWith("tests/") ? resolve(__dirname, "..", rel) : `/repo/studentos/${rel}`;
 
 for (const rel of PROTECTED) {
-  for (const tool of ["Edit", "Write"]) {
+  for (const tool of ["Edit", "Write", "NotebookEdit"]) {
     test(`muro#1: blocca ${tool} su ${rel}`, () => {
-      const r = runHook(HOOK_PROTECTED, { tool_name: tool, tool_input: { file_path: pathOf(rel) } });
+      const input = tool === "NotebookEdit" ? { notebook_path: pathOf(rel) } : { file_path: pathOf(rel) };
+      const r = runHook(HOOK_PROTECTED, { tool_name: tool, tool_input: input });
       assert.equal(r.exitCode, 2);
       assert.equal(decision(r.stdout)?.decision, "block");
     });

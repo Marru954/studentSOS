@@ -2,7 +2,7 @@
 /**
  * PreToolUse hook — Muro #1: file intoccabili.
  *
- * Su Write|Edit blocca SEMPRE (qualsiasi branch: "intoccabile" non ha WARN)
+ * Su Write|Edit|NotebookEdit blocca SEMPRE (qualsiasi branch: "intoccabile" non ha WARN)
  * la scrittura su:
  *  - src/lib/storage/db.ts            (schema IndexedDB)
  *  - src/lib/sync/engine.ts           (sync core)
@@ -43,9 +43,10 @@ process.stdin.on('end', () => {
   try { payload = JSON.parse(raw); } catch { process.exit(0); }
 
   const { tool_name, tool_input } = payload;
-  if (!['Write', 'Edit'].includes(tool_name)) process.exit(0);
+  if (!['Write', 'Edit', 'NotebookEdit'].includes(tool_name)) process.exit(0);
 
-  const rawPath = tool_input?.file_path ?? '';
+  // NotebookEdit passa il path in notebook_path, Write/Edit in file_path.
+  const rawPath = tool_input?.file_path ?? tool_input?.notebook_path ?? '';
   const filePath = rawPath.replace(/\\/g, '/');
   if (!filePath) process.exit(0);
 
