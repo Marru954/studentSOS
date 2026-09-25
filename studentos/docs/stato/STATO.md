@@ -7,7 +7,7 @@ Aggiornato: 2026-09-25 (pulizia: gate script, esse3/easyAcademyPreset rimossi, D
 🐞 Causa radice del /orario vuoto: i file preset contenevano il catalogo 2025 (codici `corso`/`anno2` rinumerati o corsi chiusi nel combo 2026), con solo `ANNO` bumpato.
 ✅ Nuovi tool (sola lettura di rete, nessuna dipendenza): `scripts/audit-codes.ts` (verifica ogni sorgente: check strutturale sul combo + POST grid_call su settimane campione) e `scripts/recapture-codes.ts` (rigenera i file preset dal combo 2026; continuità per CODICE+etichetta, nomi vecchi mantenuti; tiene solo anni con `celle>0`; aggiunge corsi nuovi verificati, esami spenti).
 ✅ 12 atenei riscritti (unica, unife, unifi, unige, unina, unipg, unipr, uniss, unistrasi, unitn, units, uniupo): audit indipendente dopo la riscrittura = 100% delle sorgenti di orario vive (prima ~55%). Nessun nome/id duplicato. Gate verde.
-⏳ NON ancora ri-catturati (7): unive, unisa, uniroma2 (Tor Vergata), unicampania, uniba, univpm, unisalento. Tool aggiornato per unive/unisa/uniroma2 (formato diverso, anni negativi) ma NON eseguito: run bloccato dal classificatore. Gli ultimi 4 hanno codice a mano (esami cablati): da fare a mano. Uniba: combo 2026 vuoto.
+✅ Poi ri-catturati anche unive, unisa, uniroma2 (audit dopo: 100% vive; Tor Vergata: 26 corsi su 70 usciti, quasi tutti Lettere/Psicologia → probabile orario 2026/27 non ancora pubblicato: rilanciare `recapture-codes.ts` più avanti). Restano a mano (codice a mano/esami cablati): unicampania, uniba (combo 2026 vuoto), univpm, unisalento.
 ⚠️ Esami (`test_call`) non ri-verificati sui corsi nuovi (flag esami mantenuto o false).
 
 ### Sessione 2026-09-25 (bis) — pulizia autorizzata (6 commit, branch NON mergiato)
