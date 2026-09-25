@@ -1,8 +1,32 @@
 # Stato attuale StudentOS
 
-Aggiornato: 2026-09-25 (bump anno accademico 2026/27 sui preset EasyAcademy, verificato live)
+Aggiornato: 2026-09-25 (ri-cattura codici EasyAcademy 2026/27 su Tor Vergata, Firenze, Federico II)
 
 ## Completati
+
+### Sessione 2026-09-25 (bis) — ri-cattura codici 2026/27, 3 atenei (3 commit + questo docs)
+Ripartenza dal punto aperto del bump anno: combo.php aa=2026 (GET reale) confrontato con i preset di
+uniroma2 / unifi / unina, ogni anno-sorgente ri-verificato con POST reali grid_call.php (5 settimane
+campione, basta una con celle) e test_call.php (finestra 2026/27, poi 2025/26 per distinguere
+"calendario non ancora pubblicato" da "codice inesistente"). Verifica finale sui preset committati:
+tutte le sorgenti orario rimaste tornano celle (uniroma2 111/111, unifi 397/397, unina 198/198).
+- uniroma2: programmi 70 -> 44, anni-orario 168 -> 111 (9 ricatturati, 57 rimossi). Rimossa tutta
+  FacoltadiLettereeFilosofia (codici invariati nel combo ma orari 2026/27 non ancora pubblicati) + Y44/AB2
+  (Medicina, idem) + Q67/H53/L87 (assenti dal combo).
+- unifi: programmi 189 -> 183, anni-orario 422 -> 397 (132 ricatturati: riforma, anno 2 ora sotto lo stesso
+  corso dell anno 1; 25 rimossi). 5 programmi passano a solo-orari (nessun appello in nessuna finestra).
+- unina: programmi 114 -> 106, anni-orario 225 -> 198 (84 ricatturati, 27 rimossi). Informatica triennale
+  anno 3 (N86) vive sotto scuola Ingegneria-Fuorigrotta: due degreeSources nello stesso programma.
+- Esami: un corso resta con esami se test_call ha appelli nel 2026/27 OPPURE (calendario nuovo non ancora
+  pubblicato) nel 2025/26 con lo stesso codice: uniroma2 13 programmi e unifi 29 sono in questo stato
+  ("🕓" nei coverage) -> ri-verificare a fine ottobre. uniroma2.ts: degreeSources locale ora accetta
+  `exams=false` (non usato al momento).
+- I file _<id>_coverage.md hanno in cima la sezione "Ri-verifica 2026/27" con tabelle live / ricatturati /
+  rimossi (codici originali inclusi per il ripristino); le tabelle per scuola sotto sono lo storico 2025/26.
+- Da fare: stesse ri-catture per gli altri 15 atenei EasyAcademy (Uniba resta a 2025); ripristinare Lettere
+  di Tor Vergata quando pubblicano gli orari; scripts/verified-endpoints.txt non contiene gli host di questi
+  atenei (i muri #4 di safe-merge.sh potrebbero bloccare i diff con URL combo.php nei coverage md).
+Gate: tsc/lint/477 test/build verdi. Nessun merge, nessun push.
 
 ### Sessione 2026-09-25 — bump anno accademico 2026/27 (1 commit)
 🐞 Bug reale trovato: con `ANNO="2025"` ogni preset restituiva 0 celle per le
