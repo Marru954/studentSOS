@@ -13,6 +13,7 @@ import { test } from "node:test";
 
 const HOOKS_DIR = resolve(__dirname, "../scripts/hooks");
 const HOOK_PROTECTED = resolve(HOOKS_DIR, "check-protected-files.mjs");
+const HOOK_MAIN = resolve(HOOKS_DIR, "check-main-protection.mjs");
 
 function runHook(
   scriptPath: string,
@@ -114,4 +115,77 @@ test("muro#1: non si confonde con node_modules né con altri tool", () => {
     runHook(HOOK_PROTECTED, { tool_name: "Bash", tool_input: { command: "echo package.json" } }).exitCode,
     0
   );
+});
+
+// ─── MURO #2 — niente merge / push diretto su main ───────────────────────────
+
+const bash = (command: string) => ({ tool_name: "Bash", tool_input: { command } });
+
+const BLOCKED_CMDS = [
+  "git merge feature/x",
+  "git merge --no-ff origin/main",
+  "git -C studentos merge foo",
+  "git fetch && git merge origin/main",
+  "git push origin main",
+  "git push -u origin HEAD:main",
+  "git push origin +main",
+  "git push origin fix/x:main",
+  "git push origin HEAD:refs/heads/main",
+  "git push --force origin main",
+  "FOO=1 git push origin main",
+  'bash -c "git merge x"',
+];
+
+for (const cmd of BLOCKED_CMDS) {
+  test(`muro#2: blocca \`${cmd}\``, () => {
+    const r = runHook(HOOK_MAIN, bash(cmd));
+    assert.equal(r.exitCode, 2);
+    assert.equal(decision(r.stdout)?.decision, "block");
+  });
+}
+
+test("muro#2: nessun override via env (ALLOW_PROTECTED_EDIT, ALLOW_*)", () => {
+  const r = runHook(HOOK_MAIN, bash("git push origin main"), {
+    env: { ALLOW_PROTECTED_EDIT: "1", ALLOW_UNVERIFIED_URLS: "1", ALLOW_NEW_DEPS: "1" },
+  });
+  assert.equal(r.exitCode, 2);
+});
+
+test("muro#2: blocca `git push` senza refspec solo se si è su main", () => {
+  assert.equal(runHook(HOOK_MAIN, bash("git push"), { branch: "main" }).exitCode, 2);
+  assert.equal(runHook(HOOK_MAIN, bash("git push origin"), { branch: "main" }).exitCode, 2);
+  assert.equal(runHook(HOOK_MAIN, bash("git push"), { branch: "fix/qualcosa" }).exitCode, 0);
+});
+
+const ALLOWED_CMDS = [
+  "git push origin fix/qualcosa",
+  "git push -u origin HEAD",
+  "git push origin main-fix",
+  "git push origin feature/main",
+  "git push origin fix/x:fix/x",
+  "bash scripts/safe-merge.sh",
+  "./scripts/safe-merge.sh",
+  "DRY_RUN=1 SKIP_GATE=1 ./scripts/safe-merge.sh",
+  "git status && git log --oneline",
+  "git checkout main",
+  "git fetch origin main",
+  "git rebase origin/main",
+  "git branch --merged",
+  'git commit -m "fix: git merge e git push origin main non più diretti"',
+  "git commit -F - <<'EOF'\nnote: git merge origin/main\ngit push origin main\nEOF",
+  "echo git merge foo",
+  "npm run build",
+];
+
+for (const cmd of ALLOWED_CMDS) {
+  test(`muro#2: consente \`${cmd.split("\n")[0]}\``, () => {
+    const r = runHook(HOOK_MAIN, bash(cmd));
+    assert.equal(r.exitCode, 0, r.stdout);
+    assert.equal(r.stdout, "");
+  });
+}
+
+test("muro#2: ignora tool diversi da Bash", () => {
+  const r = runHook(HOOK_MAIN, { tool_name: "Edit", tool_input: { file_path: "x", new_string: "git merge" } });
+  assert.equal(r.exitCode, 0);
 });
