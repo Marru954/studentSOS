@@ -1,5 +1,5 @@
-# Monorepo workspace: studentos/ (Next.js) + uniportal/ (Express+Vite) + HTML mockups.
-# Patterns without a leading slash match at any depth, so they cover both projects.
+# Workspace: studentos/ (Next.js) at the repo root alongside repo-level scripts/docs (the old uniportal/ scaffold and HTML mockups were removed).
+# Patterns without a leading slash match at any depth.
 
 # dependencies
 node_modules/

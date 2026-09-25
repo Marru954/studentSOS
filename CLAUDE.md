@@ -4,11 +4,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Workspace layout
 
-Git repo at this root; it holds the product plus design mockups:
+Git repo at this root; it holds the product plus repo-level tooling and recon notes:
 
 - **`studentos/`** — the main product: "University Student OS", a Next.js App Router app. Almost all work happens here.
-- **`*.html`** (`student-os-clean-v2.html`, etc.) — early self-contained React+Tailwind-via-CDN design mockups, openable directly in a browser. Historical: these captured an earlier **clean light Notion** direction.
-- **`design-reference/`** (`immersive.css` + jsx) — the **current** visual reference: an immersive aesthetic (Bricolage Grotesque display font, glass surfaces, drifting aurora background, dark-by-default with a light toggle). This style now lives in the app; see the design-system note below.
+- **`scripts/`** (`safe-merge.sh`, `verified-endpoints.txt`), **`docs/`** + **`fixtures/`** (Cineca/GOMP recon material) and the loose `_recon_*` / `_review_*` notes — repo-level support, not product code. The early `*.html` mockups and `design-reference/` were deleted (commit `c09a303`); the immersive design language now lives only in `studentos/` (tokens in `src/app/globals.css`).
 
 Run all commands **inside `studentos/`**, not from this root.
 

@@ -1,8 +1,19 @@
 # Stato attuale StudentOS
 
-Aggiornato: 2026-09-25 (bump anno accademico 2026/27 sui preset EasyAcademy, verificato live)
+Aggiornato: 2026-09-25 (pulizia: gate script, esse3/easyAcademyPreset rimossi, Delphi nascosto, hook portabili)
 
 ## Completati
+### Sessione 2026-09-25 (bis) — pulizia autorizzata (6 commit, branch NON mergiato)
+Autorizzazioni esplicite dell'utente su package.json / tests/esse3.test.ts (solo quelle).
+✅ Fase 0: gate baseline verde (build, test, tsc, lint).
+✅ Fase 1: script `gate` in package.json (`build && test && tsc --noEmit && lint`), stesso esito dei 4 comandi.
+✅ Fase 2: rimosso `src/lib/esse3/parse.ts` + `tests/esse3.test.ts` + riga nello script test (grep: unico importatore = il suo test). CLAUDE.md aggiornato.
+✅ Fase 3: rimossa `easyAcademyPreset()` da easystaff.ts (0 chiamanti di codice; tolto anche l'import `UniversityPreset` ormai inutilizzato). Interfaccia `EasyAcademyPresetConfig` lasciata (ora senza uso: candidata a rimozione). Corretti 2 riferimenti in commento/_coverage.md → `degreeSources`.
+✅ Fase 4: `DelphiConnect` non più reso in LibrettoView (file su disco intatto). Verificato in browser (dev server, onboarding locale Tor Vergata): nessun buco nel layout. NB: build senza env Supabase → verifica da utente locale, non signed-in.
+✅ Fase 5: hook in `.claude/settings.json` ora usano `${CLAUDE_PROJECT_DIR}` (exec form: command `node` + args). Verificato lanciando lo script col payload → WARN Muro #4 (branch supervisionato). Le impostazioni hook si ricaricano a nuova sessione.
+✅ Fase 6: `.gitignore` e CLAUDE.md allineati (uniportal, *.html e design-reference/ già cancellati: commit c09a303 / a96cbcf).
+Gate verde prima di ogni commit. Nessun push, nessun safe-merge.
+
 
 ### Sessione 2026-09-25 — bump anno accademico 2026/27 (1 commit)
 🐞 Bug reale trovato: con `ANNO="2025"` ogni preset restituiva 0 celle per le
