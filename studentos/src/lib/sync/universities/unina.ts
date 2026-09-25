@@ -51,42 +51,6 @@ const livePrograms: LiveProgram[] = [
     ], false),
   },
   {
-    programme: "Biologia",
-    sources: degreeSources(BASE, ANNO, "biologia", "CollegiodiScienze", [
-      { year: 1, corso: "D52", anno2: ["BCC|1", "BDR|1", "BNU|1", "BFO|1", "BMC|1"] },
-      { year: 2, corso: "D52", anno2: ["BCC|2", "BDR|2", "BNU|2", "BFO|2", "BMC|2"] },
-    ], false),
-  },
-  {
-    programme: "Biologia Lt",
-    sources: degreeSources(BASE, ANNO, "biologia-lt", "CollegiodiScienze", [
-      { year: 1, corso: "D50", anno2: ["GEN|1"] },
-      { year: 2, corso: "D50", anno2: ["GEN|2"] },
-      { year: 3, corso: "P30", anno2: ["GEN|3"] },
-    ], false),
-  },
-  {
-    programme: "Biotecnologie Molecolari e Industriali (magistrale)",
-    sources: degreeSources(BASE, ANNO, "biotecnologie-molecolari-e-industriali-magistrale", "CollegiodiScienze", [
-      { year: 1, corso: "D76", anno2: ["BRR|1", "PRB|1"] },
-      { year: 2, corso: "D76", anno2: ["BRR|2", "PRB|2"] },
-    ], false),
-  },
-  {
-    programme: "Biotecnologie Molecolari e Industriali (magistrale) (DG5)",
-    sources: degreeSources(BASE, ANNO, "biotecnologie-molecolari-e-industriali-magistrale-dg5", "CollegiodiScienze", [
-      { year: 1, corso: "DG5", anno2: ["IDS|1", "MCR|1"] },
-    ], false),
-  },
-  {
-    programme: "Chimica",
-    sources: degreeSources(BASE, ANNO, "chimica", "CollegiodiScienze", [
-      { year: 1, corso: "D74", anno2: ["GEN|1"] },
-      { year: 2, corso: "D74", anno2: ["GEN|2"] },
-      { year: 3, corso: "D44", anno2: ["GEN|3"] },
-    ], false),
-  },
-  {
     programme: "Chimica Industriale",
     sources: degreeSources(BASE, ANNO, "chimica-industriale", "CollegiodiScienze", [
       { year: 1, corso: "DG6", anno2: ["GEN|1"] },
@@ -104,12 +68,6 @@ const livePrograms: LiveProgram[] = [
     sources: degreeSources(BASE, ANNO, "comunicazione-pubblica-sociale-e-politica", "DipartimentodiScienzeSociali", [
       { year: 1, corso: "D84", anno2: ["GEN|1"] },
       { year: 2, corso: "D84", anno2: ["GEN|2"] },
-    ], false),
-  },
-  {
-    programme: "Corso di Laurea in Biotecnologie Biomolecolari e Industriali",
-    sources: degreeSources(BASE, ANNO, "corso-di-laurea-in-biotecnologie-biomolecolari-e-industriali", "CollegiodiScienze", [
-      { year: 3, corso: "N75", anno2: ["GEN|3"] },
     ], false),
   },
   {
@@ -172,29 +130,9 @@ const livePrograms: LiveProgram[] = [
     ], false),
   },
   {
-    programme: "Digital Society, Social Innovation and Global Citizenship",
-    sources: degreeSources(BASE, ANNO, "digital-society-social-innovation-and-global-citizenship", "DipartimentodiScienzeSociali", [
-      { year: 1, corso: "DA2", anno2: ["GEN|1"] },
-    ], false),
-  },
-  {
-    programme: "Fisica Lt",
-    sources: degreeSources(BASE, ANNO, "fisica-lt", "CollegiodiScienze", [
-      { year: 1, corso: "DC6", anno2: ["GEN|1"] },
-      { year: 2, corso: "DC6", anno2: ["GEN|2"] },
-      { year: 3, corso: "N85", anno2: ["GEN|3"] },
-    ], false),
-  },
-  {
     programme: "Industrial Bioengineering",
     sources: degreeSources(BASE, ANNO, "industrial-bioengineering", "Ingegneria-Fuorigrotta", [
       { year: 1, corso: "DD3", anno2: ["GEN|1"] },
-    ], false),
-  },
-  {
-    programme: "Industrial Chemistry for Circular and Bio Economy",
-    sources: degreeSources(BASE, ANNO, "industrial-chemistry-for-circular-and-bio-economy", "CollegiodiScienze", [
-      { year: 1, corso: "DG8", anno2: ["PAI|1", "PAL|1"] },
     ], false),
   },
   {
@@ -603,39 +541,11 @@ const livePrograms: LiveProgram[] = [
     ], false),
   },
   {
-    programme: "Marine Biology and Aquaculture",
-    sources: degreeSources(BASE, ANNO, "marine-biology-and-aquaculture", "CollegiodiScienze", [
-      { year: 2, corso: "D54", anno2: ["AGM|2", "CMB|2"] },
-    ], false),
-  },
-  {
-    programme: "Matematica",
-    sources: degreeSources(BASE, ANNO, "matematica", "CollegiodiScienze", [
-      { year: 1, corso: "D70", anno2: ["MAP|1", "DID|1", "MGE|1"] },
-      { year: 2, corso: "DF7", anno2: ["GEN|2"] },
-    ], false),
-  },
-  {
-    programme: "Matematica Lt",
-    sources: degreeSources(BASE, ANNO, "matematica-lt", "CollegiodiScienze", [
-      { year: 1, corso: "DF7", anno2: ["GEN|1"] },
-      { year: 3, corso: "N87", anno2: ["A31|3", "A32|3"] },
-    ], false),
-  },
-  {
     programme: "Meccatronica",
     sources: degreeSources(BASE, ANNO, "meccatronica", "Ingegneria-SanGiovanni", [
       { year: 1, corso: "SG_D36", anno2: ["GEN|1"] },
       { year: 2, corso: "SG_D36", anno2: ["GEN|2"] },
       { year: 3, corso: "SG_D36", anno2: ["GEN|3"] },
-    ], false),
-  },
-  {
-    programme: "Ottica e Optometria",
-    sources: degreeSources(BASE, ANNO, "ottica-e-optometria", "CollegiodiScienze", [
-      { year: 1, corso: "DC7", anno2: ["GEN|1"] },
-      { year: 2, corso: "DC7", anno2: ["GEN|2"] },
-      { year: 3, corso: "M44", anno2: ["GEN|3"] },
     ], false),
   },
   {
@@ -646,28 +556,9 @@ const livePrograms: LiveProgram[] = [
     ], false),
   },
   {
-    programme: "Quantum Science and Engineering",
-    sources: degreeSources(BASE, ANNO, "quantum-science-and-engineering", "CollegiodiScienze", [
-      { year: 1, corso: "D60", anno2: ["GEN|1"] },
-    ], false),
-  },
-  {
     programme: "Scienza e Ingegneria dei Materiali",
     sources: degreeSources(BASE, ANNO, "scienza-e-ingegneria-dei-materiali", "Ingegneria-Fuorigrotta", [
       { year: 3, corso: "N50", anno2: ["GEN|3"] },
-    ], false),
-  },
-  {
-    programme: "Scienze Biologiche",
-    sources: degreeSources(BASE, ANNO, "scienze-biologiche", "CollegiodiScienze", [
-      { year: 1, corso: "D55", anno2: ["BIA|1", "BDB|1", "BQS|1", "NEU|1"] },
-      { year: 2, corso: "D55", anno2: ["BDN|2", "BIA|2", "BSC|2", "NEU|2"] },
-    ], false),
-  },
-  {
-    programme: "Scienze Chimiche",
-    sources: degreeSources(BASE, ANNO, "scienze-chimiche", "CollegiodiScienze", [
-      { year: 1, corso: "DG7", anno2: ["CHS|1", "SCH|1"] },
     ], false),
   },
   {
@@ -681,23 +572,7 @@ const livePrograms: LiveProgram[] = [
   {
     programme: "Scienze e Tecnologie della Chimica Industriale",
     sources: degreeSources(BASE, ANNO, "scienze-e-tecnologie-della-chimica-industriale", "CollegiodiScienze", [
-      { year: 1, corso: "D75", anno2: ["FIN|1", "PPT|1", "SCP|1"] },
       { year: 2, corso: "D75", anno2: ["FIN|2", "PPT|2", "SCP|2"] },
-    ], false),
-  },
-  {
-    programme: "Scienze Naturali",
-    sources: degreeSources(BASE, ANNO, "scienze-naturali", "CollegiodiScienze", [
-      { year: 1, corso: "D56", anno2: ["CGC|1", "GPN|1"] },
-      { year: 2, corso: "D56", anno2: ["CGC|2", "GPN|2"] },
-    ], false),
-  },
-  {
-    programme: "Scienze per la Natura e per L'ambiente",
-    sources: degreeSources(BASE, ANNO, "scienze-per-la-natura-e-per-l-ambiente", "CollegiodiScienze", [
-      { year: 1, corso: "D51", anno2: ["GEA|1", "MDB|1"] },
-      { year: 2, corso: "D51", anno2: ["GEA|2", "MDB|2"] },
-      { year: 3, corso: "P29", anno2: ["GEA|3", "MDB|3"] },
     ], false),
   },
   {

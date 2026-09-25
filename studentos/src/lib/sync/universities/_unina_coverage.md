@@ -13,6 +13,60 @@ Sorgente: GET reale `https://easyacademy.unina.it/agendastudenti/combo.php?sw=ec
 - Programmi rimasti live solo in parte (alcuni anni rimossi): **18**
 - Le tabelle per scuola più sotto sono lo **storico della verifica 2025/26** e NON sono state rigenerate: fa fede questa sezione.
 
+### Ri-controllo settimanale 28-09..30-11-2026 (criterio live: celle > 0 in almeno una delle 10 settimane)
+
+Un POST a `grid_call.php` (anno=2026) per ciascuna delle 10 settimane (lunedì 28-09, 05-10, 12-10, 19-10, 26-10, 02-11, 09-11, 16-11, 23-11, 30-11), con concorrenza 3 e pausa tra le richieste. Una cella isolata fuori finestra (dicembre/marzo) non basta.
+
+- Sorgenti orario controllate: **196** · restano live: **161** · rimosse: **35** (programmi rimossi per intero: 18)
+- La tabella "Corsi live verificati" qui sotto e le sezioni precedenti sono anteriori a questo ri-controllo: per gli anni elencati nella tabella seguente fa fede questa sezione (sono stati rimossi da `livePrograms`).
+
+| Corso | scuola | Anno | corso originale | anno2 originale | Motivo |
+|---|---|---|---|---|---|
+| Biologia | CollegiodiScienze | 1 | `D52` | `BCC\|1, BDR\|1, BNU\|1, BFO\|1, BMC\|1` | 0 celle in tutte le 10 settimane 28-09..30-11-2026 (ripristinare quando pubblicano gli orari) |
+| Biologia | CollegiodiScienze | 2 | `D52` | `BCC\|2, BDR\|2, BNU\|2, BFO\|2, BMC\|2` | 0 celle in tutte le 10 settimane 28-09..30-11-2026 (ripristinare quando pubblicano gli orari) |
+| Biologia Lt | CollegiodiScienze | 1 | `D50` | `GEN\|1` | 0 celle in tutte le 10 settimane 28-09..30-11-2026 (ripristinare quando pubblicano gli orari) |
+| Biologia Lt | CollegiodiScienze | 2 | `D50` | `GEN\|2` | 0 celle in tutte le 10 settimane 28-09..30-11-2026 (ripristinare quando pubblicano gli orari) |
+| Biologia Lt | CollegiodiScienze | 3 | `P30` | `GEN\|3` | 0 celle in tutte le 10 settimane 28-09..30-11-2026 (ripristinare quando pubblicano gli orari) |
+| Biotecnologie Molecolari e Industriali (magistrale) | CollegiodiScienze | 1 | `D76` | `BRR\|1, PRB\|1` | 0 celle in tutte le 10 settimane 28-09..30-11-2026 (ripristinare quando pubblicano gli orari) |
+| Biotecnologie Molecolari e Industriali (magistrale) | CollegiodiScienze | 2 | `D76` | `BRR\|2, PRB\|2` | 0 celle in tutte le 10 settimane 28-09..30-11-2026 (ripristinare quando pubblicano gli orari) |
+| Biotecnologie Molecolari e Industriali (magistrale) (DG5) | CollegiodiScienze | 1 | `DG5` | `IDS\|1, MCR\|1` | 0 celle in tutte le 10 settimane 28-09..30-11-2026 (ripristinare quando pubblicano gli orari) |
+| Chimica | CollegiodiScienze | 1 | `D74` | `GEN\|1` | 0 celle in tutte le 10 settimane 28-09..30-11-2026 (ripristinare quando pubblicano gli orari) |
+| Chimica | CollegiodiScienze | 2 | `D74` | `GEN\|2` | 0 celle in tutte le 10 settimane 28-09..30-11-2026 (ripristinare quando pubblicano gli orari) |
+| Chimica | CollegiodiScienze | 3 | `D44` | `GEN\|3` | 0 celle in tutte le 10 settimane 28-09..30-11-2026 (ripristinare quando pubblicano gli orari) |
+| Corso di Laurea in Biotecnologie Biomolecolari e Industriali | CollegiodiScienze | 3 | `N75` | `GEN\|3` | 0 celle in tutte le 10 settimane 28-09..30-11-2026 (ripristinare quando pubblicano gli orari) |
+| Digital Society, Social Innovation and Global Citizenship | DipartimentodiScienzeSociali | 1 | `DA2` | `GEN\|1` | 0 celle in tutte le 10 settimane 28-09..30-11-2026 (ripristinare quando pubblicano gli orari) |
+| Fisica Lt | CollegiodiScienze | 1 | `DC6` | `GEN\|1` | 0 celle in tutte le 10 settimane 28-09..30-11-2026 (ripristinare quando pubblicano gli orari) |
+| Fisica Lt | CollegiodiScienze | 2 | `DC6` | `GEN\|2` | 0 celle in tutte le 10 settimane 28-09..30-11-2026 (ripristinare quando pubblicano gli orari) |
+| Fisica Lt | CollegiodiScienze | 3 | `N85` | `GEN\|3` | 0 celle in tutte le 10 settimane 28-09..30-11-2026 (ripristinare quando pubblicano gli orari) |
+| Industrial Chemistry for Circular and Bio Economy | CollegiodiScienze | 1 | `DG8` | `PAI\|1, PAL\|1` | 0 celle in tutte le 10 settimane 28-09..30-11-2026 (ripristinare quando pubblicano gli orari) |
+| Marine Biology and Aquaculture | CollegiodiScienze | 2 | `D54` | `AGM\|2, CMB\|2` | 0 celle in tutte le 10 settimane 28-09..30-11-2026 (ripristinare quando pubblicano gli orari) |
+| Matematica | CollegiodiScienze | 1 | `D70` | `MAP\|1, DID\|1, MGE\|1` | 0 celle in tutte le 10 settimane 28-09..30-11-2026 (ripristinare quando pubblicano gli orari) |
+| Matematica | CollegiodiScienze | 2 | `DF7` | `GEN\|2` | 0 celle in tutte le 10 settimane 28-09..30-11-2026 (ripristinare quando pubblicano gli orari) |
+| Matematica Lt | CollegiodiScienze | 1 | `DF7` | `GEN\|1` | 0 celle in tutte le 10 settimane 28-09..30-11-2026 (ripristinare quando pubblicano gli orari) |
+| Matematica Lt | CollegiodiScienze | 3 | `N87` | `A31\|3, A32\|3` | 0 celle in tutte le 10 settimane 28-09..30-11-2026 (ripristinare quando pubblicano gli orari) |
+| Ottica e Optometria | CollegiodiScienze | 1 | `DC7` | `GEN\|1` | 0 celle in tutte le 10 settimane 28-09..30-11-2026 (ripristinare quando pubblicano gli orari) |
+| Ottica e Optometria | CollegiodiScienze | 2 | `DC7` | `GEN\|2` | 0 celle in tutte le 10 settimane 28-09..30-11-2026 (ripristinare quando pubblicano gli orari) |
+| Ottica e Optometria | CollegiodiScienze | 3 | `M44` | `GEN\|3` | 0 celle in tutte le 10 settimane 28-09..30-11-2026 (ripristinare quando pubblicano gli orari) |
+| Quantum Science and Engineering | CollegiodiScienze | 1 | `D60` | `GEN\|1` | 0 celle in tutte le 10 settimane 28-09..30-11-2026 (ripristinare quando pubblicano gli orari) |
+| Scienze Biologiche | CollegiodiScienze | 1 | `D55` | `BIA\|1, BDB\|1, BQS\|1, NEU\|1` | 0 celle in tutte le 10 settimane 28-09..30-11-2026 (ripristinare quando pubblicano gli orari) |
+| Scienze Biologiche | CollegiodiScienze | 2 | `D55` | `BDN\|2, BIA\|2, BSC\|2, NEU\|2` | 0 celle in tutte le 10 settimane 28-09..30-11-2026 (ripristinare quando pubblicano gli orari) |
+| Scienze Chimiche | CollegiodiScienze | 1 | `DG7` | `CHS\|1, SCH\|1` | 0 celle in tutte le 10 settimane 28-09..30-11-2026 (ripristinare quando pubblicano gli orari) |
+| Scienze e Tecnologie della Chimica Industriale | CollegiodiScienze | 1 | `D75` | `FIN\|1, PPT\|1, SCP\|1` | 0 celle in tutte le 10 settimane 28-09..30-11-2026 (ripristinare quando pubblicano gli orari) |
+| Scienze Naturali | CollegiodiScienze | 1 | `D56` | `CGC\|1, GPN\|1` | 0 celle in tutte le 10 settimane 28-09..30-11-2026 (ripristinare quando pubblicano gli orari) |
+| Scienze Naturali | CollegiodiScienze | 2 | `D56` | `CGC\|2, GPN\|2` | 0 celle in tutte le 10 settimane 28-09..30-11-2026 (ripristinare quando pubblicano gli orari) |
+| Scienze per la Natura e per L'ambiente | CollegiodiScienze | 1 | `D51` | `GEA\|1, MDB\|1` | 0 celle in tutte le 10 settimane 28-09..30-11-2026 (ripristinare quando pubblicano gli orari) |
+| Scienze per la Natura e per L'ambiente | CollegiodiScienze | 2 | `D51` | `GEA\|2, MDB\|2` | 0 celle in tutte le 10 settimane 28-09..30-11-2026 (ripristinare quando pubblicano gli orari) |
+| Scienze per la Natura e per L'ambiente | CollegiodiScienze | 3 | `P29` | `GEA\|3, MDB\|3` | 0 celle in tutte le 10 settimane 28-09..30-11-2026 (ripristinare quando pubblicano gli orari) |
+
+Campione celle per settimana (28-09 … 30-11):
+
+- Architecture and Heritage (anno 1, `DB2`): 0, 11, 11, 11, 11, 11, 11, 11, 11, 11
+- Architettura per Comunità, Territori e Ambiente (anno 2, `DB8`): 8, 8, 8, 8, 8, 8, 0, 8, 8, 8
+- Civil and Environmental Engineering (anno 2, `D38`): 11, 11, 11, 11, 11, 11, 9, 11, 11, 11
+- Corso di Laurea in Ingegneria Elettrica (anno 3, `N42`): 10, 10, 10, 10, 10, 10, 7, 10, 10, 10
+- Design per la Comunita' (anno 2, `DB0`): 10, 10, 10, 10, 10, 10, 0, 10, 10, 10
+- Informatica (magistrale) (anno 1, `DE5`): 26, 26, 26, 26, 26, 26, 12, 26, 26, 26
+
 ### Corsi live verificati (2026/27)
 
 | Corso | scuola | corso (per anno) | Anni live | celle/anno | appelli/anno | Stato |
