@@ -13,6 +13,24 @@ Sorgente: GET reale `https://easyutv.uniroma2.it/agendaweb/combo.php?sw=ec_&aa=2
 - Programmi rimasti live solo in parte (alcuni anni rimossi): **0**
 - Le tabelle per scuola più sotto sono lo **storico della verifica 2025/26** e NON sono state rigenerate: fa fede questa sezione.
 
+### Corsi passati a solo-orari (exams:false) — 13
+
+Regola rigida: `exams:false` se `test_call.php` non restituisce appelli nella finestra 2026/27 (01-09-2026..30-09-2027). Da riattivare (ultimo argomento `false` di `degreeSources`) quando i calendari esami vengono pubblicati. 'Nel 2025/26' = il codice risponde con appelli della finestra precedente (calendario nuovo non ancora pubblicato); 'mai' = nessun appello neanche nel 2025/26.
+
+- Biotecnologie Agrarie — appelli nel 2025/26
+- Chemical Nano-Engineering — appelli nel 2025/26
+- ICT and Internet Engineering - Ingegneria di Internet e delle Tecnologie per l'Informazione e la Comunicazione — appelli nel 2025/26
+- Ingegneria Civile — appelli nel 2025/26
+- Ingegneria dell'Automazione — appelli nel 2025/26
+- Ingegneria e Tecniche del Costruire — appelli nel 2025/26
+- Ingegneria Elettronica (magistrale) — appelli nel 2025/26
+- Ingegneria Energetica — appelli nel 2025/26
+- Ingegneria Informatica (magistrale) — appelli nel 2025/26
+- Ingegneria Medica (magistrale) — appelli nel 2025/26
+- Ingegneria per l'Ambiente e il Territorio — appelli nel 2025/26
+- Metodi e Modelli per Data Science — appelli nel 2025/26
+- Scienza dei Materiali — appelli nel 2025/26
+
 ### Corsi live verificati (2026/27)
 
 | Corso | scuola | corso (per anno) | Anni live | celle/anno | appelli/anno | Stato |
@@ -23,42 +41,42 @@ Sorgente: GET reale `https://easyutv.uniroma2.it/agendaweb/combo.php?sw=ec_&aa=2
 | Biologia Cellulare, Molecolare e Ricerca Biomedica | FacoltadiScienzeMatematiche-FisicheeNaturali | 1:`AB7` | 1 | 11 | 1 | ✅ orari+esami |
 | Biotechnology for Industry and Health | FacoltadiScienzeMatematiche-FisicheeNaturali | 1:`AB6` | 1 | 12 | 2 | ✅ orari+esami |
 | Biotecnologie | FacoltadiScienzeMatematiche-FisicheeNaturali | 1:`H04` 2:`H04` 3:`H04` | 1,2,3 | 17,10,10 | 1,1,(37) | ✅ orari+esami |
-| Biotecnologie Agrarie | FacoltadiScienzeMatematiche-FisicheeNaturali | 1:`AB3` | 1 | 1 | (3) | 🕓 orari+esami (appelli 2026/27 non ancora pubblicati; verificati sul 2025/26) |
-| Chemical Nano-Engineering | FacoltadiIngegneria | 1:`W46` 2:`W46` | 1,2 | 1,17 | 0,(6) | 🕓 orari+esami (appelli 2026/27 non ancora pubblicati; verificati sul 2025/26) |
+| Biotecnologie Agrarie | FacoltadiScienzeMatematiche-FisicheeNaturali | 1:`AB3` | 1 | 1 | (3) | 🟢 solo orari (esami: nessun appello 2026/27; presenti nel 2025/26 → riattivare quando pubblicano) |
+| Chemical Nano-Engineering | FacoltadiIngegneria | 1:`W46` 2:`W46` | 1,2 | 1,17 | 0,(6) | 🟢 solo orari (esami: nessun appello 2026/27; presenti nel 2025/26 → riattivare quando pubblicano) |
 | Chimica (magistrale) | FacoltadiScienzeMatematiche-FisicheeNaturali | 1:`J63` 2:`J63` | 1,2 | 26,9 | 5,1 | ✅ orari+esami |
 | Chimica (triennale) | FacoltadiScienzeMatematiche-FisicheeNaturali | 1:`H05` 2:`H05` 3:`H05` | 1,2,3 | 20,11,8 | 1,5,2 | ✅ orari+esami |
 | Chimica Applicata | FacoltadiScienzeMatematiche-FisicheeNaturali | 1:`H06` 2:`H06` 3:`H06` | 1,2,3 | 20,8,9 | 2,4,(31) | ✅ orari+esami |
 | Engineering Sciences | FacoltadiIngegneria | 1:`K73` 2:`K73` 3:`K73` | 1,2,3 | 10,9,12 | (56),(45),1 | ✅ orari+esami |
 | Fisica (magistrale) | FacoltadiScienzeMatematiche-FisicheeNaturali | 1:`J64` 2:`J64` | 1,2 | 82,29 | 3,3 | ✅ orari+esami |
 | Fisica (triennale) | FacoltadiScienzeMatematiche-FisicheeNaturali | 1:`H08` 2:`H08` 3:`H08` | 1,2,3 | 21,11,13 | 3,4,2 | ✅ orari+esami |
-| ICT and Internet Engineering - Ingegneria di Internet e delle Tecnologie per l'Informazione e la Comunicazione | FacoltadiIngegneria | 1:`Q66` 2:`Q66` | 1,2 | 16,27 | (62),(52) | 🕓 orari+esami (appelli 2026/27 non ancora pubblicati; verificati sul 2025/26) |
+| ICT and Internet Engineering - Ingegneria di Internet e delle Tecnologie per l'Informazione e la Comunicazione | FacoltadiIngegneria | 1:`Q66` 2:`Q66` | 1,2 | 16,27 | (62),(52) | 🟢 solo orari (esami: nessun appello 2026/27; presenti nel 2025/26 → riattivare quando pubblicano) |
 | Informatica (magistrale) | FacoltadiScienzeMatematiche-FisicheeNaturali | 1:`J65` 2:`J65` | 1,2 | 3,3 | 2,1 | ✅ orari+esami |
-| Ingegneria Civile | FacoltadiIngegneria | 1:`H30` 2:`H30` | 1,2 | 22,28 | (16),(29) | 🕓 orari+esami (appelli 2026/27 non ancora pubblicati; verificati sul 2025/26) |
+| Ingegneria Civile | FacoltadiIngegneria | 1:`H30` 2:`H30` | 1,2 | 22,28 | (16),(29) | 🟢 solo orari (esami: nessun appello 2026/27; presenti nel 2025/26 → riattivare quando pubblicano) |
 | Ingegneria Civile e Ambientale | FacoltadiIngegneria | 1:`K72` 2:`K72` 3:`K72` | 1,2,3 | 42,14,9 | 25,(65),(65) | ✅ orari+esami |
-| Ingegneria dell'Automazione | FacoltadiIngegneria | 1:`H31` 2:`H31` | 1,2 | 29,26 | (56),(78) | 🕓 orari+esami (appelli 2026/27 non ancora pubblicati; verificati sul 2025/26) |
+| Ingegneria dell'Automazione | FacoltadiIngegneria | 1:`H31` 2:`H31` | 1,2 | 29,26 | (56),(78) | 🟢 solo orari (esami: nessun appello 2026/27; presenti nel 2025/26 → riattivare quando pubblicano) |
 | Ingegneria dell'Edilizia | FacoltadiIngegneria | 1:`H20` 2:`H20` 3:`H20` | 1,2,3 | 8,21,15 | 12,6,(32) | ✅ orari+esami |
 | Ingegneria di Internet | FacoltadiIngegneria | 1:`P65` 2:`P65` 3:`P65` | 1,2,3 | 31,11,13 | 24,(34),(39) | ✅ orari+esami |
-| Ingegneria e Tecniche del Costruire | FacoltadiIngegneria | 1:`H32` 2:`H32` | 1,2 | 17,12 | (23),(18) | 🕓 orari+esami (appelli 2026/27 non ancora pubblicati; verificati sul 2025/26) |
+| Ingegneria e Tecniche del Costruire | FacoltadiIngegneria | 1:`H32` 2:`H32` | 1,2 | 17,12 | (23),(18) | 🟢 solo orari (esami: nessun appello 2026/27; presenti nel 2025/26 → riattivare quando pubblicano) |
 | Ingegneria Edile-architettura | FacoltadiIngegneria | 1:`J53` 2:`J53` 3:`J53` 4:`J53` 5:`J53` | 1,2,3,4,5 | 9,6,9,7,13 | 12,(42),(18),(25),(13) | ✅ orari+esami |
-| Ingegneria Elettronica (magistrale) | FacoltadiIngegneria | 1:`H33` 2:`H33` | 1,2 | 14,31 | (23),(22) | 🕓 orari+esami (appelli 2026/27 non ancora pubblicati; verificati sul 2025/26) |
+| Ingegneria Elettronica (magistrale) | FacoltadiIngegneria | 1:`H33` 2:`H33` | 1,2 | 14,31 | (23),(22) | 🟢 solo orari (esami: nessun appello 2026/27; presenti nel 2025/26 → riattivare quando pubblicano) |
 | Ingegneria Elettronica (triennale) | FacoltadiIngegneria | 1:`H21` 2:`H21` 3:`H21` | 1,2,3 | 39,10,11 | 25,(35),(45) | ✅ orari+esami |
-| Ingegneria Energetica | FacoltadiIngegneria | 1:`H34` 2:`H34` | 1,2 | 15,15 | (21),(25) | 🕓 orari+esami (appelli 2026/27 non ancora pubblicati; verificati sul 2025/26) |
+| Ingegneria Energetica | FacoltadiIngegneria | 1:`H34` 2:`H34` | 1,2 | 15,15 | (21),(25) | 🟢 solo orari (esami: nessun appello 2026/27; presenti nel 2025/26 → riattivare quando pubblicano) |
 | Ingegneria Gestionale (in Modalità Prevalentemente a Distanza) | FacoltadiIngegneria | 1:`V89` 2:`V89` 3:`V89` | 1,2,3 | 8,5,23 | 12,(57),(42) | ✅ orari+esami |
 | Ingegneria Gestionale (magistrale) | FacoltadiIngegneria | 1:`AC1` 2:`AC1` | 1,2 | 49,56 | (71),2 | ✅ orari+esami |
 | Ingegneria Gestionale (triennale) | FacoltadiIngegneria | 1:`U09` 2:`U09` 3:`U09` | 1,2,3 | 36,19,52 | 38,(93),(118) | ✅ orari+esami |
-| Ingegneria Informatica (magistrale) | FacoltadiIngegneria | 1:`H36` 2:`H36` | 1,2 | 13,30 | (67),(86) | 🕓 orari+esami (appelli 2026/27 non ancora pubblicati; verificati sul 2025/26) |
+| Ingegneria Informatica (magistrale) | FacoltadiIngegneria | 1:`H36` 2:`H36` | 1,2 | 13,30 | (67),(86) | 🟢 solo orari (esami: nessun appello 2026/27; presenti nel 2025/26 → riattivare quando pubblicano) |
 | Ingegneria Informatica (triennale) | FacoltadiIngegneria | 1:`U08` 2:`U08` 3:`U08` | 1,2,3 | 16,11,20 | 14,(59),(74) | ✅ orari+esami |
 | Ingegneria Meccanica (magistrale) | FacoltadiIngegneria | 1:`H37` 2:`H37` | 1,2 | 36,31 | (46),1 | ✅ orari+esami |
 | Ingegneria Meccanica (triennale) | FacoltadiIngegneria | 1:`H25` 2:`H25` 3:`H25` | 1,2,3 | 32,17,20 | 18,(68),(79) | ✅ orari+esami |
-| Ingegneria Medica (magistrale) | FacoltadiIngegneria | 1:`H38` 2:`H38` | 1,2 | 13,28 | (39),(37) | 🕓 orari+esami (appelli 2026/27 non ancora pubblicati; verificati sul 2025/26) |
+| Ingegneria Medica (magistrale) | FacoltadiIngegneria | 1:`H38` 2:`H38` | 1,2 | 13,28 | (39),(37) | 🟢 solo orari (esami: nessun appello 2026/27; presenti nel 2025/26 → riattivare quando pubblicano) |
 | Ingegneria Medica (triennale) | FacoltadiIngegneria | 1:`H26` 2:`H26` 3:`H26` | 1,2,3 | 42,10,13 | 25,1,(75) | ✅ orari+esami |
-| Ingegneria per l'Ambiente e il Territorio | FacoltadiIngegneria | 1:`H29` 2:`H29` | 1,2 | 10,17 | (13),(7) | 🕓 orari+esami (appelli 2026/27 non ancora pubblicati; verificati sul 2025/26) |
+| Ingegneria per l'Ambiente e il Territorio | FacoltadiIngegneria | 1:`H29` 2:`H29` | 1,2 | 10,17 | (13),(7) | 🟢 solo orari (esami: nessun appello 2026/27; presenti nel 2025/26 → riattivare quando pubblicano) |
 | Ingegneria per l'Energia e l'Ambiente | FacoltadiIngegneria | 1:`X63` 2:`X63` 3:`X63` | 1,2,3 | 40,16,16 | 24,(55),(54) | ✅ orari+esami |
 | Matematica | FacoltadiScienzeMatematiche-FisicheeNaturali | 1:`H11` 2:`H11` 3:`H11` | 1,2,3 | 13,13,22 | 1,1,2 | ✅ orari+esami |
 | Mechatronics Engineering | FacoltadiIngegneria | 1:`T20` 2:`T20` | 1,2 | 25,11 | 1,(53) | ✅ orari+esami |
-| Metodi e Modelli per Data Science | FacoltadiScienzeMatematiche-FisicheeNaturali | 1:`AA2` 2:`AA2` 3:`AA2` | 1,2,3 | 5,17,2 | (71),(34),(11) | 🕓 orari+esami (appelli 2026/27 non ancora pubblicati; verificati sul 2025/26) |
+| Metodi e Modelli per Data Science | FacoltadiScienzeMatematiche-FisicheeNaturali | 1:`AA2` 2:`AA2` 3:`AA2` | 1,2,3 | 5,17,2 | (71),(34),(11) | 🟢 solo orari (esami: nessun appello 2026/27; presenti nel 2025/26 → riattivare quando pubblicano) |
 | Pharmacy | FacoltadiScienzeMatematiche-FisicheeNaturali | 1:`AA4` 2:`AA4` 3:`AA4` 4:`AA4` 5:`AA4` | 1,2,3,4,5 | 5,8,3,9,6 | 10,7,4,7,2 | ✅ orari+esami |
-| Scienza dei Materiali | FacoltadiScienzeMatematiche-FisicheeNaturali | 1:`AB1` 2:`AB1` 3:`AB1` | 1,2,3 | 13,10,13 | (15),0,(1) | 🕓 orari+esami (appelli 2026/27 non ancora pubblicati; verificati sul 2025/26) |
+| Scienza dei Materiali | FacoltadiScienzeMatematiche-FisicheeNaturali | 1:`AB1` 2:`AB1` 3:`AB1` | 1,2,3 | 13,10,13 | (15),0,(1) | 🟢 solo orari (esami: nessun appello 2026/27; presenti nel 2025/26 → riattivare quando pubblicano) |
 | Scienza e Tecnologia dei Materiali | FacoltadiScienzeMatematiche-FisicheeNaturali | 1:`AA1` 2:`AA1` | 1,2 | 10,8 | 2,1 | ✅ orari+esami |
 | Scienze Biologiche | FacoltadiScienzeMatematiche-FisicheeNaturali | 1:`H03` 2:`H03` 3:`H03` | 1,2,3 | 29,16,7 | 2,(64),2 | ✅ orari+esami |
 

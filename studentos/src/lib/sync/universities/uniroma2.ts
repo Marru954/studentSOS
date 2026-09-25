@@ -16,7 +16,8 @@
  * September re-verification (2026-09-25): codes re-captured from combo.php aa=2026; degrees
  * whose 2026/27 timetable is not published (grid_call = 0 celle) were removed and stay manual —
  * originals are listed in _uniroma2_coverage.md. Degrees with no verifiable Appelli ship
- * timetable-only (`exams=false`).
+ * timetable-only (`exams=false`) when test_call has no Appelli in 2026/27 (strict rule; list in
+ * _uniroma2_coverage.md — re-enable when the exam calendars are published).
  */
 import type { LiveProgram, SyncSource, UniversityPreset } from "../provider";
 
@@ -158,14 +159,14 @@ const livePrograms: LiveProgram[] = [
     programme: "Biotecnologie Agrarie",
     sources: degreeSources("biotecnologie-agrarie", "FacoltadiScienzeMatematiche-FisicheeNaturali", [
       { year: 1, corso: "AB3", anno2: ["comune|1"] },
-    ]),
+    ], false),
   },
   {
     programme: "Chemical Nano-Engineering",
     sources: degreeSources("chemical-nano-engineering", "FacoltadiIngegneria", [
       { year: 1, corso: "W46", anno2: ["comune|1"] },
       { year: 2, corso: "W46", anno2: ["comune|2"] },
-    ]),
+    ], false),
   },
   {
     programme: "Chimica (magistrale)",
@@ -218,7 +219,7 @@ const livePrograms: LiveProgram[] = [
     sources: degreeSources("ict-and-internet-engineering-ingegneria-di-internet-e-delle-tecnologie-per-l-informazione-e-la-comunicazione", "FacoltadiIngegneria", [
       { year: 1, corso: "Q66", anno2: ["comune|1"] },
       { year: 2, corso: "Q66", anno2: ["comune|2"] },
-    ]),
+    ], false),
   },
   {
     programme: "Informatica (magistrale)",
@@ -232,7 +233,7 @@ const livePrograms: LiveProgram[] = [
     sources: degreeSources("ingegneria-civile", "FacoltadiIngegneria", [
       { year: 1, corso: "H30", anno2: ["infrastruttureesistemiditrasporto|1", "struttureegeotecnica|1"] },
       { year: 2, corso: "H30", anno2: ["infrastruttureesistemiditrasporto|2", "struttureegeotecnica|2"] },
-    ]),
+    ], false),
   },
   {
     programme: "Ingegneria Civile e Ambientale",
@@ -247,7 +248,7 @@ const livePrograms: LiveProgram[] = [
     sources: degreeSources("ingegneria-dell-automazione", "FacoltadiIngegneria", [
       { year: 1, corso: "H31", anno2: ["comune|1"] },
       { year: 2, corso: "H31", anno2: ["comune|2"] },
-    ]),
+    ], false),
   },
   {
     programme: "Ingegneria dell'Edilizia",
@@ -270,7 +271,7 @@ const livePrograms: LiveProgram[] = [
     sources: degreeSources("ingegneria-e-tecniche-del-costruire", "FacoltadiIngegneria", [
       { year: 1, corso: "H32", anno2: ["comune|1"] },
       { year: 2, corso: "H32", anno2: ["comune|2"] },
-    ]),
+    ], false),
   },
   {
     programme: "Ingegneria Edile-architettura",
@@ -287,7 +288,7 @@ const livePrograms: LiveProgram[] = [
     sources: degreeSources("ingegneria-elettronica-magistrale", "FacoltadiIngegneria", [
       { year: 1, corso: "H33", anno2: ["percorsoaelettronicaperlenergia|1", "percorsobelettronicaperlindustria|1", "percorsocelettronicaperlamedicina|1", "percorsodelettronicaperlospazioelasicurezza|1", "percorsoeelettronicaperildigitalchipdesign|1", "percorsofelettronicaperlfintelligenzaartificiale|1"] },
       { year: 2, corso: "H33", anno2: ["indirizzoaelettronicaperlenergia|2", "indirizzobelettronicaperlindustria|2", "indirizzocelettronicaperlasaluteelambiente|2", "indirizzodelettronicaperlospazioelasicurezza|2", "indirizzoeelettronicaperletelecomunicazionielamultimedialita|2"] },
-    ]),
+    ], false),
   },
   {
     programme: "Ingegneria Elettronica (triennale)",
@@ -302,7 +303,7 @@ const livePrograms: LiveProgram[] = [
     sources: degreeSources("ingegneria-energetica", "FacoltadiIngegneria", [
       { year: 1, corso: "H34", anno2: ["comune|1"] },
       { year: 2, corso: "H34", anno2: ["comune|2"] },
-    ]),
+    ], false),
   },
   {
     programme: "Ingegneria Gestionale (in Modalità Prevalentemente a Distanza)",
@@ -332,7 +333,7 @@ const livePrograms: LiveProgram[] = [
     sources: degreeSources("ingegneria-informatica-magistrale", "FacoltadiIngegneria", [
       { year: 1, corso: "H36", anno2: ["artificialintelligenceanddataengineering|1", "computerandinformationengineeringindirizzocybersecurity|1", "computerandinformationengineeringindirizzogenerale|1", "computerandinformationengineeringindirizzosystemsandsoftwareengineering|1"] },
       { year: 2, corso: "H36", anno2: ["computerandinformationengineeringindirizzocybersecurity|2", "computerandinformationengineeringindirizzogenerale|2", "computerandinformationengineeringindirizzosystemsandsoftwareengineering|2", "datascienceandengineering|2"] },
-    ]),
+    ], false),
   },
   {
     programme: "Ingegneria Informatica (triennale)",
@@ -362,7 +363,7 @@ const livePrograms: LiveProgram[] = [
     sources: degreeSources("ingegneria-medica-magistrale", "FacoltadiIngegneria", [
       { year: 1, corso: "H38", anno2: ["comune|1"] },
       { year: 2, corso: "H38", anno2: ["comune|2"] },
-    ]),
+    ], false),
   },
   {
     programme: "Ingegneria Medica (triennale)",
@@ -377,7 +378,7 @@ const livePrograms: LiveProgram[] = [
     sources: degreeSources("ingegneria-per-l-ambiente-e-il-territorio", "FacoltadiIngegneria", [
       { year: 1, corso: "H29", anno2: ["indirizzoininglese|1", "indirizzoinitaliano|1"] },
       { year: 2, corso: "H29", anno2: ["indirizzoininglese|2", "indirizzoinitaliano|2"] },
-    ]),
+    ], false),
   },
   {
     programme: "Ingegneria per l'Energia e l'Ambiente",
@@ -408,7 +409,7 @@ const livePrograms: LiveProgram[] = [
       { year: 1, corso: "AA2", anno2: ["comune|1"] },
       { year: 2, corso: "AA2", anno2: ["comune|2"] },
       { year: 3, corso: "AA2", anno2: ["comune|3"] },
-    ]),
+    ], false),
   },
   {
     programme: "Pharmacy",
@@ -426,7 +427,7 @@ const livePrograms: LiveProgram[] = [
       { year: 1, corso: "AB1", anno2: ["comune|1"] },
       { year: 2, corso: "AB1", anno2: ["comune|2"] },
       { year: 3, corso: "AB1", anno2: ["comune|3"] },
-    ]),
+    ], false),
   },
   {
     programme: "Scienza e Tecnologia dei Materiali",
