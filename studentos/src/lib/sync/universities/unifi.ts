@@ -9,7 +9,8 @@
  *
  * September re-verification (2026-09-25): codes re-captured from combo.php aa=2026; years whose
  * 2026/27 timetable returned 0 celle were removed (manual) — originals in _unifi_coverage.md.
- * `false` (last arg) = timetable only: no Appelli returned by test_call for that degree.
+ * `false` (last arg) = timetable only: test_call returned no Appelli in 2026/27 for that degree
+ * (strict rule; list in _unifi_coverage.md — re-enable when the exam calendars are published).
  */
 import type { LiveProgram, UniversityPreset } from "../provider";
 import { degreeSources } from "./easystaff";
@@ -50,7 +51,7 @@ const livePrograms: LiveProgram[] = [
     sources: degreeSources(BASE, ANNO, "architettura-magistrale-b348", "ScuoladiArchitettura", [
       { year: 1, corso: "B430", anno2: ["D59|1", "C61|1"] },
       { year: 2, corso: "B348", anno2: ["D59|2", "C61|2"] },
-    ]),
+    ], false),
   },
   {
     programme: "Architettura (ciclo unico)",
@@ -66,7 +67,7 @@ const livePrograms: LiveProgram[] = [
     sources: degreeSources(BASE, ANNO, "architettura-del-paesaggio-magistrale", "ScuoladiArchitettura", [
       { year: 1, corso: "B409", anno2: ["GEN|1"] },
       { year: 2, corso: "B409", anno2: ["GEN|2"] },
-    ]),
+    ], false),
   },
   {
     programme: "Architettura del Paesaggio (magistrale) (B268)",
@@ -87,13 +88,13 @@ const livePrograms: LiveProgram[] = [
     sources: degreeSources(BASE, ANNO, "biologia-dell-ambiente-e-del-comportamento-magistrale", "ScuoladiScienzeMatematiche-FisicheeNaturali", [
       { year: 1, corso: "B350", anno2: ["E86|1", "E85|1"] },
       { year: 2, corso: "B350", anno2: ["E86|2"] },
-    ]),
+    ], false),
   },
   {
     programme: "Biologia Dell'ambiente e del Comportamento (magistrale) (B232)",
     sources: degreeSources(BASE, ANNO, "biologia-dell-ambiente-e-del-comportamento-magistrale-b232", "ScuoladiScienzeMatematiche-FisicheeNaturali", [
       { year: 2, corso: "B350", anno2: ["E86|2", "E85|2"] },
-    ]),
+    ], false),
   },
   {
     programme: "Biologia Molecolare e Applicata",
@@ -121,7 +122,7 @@ const livePrograms: LiveProgram[] = [
     sources: degreeSources(BASE, ANNO, "biotecnologie-molecolari", "ScuoladiScienzeMatematiche-FisicheeNaturali", [
       { year: 1, corso: "B352", anno2: ["GEN|1"] },
       { year: 2, corso: "B352", anno2: ["GEN|2"] },
-    ]),
+    ], false),
   },
   {
     programme: "Biotecnologie per la Gestione Ambientale e L'agricoltura Sostenibile [b225]",
@@ -178,13 +179,13 @@ const livePrograms: LiveProgram[] = [
     sources: degreeSources(BASE, ANNO, "design-per-l-innovazione-sostenibile-magistrale", "ScuoladiArchitettura", [
       { year: 1, corso: "B355", anno2: ["GEN|1"] },
       { year: 2, corso: "B355", anno2: ["GEN|2"] },
-    ]),
+    ], false),
   },
   {
     programme: "Design per L'innovazione Sostenibile (magistrale) (B270)",
     sources: degreeSources(BASE, ANNO, "design-per-l-innovazione-sostenibile-magistrale-b270", "ScuoladiArchitettura", [
       { year: 2, corso: "B355", anno2: ["GEN|2"] },
-    ]),
+    ], false),
   },
   {
     programme: "Design Sistema Moda",
@@ -198,14 +199,14 @@ const livePrograms: LiveProgram[] = [
     sources: degreeSources(BASE, ANNO, "design-tessile-e-moda-magistrale", "ScuoladiArchitettura", [
       { year: 1, corso: "B404", anno2: ["GEN|1"] },
       { year: 2, corso: "B404", anno2: ["GEN|2"] },
-    ]),
+    ], false),
   },
   {
     programme: "Design Tessile e Moda (triennale)",
     sources: degreeSources(BASE, ANNO, "design-tessile-e-moda-triennale", "ScuoladiArchitettura", [
       { year: 2, corso: "B404", anno2: ["GEN|2"] },
       { year: 3, corso: "B246", anno2: ["GEN|3"] },
-    ]),
+    ], false),
   },
   {
     programme: "Diagnostica e Materiali per la Conservazione e il Restauro",
@@ -250,7 +251,7 @@ const livePrograms: LiveProgram[] = [
     sources: degreeSources(BASE, ANNO, "disegno-e-gestione-degli-interventi-sociali", "ScuoladiScienzePoliticheCesareAlfieri", [
       { year: 1, corso: "B382", anno2: ["GEN|1"] },
       { year: 2, corso: "B382", anno2: ["GEN|2"] },
-    ]),
+    ], false),
   },
   {
     programme: "Economia Aziendale",
@@ -413,7 +414,7 @@ const livePrograms: LiveProgram[] = [
     sources: degreeSources(BASE, ANNO, "giurisprudenza-italiana-e-tedesca", "ScuoladiGiurisprudenza", [
       { year: 1, corso: "B346", anno2: ["GEN|1"] },
       { year: 2, corso: "B346", anno2: ["GEN|2"] },
-    ]),
+    ], false),
   },
   {
     programme: "Governo e Direzione D'impresa",
@@ -599,7 +600,7 @@ const livePrograms: LiveProgram[] = [
     sources: degreeSources(BASE, ANNO, "intelligenza-artificiale", "ScuoladiIngegneria", [
       { year: 1, corso: "B340", anno2: ["GEN|1"] },
       { year: 2, corso: "B340", anno2: ["GEN|2"] },
-    ]),
+    ], false),
   },
   {
     programme: "Intermediazione Culturale e Religiosa",
@@ -657,7 +658,7 @@ const livePrograms: LiveProgram[] = [
     sources: degreeSources(BASE, ANNO, "management-engineering", "ScuoladiIngegneria", [
       { year: 1, corso: "B338", anno2: ["F056|1", "F081|1", "F061|1"] },
       { year: 2, corso: "B338", anno2: ["F061|2"] },
-    ]),
+    ], false),
   },
   {
     programme: "Matematica (magistrale)",
@@ -708,7 +709,7 @@ const livePrograms: LiveProgram[] = [
       { year: 4, corso: "B265", anno2: ["GEN|4"] },
       { year: 5, corso: "B125", anno2: ["GEN|5"] },
       { year: 6, corso: "B125", anno2: ["GEN|6"] },
-    ]),
+    ], false),
   },
   {
     programme: "Osteopatia",
@@ -731,7 +732,7 @@ const livePrograms: LiveProgram[] = [
       { year: 1, corso: "B323", anno2: ["GEN|1"] },
       { year: 2, corso: "B323", anno2: ["GEN|2"] },
       { year: 3, corso: "B031", anno2: ["GEN|3"] },
-    ]),
+    ], false),
   },
   {
     programme: "Physical and Astrophysical Sciences",
@@ -744,21 +745,21 @@ const livePrograms: LiveProgram[] = [
     sources: degreeSources(BASE, ANNO, "pianificazione-della-citta-del-territorio-e-del-paesaggio-magistrale", "ScuoladiArchitettura", [
       { year: 1, corso: "B317", anno2: ["GEN|1"] },
       { year: 2, corso: "B317", anno2: ["GEN|2"] },
-    ]),
+    ], false),
   },
   {
     programme: "Pianificazione della Citta', del Territorio e del Paesaggio (triennale)",
     sources: degreeSources(BASE, ANNO, "pianificazione-della-citta-del-territorio-e-del-paesaggio-triennale", "ScuoladiArchitettura", [
       { year: 2, corso: "B317", anno2: ["GEN|2"] },
       { year: 3, corso: "B016", anno2: ["GEN|3"] },
-    ]),
+    ], false),
   },
   {
     programme: "Pianificazione e Progettazione per la Sostenibilità Urbana e Territoriale (magistrale)",
     sources: degreeSources(BASE, ANNO, "pianificazione-e-progettazione-per-la-sostenibilita-urbana-e-territoriale-magistrale", "ScuoladiArchitettura", [
       { year: 1, corso: "B366", anno2: ["F068|1", "F069|1"] },
       { year: 2, corso: "B366", anno2: ["F068|2", "F069|2"] },
-    ]),
+    ], false),
   },
   {
     programme: "Pianificazione e Progettazione per la Sostenibilità Urbana e Territoriale (magistrale) (B269)",
@@ -771,7 +772,7 @@ const livePrograms: LiveProgram[] = [
     sources: degreeSources(BASE, ANNO, "politica-istituzioni-e-mercato", "ScuoladiScienzePoliticheCesareAlfieri", [
       { year: 1, corso: "B374", anno2: ["E52|1", "E51|1"] },
       { year: 2, corso: "B374", anno2: ["E52|2", "E51|2"] },
-    ]),
+    ], false),
   },
   {
     programme: "Pratiche, Linguaggi e Culture della Comunicazione",
@@ -790,7 +791,7 @@ const livePrograms: LiveProgram[] = [
     programme: "Product, Interior, Communication and Eco-social Design (triennale)",
     sources: degreeSources(BASE, ANNO, "product-interior-communication-and-eco-social-design-triennale", "ScuoladiArchitettura", [
       { year: 3, corso: "B251", anno2: ["GEN|3"] },
-    ]),
+    ], false),
   },
   {
     programme: "Progettazione e Gestione di Eventi e Imprese Dell'arte e dello Spettacolo",
@@ -881,7 +882,7 @@ const livePrograms: LiveProgram[] = [
     sources: degreeSources(BASE, ANNO, "scienze-chimiche", "ScuoladiScienzeMatematiche-FisicheeNaturali", [
       { year: 1, corso: "B371", anno2: ["D22|1", "D23|1", "D21|1", "D24|1", "D20|1"] },
       { year: 2, corso: "B371", anno2: ["D22|2", "D23|2", "D21|2", "D24|2", "D20|2"] },
-    ]),
+    ], false),
   },
   {
     programme: "Scienze dei Servizi Giuridici",
@@ -961,7 +962,7 @@ const livePrograms: LiveProgram[] = [
     sources: degreeSources(BASE, ANNO, "scienze-e-materiali-per-la-conservazione-e-il-restauro", "ScuoladiScienzeMatematiche-FisicheeNaturali", [
       { year: 1, corso: "B407", anno2: ["GEN|1"] },
       { year: 2, corso: "B407", anno2: ["GEN|2"] },
-    ]),
+    ], false),
   },
   {
     programme: "Scienze e Tecniche dello Sport e delle Attività Motorie Preventive e Adattate",
@@ -1013,7 +1014,7 @@ const livePrograms: LiveProgram[] = [
     sources: degreeSources(BASE, ANNO, "scienze-e-tecnologie-geologiche", "ScuoladiScienzeMatematiche-FisicheeNaturali", [
       { year: 1, corso: "B376", anno2: ["D25|1", "F001|1", "F002|1", "E48|1"] },
       { year: 2, corso: "B376", anno2: ["D25|2", "F001|2", "F002|2", "E48|2"] },
-    ]),
+    ], false),
   },
   {
     programme: "Scienze e Tecnologie per la Gestione degli Spazi Verdi e del Paesaggio [b235]",
@@ -1068,7 +1069,7 @@ const livePrograms: LiveProgram[] = [
       { year: 1, corso: "B326", anno2: ["GEN|1"] },
       { year: 2, corso: "B326", anno2: ["GEN|2"] },
       { year: 3, corso: "B035", anno2: ["GEN|3"] },
-    ]),
+    ], false),
   },
   {
     programme: "Scienze Infermieristiche e Ostetriche",
@@ -1145,7 +1146,7 @@ const livePrograms: LiveProgram[] = [
     programme: "Semestre Filtro",
     sources: degreeSources(BASE, ANNO, "semestre-filtro", "ScuoladiScienzedellaSaluteUmana", [
       { year: 1, corso: "SFM", anno2: ["BIO|1", "CHI|1", "FIS|1", "T|1"] },
-    ]),
+    ], false),
   },
   {
     programme: "Servizio Sociale (magistrale)",
@@ -1180,14 +1181,14 @@ const livePrograms: LiveProgram[] = [
     sources: degreeSources(BASE, ANNO, "statistica", "ScuoladiEconomiaeManagement", [
       { year: 1, corso: "B331", anno2: ["GEN|1"] },
       { year: 3, corso: "B039", anno2: ["GEN|3"] },
-    ]),
+    ], false),
   },
   {
     programme: "Statistica e Data Science",
     sources: degreeSources(BASE, ANNO, "statistica-e-data-science", "ScuoladiEconomiaeManagement", [
       { year: 1, corso: "B379", anno2: ["F076|1", "F075|1"] },
       { year: 2, corso: "B379", anno2: ["F076|2", "F075|2"] },
-    ]),
+    ], false),
   },
   {
     programme: "Storia",
@@ -1217,7 +1218,7 @@ const livePrograms: LiveProgram[] = [
     sources: degreeSources(BASE, ANNO, "strategie-di-comunicazione-nella-societa-digitale", "ScuoladiScienzePoliticheCesareAlfieri", [
       { year: 1, corso: "B419", anno2: ["GEN|1"] },
       { year: 2, corso: "B419", anno2: ["GEN|2"] },
-    ]),
+    ], false),
   },
   {
     programme: "Sustainable Business for Societal Challenges",
@@ -1281,7 +1282,7 @@ const livePrograms: LiveProgram[] = [
     sources: degreeSources(BASE, ANNO, "tecniche-e-tecnologie-per-le-costruzioni-e-il-territorio", "ScuoladiIngegneria", [
       { year: 1, corso: "B273", anno2: ["GEN|1"] },
       { year: 2, corso: "B273", anno2: ["GEN|2"] },
-    ]),
+    ], false),
   },
   {
     programme: "Tecniche Ortopediche (abilitante alla Professione Sanitaria di Tecnico Ortopedico)",

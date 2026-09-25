@@ -13,6 +13,45 @@ Sorgente: GET reale `https://kairos.unifi.it/agendaweb/combo.php?sw=ec_&aa=2026&
 - Programmi rimasti live solo in parte (alcuni anni rimossi): **16**
 - Le tabelle per scuola più sotto sono lo **storico della verifica 2025/26** e NON sono state rigenerate: fa fede questa sezione.
 
+### Corsi passati a solo-orari (exams:false) — 34
+
+Regola rigida: `exams:false` se `test_call.php` non restituisce appelli nella finestra 2026/27 (01-09-2026..30-09-2027). Da riattivare (ultimo argomento `false` di `degreeSources`) quando i calendari esami vengono pubblicati. 'Nel 2025/26' = il codice risponde con appelli della finestra precedente (calendario nuovo non ancora pubblicato); 'mai' = nessun appello neanche nel 2025/26.
+
+- Advanced Molecular Sciences — mai
+- Architettura (magistrale) (B348) — appelli nel 2025/26
+- Architettura del Paesaggio (magistrale) — appelli nel 2025/26
+- Architettura del Paesaggio (magistrale) (B268) — mai
+- Biologia Dell'ambiente e del Comportamento (magistrale) — appelli nel 2025/26
+- Biologia Dell'ambiente e del Comportamento (magistrale) (B232) — appelli nel 2025/26
+- Biotecnologie Molecolari — appelli nel 2025/26
+- Design per L'innovazione Sostenibile (magistrale) — appelli nel 2025/26
+- Design per L'innovazione Sostenibile (magistrale) (B270) — appelli nel 2025/26
+- Design Tessile e Moda (magistrale) — appelli nel 2025/26
+- Design Tessile e Moda (triennale) — appelli nel 2025/26
+- Dirigenza Scolastica e Pedagogia per L'inclusione — mai
+- Diritto per le Sostenibilita' e la Sicurezza — mai
+- Disegno e Gestione degli Interventi Sociali — appelli nel 2025/26
+- Giurisprudenza Italiana e Tedesca — appelli nel 2025/26
+- Intelligenza Artificiale — appelli nel 2025/26
+- Management Engineering — appelli nel 2025/26
+- Odontoiatria e Protesi Dentaria (ciclo unico) (B125) — appelli nel 2025/26
+- Ottica e Optometria — appelli nel 2025/26
+- Pianificazione della Citta', del Territorio e del Paesaggio (magistrale) — appelli nel 2025/26
+- Pianificazione della Citta', del Territorio e del Paesaggio (triennale) — appelli nel 2025/26
+- Pianificazione e Progettazione per la Sostenibilità Urbana e Territoriale (magistrale) — appelli nel 2025/26
+- Pianificazione e Progettazione per la Sostenibilità Urbana e Territoriale (magistrale) (B269) — mai
+- Politica, Istituzioni e Mercato — appelli nel 2025/26
+- Product, Interior, Communication and Eco-social Design (triennale) — appelli nel 2025/26
+- Scienze Chimiche — appelli nel 2025/26
+- Scienze e Materiali per la Conservazione e il Restauro — appelli nel 2025/26
+- Scienze e Tecnologie Geologiche — appelli nel 2025/26
+- Scienze Geologiche — appelli nel 2025/26
+- Semestre Filtro — appelli nel 2025/26
+- Statistica — appelli nel 2025/26
+- Statistica e Data Science — appelli nel 2025/26
+- Strategie di Comunicazione nella Società Digitale — appelli nel 2025/26
+- Tecniche e Tecnologie per le Costruzioni e il Territorio — appelli nel 2025/26
+
 ### Corsi live verificati (2026/27)
 
 | Corso | scuola | corso (per anno) | Anni live | celle/anno | appelli/anno | Stato |
@@ -21,17 +60,17 @@ Sorgente: GET reale `https://kairos.unifi.it/agendaweb/combo.php?sw=ec_&aa=2026&
 | Advanced Molecular Sciences | ScuoladiScienzeMatematiche-FisicheeNaturali | 2:`B370` | 2 | 14 | 0 | 🟢 solo orari (nessun appello) |
 | Archeologia | ScuoladiStudiUmanisticiedellaFormazione | 1:`B347` 2:`B347` | 1,2 | 18,19 | 19,0 | ✅ orari+esami |
 | Architettura (magistrale) | ScuoladiArchitettura | 1:`B387` 2:`B430` | 1,2 | 31,1 | 11,0 | ✅ orari+esami |
-| Architettura (magistrale) (B348) | ScuoladiArchitettura | 1:`B430` 2:`B348` | 1,2 | 16,9 | 0,(3) | 🕓 orari+esami (appelli 2026/27 non ancora pubblicati; verificati sul 2025/26) |
+| Architettura (magistrale) (B348) | ScuoladiArchitettura | 1:`B430` 2:`B348` | 1,2 | 16,9 | 0,(3) | 🟢 solo orari (esami: nessun appello 2026/27; presenti nel 2025/26 → riattivare quando pubblicano) |
 | Architettura (ciclo unico) | ScuoladiArchitettura | 2:`B387` 3:`B117` 4:`B117` 5:`B117` | 2,3,4,5 | 21,24,12,12 | 0,12,6,1 | ✅ orari+esami |
-| Architettura del Paesaggio (magistrale) | ScuoladiArchitettura | 1:`B409` 2:`B409` | 1,2 | 6,5 | (19),0 | 🕓 orari+esami (appelli 2026/27 non ancora pubblicati; verificati sul 2025/26) |
+| Architettura del Paesaggio (magistrale) | ScuoladiArchitettura | 1:`B409` 2:`B409` | 1,2 | 6,5 | (19),0 | 🟢 solo orari (esami: nessun appello 2026/27; presenti nel 2025/26 → riattivare quando pubblicano) |
 | Architettura del Paesaggio (magistrale) (B268) | ScuoladiArchitettura | 2:`B409` | 2 | 5 | 0 | 🟢 solo orari (nessun appello) |
 | Assistenza Sanitaria (abilitante alla Professione Sanitaria di Assistente Sanitario) | ScuoladiScienzedellaSaluteUmana | 1:`B178` 2:`B178` 3:`B178` | 1,2,3 | 6,6,6 | 34,1,5 | ✅ orari+esami |
-| Biologia Dell'ambiente e del Comportamento (magistrale) | ScuoladiScienzeMatematiche-FisicheeNaturali | 1:`B350` 2:`B350` | 1,2 | 17,12 | (37),(4) | 🕓 orari+esami (appelli 2026/27 non ancora pubblicati; verificati sul 2025/26) |
-| Biologia Dell'ambiente e del Comportamento (magistrale) (B232) | ScuoladiScienzeMatematiche-FisicheeNaturali | 2:`B350` | 2 | 21 | (4) | 🕓 orari+esami (appelli 2026/27 non ancora pubblicati; verificati sul 2025/26) |
+| Biologia Dell'ambiente e del Comportamento (magistrale) | ScuoladiScienzeMatematiche-FisicheeNaturali | 1:`B350` 2:`B350` | 1,2 | 17,12 | (37),(4) | 🟢 solo orari (esami: nessun appello 2026/27; presenti nel 2025/26 → riattivare quando pubblicano) |
+| Biologia Dell'ambiente e del Comportamento (magistrale) (B232) | ScuoladiScienzeMatematiche-FisicheeNaturali | 2:`B350` | 2 | 21 | (4) | 🟢 solo orari (esami: nessun appello 2026/27; presenti nel 2025/26 → riattivare quando pubblicano) |
 | Biologia Molecolare e Applicata | ScuoladiScienzeMatematiche-FisicheeNaturali | 1:`B351` 2:`B351` | 1,2 | 18,34 | 4,0 | ✅ orari+esami |
 | Biotecnologie | ScuoladiScienzedellaSaluteUmana | 2:`B301` 3:`B014` | 2,3 | 9,35 | 9,8 | ✅ orari+esami |
 | Biotecnologie Mediche e Farmaceutiche | ScuoladiScienzedellaSaluteUmana | 1:`B353` 2:`B353` | 1,2 | 9,22 | 57,0 | ✅ orari+esami |
-| Biotecnologie Molecolari | ScuoladiScienzeMatematiche-FisicheeNaturali | 1:`B352` 2:`B352` | 1,2 | 12,4 | (34),0 | 🕓 orari+esami (appelli 2026/27 non ancora pubblicati; verificati sul 2025/26) |
+| Biotecnologie Molecolari | ScuoladiScienzeMatematiche-FisicheeNaturali | 1:`B352` 2:`B352` | 1,2 | 12,4 | (34),0 | 🟢 solo orari (esami: nessun appello 2026/27; presenti nel 2025/26 → riattivare quando pubblicano) |
 | Biotecnologie per la Gestione Ambientale e L'agricoltura Sostenibile [b225] | ScuoladiAgraria | 2:`B422` | 2 | 8 | 24 | ✅ orari+esami |
 | Biotecnologie per la Gestione Ambientale e L'agricoltura Sostenibile [b422] | ScuoladiAgraria | 1:`B422` | 1 | 12 | 62 | ✅ orari+esami |
 | Chimica | ScuoladiScienzeMatematiche-FisicheeNaturali | 1:`B321` 2:`B321` 3:`B025` | 1,2,3 | 23,20,32 | 6,0,(82) | ✅ orari+esami |
@@ -39,17 +78,17 @@ Sorgente: GET reale `https://kairos.unifi.it/agendaweb/combo.php?sw=ec_&aa=2026&
 | Chimica e Tecnologia Farmaceutiche (ciclo unico) (B053) | ScuoladiScienzedellaSaluteUmana | 4:`B263` 5:`B053` | 4,5 | 9,6 | 11,2 | ✅ orari+esami |
 | Data Science, Calcolo Scientifico and Intelligenza Artificiale | ScuoladiScienzeMatematiche-FisicheeNaturali | 1:`B343` 2:`B343` | 1,2 | 16,16 | 1,0 | ✅ orari+esami |
 | Design of Sustainable Tourism Systems | ScuoladiEconomiaeManagement | 1:`B415` | 1 | 16 | 12 | ✅ orari+esami |
-| Design per L'innovazione Sostenibile (magistrale) | ScuoladiArchitettura | 1:`B355` 2:`B355` | 1,2 | 8,10 | (10),(2) | 🕓 orari+esami (appelli 2026/27 non ancora pubblicati; verificati sul 2025/26) |
-| Design per L'innovazione Sostenibile (magistrale) (B270) | ScuoladiArchitettura | 2:`B355` | 2 | 10 | (2) | 🕓 orari+esami (appelli 2026/27 non ancora pubblicati; verificati sul 2025/26) |
+| Design per L'innovazione Sostenibile (magistrale) | ScuoladiArchitettura | 1:`B355` 2:`B355` | 1,2 | 8,10 | (10),(2) | 🟢 solo orari (esami: nessun appello 2026/27; presenti nel 2025/26 → riattivare quando pubblicano) |
+| Design per L'innovazione Sostenibile (magistrale) (B270) | ScuoladiArchitettura | 2:`B355` | 2 | 10 | (2) | 🟢 solo orari (esami: nessun appello 2026/27; presenti nel 2025/26 → riattivare quando pubblicano) |
 | Design Sistema Moda | ScuoladiArchitettura | 1:`B354` 2:`B354` | 1,2 | 11,7 | 2,0 | ✅ orari+esami |
-| Design Tessile e Moda (magistrale) | ScuoladiArchitettura | 1:`B404` 2:`B404` | 1,2 | 7,5 | (50),(1) | 🕓 orari+esami (appelli 2026/27 non ancora pubblicati; verificati sul 2025/26) |
-| Design Tessile e Moda (triennale) | ScuoladiArchitettura | 2:`B404` 3:`B246` | 2,3 | 5,4 | (1),(21) | 🕓 orari+esami (appelli 2026/27 non ancora pubblicati; verificati sul 2025/26) |
+| Design Tessile e Moda (magistrale) | ScuoladiArchitettura | 1:`B404` 2:`B404` | 1,2 | 7,5 | (50),(1) | 🟢 solo orari (esami: nessun appello 2026/27; presenti nel 2025/26 → riattivare quando pubblicano) |
+| Design Tessile e Moda (triennale) | ScuoladiArchitettura | 2:`B404` 3:`B246` | 2,3 | 5,4 | (1),(21) | 🟢 solo orari (esami: nessun appello 2026/27; presenti nel 2025/26 → riattivare quando pubblicano) |
 | Diagnostica e Materiali per la Conservazione e il Restauro | ScuoladiScienzeMatematiche-FisicheeNaturali | 1:`B405` 2:`B405` 3:`B186` | 1,2,3 | 13,13,10 | 3,0,1 | ✅ orari+esami |
 | Dietistica (abilitante alla Professione Sanitaria di Dietista) | ScuoladiScienzedellaSaluteUmana | 1:`B170` 2:`B170` 3:`B170` | 1,2,3 | 5,12,7 | 34,1,1 | ✅ orari+esami |
 | Dirigenza Scolastica e Pedagogia per L'inclusione | ScuoladiStudiUmanisticiedellaFormazione | 1:`B431` 2:`B367` | 1,2 | 6,10 | 0,0 | 🟢 solo orari (nessun appello) |
 | Diritto per le Sostenibilita' e la Sicurezza | ScuoladiGiurisprudenza | 1:`B433` 2:`B386` | 1,2 | 19,6 | 0,0 | 🟢 solo orari (nessun appello) |
 | Discipline delle Arti, della Musica e dello Spettacolo | ScuoladiStudiUmanisticiedellaFormazione | 1:`B401` 2:`B401` 3:`B027` | 1,2,3 | 10,6,5 | 6,0,7 | ✅ orari+esami |
-| Disegno e Gestione degli Interventi Sociali | ScuoladiScienzePoliticheCesareAlfieri | 1:`B382` 2:`B382` | 1,2 | 13,6 | (44),(14) | 🕓 orari+esami (appelli 2026/27 non ancora pubblicati; verificati sul 2025/26) |
+| Disegno e Gestione degli Interventi Sociali | ScuoladiScienzePoliticheCesareAlfieri | 1:`B382` 2:`B382` | 1,2 | 13,6 | (44),(14) | 🟢 solo orari (esami: nessun appello 2026/27; presenti nel 2025/26 → riattivare quando pubblicano) |
 | Economia Aziendale | ScuoladiEconomiaeManagement | 1:`B395` 3:`B009` | 1,3 | 54,27 | 23,18 | ✅ orari+esami |
 | Economia e Commercio | ScuoladiEconomiaeManagement | 1:`B402` 3:`B034` | 1,3 | 54,41 | 23,7 | ✅ orari+esami |
 | Economia Istituzioni Sostenibilità / Economics Institutions Sustainability | ScuoladiEconomiaeManagement | 1:`B417` 2:`B417` | 1,2 | 31,9 | 2,(16) | ✅ orari+esami |
@@ -71,7 +110,7 @@ Sorgente: GET reale `https://kairos.unifi.it/agendaweb/combo.php?sw=ec_&aa=2026&
 | Giurisprudenza (ciclo unico) | ScuoladiGiurisprudenza | 1:`B344` 5:`1170` | 1,5 | 30,60 | 1,4 | ✅ orari+esami |
 | Giurisprudenza (ciclo unico) (1170) | ScuoladiGiurisprudenza | 2:`B344` 3:`1170` 4:`1170` 5:`1170` | 2,3,4,5 | 17,20,24,60 | 0,6,1,4 | ✅ orari+esami |
 | Giurisprudenza Italiana e Francese | ScuoladiGiurisprudenza | 1:`B345` 2:`B345` | 1,2 | 9,9 | 2,0 | ✅ orari+esami |
-| Giurisprudenza Italiana e Tedesca | ScuoladiGiurisprudenza | 1:`B346` 2:`B346` | 1,2 | 9,15 | (48),0 | 🕓 orari+esami (appelli 2026/27 non ancora pubblicati; verificati sul 2025/26) |
+| Giurisprudenza Italiana e Tedesca | ScuoladiGiurisprudenza | 1:`B346` 2:`B346` | 1,2 | 9,15 | (48),0 | 🟢 solo orari (esami: nessun appello 2026/27; presenti nel 2025/26 → riattivare quando pubblicano) |
 | Governo e Direzione D'impresa | ScuoladiEconomiaeManagement | 1:`B426` 2:`B426` | 1,2 | 12,13 | (46),3 | ✅ orari+esami |
 | Infermieristica (abilitante alla Professione Sanitaria di Infermiere) - Borgo San Lorenzo | ScuoladiScienzedellaSaluteUmana | 1:`B162_BORGO SAN LORENZO` 2:`B162_BORGO SAN LORENZO` 3:`B162_BORGO SAN LORENZO` | 1,2,3 | 7,1,1 | 20,(10),1 | ✅ orari+esami |
 | Infermieristica (abilitante alla Professione Sanitaria di Infermiere) - Empoli | ScuoladiScienzedellaSaluteUmana | 1:`B162_EMPOLI` 2:`B162_EMPOLI` 3:`B162_EMPOLI` | 1,2,3 | 5,1,1 | 11,(6),0 | ✅ orari+esami |
@@ -96,7 +135,7 @@ Sorgente: GET reale `https://kairos.unifi.it/agendaweb/combo.php?sw=ec_&aa=2026&
 | Ingegneria per la Tutela Dell'ambiente e del Territorio | ScuoladiIngegneria | 1:`B362` 2:`B362` | 1,2 | 18,14 | 13,0 | ✅ orari+esami |
 | Innovazione Sostenibile in Viticoltura ed Enologia [b253] | ScuoladiAgraria | 2:`B424` | 2 | 8 | 39 | ✅ orari+esami |
 | Innovazione Sostenibile in Viticoltura ed Enologia [b424] | ScuoladiAgraria | 1:`B424` | 1 | 5 | 52 | ✅ orari+esami |
-| Intelligenza Artificiale | ScuoladiIngegneria | 1:`B340` 2:`B340` | 1,2 | 16,12 | (46),0 | 🕓 orari+esami (appelli 2026/27 non ancora pubblicati; verificati sul 2025/26) |
+| Intelligenza Artificiale | ScuoladiIngegneria | 1:`B340` 2:`B340` | 1,2 | 16,12 | (46),0 | 🟢 solo orari (esami: nessun appello 2026/27; presenti nel 2025/26 → riattivare quando pubblicano) |
 | Intermediazione Culturale e Religiosa | ScuoladiStudiUmanisticiedellaFormazione | 1:`B342` 2:`B342` | 1,2 | 15,12 | 16,0 | ✅ orari+esami |
 | Lettere | ScuoladiStudiUmanisticiedellaFormazione | 1:`B393` 2:`B393` 3:`B200` | 1,2,3 | 29,68,54 | 22,0,27 | ✅ orari+esami |
 | Lingue e Civiltà Dell'asia e Dell'africa | ScuoladiStudiUmanisticiedellaFormazione | 1:`B363` 2:`B363` | 1,2 | 25,17 | 24,0 | ✅ orari+esami |
@@ -104,25 +143,25 @@ Sorgente: GET reale `https://kairos.unifi.it/agendaweb/combo.php?sw=ec_&aa=2026&
 | Lingue, Letterature e Studi Interculturali | ScuoladiStudiUmanisticiedellaFormazione | 1:`B394` 2:`B394` 3:`B004` | 1,2,3 | 92,140,80 | 54,0,50 | ✅ orari+esami |
 | Logica, Filosofia delle Scienze e Metodi della Ricerca | ScuoladiStudiUmanisticiedellaFormazione | 1:`B391` | 1 | 13 | 11 | ✅ orari+esami |
 | Logopedia (abilitante alla Professione Sanitaria di Logopedista) | ScuoladiScienzedellaSaluteUmana | 1:`B166` 2:`B166` 3:`B166` | 1,2,3 | 12,3,2 | 23,1,(15) | ✅ orari+esami |
-| Management Engineering | ScuoladiIngegneria | 1:`B338` 2:`B338` | 1,2 | 13,9 | (60),0 | 🕓 orari+esami (appelli 2026/27 non ancora pubblicati; verificati sul 2025/26) |
+| Management Engineering | ScuoladiIngegneria | 1:`B338` 2:`B338` | 1,2 | 13,9 | (60),0 | 🟢 solo orari (esami: nessun appello 2026/27; presenti nel 2025/26 → riattivare quando pubblicano) |
 | Matematica (magistrale) | ScuoladiScienzeMatematiche-FisicheeNaturali | 1:`B327` 2:`B364` | 1,2 | 13,3 | 1,0 | ✅ orari+esami |
 | Matematica (triennale) | ScuoladiScienzeMatematiche-FisicheeNaturali | 1:`B364` 2:`B327` 3:`B036` | 1,2,3 | 82,17,14 | 4,0,2 | ✅ orari+esami |
 | Mechanical Engineering for Sustainability | ScuoladiIngegneria | 1:`B341` 2:`B341` | 1,2 | 15,37 | 6,0 | ✅ orari+esami |
 | Medicina e Chirurgia | ScuoladiScienzedellaSaluteUmana | 1:`B414` 2:`B414` 3:`B240` 4:`B240` 5:`B240` 6:`B240` | 1,2,3,4,5,6 | 1,30,20,5,5,10 | 41,93,4,15,8,(4) | ✅ orari+esami |
 | Odontoiatria e Protesi Dentaria (ciclo unico) | ScuoladiScienzedellaSaluteUmana | 2:`B365` 3:`B265` 4:`B265` 5:`B125` 6:`B265` | 2,3,4,5,6 | 10,6,11,9,2 | 14,(20),0,(23),(1) | ✅ orari+esami |
-| Odontoiatria e Protesi Dentaria (ciclo unico) (B125) | ScuoladiScienzedellaSaluteUmana | 4:`B265` 5:`B125` 6:`B125` | 4,5,6 | 11,9,2 | 0,(23),(4) | 🕓 orari+esami (appelli 2026/27 non ancora pubblicati; verificati sul 2025/26) |
+| Odontoiatria e Protesi Dentaria (ciclo unico) (B125) | ScuoladiScienzedellaSaluteUmana | 4:`B265` 5:`B125` 6:`B125` | 4,5,6 | 11,9,2 | 0,(23),(4) | 🟢 solo orari (esami: nessun appello 2026/27; presenti nel 2025/26 → riattivare quando pubblicano) |
 | Osteopatia | ScuoladiScienzedellaSaluteUmana | 1:`B275` 2:`B275` | 1,2 | 9,3 | 16,1 | ✅ orari+esami |
 | Ostetricia (abilitante alla Professione Sanitaria di Ostetrica/o) | ScuoladiScienzedellaSaluteUmana | 1:`B163` 2:`B163` 3:`B163` | 1,2,3 | 2,1,2 | 8,1,5 | ✅ orari+esami |
-| Ottica e Optometria | ScuoladiScienzeMatematiche-FisicheeNaturali | 1:`B323` 2:`B323` 3:`B031` | 1,2,3 | 10,13,11 | (44),0,(31) | 🕓 orari+esami (appelli 2026/27 non ancora pubblicati; verificati sul 2025/26) |
+| Ottica e Optometria | ScuoladiScienzeMatematiche-FisicheeNaturali | 1:`B323` 2:`B323` 3:`B031` | 1,2,3 | 10,13,11 | (44),0,(31) | 🟢 solo orari (esami: nessun appello 2026/27; presenti nel 2025/26 → riattivare quando pubblicano) |
 | Physical and Astrophysical Sciences | ScuoladiScienzeMatematiche-FisicheeNaturali | 1:`B411` | 1 | 229 | 3 | ✅ orari+esami |
-| Pianificazione della Citta', del Territorio e del Paesaggio (magistrale) | ScuoladiArchitettura | 1:`B317` 2:`B317` | 1,2 | 5,5 | (34),(2) | 🕓 orari+esami (appelli 2026/27 non ancora pubblicati; verificati sul 2025/26) |
-| Pianificazione della Citta', del Territorio e del Paesaggio (triennale) | ScuoladiArchitettura | 2:`B317` 3:`B016` | 2,3 | 5,4 | (2),(18) | 🕓 orari+esami (appelli 2026/27 non ancora pubblicati; verificati sul 2025/26) |
-| Pianificazione e Progettazione per la Sostenibilità Urbana e Territoriale (magistrale) | ScuoladiArchitettura | 1:`B366` 2:`B366` | 1,2 | 6,10 | (20),0 | 🕓 orari+esami (appelli 2026/27 non ancora pubblicati; verificati sul 2025/26) |
+| Pianificazione della Citta', del Territorio e del Paesaggio (magistrale) | ScuoladiArchitettura | 1:`B317` 2:`B317` | 1,2 | 5,5 | (34),(2) | 🟢 solo orari (esami: nessun appello 2026/27; presenti nel 2025/26 → riattivare quando pubblicano) |
+| Pianificazione della Citta', del Territorio e del Paesaggio (triennale) | ScuoladiArchitettura | 2:`B317` 3:`B016` | 2,3 | 5,4 | (2),(18) | 🟢 solo orari (esami: nessun appello 2026/27; presenti nel 2025/26 → riattivare quando pubblicano) |
+| Pianificazione e Progettazione per la Sostenibilità Urbana e Territoriale (magistrale) | ScuoladiArchitettura | 1:`B366` 2:`B366` | 1,2 | 6,10 | (20),0 | 🟢 solo orari (esami: nessun appello 2026/27; presenti nel 2025/26 → riattivare quando pubblicano) |
 | Pianificazione e Progettazione per la Sostenibilità Urbana e Territoriale (magistrale) (B269) | ScuoladiArchitettura | 2:`B366` | 2 | 10 | 0 | 🟢 solo orari (nessun appello) |
-| Politica, Istituzioni e Mercato | ScuoladiScienzePoliticheCesareAlfieri | 1:`B374` 2:`B374` | 1,2 | 20,42 | (48),(49) | 🕓 orari+esami (appelli 2026/27 non ancora pubblicati; verificati sul 2025/26) |
+| Politica, Istituzioni e Mercato | ScuoladiScienzePoliticheCesareAlfieri | 1:`B374` 2:`B374` | 1,2 | 20,42 | (48),(49) | 🟢 solo orari (esami: nessun appello 2026/27; presenti nel 2025/26 → riattivare quando pubblicano) |
 | Pratiche, Linguaggi e Culture della Comunicazione | ScuoladiStudiUmanisticiedellaFormazione | 1:`B385` 2:`B385` | 1,2 | 11,9 | 13,0 | ✅ orari+esami |
 | Product, Interior, Communication and Eco-social Design (magistrale) | ScuoladiArchitettura | 1:`B303` | 1 | 12 | 10 | ✅ orari+esami |
-| Product, Interior, Communication and Eco-social Design (triennale) | ScuoladiArchitettura | 3:`B251` | 3 | 17 | (45) | 🕓 orari+esami (appelli 2026/27 non ancora pubblicati; verificati sul 2025/26) |
+| Product, Interior, Communication and Eco-social Design (triennale) | ScuoladiArchitettura | 3:`B251` | 3 | 17 | (45) | 🟢 solo orari (esami: nessun appello 2026/27; presenti nel 2025/26 → riattivare quando pubblicano) |
 | Progettazione e Gestione di Eventi e Imprese Dell'arte e dello Spettacolo | ScuoladiStudiUmanisticiedellaFormazione | 1:`B302` 2:`B302` 3:`B028` | 1,2,3 | 7,6,2 | 7,0,2 | ✅ orari+esami |
 | Psicologia Clinica e della Salute e Neuropsicologia (magistrale) | ScuoladiPsicologia | 1:`B368` 2:`B368` | 1,2 | 7,9 | 91,24 | ✅ orari+esami |
 | Psicologia Clinica e della Salute e Neuropsicologia (magistrale) (B267) | ScuoladiPsicologia | 2:`B368` | 2 | 9 | 24 | ✅ orari+esami |
@@ -135,7 +174,7 @@ Sorgente: GET reale `https://kairos.unifi.it/agendaweb/combo.php?sw=ec_&aa=2026&
 | Scienze Agrarie [b397] | ScuoladiAgraria | 1:`B397` | 1 | 6 | 52 | ✅ orari+esami |
 | Scienze Archivistiche e Biblioteconomiche | ScuoladiStudiUmanisticiedellaFormazione | 1:`B349` 2:`B349` | 1,2 | 11,22 | 9,0 | ✅ orari+esami |
 | Scienze Biologiche | ScuoladiScienzeMatematiche-FisicheeNaturali | 1:`B310` 2:`B310` 3:`B005` | 1,2,3 | 19,8,6 | 2,0,(41) | ✅ orari+esami |
-| Scienze Chimiche | ScuoladiScienzeMatematiche-FisicheeNaturali | 1:`B371` 2:`B371` | 1,2 | 37,27 | (138),0 | 🕓 orari+esami (appelli 2026/27 non ancora pubblicati; verificati sul 2025/26) |
+| Scienze Chimiche | ScuoladiScienzeMatematiche-FisicheeNaturali | 1:`B371` 2:`B371` | 1,2 | 37,27 | (138),0 | 🟢 solo orari (esami: nessun appello 2026/27; presenti nel 2025/26 → riattivare quando pubblicano) |
 | Scienze dei Servizi Giuridici | ScuoladiGiurisprudenza | 1:`B311` 2:`B311` 3:`B006` | 1,2,3 | 11,8,24 | 9,(1),3 | ✅ orari+esami |
 | Scienze Dell'alimentazione | ScuoladiScienzedellaSaluteUmana | 1:`B373` 2:`B373` | 1,2 | 10,4 | 14,(1) | ✅ orari+esami |
 | Scienze Dell'architettura | ScuoladiArchitettura | 1:`B313` 2:`B313` 3:`B008` | 1,2,3 | 14,16,5 | 7,0,6 | ✅ orari+esami |
@@ -146,7 +185,7 @@ Sorgente: GET reale `https://kairos.unifi.it/agendaweb/combo.php?sw=ec_&aa=2026&
 | Scienze dello Spettacolo | ScuoladiStudiUmanisticiedellaFormazione | 1:`B420` 2:`B420` | 1,2 | 25,2 | 14,0 | ✅ orari+esami |
 | Scienze e Gestione delle Risorse Faunistico-ambientali [B112] | ScuoladiAgraria | 2:`B381` | 2 | 5 | 18 | ✅ orari+esami |
 | Scienze e Gestione delle Risorse Faunistico-ambientali [b381] | ScuoladiAgraria | 1:`B381` | 1 | 13 | 52 | ✅ orari+esami |
-| Scienze e Materiali per la Conservazione e il Restauro | ScuoladiScienzeMatematiche-FisicheeNaturali | 1:`B407` 2:`B407` | 1,2 | 12,8 | (34),0 | 🕓 orari+esami (appelli 2026/27 non ancora pubblicati; verificati sul 2025/26) |
+| Scienze e Materiali per la Conservazione e il Restauro | ScuoladiScienzeMatematiche-FisicheeNaturali | 1:`B407` 2:`B407` | 1,2 | 12,8 | (34),0 | 🟢 solo orari (esami: nessun appello 2026/27; presenti nel 2025/26 → riattivare quando pubblicano) |
 | Scienze e Tecniche dello Sport e delle Attività Motorie Preventive e Adattate | ScuoladiScienzedellaSaluteUmana | 1:`B390` 2:`B390` | 1,2 | 11,3 | 10,(1) | ✅ orari+esami |
 | Scienze e Tecniche Psicologiche (magistrale) | ScuoladiPsicologia | 1:`B319` 2:`B319` | 1,2 | 6,5 | 56,15 | ✅ orari+esami |
 | Scienze e Tecniche Psicologiche (triennale) | ScuoladiPsicologia | 2:`B319` 3:`B018` | 2,3 | 5,9 | 15,83 | ✅ orari+esami |
@@ -154,7 +193,7 @@ Sorgente: GET reale `https://kairos.unifi.it/agendaweb/combo.php?sw=ec_&aa=2026&
 | Scienze e Tecnologie Agrarie [b375] | ScuoladiAgraria | 1:`B375` | 1 | 9 | 66 | ✅ orari+esami |
 | Scienze e Tecnologie dei Sistemi Forestali [b102] | ScuoladiAgraria | 2:`B425` | 2 | 15 | 43 | ✅ orari+esami |
 | Scienze e Tecnologie dei Sistemi Forestali [b425] | ScuoladiAgraria | 1:`B425` | 1 | 9 | 56 | ✅ orari+esami |
-| Scienze e Tecnologie Geologiche | ScuoladiScienzeMatematiche-FisicheeNaturali | 1:`B376` 2:`B376` | 1,2 | 48,32 | (137),0 | 🕓 orari+esami (appelli 2026/27 non ancora pubblicati; verificati sul 2025/26) |
+| Scienze e Tecnologie Geologiche | ScuoladiScienzeMatematiche-FisicheeNaturali | 1:`B376` 2:`B376` | 1,2 | 48,32 | (137),0 | 🟢 solo orari (esami: nessun appello 2026/27; presenti nel 2025/26 → riattivare quando pubblicano) |
 | Scienze e Tecnologie per la Gestione degli Spazi Verdi e del Paesaggio [b235] | ScuoladiAgraria | 3:`B235` | 3 | 11 | 57 | ✅ orari+esami |
 | Scienze Farmaceutiche Applicate-controllo Qualità | ScuoladiScienzedellaSaluteUmana | 1:`B400` 2:`B400` 3:`B193` | 1,2,3 | 9,6,9 | 17,6,17 | ✅ orari+esami |
 | Scienze Faunistiche [B191] | ScuoladiAgraria | 2:`B329` 3:`B191` | 2,3 | 9,6 | 33,43 | ✅ orari+esami |
@@ -162,7 +201,7 @@ Sorgente: GET reale `https://kairos.unifi.it/agendaweb/combo.php?sw=ec_&aa=2026&
 | Scienze Filosofiche | ScuoladiStudiUmanisticiedellaFormazione | 1:`B378` 2:`B378` | 1,2 | 64,30 | 34,15 | ✅ orari+esami |
 | Scienze Forestali e Ambientali [b019] | ScuoladiAgraria | 2:`B396` 3:`B019` | 2,3 | 5,7 | 35,47 | ✅ orari+esami |
 | Scienze Forestali e Ambientali [b396] | ScuoladiAgraria | 1:`B396` | 1 | 9 | 53 | ✅ orari+esami |
-| Scienze Geologiche | ScuoladiScienzeMatematiche-FisicheeNaturali | 1:`B326` 2:`B326` 3:`B035` | 1,2,3 | 11,14,7 | (18),0,(19) | 🕓 orari+esami (appelli 2026/27 non ancora pubblicati; verificati sul 2025/26) |
+| Scienze Geologiche | ScuoladiScienzeMatematiche-FisicheeNaturali | 1:`B326` 2:`B326` 3:`B035` | 1,2,3 | 11,14,7 | (18),0,(19) | 🟢 solo orari (esami: nessun appello 2026/27; presenti nel 2025/26 → riattivare quando pubblicano) |
 | Scienze Infermieristiche e Ostetriche | ScuoladiScienzedellaSaluteUmana | 2:`B180` | 2 | 13 | 2 | ✅ orari+esami |
 | Scienze Motorie, Sport e Salute | ScuoladiScienzedellaSaluteUmana | 1:`B318` 2:`B318` 3:`B122` | 1,2,3 | 10,9,11 | 23,11,7 | ✅ orari+esami |
 | Scienze Naturali | ScuoladiScienzeMatematiche-FisicheeNaturali | 1:`B325` 2:`B325` 3:`B033` | 1,2,3 | 6,12,3 | 3,0,(39) | ✅ orari+esami |
@@ -173,17 +212,17 @@ Sorgente: GET reale `https://kairos.unifi.it/agendaweb/combo.php?sw=ec_&aa=2026&
 | Scienze Storiche | ScuoladiStudiUmanisticiedellaFormazione | 1:`B380` 2:`B380` | 1,2 | 14,25 | 25,0 | ✅ orari+esami |
 | Scienze Umanistiche per la Comunicazione | ScuoladiStudiUmanisticiedellaFormazione | 1:`B316` 2:`B316` 3:`B195` | 1,2,3 | 6,13,2 | 16,0,8 | ✅ orari+esami |
 | Scienze Vivaistiche e Progettazione degli Spazi Verdi [b398] | ScuoladiAgraria | 1:`B398` | 1 | 6 | 44 | ✅ orari+esami |
-| Semestre Filtro | ScuoladiScienzedellaSaluteUmana | 1:`SFM` | 1 | 24 | (2) | 🕓 orari+esami (appelli 2026/27 non ancora pubblicati; verificati sul 2025/26) |
+| Semestre Filtro | ScuoladiScienzedellaSaluteUmana | 1:`SFM` | 1 | 24 | (2) | 🟢 solo orari (esami: nessun appello 2026/27; presenti nel 2025/26 → riattivare quando pubblicano) |
 | Servizio Sociale (magistrale) | ScuoladiScienzePoliticheCesareAlfieri | 1:`B330` 2:`B330` | 1,2 | 5,16 | 1,1 | ✅ orari+esami |
 | Servizio Sociale (triennale) | ScuoladiScienzePoliticheCesareAlfieri | 2:`B330` 3:`B201` | 2,3 | 16,5 | 1,(29) | ✅ orari+esami |
 | Sociologia e Sfide Globali | ScuoladiScienzePoliticheCesareAlfieri | 1:`B383` 2:`B383` | 1,2 | 6,15 | (24),1 | ✅ orari+esami |
 | Software: Science and Technology | ScuoladiScienzeMatematiche-FisicheeNaturali | 1:`B335` 2:`B335` | 1,2 | 14,6 | 3,0 | ✅ orari+esami |
-| Statistica | ScuoladiEconomiaeManagement | 1:`B331` 3:`B039` | 1,3 | 13,11 | (55),(45) | 🕓 orari+esami (appelli 2026/27 non ancora pubblicati; verificati sul 2025/26) |
-| Statistica e Data Science | ScuoladiEconomiaeManagement | 1:`B379` 2:`B379` | 1,2 | 9,23 | (32),0 | 🕓 orari+esami (appelli 2026/27 non ancora pubblicati; verificati sul 2025/26) |
+| Statistica | ScuoladiEconomiaeManagement | 1:`B331` 3:`B039` | 1,3 | 13,11 | (55),(45) | 🟢 solo orari (esami: nessun appello 2026/27; presenti nel 2025/26 → riattivare quando pubblicano) |
+| Statistica e Data Science | ScuoladiEconomiaeManagement | 1:`B379` 2:`B379` | 1,2 | 9,23 | (32),0 | 🟢 solo orari (esami: nessun appello 2026/27; presenti nel 2025/26 → riattivare quando pubblicano) |
 | Storia | ScuoladiStudiUmanisticiedellaFormazione | 1:`B332` 2:`B332` 3:`B040` | 1,2,3 | 5,26,22 | 6,0,20 | ✅ orari+esami |
 | Storia Dell'arte | ScuoladiStudiUmanisticiedellaFormazione | 1:`B384` 2:`B384` | 1,2 | 15,3 | 15,0 | ✅ orari+esami |
 | Storia e Tutela dei Beni Archeologici, Artistici, Archivistici e Librari | ScuoladiStudiUmanisticiedellaFormazione | 1:`B392` 2:`B392` 3:`B001` | 1,2,3 | 42,81,29 | 16,0,26 | ✅ orari+esami |
-| Strategie di Comunicazione nella Società Digitale | ScuoladiScienzePoliticheCesareAlfieri | 1:`B419` 2:`B419` | 1,2 | 14,24 | (54),(11) | 🕓 orari+esami (appelli 2026/27 non ancora pubblicati; verificati sul 2025/26) |
+| Strategie di Comunicazione nella Società Digitale | ScuoladiScienzePoliticheCesareAlfieri | 1:`B419` 2:`B419` | 1,2 | 14,24 | (54),(11) | 🟢 solo orari (esami: nessun appello 2026/27; presenti nel 2025/26 → riattivare quando pubblicano) |
 | Sustainable Business for Societal Challenges | ScuoladiEconomiaeManagement | 1:`B314` | 1 | 9 | 13 | ✅ orari+esami |
 | Sustainable Business for Societal Challenges. | ScuoladiEconomiaeManagement | 3:`B247` | 3 | 7 | 5 | ✅ orari+esami |
 | Sviluppo Sostenibile, Cooperazione e Gestione dei Conflitti (magistrale) | ScuoladiEconomiaeManagement | 1:`B328` 2:`B328` | 1,2 | 8,12 | (40),11 | ✅ orari+esami |
@@ -192,7 +231,7 @@ Sorgente: GET reale `https://kairos.unifi.it/agendaweb/combo.php?sw=ec_&aa=2026&
 | Tecniche di Laboratorio Biomedico (abilitante alla Professione Sanitaria di Tecnico di Laboratorio Biomedico) | ScuoladiScienzedellaSaluteUmana | 1:`B174` 2:`B174` 3:`B174` | 1,2,3 | 7,15,7 | 30,1,5 | ✅ orari+esami |
 | Tecniche di Neurofisiopatologia (abilitante alla Professione Sanitaria di Tecnico di Neurofisiopatologia) | ScuoladiScienzedellaSaluteUmana | 1:`B202` 2:`B202` 3:`B202` | 1,2,3 | 5,1,2 | 18,(3),5 | ✅ orari+esami |
 | Tecniche di Radiologia Medica, per Immagini e Radioterapia (abilitante alla Professione Sanitaria di Tecnico di Radiologia Medica) | ScuoladiScienzedellaSaluteUmana | 1:`B176` 2:`B176` 3:`B176` | 1,2,3 | 7,11,4 | 16,(11),1 | ✅ orari+esami |
-| Tecniche e Tecnologie per le Costruzioni e il Territorio | ScuoladiIngegneria | 1:`B273` 2:`B273` | 1,2 | 8,9 | (64),(33) | 🕓 orari+esami (appelli 2026/27 non ancora pubblicati; verificati sul 2025/26) |
+| Tecniche e Tecnologie per le Costruzioni e il Territorio | ScuoladiIngegneria | 1:`B273` 2:`B273` | 1,2 | 8,9 | (64),(33) | 🟢 solo orari (esami: nessun appello 2026/27; presenti nel 2025/26 → riattivare quando pubblicano) |
 | Tecniche Ortopediche (abilitante alla Professione Sanitaria di Tecnico Ortopedico) | ScuoladiScienzedellaSaluteUmana | 1:`B177` 2:`B177` 3:`B177` | 1,2,3 | 5,3,4 | 29,14,6 | ✅ orari+esami |
 | Tecnologie Alimentari [b024] | ScuoladiAgraria | 2:`B320` 3:`B024` | 2,3 | 8,4 | 34,22 | ✅ orari+esami |
 | Tecnologie Alimentari [b320] | ScuoladiAgraria | 1:`B320` | 1 | 6 | 51 | ✅ orari+esami |
