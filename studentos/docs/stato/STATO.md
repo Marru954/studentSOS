@@ -3,6 +3,11 @@
 Aggiornato: 2026-09-25 (ri-cattura codici 2026 su 18 atenei; pulizia gate/esse3/easyAcademyPreset/Delphi; hook muri #1 e #2)
 
 ## Completati
+### Sessione 2026-09-25 (quater) — merge su main + controllo conflitti con altri branch
+✅ `claude/recattura-codici-2026` mergiato su main (508651d, safe-merge da worktree, tag rollback/2026-09-25-191250).
+⚠️ Conflitti CON `claude/easyacademy-preset-codes-2026-b21e85` (altra sessione, non mergiato; controllo read-only `merge-tree`): `package.json`, `unifi.ts`, `unina.ts`, `uniroma2.ts`. Sovrapposizione semantica: quel branch ri-cattura a mano unifi/unina/uniroma2 (5-10 POST/settimana, toglie anni senza celle) e applica una "regola esami rigida" (esami solo-orari dove non ci sono appelli 2026/27) — mentre `recapture-codes.ts` su main tiene i flag esami. Ha anche fix non-preset (falsi conflitti d'orario in `detectAlerts`, sync in volo in `state/synced.ts`, test nuovi) che NON confliggono. Da fare al suo merge: rigenerare i 3 preset con `recapture-codes.ts` su main e riapplicare la regola esami, invece di risolvere a mano i conflitti dei file preset.
+✅ Regola di autonomia post-merge scritta in CLAUDE.md e in memoria.
+
 ### Sessione 2026-09-25 (ter) — ri-cattura codici 2026 (branch claude/recattura-codici-2026)
 🐞 Causa radice del /orario vuoto: i file preset contenevano il catalogo 2025 (codici `corso`/`anno2` rinumerati o corsi chiusi nel combo 2026), con solo `ANNO` bumpato.
 ✅ Nuovi tool (sola lettura di rete, nessuna dipendenza): `scripts/audit-codes.ts` (verifica ogni sorgente: check strutturale sul combo + POST grid_call su settimane campione) e `scripts/recapture-codes.ts` (rigenera i file preset dal combo 2026; continuità per CODICE+etichetta, nomi vecchi mantenuti; tiene solo anni con `celle>0`; aggiunge corsi nuovi verificati, esami spenti).
