@@ -18,21 +18,21 @@ const livePrograms: LiveProgram[] = [
     programme: "Amministrazione, Finanza e Controllo",
     sources: degreeSources(BASE, ANNO, "amministrazione-finanza-e-controllo", "DipartimentodiEconomia", [
       { year: 1, corso: "M0205", anno2: ["E01|1", "E03|1", "E04|1", "E02|1"] },
-      { year: 2, corso: "LM22", anno2: ["E01|2", "E03|2", "E04|2", "E02|2"] },
+      { year: 2, corso: "M0205", anno2: ["E01|2", "E03|2", "E04|2", "E02|2"] },
     ]),
   },
   {
     programme: "Archeologia e Storia Dell'arte",
     sources: degreeSources(BASE, ANNO, "archeologia-e-storia-dell-arte", "DipartimentodiLettere-Lingue-LetteratureeCiviltaAnticheeModerne", [
-      { year: 1, corso: "M0829", anno2: ["ARCH|1", "ST|1"] },
-      { year: 2, corso: "LM97", anno2: ["ARCH|2", "ST|2"] },
+      { year: 1, corso: "M0829", anno2: ["ARCH|1", "STO|1"] },
+      { year: 2, corso: "M0829", anno2: ["ARC|2", "STO|2"] },
     ]),
   },
   {
     programme: "Beni Culturali",
     sources: degreeSources(BASE, ANNO, "beni-culturali", "DipartimentodiLettere-Lingue-LetteratureeCiviltaAnticheeModerne", [
       { year: 1, corso: "L0819", anno2: ["GEN|1"] },
-      { year: 2, corso: "L038", anno2: ["510|2", "305|2", "308|2"] },
+      { year: 2, corso: "L0819", anno2: ["510|2", "305|2", "308|2"] },
       { year: 3, corso: "L038", anno2: ["510|3", "305|3", "308|3"] },
     ]),
   },
@@ -40,14 +40,14 @@ const livePrograms: LiveProgram[] = [
     programme: "Biologia",
     sources: degreeSources(BASE, ANNO, "biologia", "DipartimentodiChimica-BiologiaeBiotecnologie", [
       { year: 1, corso: "M0101", anno2: ["E07|1", "E05|1", "E04|1", "E03|1"] },
-      { year: 2, corso: "LM60", anno2: ["E07|2", "E05|2", "E04|2", "E03|2"] },
+      { year: 2, corso: "M0101", anno2: ["E07|2", "E05|2", "E04|2", "E03|2"] },
     ]),
   },
   {
     programme: "Biotecnologie",
     sources: degreeSources(BASE, ANNO, "biotecnologie", "DipartimentodiChimica-BiologiaeBiotecnologie", [
       { year: 1, corso: "L0103", anno2: ["GEN_CANA|1", "GEN_CANB|1", "GEN_CANC|1"] },
-      { year: 2, corso: "L102", anno2: ["GEN_CANA|2", "GEN_CANB|2"] },
+      { year: 2, corso: "L0103", anno2: ["GEN_CANA|2", "GEN_CANB|2"] },
       { year: 3, corso: "L102", anno2: ["GEN|3"] },
     ]),
   },
@@ -55,21 +55,21 @@ const livePrograms: LiveProgram[] = [
     programme: "Biotecnologie Farmaceutiche",
     sources: degreeSources(BASE, ANNO, "biotecnologie-farmaceutiche", "DipartimentodiScienzeFarmaceutiche", [
       { year: 1, corso: "M1339", anno2: ["GEN|1"] },
-      { year: 2, corso: "LM38", anno2: ["GEN|2"] },
+      { year: 2, corso: "M1339", anno2: ["GEN|2"] },
     ]),
   },
   {
     programme: "Biotecnologie Molecolari e Industriali",
     sources: degreeSources(BASE, ANNO, "biotecnologie-molecolari-e-industriali", "DipartimentodiChimica-BiologiaeBiotecnologie", [
       { year: 1, corso: "M0102", anno2: ["GEN|1"] },
-      { year: 2, corso: "LM46", anno2: ["GEN|2"] },
+      { year: 2, corso: "M0102", anno2: ["GEN|2"] },
     ]),
   },
   {
     programme: "Chimica",
     sources: degreeSources(BASE, ANNO, "chimica", "DipartimentodiChimica-BiologiaeBiotecnologie", [
       { year: 1, corso: "L0101", anno2: ["GEN|1"] },
-      { year: 2, corso: "L060", anno2: ["GEN|2"] },
+      { year: 2, corso: "L0101", anno2: ["GEN|2"] },
       { year: 3, corso: "L060", anno2: ["GEN|3"] },
     ]),
   },
@@ -77,7 +77,7 @@ const livePrograms: LiveProgram[] = [
     programme: "Chimica e Tecnologia Farmaceutiche (ciclo unico)",
     sources: degreeSources(BASE, ANNO, "chimica-e-tecnologia-farmaceutiche-ciclo-unico", "DipartimentodiScienzeFarmaceutiche", [
       { year: 1, corso: "U1308", anno2: ["GEN|1"] },
-      { year: 2, corso: "MA05", anno2: ["GEN|2"] },
+      { year: 2, corso: "U1308", anno2: ["GEN|2"] },
       { year: 3, corso: "MA05", anno2: ["GEN|3"] },
       { year: 4, corso: "MA05", anno2: ["GEN|4"] },
       { year: 5, corso: "MA05", anno2: ["GEN|5"] },
@@ -86,39 +86,35 @@ const livePrograms: LiveProgram[] = [
   {
     programme: "Chimica e Tecnologia Farmaceutiche (triennale)",
     sources: degreeSources(BASE, ANNO, "chimica-e-tecnologia-farmaceutiche-triennale", "DipartimentodiScienzeFarmaceutiche", [
-      { year: 4, corso: "MU05", anno2: ["GEN|4"] },
+      { year: 5, corso: "MU05", anno2: ["GEN|5"] },
     ]),
   },
   {
     programme: "Comunicazione Digitale e D'impresa",
     sources: degreeSources(BASE, ANNO, "comunicazione-digitale-e-d-impresa", "DipartimentodiScienzePolitiche", [
       { year: 1, corso: "M1444", anno2: ["GEN|1"] },
-    ]),
-  },
-  {
-    programme: "Comunicazione Pubblica, Digitale e D'impresa",
-    sources: degreeSources(BASE, ANNO, "comunicazione-pubblica-digitale-e-d-impresa", "DipartimentodiScienzePolitiche", [
-      { year: 2, corso: "LM95", anno2: ["276|2", "791|2"] },
+      { year: 2, corso: "M1444", anno2: ["GEN|2"] },
     ]),
   },
   {
     programme: "Consulenza Pedagogica e Coordinamento di Interventi Formativi",
     sources: degreeSources(BASE, ANNO, "consulenza-pedagogica-e-coordinamento-di-interventi-formativi", "DipartimentodiFilosofia-ScienzeSociali-UmaneedellaFormazione", [
       { year: 1, corso: "M0309", anno2: ["GEN|1"] },
-      { year: 2, corso: "LM59", anno2: ["GEN|2"] },
+      { year: 2, corso: "M0309", anno2: ["GEN|2"] },
     ]),
   },
   {
     programme: "Controllo di Qualità dei Prodotti per la Salute",
-    sources: degreeSources(BASE, ANNO, "controllo-di-qualita-dei-prodotti-per-la-salute", "DipartimentodiScienzeFarmaceutiche", [
+    sources: degreeSources(BASE, ANNO, "controllo-di-qualita-dei-prodotti-per-la-salute", "", [
       { year: 1, corso: "L1328", anno2: ["GEN|1"] },
+      { year: 2, corso: "L1328", anno2: ["GEN|2"] },
     ]),
   },
   {
     programme: "Economia e Management",
     sources: degreeSources(BASE, ANNO, "economia-e-management", "DipartimentodiEconomia", [
       { year: 1, corso: "M0206", anno2: ["E01|1", "E02|1"] },
-      { year: 2, corso: "LM02", anno2: ["E01|2", "E02|2"] },
+      { year: 2, corso: "M0206", anno2: ["E01|2", "E02|2"] },
     ]),
   },
   {
@@ -126,45 +122,39 @@ const livePrograms: LiveProgram[] = [
     sources: degreeSources(BASE, ANNO, "economia-aziendale", "DipartimentodiEconomia", [
       { year: 1, corso: "L029", anno2: ["E01|1", "E04|1", "E03|1", "E02|1", "E05|1"] },
       { year: 2, corso: "L029", anno2: ["E01|2", "E04|2", "E03|2", "E02|2", "E05|2"] },
-      { year: 3, corso: "L021", anno2: ["758|3", "759|3", "760|3"] },
+      { year: 3, corso: "L029", anno2: ["E01|3", "E04|3", "E03|3", "E02|3", "E05|3"] },
     ]),
   },
   {
     programme: "Farmacia",
     sources: degreeSources(BASE, ANNO, "farmacia", "DipartimentodiScienzeFarmaceutiche", [
       { year: 1, corso: "U1307", anno2: ["GEN|1"] },
-      { year: 2, corso: "MA04", anno2: ["GEN|2"] },
+      { year: 2, corso: "U1307", anno2: ["GEN|2"] },
       { year: 3, corso: "MA04", anno2: ["GEN|3"] },
-      { year: 4, corso: "MU04", anno2: ["GEN|4"] },
-      { year: 5, corso: "MA04", anno2: ["GEN|5"] },
+      { year: 4, corso: "MA04", anno2: ["GEN|4"] },
+      { year: 5, corso: "MU04", anno2: ["GEN|5"] },
     ]),
   },
   {
     programme: "Filosofia e Scienze e Tecniche Psicologiche",
     sources: degreeSources(BASE, ANNO, "filosofia-e-scienze-e-tecniche-psicologiche", "DipartimentodiFilosofia-ScienzeSociali-UmaneedellaFormazione", [
-      { year: 1, corso: "L0306", anno2: ["FIL-A|1", "FIL-B|1", "FIL-C|1", "FIL-DTS|1", "FIL-B|1", "FIL-C|1", "PSI-A|1", "PSI-B|1", "PSI-C|1", "PSI-DTS|1", "PSI-B|1", "PSI-C|1"] },
-      { year: 2, corso: "L033", anno2: ["FIL-AE|2", "FIL-DTS|2", "FIL-FL|2", "FIL-MZ|2", "PSI-AE|2", "PSI-DTS|2", "PSI-FL|2", "PSI-MZ|2"] },
-      { year: 3, corso: "L033", anno2: ["FIL-AE|3", "FIL-DTS|3", "FIL-FL|3", "FIL-MZ|3", "PSI-AE|3", "PSI-DTS|3", "PSI-FL|3", "PSI-MZ|3"] },
+      { year: 1, corso: "L0306", anno2: ["L-5-AE|1", "L-5-DTS|1", "L-5-FL|1", "L-5-MZ|1", "L-24-AE|1", "L-24-DTS|1", "L-24-FL|1", "L-24-MZ|1"] },
+      { year: 2, corso: "L0306", anno2: ["L-5-AE|2", "L-5-DTS|2", "L-5-FL|2", "L-5-MZ|2", "L-24-AE|2", "L-24-DTS|2", "L-24-FL|2", "L-24-MZ|2"] },
+      { year: 3, corso: "L033", anno2: ["L-5-AE|3", "L-5-DTS|3", "L-5-FL|3", "L-5-MZ|3", "L-24-AE|3", "L-24-DTS|3", "L-24-FL|3", "L-24-MZ|3"] },
     ]),
   },
   {
     programme: "Filosofia ed Etica delle Relazioni",
     sources: degreeSources(BASE, ANNO, "filosofia-ed-etica-delle-relazioni", "DipartimentodiFilosofia-ScienzeSociali-UmaneedellaFormazione", [
       { year: 1, corso: "M0311", anno2: ["787|1", "788|1", "E01|1", "790|1", "786|1", "785|1", "789|1"] },
-      { year: 2, corso: "LM57", anno2: ["787|2", "788|2", "E01|2", "790|2", "786|2", "785|2", "789|2"] },
-    ]),
-  },
-  {
-    programme: "Finanza e Metodi Quantitativi per L'economia",
-    sources: degreeSources(BASE, ANNO, "finanza-e-metodi-quantitativi-per-l-economia", "DipartimentodiEconomia", [
-      { year: 2, corso: "LM90", anno2: ["822|2", "821|2"] },
+      { year: 2, corso: "M0311", anno2: ["787|2", "788|2", "E01|2", "790|2", "786|2", "785|2", "789|2"] },
     ]),
   },
   {
     programme: "Fisica (triennale)",
     sources: degreeSources(BASE, ANNO, "fisica-triennale", "DipartimentodiFisicaeGeologia", [
       { year: 1, corso: "L0409", anno2: ["GEN|1"] },
-      { year: 2, corso: "L061", anno2: ["GEN|2"] },
+      { year: 2, corso: "L0409", anno2: ["GEN|2"] },
       { year: 3, corso: "L061", anno2: ["GEN|3"] },
     ]),
   },
@@ -172,27 +162,21 @@ const livePrograms: LiveProgram[] = [
     programme: "Fisica (magistrale)",
     sources: degreeSources(BASE, ANNO, "fisica-magistrale", "DipartimentodiFisicaeGeologia", [
       { year: 1, corso: "M0413", anno2: ["513|1", "050|1", "245|1", "514|1", "246|1"] },
-      { year: 2, corso: "LM15", anno2: ["513|2", "050|2", "245|2", "514|2", "246|2"] },
-    ]),
-  },
-  {
-    programme: "Geologia",
-    sources: degreeSources(BASE, ANNO, "geologia", "DipartimentodiFisicaeGeologia", [
-      { year: 3, corso: "L065", anno2: ["GEN|3"] },
+      { year: 2, corso: "M0413", anno2: ["513|2", "050|2", "245|2", "514|2", "246|2"] },
     ]),
   },
   {
     programme: "Geology for Energy Resources",
     sources: degreeSources(BASE, ANNO, "geology-for-energy-resources", "DipartimentodiFisicaeGeologia", [
       { year: 1, corso: "M0415", anno2: ["GEN|1"] },
-      { year: 2, corso: "LM10", anno2: ["GEN|2"] },
+      { year: 2, corso: "M0415", anno2: ["GEN|2"] },
     ]),
   },
   {
     programme: "Giurisprudenza",
     sources: degreeSources(BASE, ANNO, "giurisprudenza", "DipartimentodiGiurisprudenza", [
       { year: 1, corso: "U0501", anno2: ["GEN_A-L|1", "GEN_M-Z|1"] },
-      { year: 2, corso: "LM01", anno2: ["GEN|2"] },
+      { year: 2, corso: "U0501", anno2: ["GEN|2"] },
       { year: 3, corso: "LM01", anno2: ["GEN|3"] },
       { year: 4, corso: "LM01", anno2: ["GEN|4"] },
       { year: 5, corso: "LM01", anno2: ["GEN|5"] },
@@ -202,20 +186,21 @@ const livePrograms: LiveProgram[] = [
     programme: "Governo e Amministrazione",
     sources: degreeSources(BASE, ANNO, "governo-e-amministrazione", "DipartimentodiScienzePolitiche", [
       { year: 1, corso: "M1442", anno2: ["E01|1", "E02|1"] },
+      { year: 2, corso: "M1442", anno2: ["E01|2", "E02|2"] },
     ]),
   },
   {
     programme: "Informatica (magistrale)",
     sources: degreeSources(BASE, ANNO, "informatica-magistrale", "DipartimentodiMatematicaeInformatica", [
       { year: 1, corso: "L0921", anno2: ["GEN|1"] },
-      { year: 2, corso: "LM65", anno2: ["E01|2", "E02|2"] },
+      { year: 2, corso: "L0921", anno2: ["GEN|2"] },
     ]),
   },
   {
     programme: "Informatica (triennale)",
     sources: degreeSources(BASE, ANNO, "informatica-triennale", "DipartimentodiMatematicaeInformatica", [
       { year: 1, corso: "M0930", anno2: ["E01|1", "E02|1"] },
-      { year: 2, corso: "L062", anno2: ["GEN|2"] },
+      { year: 2, corso: "M0930", anno2: ["E01|2", "E02|2"] },
       { year: 3, corso: "L062", anno2: ["GEN|3"] },
     ]),
   },
@@ -223,14 +208,14 @@ const livePrograms: LiveProgram[] = [
     programme: "Integrazione Giuridica Europea e Diritti Umani",
     sources: degreeSources(BASE, ANNO, "integrazione-giuridica-europea-e-diritti-umani", "DipartimentodiGiurisprudenza", [
       { year: 1, corso: "M0516", anno2: ["GEN|1"] },
-      { year: 2, corso: "LM53", anno2: ["GEN|2"] },
+      { year: 2, corso: "M0516", anno2: ["GEN|2"] },
     ]),
   },
   {
     programme: "Lettere",
     sources: degreeSources(BASE, ANNO, "lettere", "DipartimentodiLettere-Lingue-LetteratureeCiviltaAnticheeModerne", [
       { year: 1, corso: "L0818", anno2: ["296|1", "077|1"] },
-      { year: 2, corso: "L030", anno2: ["296|2", "077|2"] },
+      { year: 2, corso: "L0818", anno2: ["296|2", "077|2"] },
       { year: 3, corso: "L030", anno2: ["296|3", "077|3"] },
     ]),
   },
@@ -238,7 +223,7 @@ const livePrograms: LiveProgram[] = [
     programme: "Lingue e Culture Straniere",
     sources: degreeSources(BASE, ANNO, "lingue-e-culture-straniere", "DipartimentodiLettere-Lingue-LetteratureeCiviltaAnticheeModerne", [
       { year: 1, corso: "L0820", anno2: ["GEN|1"] },
-      { year: 2, corso: "L032", anno2: ["GEN|2"] },
+      { year: 2, corso: "L0820", anno2: ["GEN|2"] },
       { year: 3, corso: "L032", anno2: ["GEN|3"] },
     ]),
   },
@@ -246,14 +231,14 @@ const livePrograms: LiveProgram[] = [
     programme: "Lingue, Letterature Comparate e Traduzione Interculturale",
     sources: degreeSources(BASE, ANNO, "lingue-letterature-comparate-e-traduzione-interculturale", "DipartimentodiLettere-Lingue-LetteratureeCiviltaAnticheeModerne", [
       { year: 1, corso: "M0828", anno2: ["817|1", "818|1"] },
-      { year: 2, corso: "LM64", anno2: ["817|2", "818|2"] },
+      { year: 2, corso: "M0828", anno2: ["817|2", "818|2"] },
     ]),
   },
   {
     programme: "Matematica (triennale)",
     sources: degreeSources(BASE, ANNO, "matematica-triennale", "DipartimentodiMatematicaeInformatica", [
       { year: 1, corso: "L0922", anno2: ["GEN|1"] },
-      { year: 2, corso: "L066", anno2: ["GEN|2"] },
+      { year: 2, corso: "L0922", anno2: ["GEN|2"] },
       { year: 3, corso: "L066", anno2: ["GEN|3"] },
     ]),
   },
@@ -261,32 +246,21 @@ const livePrograms: LiveProgram[] = [
     programme: "Matematica (magistrale)",
     sources: degreeSources(BASE, ANNO, "matematica-magistrale", "DipartimentodiMatematicaeInformatica", [
       { year: 1, corso: "M0931", anno2: ["E03|1", "E04|1", "E05|1", "E01|1", "E02|1"] },
-      { year: 2, corso: "LM26", anno2: ["807|2", "808|2", "E01|2", "E02|2"] },
+      { year: 2, corso: "M0931", anno2: ["E03|2", "E04|2", "E05|2", "E01|2", "E02|2"] },
     ]),
   },
   {
     programme: "Metodologie per Prodotto e Processo",
     sources: degreeSources(BASE, ANNO, "metodologie-per-prodotto-e-processo", "DipartimentodiChimica-BiologiaeBiotecnologie", [
-      { year: 1, corso: "L06A", anno2: ["E02|1", "E01|1"] },
+      { year: 1, corso: "L06A", anno2: ["GEN|1"] },
       { year: 2, corso: "L06A", anno2: ["E02|2", "E01|2"] },
-    ]),
-  },
-  {
-    programme: "Politica, Amministrazione, Territorio",
-    sources: degreeSources(BASE, ANNO, "politica-amministrazione-territorio", "DipartimentodiScienzePolitiche", [
-      { year: 2, corso: "LM45", anno2: ["E04|2", "E05|2", "E06|2"] },
-    ]),
-  },
-  {
-    programme: "Politiche e Servizi Sociali",
-    sources: degreeSources(BASE, ANNO, "politiche-e-servizi-sociali", "DipartimentodiScienzePolitiche", [
-      { year: 2, corso: "LM47", anno2: ["E02|2", "E01|2"] },
     ]),
   },
   {
     programme: "Politiche Sociali, Sistemi di Welfare e Terzo Settore",
     sources: degreeSources(BASE, ANNO, "politiche-sociali-sistemi-di-welfare-e-terzo-settore", "DipartimentodiScienzePolitiche", [
       { year: 1, corso: "M1443", anno2: ["GEN|1"] },
+      { year: 2, corso: "M1443", anno2: ["GEN|2"] },
     ]),
   },
   {
@@ -301,20 +275,21 @@ const livePrograms: LiveProgram[] = [
     programme: "Quantitative Finance and Data Science for Economics",
     sources: degreeSources(BASE, ANNO, "quantitative-finance-and-data-science-for-economics", "DipartimentodiEconomia", [
       { year: 1, corso: "M0208", anno2: ["E02|1", "E01|1"] },
+      { year: 2, corso: "M0208", anno2: ["E02|2", "E01|2"] },
     ]),
   },
   {
     programme: "Relazioni Internazionali",
     sources: degreeSources(BASE, ANNO, "relazioni-internazionali", "DipartimentodiScienzePolitiche", [
       { year: 1, corso: "M1441", anno2: ["E01|1", "E02|1"] },
-      { year: 2, corso: "LM33", anno2: ["E01|2", "E02|2", "E03|2"] },
+      { year: 2, corso: "M1441", anno2: ["E01|2", "E02|2"] },
     ]),
   },
   {
     programme: "Scienze Biologiche",
     sources: degreeSources(BASE, ANNO, "scienze-biologiche", "DipartimentodiChimica-BiologiaeBiotecnologie", [
       { year: 1, corso: "L0102", anno2: ["GEN|1"] },
-      { year: 2, corso: "L063", anno2: ["959|2", "958|2"] },
+      { year: 2, corso: "L0102", anno2: ["E02|2", "E01|2"] },
       { year: 3, corso: "L063", anno2: ["959|3", "958|3"] },
     ]),
   },
@@ -322,14 +297,14 @@ const livePrograms: LiveProgram[] = [
     programme: "Scienze Chimiche",
     sources: degreeSources(BASE, ANNO, "scienze-chimiche", "DipartimentodiChimica-BiologiaeBiotecnologie", [
       { year: 1, corso: "M0103", anno2: ["339|1", "957|1", "341|1", "E11|1", "956|1"] },
-      { year: 2, corso: "LM27", anno2: ["339|2", "957|2", "341|2", "E11|2", "956|2"] },
+      { year: 2, corso: "M0103", anno2: ["339|2", "957|2", "341|2", "E11|2", "956|2"] },
     ]),
   },
   {
     programme: "Scienze dei Servizi Giuridici",
     sources: degreeSources(BASE, ANNO, "scienze-dei-servizi-giuridici", "DipartimentodiGiurisprudenza", [
       { year: 1, corso: "L0511", anno2: ["726|1", "E01|1", "816|1"] },
-      { year: 2, corso: "L115", anno2: ["726|2", "E01|2", "816|2"] },
+      { year: 2, corso: "L0511", anno2: ["726|2", "E01|2", "816|2"] },
       { year: 3, corso: "L115", anno2: ["726|3", "E01|3", "816|3"] },
     ]),
   },
@@ -337,22 +312,22 @@ const livePrograms: LiveProgram[] = [
     programme: "Scienze Dell'educazione",
     sources: degreeSources(BASE, ANNO, "scienze-dell-educazione", "DipartimentodiFilosofia-ScienzeSociali-UmaneedellaFormazione", [
       { year: 1, corso: "L0307", anno2: ["E07|1", "E08|1"] },
-      { year: 2, corso: "L040", anno2: ["E07|2", "E08|2"] },
+      { year: 2, corso: "L0307", anno2: ["E07|2", "E08|2"] },
       { year: 3, corso: "L040", anno2: ["E07|3", "E08|3"] },
     ]),
   },
   {
     programme: "Scienze della Alimentazione e della Nutrizione Umana",
     sources: degreeSources(BASE, ANNO, "scienze-della-alimentazione-e-della-nutrizione-umana", "DipartimentodiScienzeFarmaceutiche", [
-      { year: 1, corso: "M1340", anno2: ["E01|1"] },
-      { year: 2, corso: "LM17", anno2: ["GEN|2"] },
+      { year: 1, corso: "M1340", anno2: ["E01|1", "E02|1"] },
+      { year: 2, corso: "M1340", anno2: ["E01|2", "E02|2"] },
     ]),
   },
   {
     programme: "Scienze della Comunicazione",
     sources: degreeSources(BASE, ANNO, "scienze-della-comunicazione", "DipartimentodiScienzePolitiche", [
       { year: 1, corso: "L1431", anno2: ["GEN|1"] },
-      { year: 2, corso: "L146", anno2: ["GEN|2"] },
+      { year: 2, corso: "L1431", anno2: ["GEN|2"] },
       { year: 3, corso: "L146", anno2: ["GEN|3"] },
     ]),
   },
@@ -371,27 +346,28 @@ const livePrograms: LiveProgram[] = [
     sources: degreeSources(BASE, ANNO, "scienze-della-terra-e-dell-ambiente", "DipartimentodiFisicaeGeologia", [
       { year: 1, corso: "L06B", anno2: ["GEN|1"] },
       { year: 2, corso: "L06B", anno2: ["GEN|2"] },
+      { year: 3, corso: "L06B", anno2: ["GEN|3"] },
     ]),
   },
   {
     programme: "Scienze della Terra per la Gestione dei Rischi e Dell'ambiente",
     sources: degreeSources(BASE, ANNO, "scienze-della-terra-per-la-gestione-dei-rischi-e-dell-ambiente", "DipartimentodiFisicaeGeologia", [
       { year: 1, corso: "M0414", anno2: ["E01|1", "E02|1"] },
-      { year: 2, corso: "LM12", anno2: ["E01|2", "E02|2"] },
+      { year: 2, corso: "M0414", anno2: ["E01|2", "E02|2"] },
     ]),
   },
   {
     programme: "Scienze e Tecnologie Naturalistiche e Ambientali",
     sources: degreeSources(BASE, ANNO, "scienze-e-tecnologie-naturalistiche-e-ambientali", "DipartimentodiChimica-BiologiaeBiotecnologie", [
       { year: 1, corso: "M0104", anno2: ["GEN|1"] },
-      { year: 2, corso: "LM48", anno2: ["GEN|2"] },
+      { year: 2, corso: "M0104", anno2: ["GEN|2"] },
     ]),
   },
   {
     programme: "Scienze Politiche e Relazioni Internazionali",
     sources: degreeSources(BASE, ANNO, "scienze-politiche-e-relazioni-internazionali", "DipartimentodiScienzePolitiche", [
       { year: 1, corso: "L1429", anno2: ["GEN|1"] },
-      { year: 2, corso: "L018", anno2: ["324|2", "326|2", "325|2"] },
+      { year: 2, corso: "L1429", anno2: ["E02|2", "E03|2", "E01|2"] },
       { year: 3, corso: "L018", anno2: ["324|3", "326|3", "325|3"] },
     ]),
   },
@@ -399,14 +375,14 @@ const livePrograms: LiveProgram[] = [
     programme: "Scienze Socioantropologiche per L'integrazione e la Sicurezza Sociale",
     sources: degreeSources(BASE, ANNO, "scienze-socioantropologiche-per-l-integrazione-e-la-sicurezza-sociale", "DipartimentodiFilosofia-ScienzeSociali-UmaneedellaFormazione", [
       { year: 1, corso: "M0310", anno2: ["LM1|1", "LM88|1"] },
-      { year: 2, corso: "LM94", anno2: ["LM1|2", "LM88|2"] },
+      { year: 2, corso: "M0310", anno2: ["LM1|2", "LM88|2"] },
     ]),
   },
   {
     programme: "Servizio Sociale",
     sources: degreeSources(BASE, ANNO, "servizio-sociale", "DipartimentodiScienzePolitiche", [
       { year: 1, corso: "L1430", anno2: ["GEN|1"] },
-      { year: 2, corso: "L017", anno2: ["GEN|2"] },
+      { year: 2, corso: "L1430", anno2: ["GEN|2"] },
       { year: 3, corso: "L017", anno2: ["GEN|3"] },
     ]),
   },
@@ -414,14 +390,14 @@ const livePrograms: LiveProgram[] = [
     programme: "Studi Italiani, Classici e Storia Europea",
     sources: degreeSources(BASE, ANNO, "studi-italiani-classici-e-storia-europea", "DipartimentodiLettere-Lingue-LetteratureeCiviltaAnticheeModerne", [
       { year: 1, corso: "M0827", anno2: ["E02|1", "E01|1", "E03|1"] },
-      { year: 2, corso: "LM70", anno2: ["E02|2", "E01|2", "E03|2"] },
+      { year: 2, corso: "M0827", anno2: ["E02|2", "E01|2", "E03|2"] },
     ]),
   },
   {
     programme: "Valutazione del Funzionamento Individuale in Psicologia Clinica e della Salute",
     sources: degreeSources(BASE, ANNO, "valutazione-del-funzionamento-individuale-in-psicologia-clinica-e-della-salute", "DipartimentodiFilosofia-ScienzeSociali-UmaneedellaFormazione", [
-      { year: 1, corso: "M0312", anno2: ["E09|1", "E10|1"] },
-      { year: 2, corso: "LM93", anno2: ["E09|2", "E10|2"] },
+      { year: 1, corso: "M0312", anno2: ["E09-AE|1", "E09-FL|1", "E09-MZ|1", "E10-AE|1", "E10-FL|1", "E10-MZ|1"] },
+      { year: 2, corso: "M0312", anno2: ["E09|2"] },
     ]),
   },
 ];

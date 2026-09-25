@@ -3,6 +3,13 @@
 Aggiornato: 2026-09-25 (pulizia: gate script, esse3/easyAcademyPreset rimossi, Delphi nascosto, hook portabili)
 
 ## Completati
+### Sessione 2026-09-25 (ter) — ri-cattura codici 2026 (branch claude/recattura-codici-2026)
+🐞 Causa radice del /orario vuoto: i file preset contenevano il catalogo 2025 (codici `corso`/`anno2` rinumerati o corsi chiusi nel combo 2026), con solo `ANNO` bumpato.
+✅ Nuovi tool (sola lettura di rete, nessuna dipendenza): `scripts/audit-codes.ts` (verifica ogni sorgente: check strutturale sul combo + POST grid_call su settimane campione) e `scripts/recapture-codes.ts` (rigenera i file preset dal combo 2026; continuità per CODICE+etichetta, nomi vecchi mantenuti; tiene solo anni con `celle>0`; aggiunge corsi nuovi verificati, esami spenti).
+✅ 12 atenei riscritti (unica, unife, unifi, unige, unina, unipg, unipr, uniss, unistrasi, unitn, units, uniupo): audit indipendente dopo la riscrittura = 100% delle sorgenti di orario vive (prima ~55%). Nessun nome/id duplicato. Gate verde.
+⏳ NON ancora ri-catturati (7): unive, unisa, uniroma2 (Tor Vergata), unicampania, uniba, univpm, unisalento. Tool aggiornato per unive/unisa/uniroma2 (formato diverso, anni negativi) ma NON eseguito: run bloccato dal classificatore. Gli ultimi 4 hanno codice a mano (esami cablati): da fare a mano. Uniba: combo 2026 vuoto.
+⚠️ Esami (`test_call`) non ri-verificati sui corsi nuovi (flag esami mantenuto o false).
+
 ### Sessione 2026-09-25 (bis) — pulizia autorizzata (6 commit, branch NON mergiato)
 Autorizzazioni esplicite dell'utente su package.json / tests/esse3.test.ts (solo quelle).
 ✅ Fase 0: gate baseline verde (build, test, tsc, lint).
