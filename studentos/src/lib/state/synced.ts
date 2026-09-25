@@ -30,12 +30,20 @@ interface SyncedState {
 
   hydrate(): Promise<void>;
   sync(): Promise<void>;
+  /** Drop any sync pass still in flight (its results are discarded) and let a
+   *  new one start immediately. Call before wiping the synced caches, e.g. on
+   *  an ateneo/corso switch. */
+  invalidate(): void;
   /** Re-read the synced caches from IndexedDB without running a sync. Needed
    *  after an out-of-band write (e.g. a manually-added exam), since hydrate()
    *  early-returns once hydrated and so wouldn't pick the new row up. */
   refresh(): Promise<void>;
   dismissNotices(ids: string[]): Promise<void>;
 }
+
+/** Bumped by `invalidate()`: a sync pass only applies its results while the
+ *  generation it started under is still current. */
+let generation = 0;
 
 export const useSynced = create<SyncedState>()((set, get) => ({
   classEvents: [],
@@ -62,10 +70,13 @@ export const useSynced = create<SyncedState>()((set, get) => ({
     if (get().syncing) return;
     const sources = useSettings.getState().enabledSources();
     if (sources.length === 0) return;
+    const gen = generation;
+    const current = () => gen === generation;
     set({ syncing: true, lastSyncError: undefined });
     try {
       const range = defaultSyncRange(useSettings.getState().syncHorizonDays);
-      await runSync(sources, range);
+      await runSync(sources, range, current);
+      if (!current()) return;
       // re-read from IndexedDB: it's the single source of truth
       const [classEvents, examCalls, news, syncMeta, notices] = await Promise.all([
         getClassEvents(),
@@ -76,10 +87,17 @@ export const useSynced = create<SyncedState>()((set, get) => ({
       ]);
       set({ classEvents, examCalls, news, syncMeta, notices });
     } catch (error) {
-      set({ lastSyncError: error instanceof Error ? error.message : String(error) });
+      if (current()) {
+        set({ lastSyncError: error instanceof Error ? error.message : String(error) });
+      }
     } finally {
-      set({ syncing: false });
+      if (current()) set({ syncing: false });
     }
+  },
+
+  invalidate() {
+    generation++;
+    set({ syncing: false });
   },
 
   async refresh() {

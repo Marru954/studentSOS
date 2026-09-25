@@ -33,7 +33,15 @@ export interface SyncSummary {
  * @param range The date window to request from each source.
  * @returns A summary of the pass (counts, failures, notices).
  */
-export async function runSync(sources: SyncSource[], range: DateRange): Promise<SyncSummary> {
+export async function runSync(
+  sources: SyncSource[],
+  range: DateRange,
+  /** Checked after the network round-trip and before each cache write: return
+   *  false when the pass became stale (e.g. the student switched ateneo while
+   *  it was in flight) so its results are dropped instead of resurrecting the
+   *  previous ateneo's data. */
+  shouldApply: () => boolean = () => true,
+): Promise<SyncSummary> {
   const res = await fetch("/api/sync", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -57,6 +65,7 @@ export async function runSync(sources: SyncSource[], range: DateRange): Promise<
   };
 
   for (const result of results) {
+    if (!shouldApply()) break;
     if (result.ok && result.data) {
       const notices = await replaceSourceData(
         result.capability,
