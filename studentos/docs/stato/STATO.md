@@ -1,6 +1,6 @@
 # Stato attuale StudentOS
 
-Aggiornato: 2026-09-25 (ri-cattura codici EasyAcademy 2026/27 su Tor Vergata, Firenze, Federico II)
+Aggiornato: 2026-09-25 (ri-cattura codici EasyAcademy 2026/27 + regola esami rigida, uniroma2/unifi/unina)
 
 ## Completati
 
@@ -23,6 +23,20 @@ tutte le sorgenti orario rimaste tornano celle (uniroma2 111/111, unifi 397/397,
   `exams=false` (non usato al momento).
 - I file _<id>_coverage.md hanno in cima la sezione "Ri-verifica 2026/27" con tabelle live / ricatturati /
   rimossi (codici originali inclusi per il ripristino); le tabelle per scuola sotto sono lo storico 2025/26.
+- Follow-up (stessa data): regola esami RIGIDA applicata, niente fallback 2025/26: exams:false per 13 programmi
+  uniroma2 e 29 unifi (unifi 34 solo-orari in tutto; unina gia' tutto solo-orari). Elenchi nei coverage md
+  (sezione "Corsi passati a solo-orari") per riattivarli quando pubblicano i calendari. Gate 480 test verdi.
+- ID sorgente: tutti i degree dei 3 preset sono namespaced <slug>-orario/esami-anno-N (0 ID duplicati) tranne
+  uniroma2 "Informatica (triennale)": NON e' easyAcademyPreset legacy ma la const hand-wired `informatica`
+  con ID bare voluti (cache stabile, commento nel file); ha orario-anno-1..3 + esami-anno-1..3 + news.
+  Nessun rename (orfanerebbe le cache esistenti).
+- Pipeline reale (adapter con range di defaultSyncRange 2026-06-08..2027-01-23): orari pubblicati solo fino a
+  ~23 ott 2026 (lezioni ottobre: Firenze Informatica 30/34/23, Ing. Informatica 205/43/55; Federico II Ing.
+  Informatica 53/23/32, Informatica triennale anni 1-2: 0 lezioni in ottobre pur con celle a inizio periodo;
+  Tor Vergata Informatica 36/18/21). Appelli in ottobre: 0 ovunque (sessioni a gennaio).
+- BUG adapter (file protetto, non toccato): test_call risponde Insegnamenti:[] (array PHP) quando non ci sono
+  appelli -> zod "expected record, received array" -> sorgente in errore/banner. Colpisce gli anni senza appelli
+  nella finestra anche con exams:true (es. Firenze Informatica anno 2). Proposta: z.preprocess che mappa []->{}.
 - Da fare: stesse ri-catture per gli altri 15 atenei EasyAcademy (Uniba resta a 2025); ripristinare Lettere
   di Tor Vergata quando pubblicano gli orari; scripts/verified-endpoints.txt non contiene gli host di questi
   atenei (i muri #4 di safe-merge.sh potrebbero bloccare i diff con URL combo.php nei coverage md).
