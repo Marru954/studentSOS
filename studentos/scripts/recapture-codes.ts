@@ -13,7 +13,8 @@
  * stato visto tornare celle. I corsi nuovi nel combo NON vengono aggiunti (solo
  * elencati nel report).
  *
- * Uso: tsx scripts/recapture-codes.ts <report.json> [--write] [presetId ...]
+ * Uso: tsx scripts/recapture-codes.ts <report.json> [--write] [--exams-rule] [presetId ...]
+ *   --exams-rule: regola esami RIGIDA, un anno tiene la sorgente esami solo se test_call.php ha appelli nell'anno accademico corrente.
  */
 import { readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
@@ -82,6 +83,29 @@ async function celle(base: string, anno: string, scuola: string, corso: string, 
     body: body.toString(),
   })).json()) as { celle?: unknown[] };
   return Array.isArray(j.celle) ? j.celle.length : 0;
+}
+
+const EXAM_RULE = process.argv.includes("--exams-rule");
+const EXAM_FROM = "01-09-2026";
+const EXAM_TO = "31-08-2027";
+
+/** Appelli totali che test_call.php restituisce per (scuola, corso, anno) sull'anno accademico; -1 se la rete fallisce. */
+async function appelli(base: string, scuola: string, cdl: string, year: number): Promise<number> {
+  const body = new URLSearchParams();
+  for (const [k, v] of [
+    ["view", "easytest"], ["form-type", "et_cdl"], ["include", "et_cdl"], ["et_er", "1"], ["scuola", scuola],
+    ["esami_cdl", cdl], ["anno2[]", String(year)], ["datefrom", EXAM_FROM], ["dateto", EXAM_TO], ["_lang", "it"],
+  ]) body.append(k, v);
+  try {
+    const j = (await (await http(`${base}/test_call.php`, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: body.toString(),
+    })).json()) as { Insegnamenti?: Record<string, { Appelli?: unknown[] }> };
+    return Object.values(j.Insegnamenti ?? {}).reduce((n, c) => n + (Array.isArray(c.Appelli) ? c.Appelli.length : 0), 0);
+  } catch {
+    return -1;
+  }
 }
 
 async function alive(base: string, anno: string, scuola: string, corso: string, anno2: string[]) {
@@ -277,17 +301,37 @@ async function doPreset(preset: UniversityPreset, write: boolean, report: Record
     okYears.set(j.p, m);
   });
 
-  const stats = { kept: 0, changed: 0, dropped: 0, untouched: progs.length - mine.length };
+  // esami: il flag dell'anno vecchio con lo stesso numero; un anno nuovo eredita il flag solo se il programma era uniforme
+  const exOld = (p: Prog, year: number) => {
+    const uniform = p.years.every((y) => y.ex === p.years[0].ex);
+    return p.years.find((y) => y.year === year)?.ex ?? (uniform ? p.years[0]?.ex : false) ?? false;
+  };
+  // regola esami RIGIDA (--exams-rule): l'anno tiene la sorgente esami solo se test_call ha appelli nel 2026/27,
+  // senza fallback sul 2025/26. Un errore di rete NON spegne (n < 0 → si tiene il flag com'era).
+  const examOk = new Map<Job, boolean>();
+  if (EXAM_RULE) {
+    const toCheck = [...okYears.entries()].flatMap(([p, m]) => [...m.values()].filter((j) => exOld(p, j.year)));
+    await pool(toCheck, PER_HOST, async (j) => {
+      examOk.set(j, (await appelli(base, j.scuola, j.c.valore, j.year)) !== 0);
+    });
+  }
+
+  const stats = { kept: 0, changed: 0, dropped: 0, untouched: progs.length - mine.length, examsOff: 0 };
   const build = (p: Prog): Prog | null => {
     const m = okYears.get(p);
     if (!m || !m.size) return null;
     const js = [...m.values()].sort((x, y) => x.year - y.year);
     const scs = js.map((j) => j.scuola);
     const scuola = scs.sort((x, y) => scs.filter((s) => s === y).length - scs.filter((s) => s === x).length)[0];
-    // esami: il flag dell'anno vecchio con lo stesso numero; un anno nuovo eredita il flag solo se il programma era uniforme
-    const uniform = p.years.every((y) => y.ex === p.years[0].ex);
-    const exFor = (year: number) => p.years.find((y) => y.year === year)?.ex ?? (uniform ? p.years[0]?.ex : false);
-    return { ...p, scuola, years: js.map((j) => ({ year: j.year, corso: j.c.valore, anno2: j.anno2, ex: exFor(j.year) })) };
+    return {
+      ...p,
+      scuola,
+      years: js.map((j) => {
+        const ex = exOld(p, j.year) && (!EXAM_RULE || examOk.get(j) === true);
+        if (exOld(p, j.year) && !ex) stats.examsOff++;
+        return { year: j.year, corso: j.c.valore, anno2: j.anno2, ex };
+      }),
+    };
   };
   const final: Prog[] = [];
   for (const p of progs) {
