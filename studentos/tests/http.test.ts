@@ -126,7 +126,7 @@ test("parseRetryAfter: secondi, data HTTP, valori invalidi", () => {
 });
 
 test("pausa per host: richieste allo stesso host distanziate, host diversi no", async () => {
-  let t = 1000;
+  const t = 1000;
   const s = scripted([res(200), res(200), res(200)]);
   const opts = { ...s.opts, hostGapMs: 250, now: () => t };
   await politeFetch("https://a.example/1", {}, opts);
