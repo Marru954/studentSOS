@@ -35,3 +35,11 @@ agendastudentiunipd.easystaff.it/combo.php?sw=ec_&aa=2025&page=corsi
 # Pisa — Cineca University Planner (REST pubblico POST):
 unipi.prod.up.cineca.it/api/Clienti/cercaPerDominio
 unipi.prod.up.cineca.it/api/Impegni/getImpegniCalendarioPubblico
+
+# ── combo 2026/27 dei 4 atenei documentati nei coverage md — verificati con GET reali il 2026-09-25 ──
+# (combo.php?sw=ec_&aa=2026&page=corsi → elenco_corsi letto e usato da scripts/recapture-codes.ts;
+#  ogni sorgente scritta nei preset è stata poi vista tornare celle con POST grid_call.php)
+easyacademy.unina.it/agendastudenti/
+easycourse.unisa.it/AgendaStudenti/
+easyutv.uniroma2.it/agendaweb/
+kairos.unifi.it/agendaweb/
