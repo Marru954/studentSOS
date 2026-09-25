@@ -11,6 +11,7 @@
 import { stableId } from "@/lib/sync/util";
 import { weightedAverage } from "./libretto";
 import { Alert, AlertType } from "./alerts";
+import { yearOfSource } from "./sources";
 import type { ClassEvent, ExamCall, IsoDate, LibrettoEntry } from "./types";
 import type { SyncMeta } from "@/lib/storage/types";
 
@@ -154,6 +155,11 @@ function scheduleConflictAlerts({ classEvents, now }: DetectAlertsParams): Alert
         const a = events[i];
         const b = events[j];
         if (a.courseName === b.courseName) continue;
+        // Different course years are different cohorts: a 1st-year and a
+        // 3rd-year class can never clash for the same student.
+        const yA = yearOfSource(a.sourceId);
+        const yB = yearOfSource(b.sourceId);
+        if (yA !== null && yB !== null && yA !== yB) continue;
         const aStart = Date.parse(a.start);
         const aEnd = Date.parse(a.end);
         const bStart = Date.parse(b.start);
