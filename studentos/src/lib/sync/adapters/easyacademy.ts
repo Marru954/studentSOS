@@ -69,17 +69,30 @@ const examEntry = z.object({
   docenti_associati: z.array(z.string()).optional().default([]),
 });
 
+/**
+ * PHP's json_encode turns an associative array into a JSON array when it is
+ * empty (or keyed 0..n-1): test_call.php answers `"Insegnamenti": []` when the
+ * window holds no exam call. Read any array as the equivalent record, so "no
+ * calls" is 0 calls instead of a failed source. Other shapes (e.g. null) still
+ * fail the parse: a failed source keeps its cache, an empty success replaces it.
+ */
+const phpAssoc = (value: unknown) =>
+  Array.isArray(value) ? Object.fromEntries(value.map((item, i) => [String(i), item])) : value;
+
 const examsResponse = z.object({
   Insegnamenti: z
-    .record(
-      z.string(),
-      z.object({
-        DatiInsegnamento: z.object({
-          Codice: z.string().optional(),
-          Nome: z.string(),
+    .preprocess(
+      phpAssoc,
+      z.record(
+        z.string(),
+        z.object({
+          DatiInsegnamento: z.object({
+            Codice: z.string().optional(),
+            Nome: z.string(),
+          }),
+          Appelli: z.array(z.unknown()).optional().default([]),
         }),
-        Appelli: z.array(z.unknown()).optional().default([]),
-      }),
+      ),
     )
     .optional()
     .default({}),
