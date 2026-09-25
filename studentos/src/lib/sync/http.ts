@@ -25,6 +25,7 @@ const BACKOFF_BASE_MS = 1_000;
 /** Longest single wait we accept (Retry-After above this → give up, don't stall the sync). */
 const MAX_WAIT_MS = 10_000;
 const ATTEMPT_TIMEOUT_MS = 15_000;
+const HOST_GAP_MS = 250;
 const CACHE_MAX_ENTRIES = 64;
 const CACHE_MAX_BODY_BYTES = 2_000_000;
 
@@ -34,6 +35,9 @@ export interface PoliteFetchOptions {
   sleep?: (ms: number) => Promise<void>;
   random?: () => number;
   attemptTimeoutMs?: number;
+  /** Minimum spacing between requests to the same host (default 250ms). */
+  hostGapMs?: number;
+  now?: () => number;
 }
 
 interface CachedEntry {
@@ -47,8 +51,12 @@ interface CachedEntry {
 // Per-process validator + body cache (server instances are ephemeral: best effort).
 const cache = new Map<string, CachedEntry>();
 
+// Next free slot per host: spaces out requests to the same ateneo, retries included.
+const hostNextSlot = new Map<string, number>();
+
 export function _resetPoliteFetchCache(): void {
   cache.clear();
+  hostNextSlot.clear();
 }
 
 const defaultSleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
@@ -76,6 +84,9 @@ export async function politeFetch(
   const random = opts.random ?? Math.random;
   const attemptTimeout = opts.attemptTimeoutMs ?? ATTEMPT_TIMEOUT_MS;
   const url = input.toString();
+  const now = opts.now ?? Date.now;
+  const gap = opts.hostGapMs ?? HOST_GAP_MS;
+  const host = new URL(url).host;
   const method = (init.method ?? "GET").toUpperCase();
   const callerSignal = init.signal ?? undefined;
 
@@ -91,6 +102,11 @@ export async function politeFetch(
   let networkRetries = 0;
 
   for (;;) {
+    // Reserve the next slot for this host (safe under concurrency: no await between read and write).
+    const slot = Math.max(now(), hostNextSlot.get(host) ?? 0);
+    hostNextSlot.set(host, slot + gap);
+    if (slot > now()) await sleep(slot - now());
+
     const signal = callerSignal
       ? AbortSignal.any([callerSignal, AbortSignal.timeout(attemptTimeout)])
       : AbortSignal.timeout(attemptTimeout);

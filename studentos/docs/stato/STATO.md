@@ -40,13 +40,12 @@ Gate verde prima di ogni commit. Nessun push, nessun safe-merge.
    caduta: max 2 retry semplici. `redirect:"manual"` resta il default (SSRF).
    Cablato in `ical`, `wordpress-news` e `insegnamenti/discovery`. Test:
    `tests/http.test.ts` (11, nel runner).
-⚠️ NON coperto: `easyacademy.ts` (il grosso del traffico, POST) ha ancora il
-   suo `fetch()` diretto: muro #1, serve autorizzazione per sostituirlo con
-   `politeFetch` (1 riga in `postForm`). Le sonde reali mostrano che i POST
-   EasyAcademy non rispondono con ETag/Last-Modified/Cache-Control, e nemmeno
-   il WordPress di Tor Vergata: un 304 live oggi non esiste (dimostrato solo su
-   server locale). Non esisteva alcun ritardo tra richieste allo stesso ateneo:
-   `weekStarts` fa fino a 20 POST sequenziali senza pausa.
+✅ Cablato anche `easyacademy.ts` (`postForm` → `politeFetch`, unica riga di sync core,
+   autorizzata dall'utente) + pausa per host (250ms tra richieste allo stesso
+   ateneo, retry inclusi; verificato live su Tor Vergata: 3 POST a +199/+462/+659ms,
+   UA inviato). I POST EasyAcademy e il WordPress di Tor Vergata non rispondono con
+   ETag/Last-Modified/Cache-Control: un 304 live oggi non esiste (provato solo su
+   server locale).
 ⚠️ Contatto nello User-Agent: placeholder `DA-DEFINIRE` da sostituire con un
    indirizzo reale (l'URL del repo `Marru954/studentSOS` è quello attuale).
 

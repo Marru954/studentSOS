@@ -22,7 +22,7 @@ function scripted(steps: Array<Response | Error>) {
     return step;
   }) as unknown as typeof fetch;
   const sleep = async (ms: number) => { waits.push(ms); };
-  return { calls, waits, opts: { fetchImpl, sleep, random: () => 0 } };
+  return { calls, waits, opts: { fetchImpl, sleep, random: () => 0, hostGapMs: 0 } };
 }
 const res = (status: number, headers: Record<string, string> = {}, body = "") =>
   new Response(status === 304 ? null : body, { status, headers });
@@ -123,4 +123,14 @@ test("parseRetryAfter: secondi, data HTTP, valori invalidi", () => {
   assert.equal(parseRetryAfter("boh"), null);
   const now = Date.parse("2026-01-01T00:00:00Z");
   assert.equal(parseRetryAfter("Thu, 01 Jan 2026 00:00:07 GMT", now), 7000);
+});
+
+test("pausa per host: richieste allo stesso host distanziate, host diversi no", async () => {
+  let t = 1000;
+  const s = scripted([res(200), res(200), res(200)]);
+  const opts = { ...s.opts, hostGapMs: 250, now: () => t };
+  await politeFetch("https://a.example/1", {}, opts);
+  await politeFetch("https://a.example/2", {}, opts); // subito dopo: deve attendere 250ms
+  await politeFetch("https://b.example/1", {}, opts); // altro host: nessuna attesa
+  assert.deepEqual(s.waits, [250]);
 });
