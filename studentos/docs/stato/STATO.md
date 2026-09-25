@@ -1,6 +1,6 @@
 # Stato attuale StudentOS
 
-Aggiornato: 2026-09-25 (pulizia: gate script, esse3/easyAcademyPreset rimossi, Delphi nascosto, hook portabili)
+Aggiornato: 2026-09-25 (ri-cattura codici 2026 su 18 atenei; pulizia gate/esse3/easyAcademyPreset/Delphi; hook muri #1 e #2)
 
 ## Completati
 ### Sessione 2026-09-25 (ter) — ri-cattura codici 2026 (branch claude/recattura-codici-2026)
@@ -19,10 +19,30 @@ Autorizzazioni esplicite dell'utente su package.json / tests/esse3.test.ts (solo
 ✅ Fase 2: rimosso `src/lib/esse3/parse.ts` + `tests/esse3.test.ts` + riga nello script test (grep: unico importatore = il suo test). CLAUDE.md aggiornato.
 ✅ Fase 3: rimossa `easyAcademyPreset()` da easystaff.ts (0 chiamanti di codice; tolto anche l'import `UniversityPreset` ormai inutilizzato). Interfaccia `EasyAcademyPresetConfig` lasciata (ora senza uso: candidata a rimozione). Corretti 2 riferimenti in commento/_coverage.md → `degreeSources`.
 ✅ Fase 4: `DelphiConnect` non più reso in LibrettoView (file su disco intatto). Verificato in browser (dev server, onboarding locale Tor Vergata): nessun buco nel layout. NB: build senza env Supabase → verifica da utente locale, non signed-in.
-✅ Fase 5: hook in `.claude/settings.json` ora usano `${CLAUDE_PROJECT_DIR}` (exec form: command `node` + args). Verificato lanciando lo script col payload → WARN Muro #4 (branch supervisionato). Le impostazioni hook si ricaricano a nuova sessione.
+✅ Fase 5: hook con `${CLAUDE_PROJECT_DIR}` (nel merge con main è prevalsa la versione di main, PR #27, forma shell `"$CLAUDE_PROJECT_DIR/..."`, equivalente). Verificato lanciando lo script col payload → WARN Muro #4 (branch supervisionato). Le impostazioni hook si ricaricano a nuova sessione.
 ✅ Fase 6: `.gitignore` e CLAUDE.md allineati (uniportal, *.html e design-reference/ già cancellati: commit c09a303 / a96cbcf).
 Gate verde prima di ogni commit. Nessun push, nessun safe-merge.
 
+
+### Sessione 2026-09-25 (sera) — hook muri #1 e #2 (2 commit, branch claude/hooks-muri-1-2-57b54d)
+✅ Muro #1 (file intoccabili) → `scripts/hooks/check-protected-files.mjs`,
+   PreToolUse Write|Edit, STRICT su qualsiasi branch. Protegge `db.ts`,
+   `engine.ts`, `easyacademy.ts` (path verificati, univoci), `package.json`,
+   tutto `scripts/` (tranne l'hook stesso) e i file di `tests/` GIÀ esistenti
+   (i test nuovi passano). Sblocco caso-per-caso: `ALLOW_PROTECTED_EDIT=1`.
+✅ Muro #2 (no merge/push diretto su main) → `check-main-protection.mjs`,
+   PreToolUse Bash, STRICT, nessun override. Blocca `git merge` e `git push`
+   verso main (`origin main`, `HEAD:main`, `+main`, `refs/heads/main`, push
+   senza refspec da main); tokenizza il comando quote-aware, ricorre in
+   `bash -c`, ignora heredoc → `safe-merge.sh` e messaggi di commit che
+   citano "git merge" non danno falsi positivi.
+✅ Wiring in `.claude/settings.json` con `$CLAUDE_PROJECT_DIR` (i due hook
+   vecchi hanno ancora path assoluti Linux `/home/marru954/...`: non
+   scattano su questa macchina — da allineare).
+✅ Test: `tests/hooks-muri-1-2.test.ts` (52 test), aggiunto allo script `test`.
+⚠️ Limiti noti: il muro #1 copre solo i tool Edit/Write, non scritture via
+   Bash (`sed -i`, `>`); il muro #2 non copre `git pull` (fa merge) né
+   `git update-ref`/`gh pr merge`.
 
 ### Sessione 2026-09-25 — bump anno accademico 2026/27 (1 commit)
 🐞 Bug reale trovato: con `ANNO="2025"` ogni preset restituiva 0 celle per le
@@ -407,3 +427,7 @@ tracker (selettori field + isOnboarded coerente).
   consigliato dal recon 2026-07-02: Padova (exams-only via adapter EA
   esistente) → Pisa/UP → Sapienza → Bologna (rivalidare a settembre) →
   PoliTo → PoliMi
+
+## Registro decisioni
+
+- **2026-09-25 — muro #1 e #2: STRICT sempre** (non STRICT-solo-auto/WARN come #4/#5). Override esplicito solo per #1 via `ALLOW_PROTECTED_EDIT=1` (caso per caso, es. migration di db.ts autorizzata); nessun override per #2 (unica via: `scripts/safe-merge.sh` o PR).
