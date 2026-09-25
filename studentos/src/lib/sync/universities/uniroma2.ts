@@ -16,8 +16,8 @@
 import type { LiveProgram, SyncSource, UniversityPreset } from "../provider";
 
 const EASY_BASE = "https://easyutv.uniroma2.it/agendaweb";
-/** Academic-year start (2025/26). Bump each September after re-verifying codes. */
-const ANNO = "2025";
+/** Academic-year start (2026/27). Bump each September after re-verifying codes. */
+const ANNO = "2026";
 
 /** Per-year timetable + exams sources for one degree. Ids are namespaced by
  *  `slug` so two courses of the same ateneo never share a cache key. Exams take

@@ -16,7 +16,7 @@ import type { LiveProgram, UniversityPreset } from "../provider";
 import { degreeSources } from "./easystaff";
 
 const BASE = "https://orari.unive.it/AgendaWebUnive";
-const ANNO = "2025";
+const ANNO = "2026";
 
 const livePrograms: LiveProgram[] = [
   {

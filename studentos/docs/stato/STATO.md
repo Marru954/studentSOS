@@ -1,8 +1,24 @@
 # Stato attuale StudentOS
 
-Aggiornato: 2026-07-04 (backport migration drift + consolidamento safe-merge + chiusura branch pendenti + verifica Supabase live + allineamento docs)
+Aggiornato: 2026-09-25 (bump anno accademico 2026/27 sui preset EasyAcademy, verificato live)
 
 ## Completati
+
+### Sessione 2026-09-25 — bump anno accademico 2026/27 (1 commit)
+🐞 Bug reale trovato: con `ANNO="2025"` ogni preset restituiva 0 celle per le
+   settimane di settembre-dicembre 2026 (es. Tor Vergata Informatica H02: 0 con
+   anno=2025, 12/6/7 lezioni con anno=2026) → /orario vuoto a semestre iniziato.
+✅ Verifica live read-only di tutte le 3664 sorgenti di orario (anno=2026,
+   settimane 12/10, 9/11, 7/12): **14 funzionanti prima → 1970 dopo**, 0 errori
+   di rete. Nessun codice inventato: cambia solo il valore `anno`.
+✅ `ANNO` → "2026" in 18 atenei. Unife: 14 percorsi abilitanti (a0xx/ab22/ac22)
+   restano su `ANNO_2025` (con 2026 darebbero 0 celle: sarebbe una regressione).
+⚠️ Uniba resta 2025: il combo 2026 di Bari risponde 0 corsi (rivalidare).
+⚠️ ~1700 sorgenti danno ancora 0 con 2026: corsi chiusi o codici rinumerati nel
+   catalogo 2026 (match `corso` col combo 2026: es. unistrasi 8/18, uniupo 55/104,
+   unipg 70/98). Serve una ri-cattura dei codici dal combo 2026 (non c'è un
+   generatore nel repo). Gli esami (test_call) non dipendono da `anno`: non toccati.
+Gate: tsc/lint/477 test/build verdi.
 
 ### Sessione 2026-07-04 — backport migration drift 0004/0005 (1 commit)
 ✅ Le 2 modifiche di sicurezza applicate live il 2026-06-15 ma senza file nel
