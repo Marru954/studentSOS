@@ -6,7 +6,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node /home/marru954/Documents/StudentOS/studentos/scripts/hooks/check-invented-data.mjs",
+            "command": "node",
+            "args": ["${CLAUDE_PROJECT_DIR}/studentos/scripts/hooks/check-invented-data.mjs"],
             "timeout": 10000
           }
         ]
@@ -16,7 +17,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node /home/marru954/Documents/StudentOS/studentos/scripts/hooks/check-new-deps.mjs",
+            "command": "node",
+            "args": ["${CLAUDE_PROJECT_DIR}/studentos/scripts/hooks/check-new-deps.mjs"],
             "timeout": 10000
           }
         ]
