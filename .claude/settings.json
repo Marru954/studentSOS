@@ -12,6 +12,26 @@
         ]
       },
       {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/studentos/scripts/hooks/check-protected-files.mjs\"",
+            "timeout": 10000
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/studentos/scripts/hooks/check-main-protection.mjs\"",
+            "timeout": 10000
+          }
+        ]
+      },
+      {
         "matcher": "Write|Edit|Bash",
         "hooks": [
           {

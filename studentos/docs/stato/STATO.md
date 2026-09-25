@@ -1,8 +1,28 @@
 # Stato attuale StudentOS
 
-Aggiornato: 2026-09-25 (bump anno accademico 2026/27 sui preset EasyAcademy, verificato live)
+Aggiornato: 2026-09-25 (hook muri #1 e #2; bump anno accademico 2026/27 verificato live)
 
 ## Completati
+
+### Sessione 2026-09-25 (sera) — hook muri #1 e #2 (2 commit, branch claude/hooks-muri-1-2-57b54d)
+✅ Muro #1 (file intoccabili) → `scripts/hooks/check-protected-files.mjs`,
+   PreToolUse Write|Edit, STRICT su qualsiasi branch. Protegge `db.ts`,
+   `engine.ts`, `easyacademy.ts` (path verificati, univoci), `package.json`,
+   tutto `scripts/` (tranne l'hook stesso) e i file di `tests/` GIÀ esistenti
+   (i test nuovi passano). Sblocco caso-per-caso: `ALLOW_PROTECTED_EDIT=1`.
+✅ Muro #2 (no merge/push diretto su main) → `check-main-protection.mjs`,
+   PreToolUse Bash, STRICT, nessun override. Blocca `git merge` e `git push`
+   verso main (`origin main`, `HEAD:main`, `+main`, `refs/heads/main`, push
+   senza refspec da main); tokenizza il comando quote-aware, ricorre in
+   `bash -c`, ignora heredoc → `safe-merge.sh` e messaggi di commit che
+   citano "git merge" non danno falsi positivi.
+✅ Wiring in `.claude/settings.json` con `$CLAUDE_PROJECT_DIR` (i due hook
+   vecchi hanno ancora path assoluti Linux `/home/marru954/...`: non
+   scattano su questa macchina — da allineare).
+✅ Test: `tests/hooks-muri-1-2.test.ts` (52 test), aggiunto allo script `test`.
+⚠️ Limiti noti: il muro #1 copre solo i tool Edit/Write, non scritture via
+   Bash (`sed -i`, `>`); il muro #2 non copre `git pull` (fa merge) né
+   `git update-ref`/`gh pr merge`.
 
 ### Sessione 2026-09-25 — bump anno accademico 2026/27 (1 commit)
 🐞 Bug reale trovato: con `ANNO="2025"` ogni preset restituiva 0 celle per le
@@ -387,3 +407,7 @@ tracker (selettori field + isOnboarded coerente).
   consigliato dal recon 2026-07-02: Padova (exams-only via adapter EA
   esistente) → Pisa/UP → Sapienza → Bologna (rivalidare a settembre) →
   PoliTo → PoliMi
+
+## Registro decisioni
+
+- **2026-09-25 — muro #1 e #2: STRICT sempre** (non STRICT-solo-auto/WARN come #4/#5). Override esplicito solo per #1 via `ALLOW_PROTECTED_EDIT=1` (caso per caso, es. migration di db.ts autorizzata); nessun override per #2 (unica via: `scripts/safe-merge.sh` o PR).
