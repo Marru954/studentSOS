@@ -44,7 +44,7 @@ Sorgente: GET reale `https://easyacademy.unina.it/agendastudenti/combo.php?sw=ec
 | Industrial Bioengineering | Ingegneria-Fuorigrotta | 1:`DD3` | 1 | 8 | - | solo orari (esami in Esse3) |
 | Industrial Chemistry for Circular and Bio Economy | CollegiodiScienze | 1:`DG8` | 1 | 1 | - | solo orari (esami in Esse3) |
 | Informatica (magistrale) | Ingegneria-Fuorigrotta | 1:`DE5` 2:`DE5` | 1,2 | 26,12 | -,- | solo orari (esami in Esse3) |
-| Informatica (triennale) | CollegiodiScienze + Ingegneria-Fuorigrotta | 1:`DE1` 2:`DE1` 3:`N86` | 1,2,3 | 1,1,9 | -,-,- | solo orari (esami in Esse3) |
+| Informatica (triennale) | Ingegneria-Fuorigrotta | 3:`N86` | 3 | 9 | -,-,- | solo orari (esami in Esse3) |
 | Ingegneria Aerospaziale (magistrale) | Ingegneria-Fuorigrotta | 1:`DF5` 2:`DF5` | 1,2 | 36,20 | -,- | solo orari (esami in Esse3) |
 | Ingegneria Aerospaziale (triennale) | Ingegneria-SanGiovanni | 1:`SG_DF0` 2:`SG_DF0` 3:`SG_N35` | 1,2,3 | 21,11,8 | -,-,- | solo orari (esami in Esse3) |
 | Ingegneria Aerospaziale (triennale) (DF0) | Ingegneria-Fuorigrotta | 1:`DF0` 2:`DF0` 3:`N35` | 1,2,3 | 27,22,11 | -,-,- | solo orari (esami in Esse3) |
@@ -149,8 +149,6 @@ Nota appelli: numero senza parentesi = appelli nella finestra 2026/27; tra paren
 | Fisica Lt | 2 | `N85` → `DC6` | `GEN_A-G\|2, GEN_H-Z\|2` → `GEN\|2` |
 | Fisica Lt | 3 | `N85` → `N85` | `GEN_A-G\|3, GEN_H-Z\|3` → `GEN\|3` |
 | Informatica (magistrale) | 2 | `N97` → `DE5` | `GEN\|2` → `GEN\|2` |
-| Informatica (triennale) | 1 | `DE1` → `DE1` | `C1_A-DE\|1, C2_DF-M\|1, C3_N-Z\|1, GEN\|1` → `GEN\|1` |
-| Informatica (triennale) | 2 | `N86` → `DE1` | `C1_A-G\|2, C2_H-Z\|2, GEN\|2` → `GEN\|2` |
 | Informatica (triennale) | 3 | `N86` → `N86` (scuola Ingegneria-Fuorigrotta) | `GEN\|3, GEN_FGA-G\|3, GEN_FGH-Z\|3, MSA_H-Z\|3` → `GEN_A-G\|3, GEN_H-Z\|3` |
 | Ingegneria Aerospaziale (magistrale) | 2 | `M53` → `DF5` | `GEN\|2` → `GEN\|2` |
 | Ingegneria Aerospaziale (triennale) | 1 | `SG_DF0` → `SG_DF0` | `GEN_SG1A-DIL\|1, GEN_SG2DIM-NES\|1, GEN_SG3NET-Z\|1` → `GEN_A-DIL\|1, GEN_DIM-NES\|1, GEN_NET-Z\|1` |
@@ -221,6 +219,8 @@ Restano disponibili in modalità manuale. Codici originali (scuola + corso + ann
 
 | Corso | scuola | Anno | corso originale | anno2 originale | Motivo |
 |---|---|---|---|---|---|
+| Informatica (triennale) | CollegiodiScienze | 1 | `DE1` | `GEN|1` | 0 celle in tutte le settimane 28-09..30-11-2026 (10 POST); 1 sola cella il 07-12-2026, 0 il 01 e 08-03-2027 → orari non ancora pubblicati |
+| Informatica (triennale) | CollegiodiScienze | 2 | `DE1` | `GEN|2` | idem anno 1 |
 | Bioingegneria Industriale (intero) | Ingegneria-Fuorigrotta | 2 | `P16` | `GEN\|2` | corso assente dal combo 2026 |
 | Corso di Laurea in Biotecnologie Biomolecolari e Industriali | CollegiodiScienze | 2 | `N75` | `GEN\|2` | corso in combo 2026 ma grid_call=0 celle (orari non pubblicati) |
 | Corso di Laurea in Chimica Industriale | CollegiodiScienze | 2 | `N84` | `GEN\|2` | corso in combo 2026 ma grid_call=0 celle (orari non pubblicati) |

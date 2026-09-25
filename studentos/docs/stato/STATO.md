@@ -37,6 +37,10 @@ tutte le sorgenti orario rimaste tornano celle (uniroma2 111/111, unifi 397/397,
 - BUG adapter (file protetto, non toccato): test_call risponde Insegnamenti:[] (array PHP) quando non ci sono
   appelli -> zod "expected record, received array" -> sorgente in errore/banner. Colpisce gli anni senza appelli
   nella finestra anche con exams:true (es. Firenze Informatica anno 2). Proposta: z.preprocess che mappa []->{}.
+- unina Informatica (triennale) anni 1-2 (DE1): rimossi dai live. Ricontrollo 10 POST settimanali 28-09..30-11-2026: 0 celle
+  ogni settimana (solo 1 cella il 07-12-2026); anno 3 (N86) resta con 9 celle/settimana. Attenzione: la verifica
+  automatica usava anche le settimane 07-12 e 01-03: altri corsi unina/unifi/uniroma2 potrebbero essere verificati
+  da una sola cella lontana (ri-controllo consigliato sulle celle/settimana).
 - Da fare: stesse ri-catture per gli altri 15 atenei EasyAcademy (Uniba resta a 2025); ripristinare Lettere
   di Tor Vergata quando pubblicano gli orari; scripts/verified-endpoints.txt non contiene gli host di questi
   atenei (i muri #4 di safe-merge.sh potrebbero bloccare i diff con URL combo.php nei coverage md).

@@ -206,15 +206,11 @@ const livePrograms: LiveProgram[] = [
   },
   {
     programme: "Informatica (triennale)",
-    sources: [
-      ...degreeSources(BASE, ANNO, "informatica-triennale", "CollegiodiScienze", [
-        { year: 1, corso: "DE1", anno2: ["GEN|1"] },
-        { year: 2, corso: "DE1", anno2: ["GEN|2"] },
-      ], false),
-      ...degreeSources(BASE, ANNO, "informatica-triennale", "Ingegneria-Fuorigrotta", [
-        { year: 3, corso: "N86", anno2: ["GEN_A-G|3", "GEN_H-Z|3"] },
-      ], false),
-    ],
+    // Anni 1-2 (CollegiodiScienze, DE1) rimossi il 2026-09-25: 0 celle in ogni settimana 28-09..30-11-2026
+    // (1 sola cella nella settimana 07-12-2026, 0 il 01/08-03-2027). Vedi _unina_coverage.md.
+    sources: degreeSources(BASE, ANNO, "informatica-triennale", "Ingegneria-Fuorigrotta", [
+      { year: 3, corso: "N86", anno2: ["GEN_A-G|3", "GEN_H-Z|3"] },
+    ], false),
   },
   {
     programme: "Ingegneria Aerospaziale (magistrale)",
