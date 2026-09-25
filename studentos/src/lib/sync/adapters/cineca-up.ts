@@ -191,33 +191,46 @@ export function weekWindows(fromIso: string, toIso: string, maxWeeks = 20): { st
   return out;
 }
 
+/** The exact request for one calendar-week — shared with scripts/probe-cineca-up.ts,
+ *  so the live check exercises what production sends. */
+export function impegniRequest(
+  baseUrl: string,
+  clienteId: string,
+  linkCalendarioId: string,
+  week: { start: string; end: string },
+): { url: string; init: RequestInit } {
+  return {
+    url: `${baseUrl.replace(/\/+$/, "")}${IMPEGNI_PATH}`,
+    init: {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Accept: "application/json" },
+      body: JSON.stringify({
+        // Cancelled lessons stay out until the "annullato" field is confirmed on a
+        // real fixture: a cancelled lesson shown as active would be wrong data.
+        mostraImpegniAnnullati: false,
+        mostraIndisponibilitaTotali: false,
+        linkCalendarioId,
+        clienteId,
+        pianificazioneTemplate: false,
+        dataInizio: week.start,
+        dataFine: week.end,
+      }),
+      // SSRF: a 3xx never bounces past the host allowlist (same as every adapter).
+      redirect: "manual",
+    },
+  };
+}
+
 /** POST one calendar-week; the raw array as the server sent it. */
-export async function postImpegni(
+async function postImpegni(
   baseUrl: string,
   clienteId: string,
   linkCalendarioId: string,
   week: { start: string; end: string },
   signal: AbortSignal,
 ): Promise<unknown[]> {
-  const url = `${baseUrl.replace(/\/+$/, "")}${IMPEGNI_PATH}`;
-  const res = await politeFetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/json", Accept: "application/json" },
-    body: JSON.stringify({
-      // Cancelled lessons stay out until the "annullato" field is confirmed on a
-      // real fixture: a cancelled lesson shown as active would be wrong data.
-      mostraImpegniAnnullati: false,
-      mostraIndisponibilitaTotali: false,
-      linkCalendarioId,
-      clienteId,
-      pianificazioneTemplate: false,
-      dataInizio: week.start,
-      dataFine: week.end,
-    }),
-    signal,
-    // SSRF: a 3xx never bounces past the host allowlist (same as every adapter).
-    redirect: "manual",
-  });
+  const { url, init } = impegniRequest(baseUrl, clienteId, linkCalendarioId, week);
+  const res = await politeFetch(url, { ...init, signal });
   if (!res.ok) throw new Error(`Cineca UP ${url} responded ${res.status}`);
   const body: unknown = await res.json();
   if (!Array.isArray(body)) throw new Error(`Cineca UP ${url}: risposta inattesa (non è un elenco di impegni)`);
