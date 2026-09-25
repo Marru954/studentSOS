@@ -5,13 +5,15 @@
  * Non scrive nulla nel repo, salvo le fixture grezze con --save.
  *
  * Uso (da studentos/):
- *   tsx scripts/probe-cineca-up.ts <origin> <linkCalendarioId>... [--week AAAA-MM-GG] [--weeks N] [--save]
+ *   tsx scripts/probe-cineca-up.ts <origin> <linkCalendarioId>... [--from AAAA-MM-GG] [--days N] [--windows N] [--save]
  *   tsx scripts/probe-cineca-up.ts --harvest <url-pagina-orari>...
  *
  * <origin> = schema + host del tenant (*.prod.up.cineca.it), preso dal link
  * pubblico dell'ateneo: mai inventato. Per ogni calendario stampa:
  *  - la data di creazione dell'ObjectId (un calendario di un anno passato è stantio);
- *  - l'esito della POST IDENTICA a quella dell'adapter (impegniRequest);
+ *  - l'esito della POST IDENTICA a quella dell'adapter (impegniRequest), sulle
+ *    stesse finestre di 28 giorni dal lunedì di --from (default oggi; --days più
+ *    corto per una prova leggera, --windows per più finestre);
  *  - chiavi dei campi, forma di docenti/aule, fuso di dataInizio, anni di corso e
  *    campi candidati per tipo attività / annullato (i punti aperti della spec);
  *  - quanti impegni reali readImpegno legge e quanti scarta, con campioni.
@@ -23,7 +25,7 @@
  */
 import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { impegniRequest, readImpegno, weekWindows } from "../src/lib/sync/adapters/cineca-up";
+import { fetchWindows, impegniRequest, readImpegno } from "../src/lib/sync/adapters/cineca-up";
 import { politeFetch } from "../src/lib/sync/http";
 
 const OBJECT_ID = /^[0-9a-f]{24}$/;
@@ -107,7 +109,7 @@ function survey(raw: unknown[]): void {
 
 // ── probe: tenant + calendars ──────────────────────────────────────────────
 
-async function probe(origin: URL, ids: string[], weekDay: string, weeks: number, save: boolean): Promise<void> {
+async function probe(origin: URL, ids: string[], from: string, days: number, windows: number, save: boolean): Promise<void> {
   const robots = await get(new URL("/robots.txt", origin).toString());
   console.log(`robots.txt: HTTP ${robots.status}`);
   for (const line of robots.text.split("\n").filter((l) => /^\s*(user-agent|disallow|allow|crawl-delay)/i.test(l)).slice(0, 12)) {
@@ -131,36 +133,36 @@ async function probe(origin: URL, ids: string[], weekDay: string, weeks: number,
     return;
   }
 
-  const lastDay = new Date(Date.parse(`${weekDay}T00:00:00Z`) + (weeks * 7 - 1) * 86_400_000).toISOString().slice(0, 10);
-  const windows = weekWindows(weekDay, lastDay, weeks);
+  const lastDay = new Date(Date.parse(`${from}T00:00:00Z`) + (windows * days - 1) * 86_400_000).toISOString().slice(0, 10);
+  const spans = fetchWindows(from, lastDay, days, windows);
   for (const id of ids) {
     const created = createdAt(id);
     console.log(`\ncalendario ${id} — creato il ${created}${staleNote(created)}`);
-    for (const week of windows) {
+    for (const span of spans) {
       await sleep(PAUSE_MS);
-      const label = week.start.slice(0, 10);
-      const { url, init } = impegniRequest(origin.origin, clienteId, id, week);
+      const label = `${span.start.slice(0, 10)}+${days}g`;
+      const { url, init } = impegniRequest(origin.origin, clienteId, id, span);
       const res = await politeFetch(url, { ...init, signal: AbortSignal.timeout(TIMEOUT_MS) });
       const text = await res.text();
       if (!res.ok) {
-        console.log(`  settimana ${label}: HTTP ${res.status} ${text.slice(0, 200)}`);
+        console.log(`  ${label}: HTTP ${res.status} ${text.slice(0, 200)}`);
         continue;
       }
       let raw: unknown;
       try {
         raw = JSON.parse(text);
       } catch {
-        console.log(`  settimana ${label}: risposta non JSON: ${text.slice(0, 200)}`);
+        console.log(`  ${label}: risposta non JSON: ${text.slice(0, 200)}`);
         continue;
       }
       if (!Array.isArray(raw)) {
-        console.log(`  settimana ${label}: risposta non-array (chiavi: ${keysOf(raw)})`);
+        console.log(`  ${label}: risposta non-array (chiavi: ${keysOf(raw)})`);
         continue;
       }
-      console.log(`  settimana ${label}: ${raw.length} impegni, ${(text.length / 1024).toFixed(0)} KB`);
+      console.log(`  ${label}: ${raw.length} impegni, ${(text.length / 1024).toFixed(0)} KB`);
       if (save && raw.length) {
         mkdirSync(FIXTURES, { recursive: true });
-        const base = join(FIXTURES, `${origin.host.replace(/[^A-Za-z0-9.-]/g, "_")}-${id}-${label}`);
+        const base = join(FIXTURES, `${origin.host.replace(/[^A-Za-z0-9.-]/g, "_")}-${id}-${span.start.slice(0, 10)}-${days}g`);
         writeFileSync(`${base}.json`, text);
         writeFileSync(`${base}.sample.json`, `${JSON.stringify(raw.slice(0, 5), null, 2)}\n`);
         console.log(`    salvate: ${base}.json (grezza) + .sample.json (primi 5 impegni)`);
@@ -205,7 +207,7 @@ async function harvest(pages: string[]): Promise<void> {
 
 function usage(): never {
   console.error(
-    "Uso: tsx scripts/probe-cineca-up.ts <origin> <linkCalendarioId>... [--week AAAA-MM-GG] [--weeks N] [--save]\n" +
+    "Uso: tsx scripts/probe-cineca-up.ts <origin> <linkCalendarioId>... [--from AAAA-MM-GG] [--days N] [--windows N] [--save]\n" +
       "     tsx scripts/probe-cineca-up.ts --harvest <url-pagina-orari>...",
   );
   process.exit(2);
@@ -231,10 +233,11 @@ async function main(): Promise<void> {
   if (origin.protocol !== "https:" && !["localhost", "127.0.0.1"].includes(origin.hostname)) usage();
   const ids = args.slice(1).filter((a) => OBJECT_ID.test(a));
   if (!ids.length) usage();
-  const weekDay = flag("--week") ?? new Date().toISOString().slice(0, 10);
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(weekDay)) usage();
-  const weeks = Math.min(Math.max(Number(flag("--weeks") ?? 1) || 1, 1), 8);
-  await probe(origin, ids, weekDay, weeks, args.includes("--save"));
+  const from = flag("--from") ?? new Date().toISOString().slice(0, 10);
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(from)) usage();
+  const days = Math.min(Math.max(Number(flag("--days") ?? 28) || 28, 1), 28);
+  const windows = Math.min(Math.max(Number(flag("--windows") ?? 1) || 1, 1), 5);
+  await probe(origin, ids, from, days, windows, args.includes("--save"));
 }
 
 main().catch((err: unknown) => {

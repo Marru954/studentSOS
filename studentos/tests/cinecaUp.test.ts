@@ -18,8 +18,8 @@ import {
   IMPEGNI_PATH,
   readImpegno,
   toClassEvent,
+  fetchWindows,
   upDateTimeToIso,
-  weekWindows,
   type CinecaUpParams,
 } from "../src/lib/sync/adapters/cineca-up";
 import { _resetPoliteFetchCache } from "../src/lib/sync/http";
@@ -102,13 +102,16 @@ test("upDateTimeToIso: unreadable → undefined", () => {
   assert.equal(upDateTimeToIso(""), undefined);
 });
 
-test("weekWindows: Monday-to-Monday UTC windows covering the range, capped", () => {
-  assert.deepEqual(weekWindows("2026-09-23", "2026-10-05"), [
-    { start: "2026-09-21T00:00:00.000Z", end: "2026-09-28T00:00:00.000Z" },
-    { start: "2026-09-28T00:00:00.000Z", end: "2026-10-05T00:00:00.000Z" },
-    { start: "2026-10-05T00:00:00.000Z", end: "2026-10-12T00:00:00.000Z" },
+test("fetchWindows: Monday-aligned 28-day UTC windows covering the range, capped at 5", () => {
+  assert.deepEqual(fetchWindows("2026-09-23", "2026-10-05"), [
+    { start: "2026-09-21T00:00:00.000Z", end: "2026-10-19T00:00:00.000Z" },
   ]);
-  assert.equal(weekWindows("2026-01-01", "2026-12-31").length, 20);
+  assert.deepEqual(fetchWindows("2026-09-21", "2026-10-19"), [
+    { start: "2026-09-21T00:00:00.000Z", end: "2026-10-19T00:00:00.000Z" },
+    { start: "2026-10-19T00:00:00.000Z", end: "2026-11-16T00:00:00.000Z" },
+  ]);
+  assert.equal(fetchWindows("2026-01-01", "2026-12-31").length, 5); // 140 days, like EasyAcademy's 20 weeks
+  assert.equal(fetchWindows("2026-09-21", "2026-12-31", 7, 3).length, 3);
 });
 
 // ── reading one impegno ─────────────────────────────────────────────────────
@@ -173,7 +176,7 @@ test("toClassEvent: ids are stable, and distinct between sibling sources", () =>
 
 // ── fetchTimetable over a stubbed network ───────────────────────────────────
 
-test("fetchTimetable: one JSON POST per calendar-week, cancelled lessons excluded", async () => {
+test("fetchTimetable: one JSON POST per calendar window, cancelled lessons excluded", async () => {
   const seen = serve(() => ({ json: [impegno()] }));
   const events = await cinecaUpProvider.fetchTimetable!(params(), ctx("2026-10-12", "2026-10-18"));
   assert.equal(events.length, 1);
@@ -190,8 +193,18 @@ test("fetchTimetable: one JSON POST per calendar-week, cancelled lessons exclude
     clienteId: CLIENTE,
     pianificazioneTemplate: false,
     dataInizio: "2026-10-12T00:00:00.000Z",
-    dataFine: "2026-10-19T00:00:00.000Z",
+    dataFine: "2026-11-09T00:00:00.000Z",
   });
+});
+
+test("fetchTimetable: a range spanning two windows asks for both and merges them", async () => {
+  const seen = serve((body) => {
+    const day = String(body.dataInizio).slice(0, 10);
+    return { json: [impegno({ id: `imp-${day}`, dataInizio: `${day}T07:30:00.000Z`, dataFine: `${day}T09:30:00.000Z` })] };
+  });
+  const events = await cinecaUpProvider.fetchTimetable!(params(), ctx("2026-10-12", "2026-11-15"));
+  assert.deepEqual(seen.map((s) => s.body.dataInizio), ["2026-10-12T00:00:00.000Z", "2026-11-09T00:00:00.000Z"]);
+  assert.deepEqual(events.map((e) => e.start).sort(), ["2026-10-12T07:30:00.000Z", "2026-11-09T07:30:00.000Z"]);
 });
 
 test("fetchTimetable: dedups across calendars and drops out-of-range impegni", async () => {

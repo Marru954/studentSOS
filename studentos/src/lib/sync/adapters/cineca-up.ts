@@ -177,27 +177,39 @@ export function toClassEvent(imp: UpImpegno, params: CinecaUpParams): ClassEvent
   };
 }
 
-/** Monday 00:00Z of each week covering [from, to], capped like EasyAcademy. */
-export function weekWindows(fromIso: string, toIso: string, maxWeeks = 20): { start: string; end: string }[] {
+// One request per 28 days — no longer than the SPA's own month view — and at
+// most 5 (140 days, the horizon EasyAcademy's 20 weekly calls cover): fewer
+// round-trips keep a source inside the engine's 25 s budget despite ~24 KB per
+// impegno, with the 250 ms per-host gap shared by every source of the ateneo.
+const WINDOW_DAYS = 28;
+const MAX_WINDOWS = 5;
+
+/** Monday-aligned 00:00Z windows of `days` covering [from, to], capped. */
+export function fetchWindows(
+  fromIso: string,
+  toIso: string,
+  days = WINDOW_DAYS,
+  maxWindows = MAX_WINDOWS,
+): { start: string; end: string }[] {
   const d = new Date(`${fromIso}T00:00:00Z`);
   d.setUTCDate(d.getUTCDate() - ((d.getUTCDay() + 6) % 7));
   const last = new Date(`${toIso}T00:00:00Z`).getTime();
   const out: { start: string; end: string }[] = [];
-  while (d.getTime() <= last && out.length < maxWeeks) {
+  while (d.getTime() <= last && out.length < maxWindows) {
     const start = d.toISOString();
-    d.setUTCDate(d.getUTCDate() + 7);
+    d.setUTCDate(d.getUTCDate() + days);
     out.push({ start, end: d.toISOString() });
   }
   return out;
 }
 
-/** The exact request for one calendar-week — shared with scripts/probe-cineca-up.ts,
+/** The exact request for one calendar window — shared with scripts/probe-cineca-up.ts,
  *  so the live check exercises what production sends. */
 export function impegniRequest(
   baseUrl: string,
   clienteId: string,
   linkCalendarioId: string,
-  week: { start: string; end: string },
+  span: { start: string; end: string },
 ): { url: string; init: RequestInit } {
   return {
     url: `${baseUrl.replace(/\/+$/, "")}${IMPEGNI_PATH}`,
@@ -212,8 +224,8 @@ export function impegniRequest(
         linkCalendarioId,
         clienteId,
         pianificazioneTemplate: false,
-        dataInizio: week.start,
-        dataFine: week.end,
+        dataInizio: span.start,
+        dataFine: span.end,
       }),
       // SSRF: a 3xx never bounces past the host allowlist (same as every adapter).
       redirect: "manual",
@@ -221,15 +233,15 @@ export function impegniRequest(
   };
 }
 
-/** POST one calendar-week; the raw array as the server sent it. */
+/** POST one calendar window; the raw array as the server sent it. */
 async function postImpegni(
   baseUrl: string,
   clienteId: string,
   linkCalendarioId: string,
-  week: { start: string; end: string },
+  span: { start: string; end: string },
   signal: AbortSignal,
 ): Promise<unknown[]> {
-  const { url, init } = impegniRequest(baseUrl, clienteId, linkCalendarioId, week);
+  const { url, init } = impegniRequest(baseUrl, clienteId, linkCalendarioId, span);
   const res = await politeFetch(url, { ...init, signal });
   if (!res.ok) throw new Error(`Cineca UP ${url} responded ${res.status}`);
   const body: unknown = await res.json();
@@ -238,7 +250,7 @@ async function postImpegni(
 }
 
 // Per-year sources of one degree often share a calendar and ask for the same
-// calendar-week within one sync: a single download serves them all (and any
+// calendar window within one sync: a single download serves them all (and any
 // sibling request in the next minute) — lighter on the ateneo. Only the slim
 // read form is kept, and failures are never cached.
 const MEMO_TTL_MS = 60_000;
@@ -249,18 +261,18 @@ export function _resetCinecaUpMemo(): void {
   memo.clear();
 }
 
-function impegniOfWeek(
+function impegniOfWindow(
   params: CinecaUpParams,
   linkCalendarioId: string,
-  week: { start: string; end: string },
+  span: { start: string; end: string },
   signal: AbortSignal,
 ): Promise<UpImpegno[]> {
-  const key = `${params.baseUrl}|${params.clienteId}|${linkCalendarioId}|${week.start}`;
+  const key = `${params.baseUrl}|${params.clienteId}|${linkCalendarioId}|${span.start}|${span.end}`;
   const now = Date.now();
   const hit = memo.get(key);
   if (hit && now - hit.at < MEMO_TTL_MS) return hit.value;
   const entry = { at: now, value: Promise.resolve<UpImpegno[]>([]) };
-  entry.value = postImpegni(params.baseUrl, params.clienteId, linkCalendarioId, week, signal)
+  entry.value = postImpegni(params.baseUrl, params.clienteId, linkCalendarioId, span, signal)
     .then((raw) => raw.map(readImpegno).filter((x): x is UpImpegno => x !== null))
     .catch((err: unknown) => {
       if (memo.get(key) === entry) memo.delete(key);
@@ -274,13 +286,13 @@ function impegniOfWeek(
 async function fetchTimetable(params: CinecaUpParams, ctx: FetchContext): Promise<ClassEvent[]> {
   const events = new Map<string, ClassEvent>();
   for (const linkCalendarioId of params.linkCalendarioIds) {
-    for (const week of weekWindows(ctx.range.from, ctx.range.to)) {
-      for (const imp of await impegniOfWeek(params, linkCalendarioId, week, ctx.signal)) {
+    for (const span of fetchWindows(ctx.range.from, ctx.range.to)) {
+      for (const imp of await impegniOfWindow(params, linkCalendarioId, span, ctx.signal)) {
         const event = toClassEvent(imp, params);
         if (!event) continue;
         const day = event.start.slice(0, 10);
         if (day < ctx.range.from || day > ctx.range.to) continue;
-        events.set(event.id, event); // dedup across weeks and calendars
+        events.set(event.id, event); // dedup across windows and calendars
       }
     }
   }

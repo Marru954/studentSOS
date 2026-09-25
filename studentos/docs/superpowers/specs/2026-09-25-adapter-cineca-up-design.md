@@ -70,11 +70,15 @@ inventati. Più calendari per sorgente (es. I e II semestre dello stesso anno).
 `anniCorso` filtra sugli `evento.dettagliDidattici[].annoCorso`; con il filtro attivo
 un impegno senza anno dichiarato viene scartato (meglio niente che l'anno sbagliato).
 
-**Richieste:** una POST per settimana per calendario (max 20 settimane, come
-EasyAcademy), via `politeFetch` (UA, backoff, 250 ms tra richieste allo stesso host,
-`redirect: "manual"`). Le sorgenti per-anno di uno stesso corso condividono spesso lo
-stesso calendario: una memo di processo (60 s) per `baseUrl|calendario|settimana` fa sì
-che il calendario venga scaricato una volta sola per sync, non una per anno.
+**Richieste:** una POST ogni 28 giorni per calendario (non più lunga della vista mensile
+della SPA), max 5 finestre = 140 giorni, lo stesso orizzonte delle 20 settimane di
+EasyAcademy. Con ~24 KB per impegno, 20 POST settimanali in sequenza (più i 250 ms di
+pausa per host, condivisi da tutte le sorgenti dell'ateneo) rischiavano il budget di
+25 s per sorgente dell'engine. Tutto via `politeFetch` (UA, backoff, `redirect:
+"manual"`). Le sorgenti per-anno di uno stesso corso condividono spesso lo stesso
+calendario: una memo di processo (60 s) per `baseUrl|calendario|finestra` fa sì che il
+calendario venga scaricato una volta sola per sync, non una per anno, e conserva solo
+la forma ridotta degli impegni (pochi campi), mai i ~24 KB grezzi.
 
 **Mapping impegno → `ClassEvent`:** `courseName` = primo `dettagliDidattici[].nome`
 (fallback `nome` dell'impegno; senza nome → scartato); `start`/`end` normalizzati a
@@ -89,9 +93,13 @@ manuali (pista futura: Esse3 pubblico), come gli atenei EasyAcademy "solo orario
 
 ```
 cd studentos
-./node_modules/.bin/tsx scripts/probe-cineca-up.ts https://unipi.prod.up.cineca.it <linkCalendarioId>…
+./node_modules/.bin/tsx scripts/probe-cineca-up.ts --harvest <url-pagine-orari-unipi>…   # censimento
+./node_modules/.bin/tsx scripts/probe-cineca-up.ts https://unipi.prod.up.cineca.it <linkCalendarioId>… --save
 ```
-Risolve `clienteId`, fa una POST per calendario sulla settimana corrente, salva la
+`--harvest` estrae i `linkCalendarioId` dalle pagine orari dell'ateneo, con testo del
+link e data di creazione (dal più recente, avviso sugli anni passati).
+Risolve `clienteId`, fa per ogni calendario la POST della produzione (finestra di 28
+giorni dal lunedì di `--from`; `--days 7` per una prova leggera), salva la
 risposta grezza in `tests/fixtures/cineca-up/`, stampa chiavi dei campi, anni di
 corso trovati e l'esito del parser dell'adapter sulla risposta reale.
 
