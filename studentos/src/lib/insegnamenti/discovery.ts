@@ -29,6 +29,7 @@
 import { lookup } from "node:dns/promises";
 import { isIP } from "node:net";
 import { isPrivateIp } from "@/lib/sync/validateUrl";
+import { politeFetch } from "@/lib/sync/http";
 
 /** Response shape returned by `POST /api/insegnamenti/sync`. The server can't
  *  parse (no DOMParser) nor persist (no IndexedDB), so on success it hands the
@@ -276,7 +277,7 @@ async function tryFetch(rawUrl: string, signal: AbortSignal): Promise<string | n
 
   let res: Response;
   try {
-    res = await fetch(url, {
+    res = await politeFetch(url, {
       redirect: "manual",
       signal,
       headers: { Accept: "text/html,application/xhtml+xml" },

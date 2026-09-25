@@ -8,6 +8,7 @@ import { z } from "zod";
 import type { ClassEvent, ClassEventKind } from "@/lib/domain/types";
 import type { FetchContext, SyncProvider } from "../provider";
 import { stableId } from "../util";
+import { politeFetch } from "../http";
 
 const paramsSchema = z.object({
   url: z.string().url(),
@@ -22,7 +23,7 @@ export type ICalParams = z.infer<typeof paramsSchema>;
 const MAX_OCCURRENCES_PER_EVENT = 200;
 
 async function fetchTimetable(params: ICalParams, ctx: FetchContext): Promise<ClassEvent[]> {
-  const res = await fetch(params.url, { signal: ctx.signal, redirect: "manual" });
+  const res = await politeFetch(params.url, { signal: ctx.signal, redirect: "manual" });
   if (!res.ok) throw new Error(`iCal feed responded ${res.status}`);
   const component = new ICAL.Component(ICAL.parse(await res.text()));
 
