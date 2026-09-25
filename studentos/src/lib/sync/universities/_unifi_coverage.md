@@ -13,6 +13,36 @@ Sorgente: GET reale `https://kairos.unifi.it/agendaweb/combo.php?sw=ec_&aa=2026&
 - Programmi rimasti live solo in parte (alcuni anni rimossi): **16**
 - Le tabelle per scuola più sotto sono lo **storico della verifica 2025/26** e NON sono state rigenerate: fa fede questa sezione.
 
+### Ri-controllo settimanale 28-09..30-11-2026 (criterio live: celle > 0 in almeno una delle 10 settimane)
+
+Un POST a `grid_call.php` (anno=2026) per ciascuna delle 10 settimane (lunedì 28-09, 05-10, 12-10, 19-10, 26-10, 02-11, 09-11, 16-11, 23-11, 30-11), con concorrenza 3 e pausa tra le richieste. Una cella isolata fuori finestra (dicembre/marzo) non basta.
+
+- Sorgenti orario controllate: **397** · restano live: **386** · rimosse: **11** (programmi rimossi per intero: 0)
+- La tabella "Corsi live verificati" qui sotto e le sezioni precedenti sono anteriori a questo ri-controllo: per gli anni elencati nella tabella seguente fa fede questa sezione (sono stati rimossi da `livePrograms`).
+
+| Corso | scuola | Anno | corso originale | anno2 originale | Motivo |
+|---|---|---|---|---|---|
+| Architettura (magistrale) | ScuoladiArchitettura | 2 | `B430` | `D59\|2, C61\|2` | 0 celle in tutte le 10 settimane 28-09..30-11-2026 (ripristinare quando pubblicano gli orari) |
+| Farmacia (ciclo unico) | ScuoladiScienzedellaSaluteUmana | 5 | `B054` | `GEN\|5` | 0 celle in tutte le 10 settimane 28-09..30-11-2026 (ripristinare quando pubblicano gli orari) |
+| Farmacia (ciclo unico) (B054) | ScuoladiScienzedellaSaluteUmana | 5 | `B054` | `GEN\|5` | 0 celle in tutte le 10 settimane 28-09..30-11-2026 (ripristinare quando pubblicano gli orari) |
+| Fisioterapia (abilitante alla Professione Sanitaria di Fisioterapista) - Empoli | ScuoladiScienzedellaSaluteUmana | 1 | `B165_EMPOLI` | `GEN\|1` | 0 celle in tutte le 10 settimane 28-09..30-11-2026 (ripristinare quando pubblicano gli orari) |
+| Fisioterapia (abilitante alla Professione Sanitaria di Fisioterapista) - Pistoia | ScuoladiScienzedellaSaluteUmana | 1 | `B165_PISTOIA` | `GEN\|1` | 0 celle in tutte le 10 settimane 28-09..30-11-2026 (ripristinare quando pubblicano gli orari) |
+| Infermieristica (abilitante alla Professione Sanitaria di Infermiere) - Empoli | ScuoladiScienzedellaSaluteUmana | 2 | `B162_EMPOLI` | `GEN\|2` | 0 celle in tutte le 10 settimane 28-09..30-11-2026 (ripristinare quando pubblicano gli orari) |
+| Infermieristica (abilitante alla Professione Sanitaria di Infermiere) - Empoli | ScuoladiScienzedellaSaluteUmana | 3 | `B162_EMPOLI` | `GEN\|3` | 0 celle in tutte le 10 settimane 28-09..30-11-2026 (ripristinare quando pubblicano gli orari) |
+| Infermieristica (abilitante alla Professione Sanitaria di Infermiere) - Pistoia | ScuoladiScienzedellaSaluteUmana | 2 | `B162_PISTOIA` | `GEN\|2` | 0 celle in tutte le 10 settimane 28-09..30-11-2026 (ripristinare quando pubblicano gli orari) |
+| Medicina e Chirurgia | ScuoladiScienzedellaSaluteUmana | 1 | `B414` | `GEN\|1` | 0 celle in tutte le 10 settimane 28-09..30-11-2026 (ripristinare quando pubblicano gli orari) |
+| Scienze Riabilitative delle Professioni Sanitarie | ScuoladiScienzedellaSaluteUmana | 1 | `B181` | `GEN\|1` | 0 celle in tutte le 10 settimane 28-09..30-11-2026 (ripristinare quando pubblicano gli orari) |
+| Tecniche di Neurofisiopatologia (abilitante alla Professione Sanitaria di Tecnico di Neurofisiopatologia) | ScuoladiScienzedellaSaluteUmana | 2 | `B202` | `GEN\|2` | 0 celle in tutte le 10 settimane 28-09..30-11-2026 (ripristinare quando pubblicano gli orari) |
+
+Campione celle per settimana (28-09 … 30-11):
+
+- Accounting, Auditing e Controllo (anno 1, `B377`): 26, 27, 27, 26, 26, 26, 26, 26, 26, 26
+- Architettura (magistrale) (B348) (anno 2, `B348`): 9, 9, 10, 9, 9, 9, 9, 9, 9, 9
+- Assistenza Sanitaria (abilitante alla Professione Sanitaria di Assistente Sanitario) (anno 1, `B178`): 0, 0, 6, 8, 11, 10, 10, 9, 11, 9
+- Biotecnologie (anno 2, `B301`): 9, 9, 9, 9, 9, 10, 10, 10, 9, 9
+- Chimica (anno 1, `B321`): 23, 23, 23, 23, 23, 23, 23, 23, 23, 23
+- Chimica e Tecnologia Farmaceutiche (ciclo unico) (B053) (anno 4, `B263`): 9, 9, 9, 9, 9, 1, 9, 9, 9, 9
+
 ### Corsi passati a solo-orari (exams:false) — 34
 
 Regola rigida: `exams:false` se `test_call.php` non restituisce appelli nella finestra 2026/27 (01-09-2026..30-09-2027). Da riattivare (ultimo argomento `false` di `degreeSources`) quando i calendari esami vengono pubblicati. 'Nel 2025/26' = il codice risponde con appelli della finestra precedente (calendario nuovo non ancora pubblicato); 'mai' = nessun appello neanche nel 2025/26.

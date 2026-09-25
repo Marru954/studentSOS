@@ -43,7 +43,6 @@ const livePrograms: LiveProgram[] = [
     programme: "Architettura (magistrale)",
     sources: degreeSources(BASE, ANNO, "architettura-magistrale", "ScuoladiArchitettura", [
       { year: 1, corso: "B387", anno2: ["GEN|1"] },
-      { year: 2, corso: "B430", anno2: ["D59|2", "C61|2"] },
     ]),
   },
   {
@@ -296,14 +295,12 @@ const livePrograms: LiveProgram[] = [
       { year: 2, corso: "B357", anno2: ["GEN|2"] },
       { year: 3, corso: "B264", anno2: ["GEN|3"] },
       { year: 4, corso: "B264", anno2: ["GEN|4"] },
-      { year: 5, corso: "B054", anno2: ["GEN|5"] },
     ]),
   },
   {
     programme: "Farmacia (ciclo unico) (B054)",
     sources: degreeSources(BASE, ANNO, "farmacia-ciclo-unico-b054", "ScuoladiScienzedellaSaluteUmana", [
       { year: 4, corso: "B264", anno2: ["GEN|4"] },
-      { year: 5, corso: "B054", anno2: ["GEN|5"] },
     ]),
   },
   {
@@ -345,7 +342,6 @@ const livePrograms: LiveProgram[] = [
   {
     programme: "Fisioterapia (abilitante alla Professione Sanitaria di Fisioterapista) - Empoli",
     sources: degreeSources(BASE, ANNO, "fisioterapia-abilitante-alla-professione-sanitaria-di-fisioterapista-empoli", "ScuoladiScienzedellaSaluteUmana", [
-      { year: 1, corso: "B165_EMPOLI", anno2: ["GEN|1"] },
       { year: 2, corso: "B165_EMPOLI", anno2: ["GEN|2"] },
       { year: 3, corso: "B165_EMPOLI", anno2: ["GEN|3"] },
     ]),
@@ -361,7 +357,6 @@ const livePrograms: LiveProgram[] = [
   {
     programme: "Fisioterapia (abilitante alla Professione Sanitaria di Fisioterapista) - Pistoia",
     sources: degreeSources(BASE, ANNO, "fisioterapia-abilitante-alla-professione-sanitaria-di-fisioterapista-pistoia", "ScuoladiScienzedellaSaluteUmana", [
-      { year: 1, corso: "B165_PISTOIA", anno2: ["GEN|1"] },
       { year: 2, corso: "B165_PISTOIA", anno2: ["GEN|2"] },
       { year: 3, corso: "B165_PISTOIA", anno2: ["GEN|3"] },
     ]),
@@ -435,8 +430,6 @@ const livePrograms: LiveProgram[] = [
     programme: "Infermieristica (abilitante alla Professione Sanitaria di Infermiere) - Empoli",
     sources: degreeSources(BASE, ANNO, "infermieristica-abilitante-alla-professione-sanitaria-di-infermiere-empoli", "ScuoladiScienzedellaSaluteUmana", [
       { year: 1, corso: "B162_EMPOLI", anno2: ["GEN|1"] },
-      { year: 2, corso: "B162_EMPOLI", anno2: ["GEN|2"] },
-      { year: 3, corso: "B162_EMPOLI", anno2: ["GEN|3"] },
     ]),
   },
   {
@@ -451,7 +444,6 @@ const livePrograms: LiveProgram[] = [
     programme: "Infermieristica (abilitante alla Professione Sanitaria di Infermiere) - Pistoia",
     sources: degreeSources(BASE, ANNO, "infermieristica-abilitante-alla-professione-sanitaria-di-infermiere-pistoia", "ScuoladiScienzedellaSaluteUmana", [
       { year: 1, corso: "B162_PISTOIA", anno2: ["GEN|1"] },
-      { year: 2, corso: "B162_PISTOIA", anno2: ["GEN|2"] },
       { year: 3, corso: "B162_PISTOIA", anno2: ["GEN|3"] },
     ]),
   },
@@ -685,7 +677,6 @@ const livePrograms: LiveProgram[] = [
   {
     programme: "Medicina e Chirurgia",
     sources: degreeSources(BASE, ANNO, "medicina-e-chirurgia", "ScuoladiScienzedellaSaluteUmana", [
-      { year: 1, corso: "B414", anno2: ["GEN|1"] },
       { year: 2, corso: "B414", anno2: ["GEN|2"] },
       { year: 3, corso: "B240", anno2: ["GEN|3"] },
       { year: 4, corso: "B240", anno2: ["GEN|4"] },
@@ -1117,7 +1108,6 @@ const livePrograms: LiveProgram[] = [
   {
     programme: "Scienze Riabilitative delle Professioni Sanitarie",
     sources: degreeSources(BASE, ANNO, "scienze-riabilitative-delle-professioni-sanitarie", "ScuoladiScienzedellaSaluteUmana", [
-      { year: 1, corso: "B181", anno2: ["GEN|1"] },
       { year: 2, corso: "B181", anno2: ["GEN|2"] },
     ]),
   },
@@ -1265,7 +1255,6 @@ const livePrograms: LiveProgram[] = [
     programme: "Tecniche di Neurofisiopatologia (abilitante alla Professione Sanitaria di Tecnico di Neurofisiopatologia)",
     sources: degreeSources(BASE, ANNO, "tecniche-di-neurofisiopatologia-abilitante-alla-professione-sanitaria-di-tecnico-di-neurofisiopatologia", "ScuoladiScienzedellaSaluteUmana", [
       { year: 1, corso: "B202", anno2: ["GEN|1"] },
-      { year: 2, corso: "B202", anno2: ["GEN|2"] },
       { year: 3, corso: "B202", anno2: ["GEN|3"] },
     ]),
   },

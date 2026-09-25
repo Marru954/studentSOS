@@ -41,6 +41,13 @@ tutte le sorgenti orario rimaste tornano celle (uniroma2 111/111, unifi 397/397,
   ogni settimana (solo 1 cella il 07-12-2026); anno 3 (N86) resta con 9 celle/settimana. Attenzione: la verifica
   automatica usava anche le settimane 07-12 e 01-03: altri corsi unina/unifi/uniroma2 potrebbero essere verificati
   da una sola cella lontana (ri-controllo consigliato sulle celle/settimana).
+- Ri-controllo settimanale su TUTTE le sorgenti orario (10 POST/settimana dal 28-09 al 30-11-2026, concorrenza 3;
+  live = celle>0 in almeno una settimana, una cella isolata a dicembre/marzo non basta). Controllate/rimosse/restano:
+  uniroma2 111/2/109 (Biotecnologie Agrarie AB3 intero, Chemical Nano-Engineering y1); unina 196/35/161 (18 corsi
+  interi, quasi tutto CollegiodiScienze: Biologia, Chimica, Fisica, Matematica, Scienze Naturali...);
+  unifi 397/11/386 (Sanita' Empoli/Pistoia, Medicina y1, Farmacia y5, Arch. magistrale y2...). Motivo + codici
+  originali nella sezione "Ri-controllo settimanale" di ogni _<id>_coverage.md. 0 errori di rete. Le tabelle
+  "live verificati" dei coverage md sono precedenti al ri-controllo (fa fede la nuova sezione).
 - Da fare: stesse ri-catture per gli altri 15 atenei EasyAcademy (Uniba resta a 2025); ripristinare Lettere
   di Tor Vergata quando pubblicano gli orari; scripts/verified-endpoints.txt non contiene gli host di questi
   atenei (i muri #4 di safe-merge.sh potrebbero bloccare i diff con URL combo.php nei coverage md).
