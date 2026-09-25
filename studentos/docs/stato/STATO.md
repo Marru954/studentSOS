@@ -83,6 +83,10 @@ tutte le sorgenti orario rimaste tornano celle (uniroma2 111/111, unifi 397/397,
   2026: 0 celle ovunque; esami 0 appelli (giurisprudenza-esami-anno-1 andrebbe in errore per il bug adapter Insegnamenti:[]).
   Preset passato a MODALITA' MANUALE (liveSources:false, senza livePrograms; codici 2025 in UNIBA_LIVE_PROGRAMS_2025_26 per
   il ripristino): atenei live 19 -> 18, LIVE_PROGRAMME_COUNT -12 (derivati). Ri-verificare quando compare aa=2026.
+- Uniba (Bari) -> modalita' manuale (commit dedicato). Unisa (Salerno, ANNO gia' 2026, combo 2026 con 146 corsi): programmi 111 -> 77,
+  anni-orario 303 -> 184 (127 ricatturati: codici unificati anno1/2 e anno2 PDS0-2026, 119 rimossi: 34 programmi interi;
+  verifica 10 settimane 28-09..30-11: 184/184 con celle). Esami: 27 programmi con appelli 2026/27, 50 passati a solo-orari;
+  23 programmi con anni a rischio bug adapter (Insegnamenti:[]) elencati nel coverage md.
 - Da fare: stesse ri-catture per gli altri 15 atenei EasyAcademy (Uniba resta a 2025); ripristinare Lettere
   di Tor Vergata quando pubblicano gli orari; scripts/verified-endpoints.txt non contiene gli host di questi
   atenei (i muri #4 di safe-merge.sh potrebbero bloccare i diff con URL combo.php nei coverage md).
