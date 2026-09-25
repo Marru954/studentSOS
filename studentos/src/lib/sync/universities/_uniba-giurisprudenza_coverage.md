@@ -22,6 +22,13 @@ Servizi Giuridici — tengono gli appelli fuori da EasyAcademy (`test_call.php` 
 > appelli reali solo per Giurisprudenza anno-1. Gli altri sono stati riportati a
 > `exams:false` (regola "dato vuoto è peggio di nessun dato"). Riproponibile a ottobre 2026.
 
+## Ri-verifica 2026/27 — 2026-09-25: NESSUN cambiamento al preset (sistema non pronto)
+
+- GET reale `combo.php?sw=ec_&aa=2026&page=corsi` su `easyacademy.ict.uniba.it/PortaleStudenti`: HTTP 200 ma `elenco_corsi = []`, `elenco_scuole = []` → **nessun corso per il 2026/27**. (aa=2025: 12 corsi come nel preset.) Nulla da ricatturare; ANNO resta "2025", non forzato a 2026.
+- 35 sorgenti orario (12 programmi) × 10 POST settimanali `grid_call.php` (28-09..30-11-2026, concorrenza 2 + pausa), sia con anno=2025 sia con anno=2026: **0 celle ovunque** (350 richieste per anno, 0 errori di rete). Le lezioni 2026/27 non sono pubblicate su questo host.
+- Esami: `test_call.php` (01-09-2026..30-09-2027) → 0 appelli per tutti i 12 corsi/anni. L'unica sorgente esami del preset (`giurisprudenza-esami-anno-1`, corso 6001) risponderebbe `Insegnamenti:[]` → errore con il bug adapter noto (zod "expected record, received array").
+- Applicando la regola rigida il preset sarebbe interamente vuoto (0 sorgenti live). Per istruzione del coordinatore il preset è lasciato **com'è** (nessun codice modificato); da ri-verificare quando compare aa=2026 nel combo o vengono pubblicati gli orari. Codici e stato 2025/26 nelle tabelle sotto restano come storico.
+
 ## Corsi
 
 | Corso | corso | Anni | celle | appelli | Stato |
