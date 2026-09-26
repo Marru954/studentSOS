@@ -43,3 +43,6 @@ yarn-error.log*
 !.claude/agents/
 !.claude/agents/*.md
 !.claude/settings.json
+
+# riepilogo dell'ultima corsa di `scripts/safe-merge.sh --auto` (riscritto a ogni corsa, non versionato)
+studentos/docs/stato/LAST_SESSION_SUMMARY.md
