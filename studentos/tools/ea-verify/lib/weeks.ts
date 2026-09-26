@@ -32,3 +32,8 @@ export function defaultWindow(aa: string): { from: string; to: string } {
 export function defaultExamWindow(aa: string): { from: string; to: string } {
   return { from: `${aa}-10-01`, to: `${Number(aa) + 1}-09-30` };
 }
+
+/** Finestra di settembre dell'anno di inizio (solo per il flag informativo SEPT_ONLY_EXAMS). */
+export function septWindow(aa: string): { from: string; to: string } {
+  return { from: `${aa}-09-01`, to: `${aa}-09-30` };
+}

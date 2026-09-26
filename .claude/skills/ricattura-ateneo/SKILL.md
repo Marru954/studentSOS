@@ -20,8 +20,7 @@ Tutti i comandi si lanciano da `studentos/` con `./node_modules/.bin/tsx tools/e
   fuori finestra non basta. Sorgenti che non lo soddisfano vengono rimosse (anni) o il corso esce da `livePrograms`,
   con motivo e codici originali nel coverage md.
 - **Esami rigidi:** `exams:true` solo se `test_call` ha appelli nella finestra del nuovo anno. Niente fallback
-  sull'anno precedente. Anni senza appelli su un corso con esami restano a rischio del bug noto dell'adapter
-  (`Insegnamenti:[]` -> errore zod): vanno elencati nel report, non corretti (file protetto).
+  sull'anno precedente. Il vecchio errore dell'adapter con `Insegnamenti:[]` ha il fix pronto nel working tree, in attesa di commit: non e' piu' un rischio da elencare. `SEPT_ONLY_EXAMS` e' solo informativo.
 - **Combo vuoto** (il sistema non ha ancora l'anno): il preset passa a modalita' manuale, non si forza l'anno.
 - **Nessun URL EasyAcademy letterale** nel codice o nei documenti (i muri #4 di `safe-merge.sh` li bloccano):
   gli endpoint si costruiscono a runtime dal `baseUrl` del preset. Il tool lo fa gia'.
@@ -37,7 +36,7 @@ Tutti i comandi si lanciano da `studentos/` con `./node_modules/.bin/tsx tools/e
 1. **verify** (sola lettura): `tools/ea-verify/cli.ts verify <presetId> [--aa AAAA]`. Scrive lo snapshot in
    `src/lib/sync/universities/_verify/<presetId>.json` e stampa il riepilogo. Leggere i flag:
    `COMBO_EMPTY`, `NO_CELLS`, `PARTIAL`, `CODE_MISSING_IN_COMBO`, `ANNO2_STALE`, `NAME_MISMATCH`,
-   `SCUOLA_NOT_IN_COMBO`, `EXAMS_EMPTY_ARRAY_RISK`, `NET_ERROR`. Se ci sono `NET_ERROR`, rilanciare (rete), non decidere.
+   `SCUOLA_NOT_IN_COMBO`, `SEPT_ONLY_EXAMS` (informativo), `NET_ERROR`. Se ci sono `NET_ERROR`, rilanciare (rete), non decidere.
 2. **diff**: `tools/ea-verify/cli.ts diff <presetId>` confronta con lo snapshot committato (sorgenti passate da live a
    vuote, nuovi corsi, codici rinumerati). E' il resoconto dei cambiamenti.
 3. **apply dry-run** (default): `tools/ea-verify/cli.ts apply <presetId>`. Mostra il piano: anni invariati,
@@ -52,9 +51,8 @@ Tutti i comandi si lanciano da `studentos/` con `./node_modules/.bin/tsx tools/e
 7. **Commit unico** `<ateneo>: ...` che include preset, coverage md, snapshot `_verify/<id>.json` e STATO.md.
 8. **Controllo in app** (con `npm run dev` e un browser, se disponibile): onboarding (l'ateneo/corso compare come
    "sync live" solo se davvero live, altrimenti "manuale"), `/orario` (lezioni presenti per l'anno scelto),
-   conflitti d'orario (solo tra lezioni dello stesso anno), badge/banner errori di sync (nessun errore inatteso; gli
-   `Insegnamenti:[]` noti vanno riportati). Senza browser, dirlo esplicitamente nel riepilogo.
+   conflitti d'orario (solo tra lezioni dello stesso anno), badge/banner errori di sync (nessun errore inatteso). Senza browser, dirlo esplicitamente nel riepilogo.
 9. **Riepilogo** nel formato consueto: programmi/anni prima -> dopo, rimossi (elenco), ricatturati, esami attivi vs
-   solo-orari, sorgenti a rischio bug adapter, celle/settimana per un campione, anomalie, problemi incontrati.
+   solo-orari, esami solo a settembre (informativo), celle/settimana per un campione, anomalie, problemi incontrati.
 10. **STOP.** Attendere il via libera esplicito dell'utente prima di passare all'ateneo successivo. Non lanciare
     `verify all` come preludio a modifiche: `verify all` + `diff all` servono solo al ricontrollo mensile in sola lettura.

@@ -3,9 +3,9 @@ import fs from "node:fs";
 import path from "node:path";
 import { test } from "node:test";
 import { extractArray, parseCombo, valoriForYear, yearOfValore } from "../tools/ea-verify/lib/combo";
-import { defaultAcademicYear, defaultExamWindow, defaultWindow, mondaysBetween, toItalian } from "../tools/ea-verify/lib/weeks";
+import { defaultAcademicYear, defaultExamWindow, defaultWindow, mondaysBetween, septWindow, toItalian } from "../tools/ea-verify/lib/weeks";
 import { nameSimilarity, namesMatch, normalizeName, tipoCompatible, tipoOfProgramme } from "../tools/ea-verify/lib/match";
-import { classifyWeeks, comboFlags, wantExams } from "../tools/ea-verify/lib/flags";
+import { classifyWeeks, comboFlags, septOnlyExams, wantExams } from "../tools/ea-verify/lib/flags";
 import { diffSnapshots, formatDiff, isEmptyDiff, parseSnapshot, serializeSnapshot } from "../tools/ea-verify/lib/snapshot";
 import {
   buildPlan,
@@ -130,6 +130,15 @@ test("wantExams: regola rigida, solo con appelli", () => {
   assert.equal(wantExams([0, 0]), false);
   assert.equal(wantExams([0, 3]), true);
   assert.equal(wantExams([]), false);
+});
+
+test("SEPT_ONLY_EXAMS: solo informativo, appelli a settembre e nessuno da ottobre", () => {
+  assert.equal(septOnlyExams(0, 3), true);
+  assert.equal(septOnlyExams(0, 0), false);
+  assert.equal(septOnlyExams(2, 3), false);
+  assert.deepEqual(septWindow("2026"), { from: "2026-09-01", to: "2026-09-30" });
+  // non influenza la regola rigida degli esami
+  assert.equal(wantExams([0, 0]), false);
 });
 
 test("clampConcurrency non supera mai 3", () => {

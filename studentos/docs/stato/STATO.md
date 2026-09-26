@@ -65,7 +65,7 @@ tutte le sorgenti orario rimaste tornano celle (uniroma2 111/111, unifi 397/397,
   ~23 ott 2026 (lezioni ottobre: Firenze Informatica 30/34/23, Ing. Informatica 205/43/55; Federico II Ing.
   Informatica 53/23/32, Informatica triennale anni 1-2: 0 lezioni in ottobre pur con celle a inizio periodo;
   Tor Vergata Informatica 36/18/21). Appelli in ottobre: 0 ovunque (sessioni a gennaio).
-- BUG adapter (file protetto, non toccato): test_call risponde Insegnamenti:[] (array PHP) quando non ci sono
+- BUG adapter (fix pronto nel working tree, in attesa di commit; poi non piu' un rischio): test_call risponde Insegnamenti:[] (array PHP) quando non ci sono
   appelli -> zod "expected record, received array" -> sorgente in errore/banner. Colpisce gli anni senza appelli
   nella finestra anche con exams:true (es. Firenze Informatica anno 2). Proposta: z.preprocess che mappa []->{}.
 - unina Informatica (triennale) anni 1-2 (DE1): rimossi dai live. Ricontrollo 10 POST settimanali 28-09..30-11-2026: 0 celle
@@ -87,6 +87,7 @@ tutte le sorgenti orario rimaste tornano celle (uniroma2 111/111, unifi 397/397,
   anni-orario 303 -> 184 (127 ricatturati: codici unificati anno1/2 e anno2 PDS0-2026, 119 rimossi: 34 programmi interi;
   verifica 10 settimane 28-09..30-11: 184/184 con celle). Esami: 27 programmi con appelli 2026/27, 50 passati a solo-orari;
   23 programmi con anni a rischio bug adapter (Insegnamenti:[]) elencati nel coverage md.
+- ea-verify: EXAMS_EMPTY_ARRAY_RISK rimosso (bug adapter con fix in attesa di commit); aggiunto SEPT_ONLY_EXAMS informativo (appelli solo 1-30 settembre), mai usato da apply. Gli snapshot committati contengono ancora il vecchio flag fino al prossimo verify.
 - TOOLING ea-verify (studentos/tools/ea-verify, test tests/eaVerify.test.ts, skill .claude/skills/ricattura-ateneo): verify (catalogo + 10 POST
   settimanali/sorgente + esami, snapshot in universities/_verify/<id>.json), diff (snapshot vs HEAD), apply (dry-run; --write riscrive preset +
   coverage; preset -> manuale se catalogo vuoto). Collaudo: unisa ricalcolato = 184/184 anni live, 27 programmi con esami, 0 blocchi da riscrivere

@@ -50,3 +50,8 @@ export function comboFlags(
 export function wantExams(appelliPerYear: number[]): boolean {
   return appelliPerYear.some((n) => n > 0);
 }
+
+/** Informativo: appelli solo a settembre (coda sessione anno precedente) e nessuno da ottobre. Mai usato da apply. */
+export function septOnlyExams(appelliFromOct: number, appelliSept: number): boolean {
+  return appelliFromOct === 0 && appelliSept > 0;
+}

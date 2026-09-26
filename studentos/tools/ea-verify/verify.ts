@@ -3,7 +3,8 @@ import path from "node:path";
 import { execFileSync } from "node:child_process";
 import { fetchCatalog, examAppelli, gridCells } from "./lib/endpoints";
 import { parseCombo } from "./lib/combo";
-import { classifyWeeks, comboFlags } from "./lib/flags";
+import { classifyWeeks, comboFlags, septOnlyExams } from "./lib/flags";
+import { septWindow } from "./lib/weeks";
 import { pool, type NetOptions } from "./lib/net";
 import { parseSnapshot, serializeSnapshot } from "./lib/snapshot";
 import type { Flag, Snapshot, SnapshotParams, SourceRecord } from "./lib/types";
@@ -75,8 +76,13 @@ export async function runVerify(t: Target, o: VerifyOptions, now = new Date()): 
       const appelli = await scanExam(s.scuola, s.corso, s.anno2[0] ?? String(s.year));
       const flags: Flag[] = [...comboFlags({ ...s, anno2: [] }, entries)];
       if (appelli < 0) flags.push("NET_ERROR");
-      else if (appelli === 0) flags.push("EXAMS_EMPTY_ARRAY_RISK");
-      rec = { ...base(s), weeks: [], total: 0, weeksWithCells: 0, appelli, live: appelli > 0, flags };
+      let septAppelli: number | undefined;
+      if (appelli === 0) {
+        const sw = septWindow(params.aa);
+        septAppelli = await examAppelli(t.baseUrl, s.scuola, s.corso, s.anno2[0] ?? String(s.year), sw.from, sw.to, net);
+        if (septOnlyExams(appelli, septAppelli)) flags.push("SEPT_ONLY_EXAMS");
+      }
+      rec = { ...base(s), weeks: [], total: 0, weeksWithCells: 0, appelli, ...(septAppelli !== undefined ? { septAppelli } : {}), live: appelli > 0, flags };
     }
     if (++done % 25 === 0) o.log(`  ${done}/${t.sources.length} sorgenti`);
     return rec;
@@ -133,13 +139,13 @@ export function summarize(s: Snapshot): string[] {
   L.push(`- Combo: **${s.combo.status}** (${s.combo.count} corsi)${s.presetFlags.length ? " - " + s.presetFlags.join(",") : ""}`);
   L.push(`- Orari: ${tt.length} sorgenti, live ${tt.filter((r) => r.live).length}, vuote ${tt.filter((r) => !r.live).length}`);
   L.push(`- Esami: ${ex.length} sorgenti, con appelli ${ex.filter((r) => r.live).length}, senza ${ex.filter((r) => !r.live).length}`);
-  L.push("- Flag: " + (["NO_CELLS", "PARTIAL", "CODE_MISSING_IN_COMBO", "ANNO2_STALE", "NAME_MISMATCH", "SCUOLA_NOT_IN_COMBO", "EXAMS_EMPTY_ARRAY_RISK", "NET_ERROR"] as Flag[]).map((f) => `${f}=${count(f)}`).join(" "));
+  L.push("- Flag: " + (["NO_CELLS", "PARTIAL", "CODE_MISSING_IN_COMBO", "ANNO2_STALE", "NAME_MISMATCH", "SCUOLA_NOT_IN_COMBO", "SEPT_ONLY_EXAMS", "NET_ERROR"] as Flag[]).map((f) => `${f}=${count(f)}`).join(" "));
   const empty = tt.filter((r) => !r.live);
   if (empty.length) {
     L.push("", `Orari senza celle (${empty.length}, max 30):`);
     for (const r of empty.slice(0, 30)) L.push(`  - ${r.programme} anno ${r.year} (${r.corso}) [${r.flags.join(",")}]`);
   }
-  const risk = ex.filter((r) => r.flags.includes("EXAMS_EMPTY_ARRAY_RISK"));
-  if (risk.length) L.push("", `Esami a rischio bug adapter Insegnamenti:[] (${risk.length}).`);
+  const sept = ex.filter((r) => r.flags.includes("SEPT_ONLY_EXAMS"));
+  if (sept.length) L.push("", `Esami solo a settembre (informativo, non usato da apply): ${sept.length}`);
   return L;
 }

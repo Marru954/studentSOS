@@ -33,7 +33,7 @@ stampa un riepilogo. Flag:
 | `ANNO2_STALE` | gli `anno2` del preset non sono quelli attuali del catalogo |
 | `NAME_MISMATCH` | il nome del programma non somiglia al nome del corso col stesso codice |
 | `SCUOLA_NOT_IN_COMBO` | la `scuola` del preset non compare nel catalogo (solo se il catalogo espone le scuole) |
-| `EXAMS_EMPTY_ARRAY_RISK` | esami senza appelli: la risposta sarebbe `Insegnamenti:[]` (bug noto dell'adapter) |
+| `SEPT_ONLY_EXAMS` | informativo: appelli solo dal 1 al 30 settembre (coda dell'anno precedente), nessuno da ottobre. Non e' mai usato da `apply` per cambiare `exams` |
 | `NET_ERROR` | richiesta fallita: rilanciare, non decidere |
 
 ### `diff <presetId|all>` (sola lettura)

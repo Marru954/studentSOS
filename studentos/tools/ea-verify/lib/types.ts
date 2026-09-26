@@ -19,7 +19,7 @@ export type Flag =
   | "ANNO2_STALE"
   | "NAME_MISMATCH"
   | "COMBO_EMPTY"
-  | "EXAMS_EMPTY_ARRAY_RISK"
+  | "SEPT_ONLY_EXAMS"
   | "SCUOLA_NOT_IN_COMBO"
   | "NET_ERROR";
 
@@ -37,6 +37,8 @@ export interface SourceRecord {
   weeksWithCells: number;
   /** Appelli nella finestra esami (solo kind=exams); -1 = errore. */
   appelli?: number;
+  /** Appelli nella sola finestra 1-30 settembre dell'anno (coda dell'anno precedente); solo informativo. */
+  septAppelli?: number;
   live: boolean;
   flags: Flag[];
 }
