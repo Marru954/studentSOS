@@ -101,6 +101,13 @@ function isLiveCourse(p: UniversityPreset | undefined, course: string): boolean 
   );
 }
 
+/** True when the live sources for this course include exam calls. Some degrees
+ *  are timetable-only (calendars not published yet, or exams live elsewhere). */
+function hasLiveExams(p: UniversityPreset | undefined, course: string): boolean {
+  const sources = p?.livePrograms?.length ? liveProgramFor(p, course)?.sources : p?.sources;
+  return Boolean(sources?.some((s) => s.capability === "exams"));
+}
+
 export function OnboardingFlow() {
   const router = useRouter();
   const [step, setStep] = useState(1);
@@ -135,6 +142,7 @@ export function OnboardingFlow() {
   const corsi = programmesOf(preset);
   const corso = chosenCorso ?? corsi[0] ?? "";
   const corsoLive = isLiveCourse(preset, corso);
+  const corsoExams = corsoLive && hasLiveExams(preset, corso);
   const corsoSearchActive = corsoQuery.trim().length > 0;
   const filteredCorsi = (() => {
     const q = corsoQuery.trim().toLowerCase();
@@ -362,7 +370,7 @@ export function OnboardingFlow() {
                     </span>
                     <span className="block truncate text-[0.65rem] text-ink-faint/70">
                       {p.liveSources
-                        ? "Orario e appelli aggiornati automaticamente"
+                        ? "Orario aggiornato automaticamente, appelli dove disponibili"
                         : "Inserisci tu le informazioni del tuo corso"}
                     </span>
                   </span>
@@ -454,7 +462,9 @@ export function OnboardingFlow() {
                                     <span className="block truncate">{truncateName(c)}</span>
                                     <span className="block text-[0.65rem] text-ink-faint/70">
                                       {live
-                                        ? "Orario e appelli aggiornati automaticamente"
+                                        ? hasLiveExams(preset, c)
+                                          ? "Orario e appelli aggiornati automaticamente"
+                                          : "Orario aggiornato automaticamente · appelli da inserire a mano"
                                         : "Inserisci tu le informazioni del tuo corso"}
                                     </span>
                                   </span>
@@ -559,8 +569,10 @@ export function OnboardingFlow() {
               {corsoLive ? (
                 <>
                   <GraduationCap aria-hidden="true" className="mr-1 inline size-3.5 text-signal" />
-                  Sincronizzeremo orario, appelli e avvisi per {corso}. Nessun
-                  accesso al portale richiesto.
+                  {corsoExams
+                    ? `Sincronizzeremo orario, appelli e avvisi per ${corso}.`
+                    : `Sincronizzeremo l'orario per ${corso}. Gli appelli non sono ancora disponibili: potrai inserirli a mano.`}{" "}
+                  Nessun accesso al portale richiesto.
                 </>
               ) : (
                 <>
