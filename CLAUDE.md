@@ -129,3 +129,16 @@ Come usarli:
 "Usa il subagente @dispatch: [descrivi il task in una riga]"
 "Usa il subagente @planner per analizzare [feature] e scrivere una spec"
 "Usa il subagente @frontend per implementare [componente]"
+
+## Stile di comunicazione durante la sessione
+
+Dopo ogni gruppo di comandi, spiega cosa hai fatto in 2-3 righe semplici,
+come se lo spiegassi a qualcuno che non programma:
+
+* Cosa hai fatto (in parole povere, non nomi di comandi/file a meno che servano)
+* Perché era necessario
+* Cosa significa per l'utente (es. "ora quando lanci l'app...")
+
+Evita gergo tecnico senza spiegarlo (niente "gate verde", "rebase", "hook"
+non accompagnati da una frase in chiaro). Il dettaglio tecnico completo va
+comunque nel report finale/STATO.md, non nella narrazione live.
