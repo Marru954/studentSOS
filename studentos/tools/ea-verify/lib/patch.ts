@@ -65,6 +65,14 @@ export function buildPlan(meta: { presetId: string; aa: string; date: string; co
   return { ...meta, toManual: meta.comboEmpty || liveYears === 0, programs };
 }
 
+/** Motivo per programma: regola "almeno un anno con appelli" (a livello di programma, non per anno). */
+export function examReason(p: ProgramPlan): string {
+  const live = p.years.filter((y) => y.next);
+  const con = live.filter((y) => (y.appelli ?? 0) > 0).map((y) => `${y.year}:${y.appelli}`);
+  const senza = live.filter((y) => !((y.appelli ?? 0) > 0)).map((y) => String(y.year));
+  return `anni con appelli [${con.join(" ")}], senza [${senza.join(" ")}]`;
+}
+
 export const isLiveProgram = (p: ProgramPlan) => p.years.some((y) => y.next);
 
 export interface PlanStats {

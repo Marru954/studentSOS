@@ -1,6 +1,6 @@
 import fs from "node:fs";
 import { examAppelli, gridCells } from "./lib/endpoints";
-import { candidatesFor, buildPlan, finalizeProgram, mergeCoverage, pickHit, planStats, renderCoverageSection, renderManualConversion, renderPresetPatch, type Hit } from "./lib/patch";
+import { candidatesFor, buildPlan, examReason, finalizeProgram, mergeCoverage, pickHit, planStats, renderCoverageSection, renderManualConversion, renderPresetPatch, type Hit } from "./lib/patch";
 import type { NetOptions } from "./lib/net";
 import type { ComboCourse, Plan, ProgramPlan, Snapshot, YearModel, YearPlan } from "./lib/types";
 import { coveragePath, type Target } from "./lib/targets";
@@ -115,8 +115,9 @@ export function formatPlan(plan: Plan): string[] {
   lines("Rimossi", all.filter(({ y }) => y.action === "removed").map(({ p, y }) => `${p.programme} anno ${y.year} (${y.old.corso}): ${y.reason}`));
   lines("AMBIGUI (non applicati, da decidere)", all.filter(({ y }) => y.action === "ambiguous").map(({ p, y }) => `${p.programme} anno ${y.year}: ${y.reason}`));
   lines("Programmi 'special' (forma non standard: non riscritti)", plan.programs.filter((p) => p.special).map((p) => p.programme));
-  lines("Esami -> solo-orari", st.examsOff);
-  lines("Esami -> attivabili (solo-orari nel preset ma con appelli)", st.examsOn);
+  const byName = new Map(plan.programs.map((p) => [p.programme, p]));
+  lines("Esami -> solo-orari (nessun anno con appelli da ottobre)", st.examsOff.map((n) => `${n}: ${examReason(byName.get(n) as ProgramPlan)}`));
+  lines("Esami -> attivabili (almeno un anno con appelli)", st.examsOn.map((n) => `${n}: ${examReason(byName.get(n) as ProgramPlan)}`));
   return L;
 }
 

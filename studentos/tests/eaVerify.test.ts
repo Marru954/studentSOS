@@ -10,6 +10,7 @@ import { diffSnapshots, formatDiff, isEmptyDiff, parseSnapshot, serializeSnapsho
 import {
   buildPlan,
   candidatesFor,
+  examReason,
   finalizeProgram,
   mergeCoverage,
   pickHit,
@@ -257,6 +258,16 @@ test("finalizeProgram / buildPlan / planStats: esami rigidi e passaggio a manual
   assert.deepEqual(st.removedPrograms, ["R"]);
   assert.equal(buildPlan({ presetId: "t", aa: "2026", date: "d", comboEmpty: true }, [p]).toManual, true);
   assert.equal(buildPlan({ presetId: "t", aa: "2026", date: "d", comboEmpty: false }, [r]).toManual, true);
+});
+
+test("esami a livello di programma: basta UN anno con appelli; motivo per programma", () => {
+  const p = finalizeProgram({ programme: "P", slug: "p", special: false, hadExams: false }, [yp(1, "A", "A", { appelli: 0 }), yp(2, "A", "A", { appelli: 5 }), yp(3, "A", "A", { appelli: 0 })]);
+  assert.equal(p.wantExams, true);
+  assert.equal(examReason(p), "anni con appelli [2:5], senza [1 3]");
+  const plan = buildPlan({ presetId: "t", aa: "2026", date: "d", comboEmpty: false }, [p]);
+  assert.deepEqual(planStats(plan).examsOn, ["P"]);
+  const none = finalizeProgram({ programme: "Q", slug: "q", special: false, hadExams: true }, [yp(1, "A", "A", { appelli: 0 }), yp(2, "A", "A", { appelli: 0 })]);
+  assert.equal(none.wantExams, false);
 });
 
 /* ------------------------------------------------------------ patch preset */
