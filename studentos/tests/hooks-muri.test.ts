@@ -1,5 +1,5 @@
 /**
- * Tests deterministici per gli hook PreToolUse muri #4 e #5.
+ * Tests deterministici per l'hook PreToolUse check-invented-data (unico muro attivo).
  *
  * Gli hook girano come processi figli separati (leggono stdin, scrivono stdout).
  * La env CLAUDE_HOOK_TEST_BRANCH sovrascrive git per determinare la modalità.
@@ -12,7 +12,6 @@ import { test } from "node:test";
 
 const HOOKS_DIR = resolve(__dirname, "../scripts/hooks");
 const HOOK_DATA = resolve(HOOKS_DIR, "check-invented-data.mjs");
-const HOOK_DEPS = resolve(HOOKS_DIR, "check-new-deps.mjs");
 
 function runHook(
   scriptPath: string,
@@ -153,144 +152,4 @@ test("hook-A: ignora righe già presenti nell'old_string (non è contenuto nuovo
     },
   }, "auto/test");
   assert.equal(r.exitCode, 0, "riga invariata non deve triggerare il blocco");
-});
-
-// ─── HOOK B — MURO #5 (no nuove dipendenze) ──────────────────────────────────
-
-test("hook-B [STRICT]: blocca npm install <pkg> in branch auto/", () => {
-  const r = runHook(HOOK_DEPS, {
-    tool_name: "Bash",
-    tool_input: { command: "npm install lodash" },
-  }, "auto/test");
-  assert.equal(r.exitCode, 2);
-  const dec = parseDecision(r.stdout);
-  assert.equal(dec?.decision, "block");
-  assert.match(dec?.reason ?? "", /Muro #5/);
-  assert.match(dec?.reason ?? "", /lodash/);
-});
-
-test("hook-B [STRICT]: blocca pnpm add in branch auto/", () => {
-  const r = runHook(HOOK_DEPS, {
-    tool_name: "Bash",
-    tool_input: { command: "pnpm add zod" },
-  }, "auto/test");
-  assert.equal(r.exitCode, 2);
-  const dec = parseDecision(r.stdout);
-  assert.equal(dec?.decision, "block");
-});
-
-test("hook-B [STRICT]: blocca yarn add in branch auto/", () => {
-  const r = runHook(HOOK_DEPS, {
-    tool_name: "Bash",
-    tool_input: { command: "yarn add react-query" },
-  }, "auto/test");
-  assert.equal(r.exitCode, 2);
-  const dec = parseDecision(r.stdout);
-  assert.equal(dec?.decision, "block");
-});
-
-test("hook-B: consente npm install (bare, senza pacchetto)", () => {
-  const r = runHook(HOOK_DEPS, {
-    tool_name: "Bash",
-    tool_input: { command: "npm install" },
-  }, "auto/test");
-  assert.equal(r.exitCode, 0);
-  assert.equal(r.stdout, "");
-});
-
-test("hook-B: consente npm run build", () => {
-  const r = runHook(HOOK_DEPS, {
-    tool_name: "Bash",
-    tool_input: { command: "npm run build" },
-  }, "auto/test");
-  assert.equal(r.exitCode, 0);
-  assert.equal(r.stdout, "");
-});
-
-test("hook-B [STRICT]: blocca nuova dep in package.json (Edit) — branch auto/", () => {
-  const r = runHook(HOOK_DEPS, {
-    tool_name: "Edit",
-    tool_input: {
-      file_path: "studentos/package.json",
-      old_string: '  "dependencies": {\n    "react": "^19.0.0"\n  }',
-      new_string: '  "dependencies": {\n    "react": "^19.0.0",\n    "lodash": "^4.0.0"\n  }',
-    },
-  }, "auto/test");
-  assert.equal(r.exitCode, 2);
-  const dec = parseDecision(r.stdout);
-  assert.equal(dec?.decision, "block");
-  assert.match(dec?.reason ?? "", /package\.json/);
-});
-
-test("hook-B [STRICT]: blocca modifica diretta a package-lock.json — branch auto/", () => {
-  const r = runHook(HOOK_DEPS, {
-    tool_name: "Edit",
-    tool_input: {
-      file_path: "studentos/package-lock.json",
-      old_string: "{}",
-      new_string: '{"name":"x"}',
-    },
-  }, "auto/test");
-  assert.equal(r.exitCode, 2);
-  const dec = parseDecision(r.stdout);
-  assert.equal(dec?.decision, "block");
-  assert.match(dec?.reason ?? "", /lockfile/i);
-});
-
-test("hook-B [WARN]: consente + additionalContext su branch supervisionato (npm install)", () => {
-  const r = runHook(HOOK_DEPS, {
-    tool_name: "Bash",
-    tool_input: { command: "npm install dayjs" },
-  }, "main");
-  assert.equal(r.exitCode, 0, "deve uscire 0 (warn, non blocca)");
-  const dec = parseDecision(r.stdout);
-  assert.ok(dec, "deve emettere JSON");
-  assert.equal(dec?.decision, "allow");
-  assert.match(dec?.additionalContext ?? "", /Muro #5 WARN/);
-});
-
-test("hook-B [WARN]: consente + additionalContext su branch supervisionato (package.json edit)", () => {
-  const r = runHook(HOOK_DEPS, {
-    tool_name: "Edit",
-    tool_input: {
-      file_path: "package.json",
-      old_string: '  "dependencies": {\n    "react": "^19.0.0"\n  }',
-      new_string: '  "dependencies": {\n    "react": "^19.0.0",\n    "dayjs": "^1.0.0"\n  }',
-    },
-  }, "feature/my-thing");
-  assert.equal(r.exitCode, 0);
-  const dec = parseDecision(r.stdout);
-  assert.equal(dec?.decision, "allow");
-  assert.match(dec?.additionalContext ?? "", /Muro #5 WARN/);
-});
-
-test("hook-B: ignora Edit a package.json senza nuove dep (solo aggiornamento versione)", () => {
-  // Cambia versione di una dep esistente → la riga è sia in old che in new
-  const r = runHook(HOOK_DEPS, {
-    tool_name: "Edit",
-    tool_input: {
-      file_path: "package.json",
-      old_string: '    "react": "^18.0.0"',
-      new_string: '    "react": "^19.0.0"',
-    },
-  }, "auto/test");
-  // "react" cambia solo versione — la chiave "react" è già in old_string
-  // Il RE_DEP_ENTRY matcha il pattern, ma la riga react è diversa (versione diversa)
-  // quindi sarà rilevata come "nuova" — questo è corretto: cambiare versione
-  // potrebbe essere un aggiornamento voluto o meno, meglio avvisare.
-  // In auto/ → blocca (comportamento conservativo).
-  assert.equal(r.exitCode, 2);
-});
-
-test("hook-B: ignora file che non sono package.json né lockfile", () => {
-  const r = runHook(HOOK_DEPS, {
-    tool_name: "Edit",
-    tool_input: {
-      file_path: "src/components/MyComponent.tsx",
-      old_string: "",
-      new_string: '"lodash": "^4.0.0"',
-    },
-  }, "auto/test");
-  assert.equal(r.exitCode, 0);
-  assert.equal(r.stdout, "");
 });

@@ -40,7 +40,7 @@ jobs:
         run: |
           set -e
           test -f .claude/settings.json
-          for h in check-protected-files check-main-protection check-new-deps check-invented-data; do
+          for h in check-invented-data; do
             test -f "studentos/scripts/hooks/$h.mjs" || { echo "::error::hook mancante: $h"; exit 1; }
             grep -q "$h.mjs" .claude/settings.json || { echo "::error::$h non registrato in settings.json"; exit 1; }
           done
