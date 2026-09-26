@@ -1,4 +1,4 @@
-﻿name: Claude
+name: Claude
 
 # Parte SOLO quando qualcuno scrive "@claude" in un commento (issue/PR/review).
 # Niente trigger su push o apertura PR.
@@ -16,7 +16,7 @@ permissions:
 jobs:
   claude:
     # Solo commenti con @claude scritti da owner/membri/collaboratori
-    # (la chiave API Ã¨ del repo: nessun esterno puÃ² spenderla).
+    # (la chiave API è del repo: nessun esterno può spenderla).
     if: >-
       contains(github.event.comment.body, '@claude') &&
       contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.comment.author_association)
@@ -28,7 +28,7 @@ jobs:
 
     steps:
       # Checkout COMPLETO: niente sparse-checkout, niente shallow (fetch-depth: 0),
-      # cosÃ¬ .claude/settings.json e studentos/scripts/hooks/*.mjs sono presenti.
+      # così .claude/settings.json e studentos/scripts/hooks/*.mjs sono presenti.
       - name: Checkout (completo)
         uses: actions/checkout@v4
         with:
@@ -51,7 +51,7 @@ jobs:
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           # Usa il GITHUB_TOKEN del job (permessi sopra) invece dello scambio OIDC:
-          # cosÃ¬ non serve `id-token: write`.
+          # così non serve `id-token: write`.
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          # Modello esplicito: il default dell'action (claude-opus-5-5) Ã¨ fallito subito (run 36226874082).
+          # Modello esplicito: il default dell'action (claude-opus-5-5) è fallito subito (run 36226874082).
           claude_args: --model claude-sonnet-5
