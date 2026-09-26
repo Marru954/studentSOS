@@ -1,6 +1,6 @@
 # Stato attuale StudentOS
 
-Aggiornato: 2026-09-26 (quinquies: regole v2, un solo muro; PR #41 mergiata; prima: portata su main la nota "nonies" della sessione ricattura-codici)
+Aggiornato: 2026-09-26 (sexies: aggiunta la "Coda task" leggibile dagli agenti; prima: regole v2, un solo muro; PR #41 mergiata)
 
 ## Completati
 ### Sessione 2026-09-26 (quinquies) — regole progetto v2: un solo muro (PR #41, mergiata; branch chore/riduci-muri-solo-dati-inventati, poi cancellato)
@@ -517,6 +517,32 @@ tracker (selettori field + isOnboarded coerente).
 - Deferred dall'audit (cambi architetturali, fuori scope su richiesta utente):
   filtri/stato in URL su tutte le pagine; deep-link a livello voce in
   SearchPalette; lazy-load AssistantChat; inert/scroll-lock sfondo Overlay.
+
+## Coda task (letta dagli agenti automatici)
+
+Livello aggiuntivo, leggibile da macchina, di "In sospeso" + "Prossimi obiettivi" (che restano in prosa per la lettura umana, sono la fonte di verità). Una riga per task:
+`- [ ] <slug> | area:<sync|adapter|chore|test|ux> | auto:<si|no> | motivo-no:<testo|-> | batch:<N|-> | note: <breve>`
+Un agente automatico prende **solo** righe `[ ]` con `auto:si`; tutto il resto è per una persona. `auto:no` sempre per: adapter nuovi da zero, qualsiasi cosa che tocchi `db.ts`, decisioni ancora in attesa del proprietario. Quando chiudi un task passa `[ ]` → `[x]` (o toglilo) e aggiorna anche la prosa.
+
+- [ ] adapter-cineca-up-pisa-live | area:adapter | auto:no | motivo-no:richiede rete verso `*.up.cineca.it` + siti unipi e primo preset con dati reali (adapter nuovo/dormiente, codici mai da inventare) | batch:- | note: sia in "In sospeso" sia in "Prossimi obiettivi"; passi: probe `--harvest` su Pisa → `--save` → fixture + test → 7 punti spec → preset `unipi`; poi Torino e gli altri 11 atenei UP
+- [ ] adapter-sapienza-gomp | area:adapter | auto:no | motivo-no:adapter nuovo da zero (GOMP) | batch:- | note: dopo UP, dal recon 2026-07-02
+- [ ] adapter-bologna | area:adapter | auto:no | motivo-no:adapter nuovo da zero; serve rivalidare `@@orario_reale_json` con lezioni iniziate | batch:- | note: dopo Sapienza
+- [ ] adapter-polito | area:adapter | auto:no | motivo-no:adapter nuovo da zero | batch:- | note: dopo Bologna
+- [ ] adapter-polimi | area:adapter | auto:no | motivo-no:adapter nuovo da zero | batch:- | note: dopo PoliTo
+- [ ] padova-exams-only | area:sync | auto:no | motivo-no:in attesa di decisione esplicita del proprietario sul `robots.txt` di Padova (`Disallow: /`) | batch:- | note: non richiede un adapter nuovo, ma non partire prima della decisione
+- [ ] ratelimit-ip-distribuito | area:chore | auto:no | motivo-no:ambiguo, chiarire con il proprietario (opzionale; tocca sicurezza `guard.ts` + Supabase `rate_limits`, possibile migration) | batch:- | note: portare il bucket per-IP sullo store distribuito; oggi cookie-HMAC + in-memory
+- [ ] privacy-titolare-e-cancellazione-account | area:ux | auto:no | motivo-no:decisione del proprietario (identità titolare GDPR art. 13.1.a non inventabile); cancellazione account = feature nuova da specificare | batch:- | note: informativa `/privacy` oggi dice "progetto indipendente" + support@studentos.app
+- [ ] pulizia-branch-remoti | area:chore | auto:no | motivo-no:cancellazione di branch remoti da fare a mano su GitHub (il proxy dell'ambiente la blocca); azione distruttiva | batch:- | note: elenco dei branch in "In sospeso"
+- [ ] insegnamenti-vuoti-verifica-live | area:test | auto:no | motivo-no:richiede osservazione live come utente reale in browser (la parte codice è già coperta da test) | batch:- | note: fix `Insegnamenti: []` non ancora visto funzionare dal vivo
+- [ ] stableid-nul-escape | area:chore | auto:si | motivo-no:- | batch:- | note: in `src/lib/sync/util.ts` sostituire il NUL letterale con l'escape `"\0"` (stessa stringa → id invariati; verificarlo con i test esistenti su `stableId`); non toccare `easyacademy.ts`/`engine.ts`
+- [ ] manual-form-validazione-inline | area:ux | auto:si | motivo-no:- | batch:- | note: allineare ManualExamForm/ManualLessonForm al pattern errore-inline di EntryForm (campi obbligatori marcati, errore accanto al campo, annunciato per a11y); copy in italiano
+- [ ] xss-hardening-low | area:chore | auto:no | motivo-no:ambiguo, chiarire con il proprietario (difesa in profondità su NotePreview/AssistantChat/htmlToText, tocca superficie di sicurezza; decisione utente di rimandare) | batch:- | note: img component esplicito; ordine strip/decode in htmlToText
+- [ ] dns-rebinding-toctou | area:chore | auto:no | motivo-no:fix pieno richiede IP pinning + dispatcher custom = dipendenza nuova; rischio residuo accettato dal proprietario (#6, skip esplicito) | batch:- | note: non lavorare senza nuova decisione
+- [ ] progressring-useid | area:ux | auto:no | motivo-no:ambiguo, chiarire con il proprietario (il fix `useId` rompe i server component CareerSummary/CareerPanels; "lasciato così" per scelta) | batch:- | note: id gradiente duplicato, innocuo
+- [ ] filtri-stato-in-url | area:ux | auto:no | motivo-no:cambio architetturale, fuori scope su richiesta utente | batch:- | note: filtri/stato in URL su tutte le pagine
+- [ ] searchpalette-deeplink-voce | area:ux | auto:no | motivo-no:cambio architetturale, fuori scope su richiesta utente | batch:- | note: deep-link a livello voce
+- [ ] assistantchat-lazy-load | area:ux | auto:no | motivo-no:ambiguo, chiarire con il proprietario (CLAUDE.md dice che `AssistantBubble` carica già `AssistantChat` con `next/dynamic`: probabilmente già fatto, verificare e chiudere la voce) | batch:- | note: deferred dall'audit
+- [ ] overlay-inert-scroll-lock | area:ux | auto:no | motivo-no:cambio architetturale, fuori scope su richiesta utente | batch:- | note: inert/scroll-lock dello sfondo di Overlay
 
 ## Prossimi obiettivi
 - **Adapter Cineca UP live su Pisa** (poi Torino e gli altri 11 atenei UP): tutto il
