@@ -1,8 +1,14 @@
 # Stato attuale StudentOS
 
-Aggiornato: 2026-09-26 (PR #31 mergiata: fix esami `Insegnamenti: []`, adapter Cineca UP dormiente + probe)
+Aggiornato: 2026-09-26 (dipendenze vulnerabili aggiornate: Next 16.3.6, pdfjs-dist 6.3, npm audit a 0)
 
 ## Completati
+### Sessione 2026-09-26 — aggiornamento dipendenze vulnerabili (branch claude/gifted-carson-nkr5yq)
+✅ `npm audit` da 1 critica + 8 alte + 1 moderata → **0 vulnerabilità**. `package.json` (autorizzato dall'utente): `next` e `eslint-config-next` 16.2.9 → **16.3.6** (versioni esatte come prima; chiude gli avvisi alti su bypass di proxy/middleware con Turbopack e sulle Server Actions, e porta `postcss` 8.5.23 e `sharp` 0.35.4), `pdfjs-dist` ^6.0.227 → **^6.3.289** (avviso alto: esecuzione di JS aprendo un PDF malevolo, <6.2.108), `allowScripts` allineato a `sharp@0.35.4`. Il resto (`undici` via cheerio, `brace-expansion`, `browserslist`, `js-yaml`, `baseline-browser-mapping`) con `npm audit fix` non-breaking, solo lockfile.
+✅ Letto `node_modules/next/dist/docs` prima di fidarsi: la 16.3 aggiunge funzioni (`io`, `catchError` stabile, `next/root-params`, cache su filesystem di default nelle build Turbopack), nessun cambio su `proxy`. Effetto collaterale: `next dev` riscrive il blocco gestito di `studentos/AGENTS.md` (committato, come chiede il blocco stesso; nota in CLAUDE.md).
+✅ Verifiche: gate verde (build Next 16.3.6, 587 test, tsc, lint). pdfjs A/B: stesso PDF (generato dalla fixture Delphi) estratto con 6.0.227 e 6.3.289 → 285 elementi identici per testo, posizione e larghezza. Smoke test nel browser (Chromium headless di `/opt/pw-browsers` + playwright globale: il Playwright MCP cerca Chrome, assente qui): onboarding Tor Vergata → Informatica → 2° anno, 10 pagine, import PDF nel libretto ("4 esami superati trovati", come in Node: il worker pdfjs si carica con Turbopack), 0 errori di console/pagina/HTTP, log del server pulito. Screenshot controllati: landing, /orario (banner di sync parziale atteso: rete verso gli atenei bloccata), /panoramica (tour con blur del vetro), /insegnamenti.
+⚠️ Branch remoto `auto/hook-muri-4-5`: l'utente ne ha autorizzato la cancellazione (tutto il suo contenuto è su main, verificato con `git cherry` e confronto file), ma il proxy dell'ambiente chiude il push di cancellazione e il connettore GitHub non ha uno strumento per cancellare branch → da cancellare a mano (GitHub → Branches, o `git push origin --delete auto/hook-muri-4-5` in locale).
+
 ### Sessione 2026-09-25 (octies) — fix esami `Insegnamenti: []` + adapter Cineca UP dormiente (branch claude/gifted-carson-nkr5yq)
 ✅ Fix sync core (autorizzato dall'utente: "tutti i permessi"): `test_call.php` con `Insegnamenti: []` (PHP json_encode di un array associativo vuoto) faceva fallire l'intera sorgente esami ("expected record, received array") invece di dare 0 appelli. Ora `z.preprocess` legge qualsiasi array come il record equivalente; `null` e le altre forme restano un fallimento (una sorgente fallita conserva la cache, un successo vuoto la rimpiazzerebbe). Test `easyacademyExams` (5, riproduce il bug prima del fix). Registrato nel runner anche `examStatus.test.ts` (9 test verdi, mai eseguiti: mancava dallo script `test`).
 ✅ Adapter `cineca-up` (Cineca University Planner) DORMIENTE: registrato ma nessun preset → allowlist SSRF vuota per il provider, `/api/sync` rifiuta ogni sorgente UP (testato). Spec `docs/superpowers/specs/2026-09-25-adapter-cineca-up-design.md` con 7 punti da confermare su fixture reale. Scelte: finestre di 28 giorni (max 5 = 140 gg, come le 20 settimane EA) per restare nel budget di 25 s per sorgente; memo di processo 60 s condivisa tra sorgenti per-anno dello stesso calendario, solo forma ridotta degli impegni; orari senza fuso = ora di Roma (DST inclusa, indipendente dal TZ del server); lezioni annullate escluse lato server finché il campo non è confermato; `kind: "other"` finché il campo tipo non è confermato; id seedati con calendario + filtro anno (IndexedDB indicizza per solo `id` su tutte le sorgenti). Helper `upProgramSources` (gemello di `degreeSources`). Test `cinecaUp` (19, payload sintetici dichiarati come tali). Solo lato server: 0 chunk client con codice UP.
@@ -463,8 +469,8 @@ tracker (selettori field + isOnboarded coerente).
   (20260615…/20260701…), e non c'è entry di tracking per `0001_init` — i due
   schemi di naming restano su binari diversi (il repo è documentazione di
   schema, non una sorgente `db push` sincronizzata 1:1 con il tracking).
-- **Finding audit non ancora fixati** (decisione utente): #7 postcss moderate
-  (richiede downgrade Next rompente → sconsigliato); XSS hardening LOW (img
+- **Finding audit non ancora fixati** (decisione utente): ~~#7 postcss moderate~~
+  (**RISOLTO il 2026-09-26**: Next 16.3.6 porta postcss 8.5.23); XSS hardening LOW (img
   component esplicito in NotePreview/AssistantChat, ordine strip/decode in
   htmlToText — difesa in profondità, non bug). Il check grant #8 è stato
   chiuso il 2026-07-04 (v. sessione in cima).
