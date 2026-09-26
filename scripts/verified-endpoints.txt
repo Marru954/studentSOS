@@ -45,3 +45,12 @@ easyutv.uniroma2.it/agendaweb/
 kairos.unifi.it/agendaweb/
 # pattern GET del catalogo corsi 2026/27 (token senza host, come citato nei coverage md): verificato 2026-09-25 su tutti gli atenei EasyAcademy live
 combo.php?sw=ec_&aa=2026&page=corsi
+
+# ── link esterni dell'informativa /privacy (src/app/privacy/page.tsx) — 2026-09-26 ──
+# NON sono endpoint dati: il server non li chiama mai, sono solo href nella pagina.
+# Confermati come pagine ufficiali tramite ricerca web il 2026-09-26 (il fetch diretto
+# è bloccato dalla rete dell'ambiente cloud); ricontrollarli quando si aggiorna l'informativa.
+groq.com/privacy-policy
+vercel.com/legal/privacy-policy
+supabase.com/privacy
+www.garanteprivacy.it

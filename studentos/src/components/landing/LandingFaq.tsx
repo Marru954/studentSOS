@@ -1,16 +1,29 @@
 import { Plus } from "lucide-react";
+import Link from "next/link";
 
 /** FAQ statica della landing: accordion con <details> native (zero JS, già
  *  accessibili da tastiera). Risposte oneste e local-first — nessuna promessa
  *  di cloud/sync come default. */
-const FAQ: { q: string; a: string }[] = [
+const FAQ: { q: string; a: React.ReactNode }[] = [
   {
     q: "È gratis?",
     a: "Sì, è gratis. Niente abbonamenti, niente carta di credito.",
   },
   {
     q: "Dove finiscono i miei dati?",
-    a: "Restano sul tuo dispositivo, in locale. Nessun account è obbligatorio: l'accesso opzionale serve solo a ritrovarli su più dispositivi, se lo vuoi.",
+    a: (
+      <>
+        Restano sul tuo dispositivo, in locale. Nessun account è obbligatorio:
+        l&rsquo;accesso opzionale serve solo a ritrovarli su più dispositivi, se
+        lo vuoi. L&rsquo;Assistente e l&rsquo;import PDF con l&rsquo;AI inviano i
+        dati necessari a un servizio esterno solo quando li usi: i dettagli sono
+        nell&rsquo;
+        <Link href="/privacy" className="underline underline-offset-2 hover:text-ink">
+          informativa privacy
+        </Link>
+        .
+      </>
+    ),
   },
   {
     q: "Funziona offline?",

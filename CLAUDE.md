@@ -106,7 +106,7 @@ The SSRF guard for outbound fetches is `src/lib/sync/validateUrl.ts` (`isPrivate
 
 **Assistente (AI chat)** (`/assistente` page + `AssistantBubble`/`AssistantChat`, `src/lib/assistente.ts`, `POST /api/assistente`). The client gathers the live student context from the stores (already locale-formatted), the pure `buildSystemPrompt` turns it into the Italian system prompt, the route streams Groq's reply token-by-token. `AssistantBubble` lazy-loads `AssistantChat` via `next/dynamic` (`ssr:false`) so react-markdown isn't in every page's initial bundle.
 
-**Routes:** `/` (public **landing** page — hero with the animated `S→tudent🛟S` wordmark, feature cards, "Come funziona", stats, footer; no login), `/panoramica` (the predictive bento **dashboard** — instruments media/CFU/projection read the libretto store reactively, live), `/orario` (CSS-Grid week view, with year + per-course filters), `/appelli` (month calendar + exam cards, with year + per-course filters), `/libretto` (manual entry + CSV import + Delphi PDF import + career instruments + "Obiettivo laurea" goal card), `/note` (Markdown+KaTeX+code editor with full-text search), `/focus` (pomodoro + kanban), `/insegnamenti` (the corso's piano di studi — synced manifesto rows + manual ones, see the subsystem note), `/assistente` (the full-page AI chat; also reachable as the floating bubble everywhere except `/`), `/calendario` (month/agenda view; **not** in the nav bar), `/impostazioni` (settings; reached via the gear icon), `/design` (component gallery), `/login` + `/auth/callback` + `/auth/reset` (optional email+password sign-in, with sign-up confirm and password recovery), `/onboarding` (the mandatory ateneo/corso/anno setup — `FirstRunGate` redirects any unconfigured signed-in user here). `/orario` and `/appelli` share the same filter primitives — `<YearFilter>` (`components/YearFilter.tsx`, chips Tutti/1°/2°/3°, default "Tutti") + `<CoursePicker>` (`components/timetable/CoursePicker.tsx`) over `domain/sources.ts`'s `matchesYear`/`yearOfSource`, which read the `…-anno-N` suffix of each event's `sourceId` (the namespacing `degreeSources` emits). `template.tsx` wraps every page for the per-navigation entrance animation; the `Wordmark` (lucide `LifeBuoy` as the "O") is the brand mark in navbar + footer.
+**Routes:** `/` (public **landing** page — hero with the animated `S→tudent🛟S` wordmark, feature cards, "Come funziona", stats, footer; no login), `/panoramica` (the predictive bento **dashboard** — instruments media/CFU/projection read the libretto store reactively, live), `/orario` (CSS-Grid week view, with year + per-course filters), `/appelli` (month calendar + exam cards, with year + per-course filters), `/libretto` (manual entry + CSV import + Delphi PDF import + career instruments + "Obiettivo laurea" goal card), `/note` (Markdown+KaTeX+code editor with full-text search), `/focus` (pomodoro + kanban), `/insegnamenti` (the corso's piano di studi — synced manifesto rows + manual ones, see the subsystem note), `/assistente` (the full-page AI chat; also reachable as the floating bubble everywhere except `/`), `/calendario` (month/agenda view; **not** in the nav bar), `/impostazioni` (settings; reached via the gear icon), `/design` (component gallery), `/privacy` (the public informativa, a server component: every claim mirrors a real data flow in the code — when a feature starts sending data off-device, update it **and** add a point-of-use notice like the ones in `AssistantChat` / `ImportPdfButton`), `/login` + `/auth/callback` + `/auth/reset` (optional email+password sign-in, with sign-up confirm and password recovery), `/onboarding` (the mandatory ateneo/corso/anno setup — `FirstRunGate` redirects any unconfigured signed-in user here). `/orario` and `/appelli` share the same filter primitives — `<YearFilter>` (`components/YearFilter.tsx`, chips Tutti/1°/2°/3°, default "Tutti") + `<CoursePicker>` (`components/timetable/CoursePicker.tsx`) over `domain/sources.ts`'s `matchesYear`/`yearOfSource`, which read the `…-anno-N` suffix of each event's `sourceId` (the namespacing `degreeSources` emits). `template.tsx` wraps every page for the per-navigation entrance animation; the `Wordmark` (lucide `LifeBuoy` as the "O") is the brand mark in navbar + footer.
 
 ## Team Agenti
 
@@ -129,3 +129,16 @@ Come usarli:
 "Usa il subagente @dispatch: [descrivi il task in una riga]"
 "Usa il subagente @planner per analizzare [feature] e scrivere una spec"
 "Usa il subagente @frontend per implementare [componente]"
+
+## Stile di comunicazione durante la sessione
+
+Dopo ogni gruppo di comandi, spiega cosa hai fatto in 2-3 righe semplici,
+come se lo spiegassi a qualcuno che non programma:
+
+* Cosa hai fatto (in parole povere, non nomi di comandi/file a meno che servano)
+* Perché era necessario
+* Cosa significa per l'utente (es. "ora quando lanci l'app...")
+
+Evita gergo tecnico senza spiegarlo (niente "gate verde", "rebase", "hook"
+non accompagnati da una frase in chiaro). Il dettaglio tecnico completo va
+comunque nel report finale/STATO.md, non nella narrazione live.

@@ -21,6 +21,7 @@ import {
   Upload,
   X,
 } from "lucide-react";
+import Link from "next/link";
 import { useId, useRef, useState } from "react";
 import { Button } from "@/components/primitives/Button";
 import { DateField } from "@/components/primitives/DateField";
@@ -343,8 +344,12 @@ export function ImportPdfButton({
                 Trascina qui il PDF {kind === "orario" ? "dell'orario" : "degli appelli"}
               </p>
               <p className="muted text-xs">
-                oppure scegli un file dal tuo dispositivo. Niente viene caricato
-                online: il PDF è letto nel browser.
+                oppure scegli un file dal tuo dispositivo. Il file resta qui: solo
+                il testo estratto viene inviato all&rsquo;AI (Groq, USA) per
+                riconoscere {kind === "orario" ? "le lezioni" : "gli appelli"}.{" "}
+                <Link href="/privacy" className="underline underline-offset-2 hover:text-ink">
+                  Privacy
+                </Link>
               </p>
               <Button type="button" variant="primary" onClick={() => inputRef.current?.click()}>
                 <FileText aria-hidden="true" className="size-4" />

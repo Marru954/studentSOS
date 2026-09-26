@@ -1,0 +1,57 @@
+﻿name: Claude
+
+# Parte SOLO quando qualcuno scrive "@claude" in un commento (issue/PR/review).
+# Niente trigger su push o apertura PR.
+on:
+  issue_comment:
+    types: [created]
+  pull_request_review_comment:
+    types: [created]
+
+# Permessi minimi: nessun admin, nessun accesso a secrets/branch protection.
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  claude:
+    # Solo commenti con @claude scritti da owner/membri/collaboratori
+    # (la chiave API Ã¨ del repo: nessun esterno puÃ² spenderla).
+    if: >-
+      contains(github.event.comment.body, '@claude') &&
+      contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.comment.author_association)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    concurrency:
+      group: claude-${{ github.event.issue.number || github.event.pull_request.number }}
+      cancel-in-progress: false
+
+    steps:
+      # Checkout COMPLETO: niente sparse-checkout, niente shallow (fetch-depth: 0),
+      # cosÃ¬ .claude/settings.json e studentos/scripts/hooks/*.mjs sono presenti.
+      - name: Checkout (completo)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      # Fallisce il job se i muri (hook) non sono sul disco.
+      - name: Verifica muri (hook) presenti
+        run: |
+          set -e
+          test -f .claude/settings.json
+          for h in check-invented-data; do
+            test -f "studentos/scripts/hooks/$h.mjs" || { echo "::error::hook mancante: $h"; exit 1; }
+            grep -q "$h.mjs" .claude/settings.json || { echo "::error::$h non registrato in settings.json"; exit 1; }
+          done
+          echo "Hook-muro presenti e registrati:"; grep -o 'check-[a-z-]*\.mjs' .claude/settings.json | sort -u
+
+      - name: Claude Code
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          # Usa il GITHUB_TOKEN del job (permessi sopra) invece dello scambio OIDC:
+          # cosÃ¬ non serve `id-token: write`.
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          # Modello esplicito: il default dell'action (claude-opus-5-5) Ã¨ fallito subito (run 36226874082).
+          claude_args: --model claude-sonnet-5
