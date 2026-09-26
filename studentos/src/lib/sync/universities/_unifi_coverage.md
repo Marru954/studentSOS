@@ -43,6 +43,8 @@ Campione celle per settimana (28-09 … 30-11):
 - Chimica (anno 1, `B321`): 23, 23, 23, 23, 23, 23, 23, 23, 23, 23
 - Chimica e Tecnologia Farmaceutiche (ciclo unico) (B053) (anno 4, `B263`): 9, 9, 9, 9, 9, 1, 9, 9, 9, 9
 
+> Riattivati il 2026-09-26 (esami con appelli da ottobre, verificati con test_call): Biologia Dell'ambiente e del Comportamento (magistrale); Biologia Dell'ambiente e del Comportamento (magistrale) (B232); Politica, Istituzioni e Mercato; Statistica; Statistica e Data Science; Strategie di Comunicazione nella Società Digitale. Sono stati tolti dall'elenco sotto.
+
 ### Corsi passati a solo-orari (exams:false) — 34
 
 Regola rigida: `exams:false` se `test_call.php` non restituisce appelli nella finestra 2026/27 (01-09-2026..30-09-2027). Da riattivare (ultimo argomento `false` di `degreeSources`) quando i calendari esami vengono pubblicati. 'Nel 2025/26' = il codice risponde con appelli della finestra precedente (calendario nuovo non ancora pubblicato); 'mai' = nessun appello neanche nel 2025/26.
@@ -51,8 +53,6 @@ Regola rigida: `exams:false` se `test_call.php` non restituisce appelli nella fi
 - Architettura (magistrale) (B348) — appelli nel 2025/26
 - Architettura del Paesaggio (magistrale) — appelli nel 2025/26
 - Architettura del Paesaggio (magistrale) (B268) — mai
-- Biologia Dell'ambiente e del Comportamento (magistrale) — appelli nel 2025/26
-- Biologia Dell'ambiente e del Comportamento (magistrale) (B232) — appelli nel 2025/26
 - Biotecnologie Molecolari — appelli nel 2025/26
 - Design per L'innovazione Sostenibile (magistrale) — appelli nel 2025/26
 - Design per L'innovazione Sostenibile (magistrale) (B270) — appelli nel 2025/26
@@ -70,16 +70,12 @@ Regola rigida: `exams:false` se `test_call.php` non restituisce appelli nella fi
 - Pianificazione della Citta', del Territorio e del Paesaggio (triennale) — appelli nel 2025/26
 - Pianificazione e Progettazione per la Sostenibilità Urbana e Territoriale (magistrale) — appelli nel 2025/26
 - Pianificazione e Progettazione per la Sostenibilità Urbana e Territoriale (magistrale) (B269) — mai
-- Politica, Istituzioni e Mercato — appelli nel 2025/26
 - Product, Interior, Communication and Eco-social Design (triennale) — appelli nel 2025/26
 - Scienze Chimiche — appelli nel 2025/26
 - Scienze e Materiali per la Conservazione e il Restauro — appelli nel 2025/26
 - Scienze e Tecnologie Geologiche — appelli nel 2025/26
 - Scienze Geologiche — appelli nel 2025/26
 - Semestre Filtro — appelli nel 2025/26
-- Statistica — appelli nel 2025/26
-- Statistica e Data Science — appelli nel 2025/26
-- Strategie di Comunicazione nella Società Digitale — appelli nel 2025/26
 - Tecniche e Tecnologie per le Costruzioni e il Territorio — appelli nel 2025/26
 
 ### Corsi live verificati (2026/27)

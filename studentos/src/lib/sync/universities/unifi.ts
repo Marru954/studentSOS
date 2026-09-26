@@ -87,13 +87,13 @@ const livePrograms: LiveProgram[] = [
     sources: degreeSources(BASE, ANNO, "biologia-dell-ambiente-e-del-comportamento-magistrale", "ScuoladiScienzeMatematiche-FisicheeNaturali", [
       { year: 1, corso: "B350", anno2: ["E86|1", "E85|1"] },
       { year: 2, corso: "B350", anno2: ["E86|2"] },
-    ], false),
+    ]),
   },
   {
     programme: "Biologia Dell'ambiente e del Comportamento (magistrale) (B232)",
     sources: degreeSources(BASE, ANNO, "biologia-dell-ambiente-e-del-comportamento-magistrale-b232", "ScuoladiScienzeMatematiche-FisicheeNaturali", [
       { year: 2, corso: "B350", anno2: ["E86|2", "E85|2"] },
-    ], false),
+    ]),
   },
   {
     programme: "Biologia Molecolare e Applicata",
@@ -763,7 +763,7 @@ const livePrograms: LiveProgram[] = [
     sources: degreeSources(BASE, ANNO, "politica-istituzioni-e-mercato", "ScuoladiScienzePoliticheCesareAlfieri", [
       { year: 1, corso: "B374", anno2: ["E52|1", "E51|1"] },
       { year: 2, corso: "B374", anno2: ["E52|2", "E51|2"] },
-    ], false),
+    ]),
   },
   {
     programme: "Pratiche, Linguaggi e Culture della Comunicazione",
@@ -1171,14 +1171,14 @@ const livePrograms: LiveProgram[] = [
     sources: degreeSources(BASE, ANNO, "statistica", "ScuoladiEconomiaeManagement", [
       { year: 1, corso: "B331", anno2: ["GEN|1"] },
       { year: 3, corso: "B039", anno2: ["GEN|3"] },
-    ], false),
+    ]),
   },
   {
     programme: "Statistica e Data Science",
     sources: degreeSources(BASE, ANNO, "statistica-e-data-science", "ScuoladiEconomiaeManagement", [
       { year: 1, corso: "B379", anno2: ["F076|1", "F075|1"] },
       { year: 2, corso: "B379", anno2: ["F076|2", "F075|2"] },
-    ], false),
+    ]),
   },
   {
     programme: "Storia",
@@ -1208,7 +1208,7 @@ const livePrograms: LiveProgram[] = [
     sources: degreeSources(BASE, ANNO, "strategie-di-comunicazione-nella-societa-digitale", "ScuoladiScienzePoliticheCesareAlfieri", [
       { year: 1, corso: "B419", anno2: ["GEN|1"] },
       { year: 2, corso: "B419", anno2: ["GEN|2"] },
-    ], false),
+    ]),
   },
   {
     programme: "Sustainable Business for Societal Challenges",
