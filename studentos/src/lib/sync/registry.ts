@@ -7,11 +7,13 @@
  */
 import type { SyncProvider } from "./provider";
 import { easyAcademyProvider } from "./adapters/easyacademy";
+import { cinecaUpProvider } from "./adapters/cineca-up";
 import { icalProvider } from "./adapters/ical";
 import { wordpressNewsProvider } from "./adapters/wordpress-news";
 
 const PROVIDERS: SyncProvider<never>[] = [
   easyAcademyProvider as SyncProvider<never>,
+  cinecaUpProvider as SyncProvider<never>,
   icalProvider as SyncProvider<never>,
   wordpressNewsProvider as SyncProvider<never>,
   // future: esse3Provider (public /e3rest exam-board endpoints)
