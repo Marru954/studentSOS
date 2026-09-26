@@ -1,8 +1,14 @@
 # Stato attuale StudentOS
 
-Aggiornato: 2026-09-26 (dipendenze vulnerabili aggiornate: Next 16.3.6, pdfjs-dist 6.3, npm audit a 0)
+Aggiornato: 2026-09-26 (privacy: informativa /privacy + avvisi AI; prima: dipendenze vulnerabili aggiornate)
 
 ## Completati
+### Sessione 2026-09-26 (bis) — privacy: informativa `/privacy` + avvisi sui dati che escono (branch claude/gifted-carson-nkr5yq)
+🐞 Causa radice: nessuna pagina privacy, e due funzioni che inviano dati fuori dal dispositivo senza dirlo, mentre footer e Impostazioni promettono "i tuoi dati restano su questo dispositivo". (1) L'Assistente manda a Groq (USA) messaggi + contesto (ateneo, corso, anno, prossimi esami, lezioni di oggi, media, CFU, minuti di Focus) senza alcun avviso. (2) "Importa PDF" di Orario/Appelli diceva "Niente viene caricato online", ma il testo estratto (≤16.000 caratteri) va a `/api/import-pdf` → Groq.
+✅ `src/app/privacy/page.tsx` (server component, `Panel` del design system, h1 → 9 h2, tabella fornitori con caption e scope, link esterni con avviso sr-only): in breve, dati sul dispositivo, sync (solo codici ateneo/corso/anno), account facoltativo (Supabase `eu-central-1` Francoforte, verificato via MCP; RLS), Assistente e import AI (campi esatti dal codice), cookie tecnici (`srl_*` ~1 min, sessione Supabase), IP solo in memoria per il rate limit, log Vercel, font self-hosted, fornitori (Vercel/Supabase/Groq, URL delle informative verificati), basi giuridiche, conservazione, diritti + Garante, contatto `support@studentos.app`. Ogni affermazione ricostruita dal codice: client che chiama solo `/api/sync`, `/api/insegnamenti/sync`, `/api/assistente`, `/api/import-pdf` (`/api/alerts` non è usato dalla UI); nessun analytics.
+✅ Avvisi al punto d'uso: nota sotto il compositore dell'Assistente (pagina e bubble), testo corretto nel dialog Importa PDF; link "Privacy" nel footer globale, nel login (con "profilo e dati di studio salvati in cloud, Supabase UE"), in Impostazioni → Privacy e dati (frase resa esatta: "Senza account…") e nella FAQ della landing; `/privacy` in sitemap (robots già la consente). CLAUDE.md: `/privacy` tra le route con la regola di tenerla allineata.
+✅ Verifica nel browser (Chromium di `/opt/pw-browsers`): `/privacy` in tema scuro, chiaro e mobile 375px (niente scroll orizzontale), struttura dei titoli, tutti i testi nuovi letti dal DOM su landing FAQ, login, Assistente (pagina + bubble), dialog Importa PDF, Impostazioni; 0 errori console/pagina.
+
 ### Sessione 2026-09-26 — aggiornamento dipendenze vulnerabili (branch claude/gifted-carson-nkr5yq)
 ✅ `npm audit` da 1 critica + 8 alte + 1 moderata → **0 vulnerabilità**. `package.json` (autorizzato dall'utente): `next` e `eslint-config-next` 16.2.9 → **16.3.6** (versioni esatte come prima; chiude gli avvisi alti su bypass di proxy/middleware con Turbopack e sulle Server Actions, e porta `postcss` 8.5.23 e `sharp` 0.35.4), `pdfjs-dist` ^6.0.227 → **^6.3.289** (avviso alto: esecuzione di JS aprendo un PDF malevolo, <6.2.108), `allowScripts` allineato a `sharp@0.35.4`. Il resto (`undici` via cheerio, `brace-expansion`, `browserslist`, `js-yaml`, `baseline-browser-mapping`) con `npm audit fix` non-breaking, solo lockfile.
 ✅ Letto `node_modules/next/dist/docs` prima di fidarsi: la 16.3 aggiunge funzioni (`io`, `catchError` stabile, `next/root-params`, cache su filesystem di default nelle build Turbopack), nessun cambio su `proxy`. Effetto collaterale: `next dev` riscrive il blocco gestito di `studentos/AGENTS.md` (committato, come chiede il blocco stesso; nota in CLAUDE.md).
@@ -450,6 +456,7 @@ tracker (selettori field + isOnboarded coerente).
    manual.upsert preserva ordine; memo FocusView + ExamTimeline
 
 ## In sospeso
+- **Privacy — da completare dal titolare**: l'informativa dice "progetto indipendente" + `support@studentos.app`; il GDPR (art. 13.1.a) chiede anche l'identità del titolare (nome/ragione sociale e recapito). Decisione del proprietario, non inventata. Manca anche l'eliminazione dell'account dall'app (oggi su richiesta via email, dichiarato nella pagina).
 - **Adapter Cineca UP — verifica live** (richiede rete verso `*.up.cineca.it` + siti
   unipi): `probe-cineca-up.ts --harvest` sulle pagine orari di Pisa → calendari 2026/27
   → probe `--save` → fixture reale committata + test che la parsa → correggere i 7 punti

@@ -413,8 +413,13 @@ export function ImpostazioniView() {
             ))}
           </div>
           <p className="muted text-xs">
-            Tutti i tuoi dati restano su questo dispositivo (IndexedDB). Niente
-            lascia il browser senza il tuo consenso.
+            Senza account, tutti i tuoi dati restano su questo dispositivo
+            (IndexedDB). Escono dal browser solo quando lo scegli tu: con
+            l&rsquo;account, l&rsquo;Assistente o l&rsquo;import PDF con
+            l&rsquo;AI.{" "}
+            <Link href="/privacy" className="underline underline-offset-2 hover:text-ink">
+              Informativa privacy
+            </Link>
           </p>
 
           <div className="flex flex-wrap items-center justify-between gap-3 border-t border-line pt-4">

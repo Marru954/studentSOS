@@ -23,6 +23,9 @@ export function AppFooter() {
           >
             Contatto
           </a>
+          <Link href="/privacy" className="transition-colors hover:text-ink">
+            Privacy
+          </Link>
           <span>I tuoi dati restano su questo dispositivo</span>
         </div>
       </div>

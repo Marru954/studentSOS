@@ -270,8 +270,12 @@ export function LoginView() {
                 </button>
               )}
               <span className="text-ink-faint">
-                Solo email istituzionali. I tuoi dati restano privati: nessun
-                altro pu&ograve; vederli.
+                Solo email istituzionali. Con l&rsquo;account, profilo e dati di
+                studio vengono salvati in cloud (Supabase, UE) e nessun altro
+                utente pu&ograve; vederli.{" "}
+                <Link href="/privacy" className="underline underline-offset-2 hover:text-ink">
+                  Privacy
+                </Link>
               </span>
             </div>
           </form>

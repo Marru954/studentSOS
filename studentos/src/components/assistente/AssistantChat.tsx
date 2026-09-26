@@ -6,6 +6,7 @@
  *  scrolling message area + pinned composer, AI avatars, rendered Markdown,
  *  copy-on-hover, retry-on-error, auto-growing textarea. */
 import { Check, Copy, RotateCcw, Send, Sparkles, SquarePen } from "lucide-react";
+import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import ReactMarkdown, { type Components } from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -551,7 +552,11 @@ export function AssistantChat({ compact = false }: { compact?: boolean } = {}) {
           </button>
         </div>
         <p className="muted mt-1.5 text-center text-[0.7rem]">
-          L&rsquo;assistente può sbagliare. Verifica le informazioni importanti.
+          L&rsquo;assistente può sbagliare: verifica le informazioni importanti.
+          Messaggi e riepilogo di esami e lezioni vengono inviati a Groq (USA).{" "}
+          <Link href="/privacy" className="underline underline-offset-2 hover:text-ink">
+            Privacy
+          </Link>
         </p>
       </form>
     </div>
