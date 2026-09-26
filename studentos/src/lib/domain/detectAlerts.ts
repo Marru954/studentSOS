@@ -11,6 +11,7 @@
 import { stableId } from "@/lib/sync/util";
 import { weightedAverage } from "./libretto";
 import { Alert, AlertType } from "./alerts";
+import { channelOf } from "./channels";
 import { yearOfSource } from "./sources";
 import type { ClassEvent, ExamCall, IsoDate, LibrettoEntry } from "./types";
 import type { SyncMeta } from "@/lib/storage/types";
@@ -136,12 +137,6 @@ function bookingDeadlineAlerts({ examCalls, now }: DetectAlertsParams): Alert[] 
 // ── CONFLITTO_ORARIO ──────────────────────────────────────────────────────
 // Two lessons of different courses on the same calendar day whose [start,end)
 // intervals overlap. Each unordered pair is reported once.
-
-/** The trailing "(…)" channel/turn tag of a course name, upper-cased, or null. */
-function channelOf(courseName: string): string | null {
-  const m = /\(([^()]+)\)\s*$/.exec(courseName);
-  return m ? m[1].trim().toUpperCase() : null;
-}
 
 function scheduleConflictAlerts({ classEvents, now }: DetectAlertsParams): Alert[] {
   // Group by UTC calendar day; only days that haven't ended yet can matter.

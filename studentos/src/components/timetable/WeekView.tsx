@@ -10,6 +10,9 @@ import { ConfirmButton } from "@/components/primitives/ConfirmButton";
 import { EmptyState } from "@/components/primitives/EmptyState";
 import { PanelSkeleton } from "@/components/primitives/Skeleton";
 import { YearFilter } from "@/components/YearFilter";
+import { ChannelFilter } from "@/components/timetable/ChannelFilter";
+import { channelsOf, filterByChannel } from "@/lib/domain/channels";
+import { setChannelPref, useChannelPref } from "@/lib/hooks/useChannelPref";
 import { AlertType } from "@/lib/domain/alerts";
 import type { ClassEvent } from "@/lib/domain/types";
 import { extractCourseNames } from "@/lib/domain/notes";
@@ -331,9 +334,22 @@ export function WeekView() {
     yearFilter === "auto" ? (yearOfStudy ?? "all") : yearFilter;
 
   // gli eventi del solo anno selezionato (l'anno è codificato nel sourceId)
-  const yearFilteredEvents = useMemo(
+  const sameYearEvents = useMemo(
     () => classEvents.filter((e) => matchesYear(e.sourceId, effectiveYear)),
     [classEvents, effectiveYear],
+  );
+
+  // parallel channels ("SG1:A-I" / "SG2:J-Z"): a student follows one, so let
+  // them pick it. A remembered channel that this feed doesn't have is ignored.
+  const channels = useMemo(() => channelsOf(sameYearEvents), [sameYearEvents]);
+  const channelPref = useChannelPref();
+  const channel =
+    channelPref !== null && channels.some((c) => c.channel === channelPref)
+      ? channelPref
+      : null;
+  const yearFilteredEvents = useMemo(
+    () => filterByChannel(sameYearEvents, channel),
+    [sameYearEvents, channel],
   );
 
   // every course in the selected year's feed, for the picker
@@ -513,6 +529,7 @@ export function WeekView() {
             </div>
           )}
           {hasSources && <YearFilter value={effectiveYear} onChange={setYearFilter} />}
+          <ChannelFilter channels={channels} value={channel} onChange={setChannelPref} />
           <CoursePicker
             courses={allCourses}
             pinned={pinnedCourses}
