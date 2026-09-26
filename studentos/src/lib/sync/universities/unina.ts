@@ -7,7 +7,8 @@
  * verifiable codes stay manual (ateneo-courses.ts). Per-course status is in
  * _unina_coverage.md. Re-verify each September and bump ANNO.
  *
- * Exams are kept in Esse3 here → timetable-only (no exam sources).
+ * Exams are kept in Esse3 here → timetable-only (no exam sources), except
+ * "Scienze Dell'architettura" (test_call has appelli from October 2026, verified).
  *
  * September re-verification (2026-09-25): codes re-captured from combo.php aa=2026; years whose
  * 2026/27 timetable returned 0 celle were removed (manual) — originals in _unina_coverage.md.
@@ -567,7 +568,7 @@ const livePrograms: LiveProgram[] = [
       { year: 1, corso: "DB6", anno2: ["GEN|1"] },
       { year: 2, corso: "DB6", anno2: ["GEN|2"] },
       { year: 3, corso: "D05", anno2: ["GEN|3"] },
-    ], false),
+    ]),
   },
   {
     programme: "Scienze e Tecnologie della Chimica Industriale",

@@ -93,6 +93,7 @@ tutte le sorgenti orario rimaste tornano celle (uniroma2 111/111, unifi 397/397,
   coverage; preset -> manuale se catalogo vuoto). Collaudo: unisa ricalcolato = 184/184 anni live, 27 programmi con esami, 0 blocchi da riscrivere
   (coincide col commit d818584); Bari (uniba-giurisprudenza) = COMBO_EMPTY, 35 sorgenti NO_CELLS. Finestra esami di default 01-10 -> 30-09.
   Ricontrollo mensile: verify all + diff all in sola lettura (README del tool). Limite: 1 ateneo alla volta per apply, i programmi special non si riscrivono.
+- Esami riattivati (2026-09-26, solo attivazioni, nessuno spento; le 15 proposte solo-orari restano in sospeso): unifi 6 programmi (Biologia dell'ambiente e del comportamento magistrale + B232, Politica Istituzioni e Mercato, Statistica, Statistica e Data Science, Strategie di Comunicazione) e unina Scienze Dell'architettura.
 - Da fare: stesse ri-catture per gli altri 15 atenei EasyAcademy (Uniba resta a 2025); ripristinare Lettere
   di Tor Vergata quando pubblicano gli orari; scripts/verified-endpoints.txt non contiene gli host di questi
   atenei (i muri #4 di safe-merge.sh potrebbero bloccare i diff con URL combo.php nei coverage md).

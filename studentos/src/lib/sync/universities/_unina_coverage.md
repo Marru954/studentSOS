@@ -67,6 +67,8 @@ Campione celle per settimana (28-09 … 30-11):
 - Design per la Comunita' (anno 2, `DB0`): 10, 10, 10, 10, 10, 10, 0, 10, 10, 10
 - Informatica (magistrale) (anno 1, `DE5`): 26, 26, 26, 26, 26, 26, 12, 26, 26, 26
 
+> Esami riattivati il 2026-09-26 per Scienze Dell'architettura (appelli da ottobre via test_call solo per l'anno 2; anni 1 e 3 senza appelli). Gli altri corsi restano solo orari.
+
 ### Corsi live verificati (2026/27)
 
 | Corso | scuola | corso (per anno) | Anni live | celle/anno | appelli/anno | Stato |
