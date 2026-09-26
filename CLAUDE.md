@@ -17,7 +17,7 @@ Inside `studentos/`, supporting (non-source) material worth knowing: `docs/stato
 
 ## ⚠️ Next.js version caveat (read first)
 
-`studentos/AGENTS.md` warns: this is **Next.js 16.2.9 (Turbopack), React 19, Tailwind v4** — APIs differ from training data. **Before writing any Next/React code, read the relevant guide under `studentos/node_modules/next/dist/docs/`.** Concretely confirmed differences already hit: `cookies()` is **async**; Route Handlers set cookies on the returned `NextResponse`; the `react-hooks` ESLint rules reject `setState` in a mount effect (use `useSyncExternalStore`, see `src/lib/hooks/useNowMinute.ts`) and reject ref writes during render.
+`studentos/AGENTS.md` warns: this is **Next.js 16.3.6 (Turbopack), React 19, Tailwind v4** — APIs differ from training data. Since 16.3, `next dev` rewrites the managed `<!-- BEGIN:nextjs-agent-rules -->` block in `studentos/AGENTS.md` whenever its text changes: commit that diff with your work (reverting it only makes it come back). **Before writing any Next/React code, read the relevant guide under `studentos/node_modules/next/dist/docs/`.** Concretely confirmed differences already hit: `cookies()` is **async**; Route Handlers set cookies on the returned `NextResponse`; the `react-hooks` ESLint rules reject `setState` in a mount effect (use `useSyncExternalStore`, see `src/lib/hooks/useNowMinute.ts`) and reject ref writes during render.
 
 ## Permanent rules (apply to every task — never need restating in a prompt)
 
