@@ -1,8 +1,12 @@
 # Stato attuale StudentOS
 
-Aggiornato: 2026-09-26 (sezione "Stile di comunicazione" in CLAUDE.md)
+Aggiornato: 2026-09-26 (hook SessionStart che legge STATO.md)
 
 ## Completati
+### Sessione 2026-09-26 — hook SessionStart per STATO.md (PR #34, mergiata)
+✅ Nuovo `studentos/scripts/hooks/session-start-stato.mjs` + entry `SessionStart` in `.claude/settings.json`: a ogni avvio stampa intestazione, ultima sessione, In sospeso, Prossimi obiettivi e Registro decisioni di STATO.md (tetto 30.000 caratteri, mai bloccante). Provato solo invocando il comando a mano: il CLI `claude` non era disponibile per una sessione vera, quindi **da confermare aprendo una sessione nuova**.
+⚠️ Branch remoto `claude/session-start-stato-hook-285a37` da cancellare a mano. `claude/easyacademy-preset-codes-2026-b21e85` confligge con main (STATO, package.json, preset): probabilmente obsoleto, da archiviare.
+
 ### Sessione 2026-09-26 — stile di comunicazione (branch claude/stile-comunicazione-sessioni-dbbed3)
 ✅ Aggiunta a CLAUDE.md la sezione "Stile di comunicazione durante la sessione" (spiegazioni semplici dopo ogni gruppo di comandi). Solo docs, gate verde.
 
