@@ -1,6 +1,6 @@
 # Stato attuale StudentOS
 
-Aggiornato: 2026-09-25 (fix esami `Insegnamenti: []`, adapter Cineca UP dormiente + probe)
+Aggiornato: 2026-09-26 (PR #31 mergiata: fix esami `Insegnamenti: []`, adapter Cineca UP dormiente + probe)
 
 ## Completati
 ### Sessione 2026-09-25 (octies) — fix esami `Insegnamenti: []` + adapter Cineca UP dormiente (branch claude/gifted-carson-nkr5yq)
@@ -10,6 +10,10 @@ Aggiornato: 2026-09-25 (fix esami `Insegnamenti: []`, adapter Cineca UP dormient
 ⚠️ Rete: questo ambiente cloud nega gli host universitari (403 alla CONNECT, anche `easyutv.uniroma2.it` in produzione; WebFetch idem). Nessuna verifica live fatta oggi: né UP né il fix esami sui dati reali.
 📊 Conteggi reali (`LIVE_COUNT`/`LIVE_PROGRAMME_COUNT`): 18 atenei live, 1484 corsi. CLAUDE.md corretto (diceva 19 / "oltre 1600": uniba è tornata manuale).
 Gate verde a ogni commit (587 test, 48 file).
+✅ **Mergiato su main il 2026-09-26 via PR #31** (merge commit `83485c8`), su richiesta esplicita dell'utente: `safe-merge.sh` aveva passato gate e muri #4/#5, ma il proxy git dell'ambiente cloud accetta push solo sul branch di lavoro (push di `main`: 403; push del tag `rollback/…`: connessione chiusa). **Nessun tag di rollback su origin**: lo stato di main prima del merge è `c6ac2cc` (rollback = `git revert -m 1 83485c8`, oppure reset a `c6ac2cc`). CI della PR verde (tsc, lint, test, build; E2E vuoto, v. In sospeso).
+🔎 Controllo conflitti post-merge (sola lettura, `git merge-tree` contro il nuovo main), 2 branch remoti non mergiati, nessuno toccato:
+   - `auto/hook-muri-4-5` (27-06): conflitti su `.claude/settings.json` e `studentos/package.json`, ma è la copia pre-rebase di lavoro già su main dal 2026-07-04 (v. sessione di quel giorno): residuo da cancellare (serve l'ok dell'utente, branch non mio).
+   - `claude/ricattura-codici-2026-uyvllt` (25-09, altra sessione): 1 commit solo su STATO.md (tentativo di ri-cattura TV/Firenze/Federico II bloccato dallo stesso 403 di rete). Conflitto su STATO.md con questo merge: entrambe le sessioni si chiamano "octies" e riscrivono la riga "Aggiornato". Al suo merge: tenere entrambe le voci, rinominare la sua "nonies".
 
 ### Sessione 2026-09-25 (septies) — portato su main il branch easyacademy-preset-codes-2026 (branch sync/porta-branch-unifi)
 ✅ Portato dal branch (cherry-pick, 3 commit): `detectAlerts` non segnala più falsi conflitti d'orario tra anni diversi o canali paralleli ("(SG1:A-I)" vs "(SG2:J-Z)"); `state/synced.ts` + `storage/syncClient.ts` + `supabase/sync.ts`: una sync in volo non riscrive più i dati del vecchio ateneo dopo il cambio ateneo (contatore di generazione, `invalidate()`); test nuovi `alertsConflictYear`, `syncedInvalidate` registrati in package.json.
