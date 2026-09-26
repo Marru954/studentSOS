@@ -69,19 +69,24 @@ const examEntry = z.object({
 });
 
 const examsResponse = z.object({
-  Insegnamenti: z
-    .record(
-      z.string(),
-      z.object({
-        DatiInsegnamento: z.object({
-          Codice: z.string().optional(),
-          Nome: z.string(),
+  // With no calls in the window the server answers `Insegnamenti: []` (PHP's
+  // empty array) instead of `{}` — treat it as "no courses".
+  Insegnamenti: z.preprocess(
+    (v) => (Array.isArray(v) && v.length === 0 ? {} : v),
+    z
+      .record(
+        z.string(),
+        z.object({
+          DatiInsegnamento: z.object({
+            Codice: z.string().optional(),
+            Nome: z.string(),
+          }),
+          Appelli: z.array(z.unknown()).optional().default([]),
         }),
-        Appelli: z.array(z.unknown()).optional().default([]),
-      }),
-    )
-    .optional()
-    .default({}),
+      )
+      .optional()
+      .default({}),
+  ),
 });
 
 const LESSON_KINDS: Record<string, ClassEventKind> = {
