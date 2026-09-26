@@ -1,8 +1,11 @@
 # Stato attuale StudentOS
 
-Aggiornato: 2026-09-26 (privacy: informativa /privacy + avvisi AI; prima: dipendenze vulnerabili aggiornate)
+Aggiornato: 2026-09-26 (sezione "Stile di comunicazione" in CLAUDE.md)
 
 ## Completati
+### Sessione 2026-09-26 — stile di comunicazione (branch claude/stile-comunicazione-sessioni-dbbed3)
+✅ Aggiunta a CLAUDE.md la sezione "Stile di comunicazione durante la sessione" (spiegazioni semplici dopo ogni gruppo di comandi). Solo docs, gate verde.
+
 ### Sessione 2026-09-26 (bis) — privacy: informativa `/privacy` + avvisi sui dati che escono (branch claude/gifted-carson-nkr5yq)
 🐞 Causa radice: nessuna pagina privacy, e due funzioni che inviano dati fuori dal dispositivo senza dirlo, mentre footer e Impostazioni promettono "i tuoi dati restano su questo dispositivo". (1) L'Assistente manda a Groq (USA) messaggi + contesto (ateneo, corso, anno, prossimi esami, lezioni di oggi, media, CFU, minuti di Focus) senza alcun avviso. (2) "Importa PDF" di Orario/Appelli diceva "Niente viene caricato online", ma il testo estratto (≤16.000 caratteri) va a `/api/import-pdf` → Groq.
 ✅ `src/app/privacy/page.tsx` (server component, `Panel` del design system, h1 → 9 h2, tabella fornitori con caption e scope, link esterni con avviso sr-only): in breve, dati sul dispositivo, sync (solo codici ateneo/corso/anno), account facoltativo (Supabase `eu-central-1` Francoforte, verificato via MCP; RLS), Assistente e import AI (campi esatti dal codice), cookie tecnici (`srl_*` ~1 min, sessione Supabase), IP solo in memoria per il rate limit, log Vercel, font self-hosted, fornitori (Vercel/Supabase/Groq, URL delle informative verificati), basi giuridiche, conservazione, diritti + Garante, contatto `support@studentos.app`. Ogni affermazione ricostruita dal codice: client che chiama solo `/api/sync`, `/api/insegnamenti/sync`, `/api/assistente`, `/api/import-pdf` (`/api/alerts` non è usato dalla UI); nessun analytics.
