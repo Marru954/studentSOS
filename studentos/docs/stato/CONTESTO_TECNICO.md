@@ -10,7 +10,7 @@ Scopo: contesto per la pianificazione futura. Gli output sotto sono reali (coman
 
 > 2026-09-25 — muro #1 e #2: STRICT sempre (non STRICT-solo-auto/WARN come #4/#5). Override esplicito solo per #1 via `ALLOW_PROTECTED_EDIT=1` (caso per caso, es. migration di db.ts autorizzata); nessun override per #2 (unica via: `scripts/safe-merge.sh` o PR).
 
-Le voci "In sospeso" e "Prossimi obiettivi" di STATO.md (DNS-rebinding TOCTOU #6, postcss #7, adapter Cineca-UP/GOMP, rate-limit per-IP distribuito) restano il riferimento per le priorità.
+Le voci "In sospeso" e "Prossimi obiettivi" di STATO.md (DNS-rebinding TOCTOU #6, postcss #7, adapter Cineca-UP/GOMP, rate-limit per-IP distribuito) restano il riferimento per le priorità; la sezione "Coda task" le ripete in forma strutturata (`auto:si|no`) per gli agenti automatici.
 
 ## 2. Albero file (`src/`, profondità 3)
 
