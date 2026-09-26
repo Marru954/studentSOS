@@ -53,3 +53,5 @@ jobs:
           # Usa il GITHUB_TOKEN del job (permessi sopra) invece dello scambio OIDC:
           # così non serve `id-token: write`.
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          # Modello esplicito: il default dell'action (claude-opus-5-5) è fallito subito (run 36226874082).
+          claude_args: --model claude-sonnet-5
