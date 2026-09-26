@@ -507,6 +507,7 @@ tracker (selettori field + isOnboarded coerente).
 
 ## Registro decisioni
 
+- **26/09/2026 — installato anthropics/claude-code-action in modalità full-write (contents+PR write) nonostante la regola 'nessuna sessione autonoma' — deroga esplicita del proprietario, trigger limitato a menzione @claude nei commenti, muri via hook .claude/settings.json restano attivi, branch protection su main raccomandata come backstop.**
 - **2026-09-25 — adapter Cineca UP scritto prima della fixture, ma dormiente.** Senza rete verso gli atenei il contratto non si può verificare: il codice è pronto e testato su payload sintetici dichiarati, ma nessun preset può usarlo finché una risposta reale (probe `--save`) non è committata e parsata da un test. L'inerzia è garantita dall'allowlist SSRF (derivata dai preset) ed è coperta da un test.
 - **2026-09-25 — muro #1 e #2: STRICT sempre** (non STRICT-solo-auto/WARN come #4/#5). Override esplicito solo per #1 via `ALLOW_PROTECTED_EDIT=1` (caso per caso, es. migration di db.ts autorizzata); nessun override per #2 (unica via: `scripts/safe-merge.sh` o PR).
 - **2026-09-25 — sync rispettoso: client condiviso senza toccare il sync core.** `http.ts` cablato solo dove non serve editare muro #1; la cache dei validatori è in memoria di processo (il server è stateless, IndexedDB/db.ts intoccabili). Aperto: contatto reale nello UA; wiring in easyacademy.ts (+ pausa per-ateneo) da autorizzare. Semantica di `tests/` invariata (file esistenti bloccati, nuovi liberi; `package.json` resta bloccato: aggiunte al runner via patch fuori-tool).
